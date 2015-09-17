@@ -1,0 +1,29 @@
+{
+    "name": "atlas/atlas",
+    "type": "library",
+    "description": "An SQL DataMapper implementation.",
+    "keywords": [ "sql", "data", "mapper" ],
+    "homepage": "http://github.com/atlasphp/Atlas.Atlas",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Atlas Contributors",
+            "homepage": "https://github.com/atlasphp/Atlas.Atlas/contributors"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "aura/sql": "~2.0",
+        "aura/sqlquery": "~2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Atlas\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Atlas\\": "tests/"
+        }
+    }
+}
