@@ -116,11 +116,6 @@ class Table
         return $this->primary;
     }
 
-    protected function getPrimaryVal($cols)
-    {
-        return $cols[$this->getPrimary()];
-    }
-
     /**
      *
      * Does the database set the primary key value on insert by autoincrement?
@@ -298,10 +293,9 @@ class Table
         $colsVals = [$this->getPrimary() => $primaryVals];
         $data = $this->select($colsVals)->cols($this->getCols())->fetchAll();
         foreach ($data as $cols) {
-            $primaryVal = $this->getPrimaryVal($cols);
             $row = $this->newRow($cols);
             $this->identityMap->set($row);
-            $rows[$primaryVal] = $row;
+            $rows[$row->getPrimaryVal()] = $row;
         }
 
         // remove unfound rows
@@ -358,7 +352,7 @@ class Table
 
     protected function getMappedOrNewRow(array $cols)
     {
-        $primaryVal = $this->getPrimaryVal($cols);
+        $primaryVal = $cols[$this->primary];
         $row = $this->identityMap->getRow($primaryVal);
         if (! $row) {
             $row = $this->newRow($cols);
