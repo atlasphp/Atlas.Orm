@@ -18,12 +18,7 @@ use Aura\SqlQuery\Common\Update;
 
 /**
  *
- * A Gateway+Mapper that returns Row and RowSet objects.
- *
- * @todo Extract row/rowset factory methods to a RowFactory object? Maybe not;
- * they are supposed to be stupid bags of data.
- *
- * @todo Allow a Filter to apply against Row objects.
+ * A TableDataGateway that returns Row and RowSet objects.
  *
  * @package Atlas.Atlas
  *
