@@ -23,7 +23,8 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $this->gateway = new EmployeeTable(
             $connectionLocator,
             new QueryFactory('sqlite'),
-            new IdentityMap()
+            new IdentityMap(),
+            new Filter()
         );
 
         $fixture = new SqliteFixture($this->gateway->getWriteConnection());
@@ -39,7 +40,8 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $auto = new AutoTable(
             $connectionLocator,
             new QueryFactory('sqlite'),
-            new IdentityMap()
+            new IdentityMap(),
+            new Filter()
         );
 
         $this->assertSame('auto', $auto->getTable());

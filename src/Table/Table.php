@@ -83,11 +83,13 @@ class Table
     public function __construct(
         ConnectionLocator $connectionLocator,
         QueryFactory $queryFactory,
-        IdentityMap $identityMap
+        IdentityMap $identityMap,
+        Filter $filter
     ) {
         $this->connectionLocator = $connectionLocator;
         $this->queryFactory = $queryFactory;
         $this->identityMap = $identityMap;
+        $this->filter = $filter;
     }
 
     public function getTable()
@@ -423,7 +425,12 @@ class Table
      */
     public function insert(Row $row)
     {
+        $this->filter->forInsert($row);
+
         $insert = $this->newInsert($row);
+        if (! $insert) {
+            return null;
+        }
 
         $writeConnection = $this->getWriteConnection();
         $pdoStatement = $writeConnection->perform(
@@ -474,6 +481,8 @@ class Table
      */
     public function update(Row $row)
     {
+        $this->filter->forInsert($row);
+
         $update = $this->newUpdate($row);
         if (! $update) {
             return null;
@@ -525,6 +534,9 @@ class Table
     public function delete(Row $row)
     {
         $delete = $this->newDelete($row);
+        if (! $delete) {
+            return null;
+        }
 
         $pdoStatement = $this->getWriteConnection()->perform(
             $delete->getStatement(),
