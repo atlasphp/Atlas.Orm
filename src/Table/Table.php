@@ -260,6 +260,21 @@ class Table
         return $this->getMappedOrNewRow($cols);
     }
 
+    /*
+    Rows by primary:
+        create empty rows
+        foreach primary value ...
+            add null in rows keyed on primary value to maintain place
+            if primary value in map
+                retain mapped row in set keyed on primary value
+                remove primary value from list
+        select remaining primary values
+        foreach returned one ...
+            new row object
+            retain row in map
+            add row in set on ID key
+        return rows
+    */
     public function fetchRows($primaryVals)
     {
         // pre-empt working on empty array
@@ -297,6 +312,7 @@ class Table
             }
         }
 
+        // done
         return $rows;
     }
 
@@ -326,21 +342,6 @@ class Table
         return $rows;
     }
 
-    /*
-    RowSet by primary:
-        create empty set
-        foreach primary value ...
-            add null in set keyed on primary value to maintain place
-            if primary value in map
-                retain mapped row in set keyed on primary value
-                remove primary value from list
-        select remaining primary values
-        foreach returned one ...
-            new row object
-            retain row in map
-            add row in set on ID key
-        return new RowSet from array set
-    */
     public function fetchRowSet(array $primaryVals)
     {
         $rows = $this->fetchRows($primaryVals, $this->getPrimary());
