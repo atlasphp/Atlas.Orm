@@ -20,6 +20,8 @@ use Aura\SqlQuery\Common\Update;
  *
  * A TableDataGateway that returns Row and RowSet objects.
  *
+ * @todo An assertion to check that Row and RowSet are of the right type.
+ *
  * @package Atlas.Atlas
  *
  */
@@ -189,10 +191,6 @@ class Table
     {
         $select = $this->newSelect()->from($this->getTable());
 
-        if (! $colsVals) {
-            return $select;
-        }
-
         foreach ($colsVals as $col => $val) {
             $this->selectWhere($select, $col, $val);
         }
@@ -228,15 +226,26 @@ class Table
         $row = $this->identityMap->getRow($primaryVal);
         if (! $row) {
             $colsVals = [$this->getPrimary() => $primaryVal];
-            $row = $this->fetchRowBy($colsVals);
+            $select = $this->select($colsVals);
+            $row = $this->fetchRowBySelect($select);
         }
         return $row;
     }
 
     public function fetchRowBy(array $colsVals)
     {
+        if ($this->byPrimaryOnly($colsVals)) {
+            return $this->fetchRow(current($colsVals));
+        }
+
         $select = $this->select($colsVals);
         return $this->fetchRowBySelect($select);
+    }
+
+    protected function byPrimaryOnly(array $colsVals)
+    {
+        reset($colsVals);
+        return count($colsVals == 1) && key($colsVals) == $this->getPrimary();
     }
 
     public function fetchRowBySelect(Select $select)
@@ -249,6 +258,72 @@ class Table
         }
 
         return $this->getMappedOrNewRow($cols);
+    }
+
+    public function fetchRows($primaryVals)
+    {
+        // pre-empt working on empty array
+        if (! $primaryVals) {
+            return array();
+        }
+
+        // get existing rows from identity map
+        $rows = [];
+        foreach ($primaryVals as $i => $primaryVal) {
+            $rows[$primaryVal] = null;
+            if ($this->identityMap->hasPrimaryVal($primaryVal)) {
+                $rows[$primaryVal] = $this->identityMap->getRow($primaryVal);
+                unset($primaryVals[$i]);
+            }
+        }
+
+        // are there still rows to fetch?
+        if ($primaryVals) {
+            // fetch and retain remaining rows
+            $colsVals = [$this->getPrimary() => $primaryVals];
+            $select = $this->select($colsVals);
+            $data = $select->cols($this->getCols())->fetchAll();
+            foreach ($data as $cols) {
+                $row = $this->newRow($cols);
+                $this->identityMap->set($row);
+                $rows[$row->getPrimaryVal()] = $row;
+            }
+        }
+
+        // remove unfound rows
+        foreach ($rows as $key => $val) {
+            if ($val === null) {
+                unset($rows[$key]);
+            }
+        }
+
+        return $rows;
+    }
+
+    public function fetchRowsBy(array $colsVals, $col)
+    {
+        if ($this->byPrimaryOnly($colsVals)) {
+            return $this->fetchRows(current($colsVals), $col);
+        }
+
+        $select = $this->newSelect($colsVals);
+        return $this->fetchRowsBySelect($select, $col);
+    }
+
+    public function fetchRowsBySelect(Select $select, $col)
+    {
+        $data = $select->cols($this->getCols())->fetchAll();
+        if (! $data) {
+            return array();
+        }
+
+        $rows = [];
+        foreach ($data as $cols) {
+            $row = $this->getMappedOrNewRow($cols);
+            $rows[$row->$col] = $row;
+        }
+
+        return $rows;
     }
 
     /*
@@ -268,58 +343,20 @@ class Table
     */
     public function fetchRowSet(array $primaryVals)
     {
-        $rows = [];
-
-        // pre-empt working on empty array
-        if (! $primaryVals) {
-            return array();
-        }
-
-        // get existing rows from identity map
-        foreach ($primaryVals as $i => $primaryVal) {
-            $rows[$primaryVal] = null;
-            if ($this->identityMap->hasPrimaryVal($primaryVal)) {
-                $rows[$primaryVal] = $this->identityMap->getRow($primaryVal);
-                unset($primaryVals[$i]);
-            }
-        }
-
-        // if there are no rows to fetch, we're done
-        if (! $primaryVals) {
-            return $this->newRowSet(array_values($rows));
-        }
-
-        // fetch and retain remaining rows
-        $colsVals = [$this->getPrimary() => $primaryVals];
-        $data = $this->select($colsVals)->cols($this->getCols())->fetchAll();
-        foreach ($data as $cols) {
-            $row = $this->newRow($cols);
-            $this->identityMap->set($row);
-            $rows[$row->getPrimaryVal()] = $row;
-        }
-
-        // remove unfound rows
-        foreach ($rows as $key => $val) {
-            if ($val === null) {
-                unset($rows[$key]);
-            }
-        }
-
-        // did we find anything?
+        $rows = $this->fetchRows($primaryVals, $this->getPrimary());
         if (! $rows) {
             return array();
         }
-
-        // done!
         return $this->newRowSet(array_values($rows));
     }
 
-    public function fetchRowSetBy(array $colsVals, callable $custom = null)
+    public function fetchRowSetBy(array $colsVals)
     {
-        $select = $this->select($colsVals);
-        if ($custom) {
-            $custom($select);
+        if ($this->byPrimaryOnly($colsVals)) {
+            return $this->fetchRowSet(current($colsVals));
         }
+
+        $select = $this->select($colsVals);
         return $this->fetchRowSetBySelect($select);
     }
 
@@ -348,6 +385,42 @@ class Table
         }
 
         return $this->newRowSet($rows);
+    }
+
+    public function fetchRowSets($primaryVals, $col)
+    {
+        $rows = $this->fetchRows($primaryVals);
+        $collation = [];
+        foreach ($rows as $row) {
+            $collation[$row->$col][] = $row;
+        }
+        return $this->rowSetsFromCollation($collation);
+    }
+
+    public function fetchRowSetsBy(array $colsVals, $col)
+    {
+        $select = $this->select($colsVals);
+        return $this->fetchRowSetsBySelect($select, $col);
+    }
+
+    public function fetchRowSetsBySelect(Select $select, $col)
+    {
+        $data = $select->cols($this->getCols())->fetchAll();
+        $collation = [];
+        foreach ($data as $cols) {
+            $row = $this->getMappedOrNewRow($cols);
+            $collation[$row->$col][] = $row;
+        }
+        return $this->rowSetsFromCollation($collation);
+    }
+
+    protected function rowSetsFromCollation($collation)
+    {
+        $rowSets = [];
+        foreach ($collation as $key => $rows) {
+            $rowSets[$key] = $this->newRowSet($rows);
+        }
+        return $rowSets;
     }
 
     protected function getMappedOrNewRow(array $cols)

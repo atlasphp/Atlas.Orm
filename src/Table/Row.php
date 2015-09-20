@@ -1,6 +1,8 @@
 <?php
 namespace Atlas\Table;
 
+use Atlas\Exception;
+
 /**
  * @todo Should $primary really be a constructor param? Or should it figure it
  * out the same way the table does? Or should it be an Identity object?
