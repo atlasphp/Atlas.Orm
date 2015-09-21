@@ -109,6 +109,6 @@ class Row
 
     public function getObjectCopy()
     {
-        return (object) $this->cols;
+        return (object) $this->getArrayCopy();
     }
 }
