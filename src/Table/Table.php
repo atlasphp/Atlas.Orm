@@ -515,6 +515,9 @@ class Table
         // set into the identity map
         $this->identityMap->set($row);
 
+        // reinitialize the initial data for later updates
+        $row->init();
+
         // @todo add support for "returning" into the row
         return true;
     }
@@ -561,6 +564,9 @@ class Table
         if (! $pdoStatement->rowCount()) {
             return false;
         }
+
+        // reinitialize the initial data for later updates
+        $row->init();
 
         // @todo add support for "returning" into the row
         return true;
