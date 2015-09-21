@@ -21,7 +21,7 @@ use Aura\SqlQuery\Common\SubselectInterface;
  * @package Atlas.Atlas
  *
  */
-class Select implements SubselectInterface
+class TableSelect implements SubselectInterface
 {
     /**
      *

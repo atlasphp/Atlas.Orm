@@ -184,7 +184,7 @@ class Table
      *
      * Returns a new Select object.
      *
-     * @return Select
+     * @return TableSelect
      *
      */
     public function select(array $colsVals = [])
@@ -200,7 +200,7 @@ class Table
 
     protected function newSelect()
     {
-        return new Select(
+        return new TableSelect(
             $this->queryFactory->newSelect(),
             $this->getReadConnection()
         );
@@ -248,7 +248,7 @@ class Table
         return count($colsVals == 1) && key($colsVals) == $this->getPrimary();
     }
 
-    public function fetchRowBySelect(Select $select)
+    public function fetchRowBySelect(TableSelect $select)
     {
         $select->cols($this->getCols());
 
@@ -326,7 +326,7 @@ class Table
         return $this->fetchRowsBySelect($select, $col);
     }
 
-    public function fetchRowsBySelect(Select $select, $col)
+    public function fetchRowsBySelect(TableSelect $select, $col)
     {
         $data = $select->cols($this->getCols())->fetchAll();
         if (! $data) {
@@ -373,7 +373,7 @@ class Table
                 add row in set on ID key
         return new RowSet from array set
     */
-    public function fetchRowSetBySelect(Select $select)
+    public function fetchRowSetBySelect(TableSelect $select)
     {
         $data = $select->cols($this->getCols())->fetchAll();
         if (! $data) {
@@ -404,7 +404,7 @@ class Table
         return $this->fetchRowSetsBySelect($select, $col);
     }
 
-    public function fetchRowSetsBySelect(Select $select, $col)
+    public function fetchRowSetsBySelect(TableSelect $select, $col)
     {
         $data = $select->cols($this->getCols())->fetchAll();
         $collation = [];
