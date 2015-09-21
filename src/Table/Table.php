@@ -189,12 +189,16 @@ class Table
      * @return TableSelect
      *
      */
-    public function select(array $colsVals = [])
+    public function select(array $colsVals = [], callable $custom = null)
     {
         $select = $this->newSelect()->from($this->getTable());
 
         foreach ($colsVals as $col => $val) {
             $this->selectWhere($select, $col, $val);
+        }
+
+        if ($custom) {
+            $custom($select);
         }
 
         return $select;
@@ -234,20 +238,14 @@ class Table
         return $row;
     }
 
-    public function fetchRowBy(array $colsVals)
+    public function fetchRowBy(array $colsVals, callable $custom = null)
     {
-        if ($this->byPrimaryOnly($colsVals)) {
+        if ($this->byPrimaryOnly($colsVals, $custom)) {
             return $this->fetchRow(current($colsVals));
         }
 
-        $select = $this->select($colsVals);
+        $select = $this->select($colsVals, $custom);
         return $this->fetchRowBySelect($select);
-    }
-
-    protected function byPrimaryOnly(array $colsVals)
-    {
-        reset($colsVals);
-        return count($colsVals == 1) && key($colsVals) == $this->getPrimary();
     }
 
     public function fetchRowBySelect(TableSelect $select)
@@ -318,13 +316,13 @@ class Table
         return $rows;
     }
 
-    public function fetchRowsBy(array $colsVals, $col)
+    public function fetchRowsBy(array $colsVals, $col, callable $custom = null)
     {
-        if ($this->byPrimaryOnly($colsVals)) {
+        if ($this->byPrimaryOnly($colsVals, $custom)) {
             return $this->fetchRows(current($colsVals), $col);
         }
 
-        $select = $this->newSelect($colsVals);
+        $select = $this->newSelect($colsVals, $custom);
         return $this->fetchRowsBySelect($select, $col);
     }
 
@@ -353,13 +351,13 @@ class Table
         return $this->newRowSet(array_values($rows));
     }
 
-    public function fetchRowSetBy(array $colsVals)
+    public function fetchRowSetBy(array $colsVals, callable $custom = null)
     {
-        if ($this->byPrimaryOnly($colsVals)) {
+        if ($this->byPrimaryOnly($colsVals, $custom)) {
             return $this->fetchRowSet(current($colsVals));
         }
 
-        $select = $this->select($colsVals);
+        $select = $this->select($colsVals, $custom);
         return $this->fetchRowSetBySelect($select);
     }
 
@@ -625,5 +623,13 @@ class Table
         $delete->from($this->getTable());
         $delete->where("{$primaryCol} = ?", $row->getPrimaryVal());
         return $delete;
+    }
+
+    protected function byPrimaryOnly(array $colsVals, $custom)
+    {
+        reset($colsVals);
+        return ! $custom
+            && count($colsVals == 1)
+            && key($colsVals) == $this->getPrimary();
     }
 }
