@@ -24,7 +24,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
             $connectionLocator,
             new QueryFactory('sqlite'),
             new IdentityMap(),
-            new Filter()
+            new RowFilter()
         );
 
         $fixture = new SqliteFixture($this->gateway->getWriteConnection());
@@ -41,7 +41,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
             $connectionLocator,
             new QueryFactory('sqlite'),
             new IdentityMap(),
-            new Filter()
+            new RowFilter()
         );
 
         $this->assertSame('auto', $auto->getTable());

@@ -73,7 +73,9 @@ class Table
 
     protected $rowClass;
 
-    protected $rowsetClass;
+    protected $rowSetClass;
+
+    protected $rowFilter;
 
     protected $identityMap = [];
 
@@ -81,12 +83,12 @@ class Table
         ConnectionLocator $connectionLocator,
         QueryFactory $queryFactory,
         IdentityMap $identityMap,
-        Filter $filter
+        RowFilter $rowFilter
     ) {
         $this->connectionLocator = $connectionLocator;
         $this->queryFactory = $queryFactory;
         $this->identityMap = $identityMap;
-        $this->filter = $filter;
+        $this->rowFilter = $rowFilter;
     }
 
     public function getTable()
@@ -458,23 +460,23 @@ class Table
 
     public function newRowSet(array $rows)
     {
-        $rowsetClass = $this->getRowSetClass();
-        return new $rowsetClass($rows);
+        $rowSetClass = $this->getRowSetClass();
+        return new $rowSetClass($rows);
     }
 
     public function getRowSetClass()
     {
-        if (! $this->rowsetClass) {
+        if (! $this->rowSetClass) {
             // Foo\Bar\BazTable -> Foo\Bar\BazRowSet
             $class = substr(get_class($this), -5);
-            $this->rowsetClass = "{$class}RowSet";
+            $this->rowSetClass = "{$class}RowSet";
         }
 
-        if (! class_exists($this->rowsetClass)) {
-            $this->rowsetClass = 'Atlas\Table\RowSet';
+        if (! class_exists($this->rowSetClass)) {
+            $this->rowSetClass = 'Atlas\Table\RowSet';
         }
 
-        return $this->rowsetClass;
+        return $this->rowSetClass;
     }
 
     /**
@@ -488,7 +490,7 @@ class Table
      */
     public function insert(Row $row)
     {
-        $this->filter->forInsert($row);
+        $this->rowFilter->forInsert($row);
 
         $insert = $this->newInsert($row);
         if (! $insert) {
@@ -544,7 +546,7 @@ class Table
      */
     public function update(Row $row)
     {
-        $this->filter->forInsert($row);
+        $this->rowFilter->forInsert($row);
 
         $update = $this->newUpdate($row);
         if (! $update) {

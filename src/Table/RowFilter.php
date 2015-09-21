@@ -1,7 +1,7 @@
 <?php
 namespace Atlas\Table;
 
-class Filter
+class RowFilter
 {
     public function forInsert(Row $row)
     {
