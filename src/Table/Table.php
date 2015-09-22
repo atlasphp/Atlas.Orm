@@ -240,10 +240,6 @@ class Table
 
     public function fetchRowBy(array $colsVals, callable $custom = null)
     {
-        if ($this->byPrimaryNoCustom($colsVals, $custom)) {
-            return $this->fetchRow(current($colsVals));
-        }
-
         $select = $this->select($colsVals, $custom);
         return $this->fetchRowBySelect($select);
     }
@@ -282,28 +278,9 @@ class Table
             return array();
         }
 
-        // get existing rows from identity map
         $rows = [];
-        foreach ($primaryVals as $i => $primaryVal) {
-            $rows[$primaryVal] = null;
-            if ($this->identityMap->hasPrimaryVal($primaryVal)) {
-                $rows[$primaryVal] = $this->identityMap->getRow($primaryVal);
-                unset($primaryVals[$i]);
-            }
-        }
-
-        // are there still rows to fetch?
-        if ($primaryVals) {
-            // fetch and retain remaining rows
-            $colsVals = [$this->getPrimary() => $primaryVals];
-            $select = $this->select($colsVals);
-            $data = $select->cols($this->getCols())->fetchAll();
-            foreach ($data as $cols) {
-                $row = $this->newRow($cols);
-                $this->identityMap->set($row);
-                $rows[$row->getPrimaryVal()] = $row;
-            }
-        }
+        $this->fillExistingRows($primaryVals, $rows);
+        $this->fillMissingRows($primaryVals, $rows);
 
         // remove unfound rows
         foreach ($rows as $key => $val) {
@@ -316,13 +293,39 @@ class Table
         return $rows;
     }
 
+    // get existing rows from identity map
+    protected function fillExistingRows(&$primaryVals, &$rows)
+    {
+        foreach ($primaryVals as $i => $primaryVal) {
+            $rows[$primaryVal] = null;
+            if ($this->identityMap->hasPrimaryVal($primaryVal)) {
+                $rows[$primaryVal] = $this->identityMap->getRow($primaryVal);
+                unset($primaryVals[$i]);
+            }
+        }
+    }
+
+    // get missing rows from database
+    protected function fillMissingRows(&$primaryVals, &$rows)
+    {
+        // are there still rows to fetch?
+        if (! $primaryVals) {
+            return;
+        }
+        // fetch and retain remaining rows
+        $colsVals = [$this->getPrimary() => $primaryVals];
+        $select = $this->select($colsVals);
+        $data = $select->cols($this->getCols())->fetchAll();
+        foreach ($data as $cols) {
+            $row = $this->newRow($cols);
+            $this->identityMap->set($row);
+            $rows[$row->getPrimaryVal()] = $row;
+        }
+    }
+
     public function fetchRowsBy(array $colsVals, $col, callable $custom = null)
     {
-        if ($this->byPrimaryNoCustom($colsVals, $custom)) {
-            return $this->fetchRows(current($colsVals), $col);
-        }
-
-        $select = $this->newSelect($colsVals, $custom);
+        $select = $this->select($colsVals, $custom);
         return $this->fetchRowsBySelect($select, $col);
     }
 
@@ -353,26 +356,10 @@ class Table
 
     public function fetchRowSetBy(array $colsVals, callable $custom = null)
     {
-        if ($this->byPrimaryNoCustom($colsVals, $custom)) {
-            return $this->fetchRowSet(current($colsVals));
-        }
-
         $select = $this->select($colsVals, $custom);
         return $this->fetchRowSetBySelect($select);
     }
 
-    /*
-    RowSet by arbitrary:
-        select by arbitrary
-        create empty set
-        foreach row in data ...
-            if ID in map, retain mapped row in set
-            else
-                new row object
-                retain row in map
-                add row in set on ID key
-        return new RowSet from array set
-    */
     public function fetchRowSetBySelect(TableSelect $select)
     {
         $data = $select->cols($this->getCols())->fetchAll();
@@ -623,13 +610,5 @@ class Table
         $delete->from($this->getTable());
         $delete->where("{$primaryCol} = ?", $row->getPrimaryVal());
         return $delete;
-    }
-
-    protected function byPrimaryNoCustom(array &$colsVals, $custom)
-    {
-        reset($colsVals);
-        return count($colsVals) == 1
-            && key($colsVals) == $this->getPrimary()
-            && ! $custom;
     }
 }
