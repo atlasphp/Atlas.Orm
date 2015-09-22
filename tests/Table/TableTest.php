@@ -77,6 +77,24 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($actual);
     }
 
+    public function testFetchRowByPrimaryNoCustom()
+    {
+        $expect = [
+            'id' => '1',
+            'name' => 'Anna',
+            'building' => '1',
+            'floor' => '1',
+        ];
+        $actual = $this->table->fetchRowBy(['id' => 1]);
+        $this->assertSame($expect, $actual->getArrayCopy());
+
+        $again = $this->table->fetchRowBy(['id' => 1]);
+        $this->assertSame($again, $actual);
+
+        $actual = $this->table->fetchRowBy(['id' => -1]);
+        $this->assertFalse($actual);
+    }
+
     public function testFetchRowSet()
     {
         $this->assertSame([], $this->table->fetchRowSet([]));
@@ -199,5 +217,41 @@ class TableTest extends \PHPUnit_Framework_TestCase
     {
         $conn = $this->table->getWriteConnection();
         $conn->setAttribute($conn::ATTR_ERRMODE, $conn::ERRMODE_SILENT);
+    }
+
+    public function testSelectCustom()
+    {
+        $select = $this->table->select(['name' => 'Anna'], function ($select) {
+            $select->cols(['id']);
+            $select->limit(10);
+        });
+
+        $expect = 'SELECT
+    id
+FROM
+    "employees"
+WHERE
+    "employees"."name" = :_1_
+LIMIT 10';
+
+        $actual = $select->__toString();
+        $this->assertSame($expect, $actual);
+    }
+
+    public function testSelectWhereNull()
+    {
+        $select = $this->table->select(['name' => null], function ($select) {
+            $select->cols(['id']);
+        });
+
+        $expect = 'SELECT
+    id
+FROM
+    "employees"
+WHERE
+    "employees"."name" IS NULL';
+
+        $actual = $select->__toString();
+        $this->assertSame($expect, $actual);
     }
 }

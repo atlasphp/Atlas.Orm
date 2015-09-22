@@ -64,6 +64,13 @@ class Row
             throw new Exception("{$class}->{$col} does not exist");
         }
 
+        $unsetPrimary = $col == $this->primaryCol
+                     && $this->cols[$this->primaryCol] !== null;
+        if ($unsetPrimary) {
+            $class = get_class($this);
+            throw new Exception("{$class}->{$col} is immutable");
+        }
+
         $this->cols[$col] = null;
     }
 

@@ -240,7 +240,7 @@ class Table
 
     public function fetchRowBy(array $colsVals, callable $custom = null)
     {
-        if ($this->byPrimaryOnly($colsVals, $custom)) {
+        if ($this->byPrimaryNoCustom($colsVals, $custom)) {
             return $this->fetchRow(current($colsVals));
         }
 
@@ -318,7 +318,7 @@ class Table
 
     public function fetchRowsBy(array $colsVals, $col, callable $custom = null)
     {
-        if ($this->byPrimaryOnly($colsVals, $custom)) {
+        if ($this->byPrimaryNoCustom($colsVals, $custom)) {
             return $this->fetchRows(current($colsVals), $col);
         }
 
@@ -353,7 +353,7 @@ class Table
 
     public function fetchRowSetBy(array $colsVals, callable $custom = null)
     {
-        if ($this->byPrimaryOnly($colsVals, $custom)) {
+        if ($this->byPrimaryNoCustom($colsVals, $custom)) {
             return $this->fetchRowSet(current($colsVals));
         }
 
@@ -547,7 +547,7 @@ class Table
      */
     public function update(Row $row)
     {
-        $this->rowFilter->forInsert($row);
+        $this->rowFilter->forUpdate($row);
 
         $update = $this->newUpdate($row);
         if (! $update) {
@@ -625,11 +625,11 @@ class Table
         return $delete;
     }
 
-    protected function byPrimaryOnly(array $colsVals, $custom)
+    protected function byPrimaryNoCustom(array &$colsVals, $custom)
     {
         reset($colsVals);
-        return ! $custom
-            && count($colsVals == 1)
-            && key($colsVals) == $this->getPrimary();
+        return count($colsVals) == 1
+            && key($colsVals) == $this->getPrimary()
+            && ! $custom;
     }
 }

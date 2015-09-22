@@ -1,6 +1,7 @@
 <?php
 namespace Atlas\Table;
 
+use Atlas\Exception;
 use SplObjectStorage;
 
 class IdentityMap
@@ -27,7 +28,7 @@ class IdentityMap
     public function set(Row $row)
     {
         if ($this->hasRow($row)) {
-            return; // blow up instead? look for primary too?
+            throw new Exception('Row already exists in IdentityMap');
         }
 
         $primaryVal = $row->getPrimaryVal();
