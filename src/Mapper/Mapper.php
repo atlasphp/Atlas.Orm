@@ -97,22 +97,22 @@ class Mapper
     public function fetchRecords($primaryVals)
     {
         $rows = $this->table->fetchRows($primaryVals);
-        return $this->collateRecordsFromRows($rows);
+        return $this->groupRecords($rows);
     }
 
     public function fetchRecordsBy($colsVals, $col, callable $custom = null)
     {
         $rows = $this->table->fetchRowsBy($colsVals, $col, $custom);
-        return $this->collateRecordsFromRows($rows);
+        return $this->groupRecords($rows);
     }
 
     public function fetchRecordsBySelect(TableSelect $select, $col)
     {
         $rows = $this->table->fetchRowsBySelect($select, $col);
-        return $this->collateRecordsFromRows($rows);
+        return $this->groupRecords($rows);
     }
 
-    protected function collateRecordsFromRows(array $rows)
+    protected function groupRecords(array $rows)
     {
         $records = [];
         foreach ($rows as $key => $row) {
@@ -151,26 +151,26 @@ class Mapper
     public function fetchRecordSets($primaryVals)
     {
         $rowSets = $this->table->fetchRowSets($primaryVals);
-        return $this->collateRecordSetsFromRowSets($rowSets);
+        return $this->groupRecordSets($rowSets);
     }
 
     public function fetchRecordSetsBy($colsVals, $col, callable $custom = null)
     {
         $rowSets = $this->table->fetchRowSetsBy($colsVals, $col, $custom);
-        return $this->collateRecordSetsFromRowSets($rowSets);
+        return $this->groupRecordSets($rowSets);
     }
 
     public function fetchRecordSetsBySelect(TableSelect $select, $col)
     {
         $rowSets = $this->table->fetchRowSetsBySelect($select, $col);
-        return $this->collateRecordSetsFromRowSets($rowSets);
+        return $this->groupRecordSets($rowSets);
     }
 
-    protected function collateRecordSetsFromRowSets(array $rowSets)
+    protected function groupRecordSets(array $rowSets)
     {
         $recordSets = [];
-        foreach ($rowSets as $key => $row) {
-            $recordSets[$key] = $this->newRecord($row);
+        foreach ($rowSets as $key => $rowSet) {
+            $recordSets[$key] = $this->newRecordSet($rowSet);
         }
         return $recordSets;
     }

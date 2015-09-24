@@ -378,11 +378,11 @@ class Table
     public function fetchRowSets($primaryVals, $col)
     {
         $rows = $this->fetchRows($primaryVals);
-        $collation = [];
+        $groups = [];
         foreach ($rows as $row) {
-            $collation[$row->$col][] = $row;
+            $groups[$row->$col][] = $row;
         }
-        return $this->rowSetsFromCollation($collation);
+        return $this->rowSetsFromGroups($groups);
     }
 
     public function fetchRowSetsBy(array $colsVals, $col)
@@ -394,18 +394,18 @@ class Table
     public function fetchRowSetsBySelect(TableSelect $select, $col)
     {
         $data = $select->cols($this->getCols())->fetchAll();
-        $collation = [];
+        $groups = [];
         foreach ($data as $cols) {
             $row = $this->getMappedOrNewRow($cols);
-            $collation[$row->$col][] = $row;
+            $groups[$row->$col][] = $row;
         }
-        return $this->rowSetsFromCollation($collation);
+        return $this->rowSetsFromGroups($groups);
     }
 
-    protected function rowSetsFromCollation($collation)
+    protected function rowSetsFromGroups($groups)
     {
         $rowSets = [];
-        foreach ($collation as $key => $rows) {
+        foreach ($groups as $key => $rows) {
             $rowSets[$key] = $this->newRowSet($rows);
         }
         return $rowSets;
