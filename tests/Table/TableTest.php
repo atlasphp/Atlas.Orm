@@ -71,9 +71,11 @@ class TableTest extends \PHPUnit_Framework_TestCase
             'floor' => '1',
         ];
         $actual = $this->table->fetchRow(1);
+        $this->assertInstanceOf(Row::CLASS, $actual);
         $this->assertSame($expect, $actual->getArrayCopy());
 
         $again = $this->table->fetchRow(1);
+        $this->assertInstanceOf(Row::CLASS, $again);
         $this->assertSame($again, $actual);
 
         $actual = $this->table->fetchRow(-1);
@@ -89,9 +91,11 @@ class TableTest extends \PHPUnit_Framework_TestCase
             'floor' => '1',
         ];
         $actual = $this->table->fetchRowBy(['id' => 1]);
+        $this->assertInstanceOf(Row::CLASS, $actual);
         $this->assertSame($expect, $actual->getArrayCopy());
 
         $again = $this->table->fetchRowBy(['id' => 1]);
+        $this->assertInstanceOf(Row::CLASS, $again);
         $this->assertSame($again, $actual);
 
         $actual = $this->table->fetchRowBy(['id' => -1]);
@@ -123,12 +127,18 @@ class TableTest extends \PHPUnit_Framework_TestCase
 
         $actual = $this->table->fetchRows([1, 2, 3]);
         $this->assertCount(3, $actual);
+        $this->assertInstanceOf(Row::CLASS, $actual['1']);
+        $this->assertInstanceOf(Row::CLASS, $actual['2']);
+        $this->assertInstanceOf(Row::CLASS, $actual['3']);
         $this->assertSame($expect['1'], $actual['1']->getArrayCopy());
         $this->assertSame($expect['2'], $actual['2']->getArrayCopy());
         $this->assertSame($expect['3'], $actual['3']->getArrayCopy());
 
         $again = $this->table->fetchRows([1, 2, 3]);
         $this->assertCount(3, $again);
+        $this->assertInstanceOf(Row::CLASS, $again['1']);
+        $this->assertInstanceOf(Row::CLASS, $again['2']);
+        $this->assertInstanceOf(Row::CLASS, $again['3']);
         $this->assertSame($actual['1'], $again['1']);
         $this->assertSame($actual['2'], $again['2']);
         $this->assertSame($actual['3'], $again['3']);
@@ -180,6 +190,12 @@ class TableTest extends \PHPUnit_Framework_TestCase
 
         $actual = $this->table->fetchRowsBy(['building' => '1'], 'id');
         $this->assertCount(6, $actual);
+        $this->assertInstanceOf(Row::CLASS, $actual['1']);
+        $this->assertInstanceOf(Row::CLASS, $actual['2']);
+        $this->assertInstanceOf(Row::CLASS, $actual['3']);
+        $this->assertInstanceOf(Row::CLASS, $actual['4']);
+        $this->assertInstanceOf(Row::CLASS, $actual['5']);
+        $this->assertInstanceOf(Row::CLASS, $actual['6']);
         $this->assertSame($expect['1'], $actual['1']->getArrayCopy());
         $this->assertSame($expect['2'], $actual['2']->getArrayCopy());
         $this->assertSame($expect['3'], $actual['3']->getArrayCopy());
@@ -189,6 +205,12 @@ class TableTest extends \PHPUnit_Framework_TestCase
 
         $again = $this->table->fetchRowsBy(['building' => '1'], 'id');
         $this->assertCount(6, $again);
+        $this->assertInstanceOf(Row::CLASS, $again['1']);
+        $this->assertInstanceOf(Row::CLASS, $again['2']);
+        $this->assertInstanceOf(Row::CLASS, $again['3']);
+        $this->assertInstanceOf(Row::CLASS, $again['4']);
+        $this->assertInstanceOf(Row::CLASS, $again['5']);
+        $this->assertInstanceOf(Row::CLASS, $again['6']);
         $this->assertSame($actual['1'], $again['1']);
         $this->assertSame($actual['2'], $again['2']);
         $this->assertSame($actual['3'], $again['3']);
@@ -226,12 +248,14 @@ class TableTest extends \PHPUnit_Framework_TestCase
         ];
 
         $actual = $this->table->fetchRowSet([1, 2, 3]);
+        $this->assertInstanceOf(RowSet::CLASS, $actual);
         $this->assertCount(3, $actual);
         $this->assertSame($expect[0], $actual[0]->getArrayCopy());
         $this->assertSame($expect[1], $actual[1]->getArrayCopy());
         $this->assertSame($expect[2], $actual[2]->getArrayCopy());
 
         $again = $this->table->fetchRowSet([1, 2, 3]);
+        $this->assertInstanceOf(RowSet::CLASS, $again);
         $this->assertCount(3, $again);
         $this->assertSame($actual[0], $again[0]);
         $this->assertSame($actual[1], $again[1]);
@@ -330,8 +354,10 @@ class TableTest extends \PHPUnit_Framework_TestCase
         ];
 
         $actualRowSets = $this->table->fetchRowSets([1, 2, 3, 4, 5, 6], 'floor');
+        $this->assertTrue(is_array($actualRowSets));
         $this->assertCount(3, $actualRowSets);
         foreach ($actualRowSets as $floor => $actualRowSet) {
+            $this->assertInstanceOf(RowSet::CLASS, $actualRowSet);
             $this->assertCount(2, $actualRowSet);
             $this->assertSame($expect[$floor][0], $actualRowSet[0]->getArrayCopy());
             $this->assertSame($expect[$floor][1], $actualRowSet[1]->getArrayCopy());
@@ -386,8 +412,10 @@ class TableTest extends \PHPUnit_Framework_TestCase
         ];
 
         $actualRowSets = $this->table->fetchRowSetsBy(['id' => [1, 2, 3, 4, 5, 6]], 'floor');
+        $this->assertTrue(is_array($actualRowSets));
         $this->assertCount(3, $actualRowSets);
         foreach ($actualRowSets as $floor => $actualRowSet) {
+            $this->assertInstanceOf(RowSet::CLASS, $actualRowSet);
             $this->assertCount(2, $actualRowSet);
             $this->assertSame($expect[$floor][0], $actualRowSet[0]->getArrayCopy());
             $this->assertSame($expect[$floor][1], $actualRowSet[1]->getArrayCopy());
