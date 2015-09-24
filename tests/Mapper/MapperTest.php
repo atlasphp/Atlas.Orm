@@ -6,15 +6,17 @@ use Atlas\Fake\Auto\AutoTable;
 use Atlas\Fake\Employee\EmployeeMapper;
 use Atlas\Fake\Employee\EmployeeTable;
 use Atlas\Mapper\RecordFactory;
+use Atlas\Mapper\Relations;
 use Atlas\SqliteFixture;
+use Atlas\Table\IdentityMap;
+use Atlas\Table\RowFilter;
 use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\QueryFactory;
-use Atlas\Table\IdentityMap;
-use Atlas\Table\RowFilter;
 
 class MapperTest extends \PHPUnit_Framework_TestCase
 {
+    protected $table;
     protected $mapper;
 
     protected function setUp()
@@ -25,40 +27,28 @@ class MapperTest extends \PHPUnit_Framework_TestCase
             return new ExtendedPdo('sqlite::memory:');
         });
 
-        $table = new EmployeeTable(
+        $this->table = new EmployeeTable(
             $connectionLocator,
             new QueryFactory('sqlite'),
             new IdentityMap(),
             new RowFilter()
         );
 
-        $fixture = new SqliteFixture($table->getWriteConnection());
+        $fixture = new SqliteFixture($this->table->getWriteConnection());
         $fixture->exec();
 
-        $this->mapper = new EmployeeMapper($table, new RecordFactory());
+        $this->mapper = new EmployeeMapper($this->table, new RecordFactory());
     }
 
-    // public function testAuto()
-    // {
-    //     $connectionLocator = new ConnectionLocator(function () {
-    //         return new ExtendedPdo('sqlite::memory:');
-    //     });
+    public function testGetTable()
+    {
+        $this->assertSame($this->table, $this->mapper->getTable());
+    }
 
-    //     $table = new AutoTable(
-    //         $connectionLocator,
-    //         new QueryFactory('sqlite'),
-    //         new IdentityMap(),
-    //         new RecordFilter()
-    //     );
-
-    //     $mapper = new AutoMapper($table, new RecordFactory());
-
-    //     $this->assertSame('auto', $auto->getTable());
-    //     $this->assertSame('auto_id', $auto->getPrimary());
-    //     $this->assertTrue($auto->getAutoinc());
-    //     $this->assertSame('Atlas\Table\Record', $auto->getRowClass());
-    //     $this->assertSame('Atlas\Table\RecordSet', $auto->getRowSetClass());
-    // }
+    public function testGetRelations()
+    {
+        $this->assertInstanceOf(Relations::CLASS, $this->mapper->getRelations());
+    }
 
     public function testFetchRecord()
     {
@@ -85,10 +75,60 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($actual);
     }
 
+    public function testFetchRecordBy()
+    {
+        $expect = [
+            'id' => '1',
+            'name' => 'Anna',
+            'building' => '1',
+            'floor' => '1',
+        ];
+
+        // fetch success
+        $record1 = $this->mapper->fetchRecordBy(['id' => '1']);
+        $row1 = $record1->getRow();
+        $this->assertSame($expect, $row1->getArrayCopy());
+
+        // fetch again
+        $record2 = $this->mapper->fetchRecordBy(['id' => '1']);
+        $this->assertNotSame($record1, $record2);
+        $row2 = $record2->getRow();
+        $this->assertSame($row1, $row2);
+
+        // fetch failure
+        $actual = $this->mapper->fetchRecordBy(['id' => '-1']);
+        $this->assertFalse($actual);
+    }
+
+    public function testFetchRecordBySelect()
+    {
+        $expect = [
+            'id' => '1',
+            'name' => 'Anna',
+            'building' => '1',
+            'floor' => '1',
+        ];
+
+        // fetch success
+        $select = $this->mapper->select(['id' => '1']);
+        $record1 = $this->mapper->fetchRecordBySelect($select);
+        $row1 = $record1->getRow();
+        $this->assertSame($expect, $row1->getArrayCopy());
+
+        // fetch again
+        $record2 = $this->mapper->fetchRecordBySelect($select);
+        $this->assertNotSame($record1, $record2);
+        $row2 = $record2->getRow();
+        $this->assertSame($row1, $row2);
+
+        // fetch failure
+        $select = $this->mapper->select(['id' => '-1']);
+        $actual = $this->mapper->fetchRecordBySelect($select);
+        $this->assertFalse($actual);
+    }
+
     public function testFetchRecordSet()
     {
-        $this->assertSame([], $this->mapper->fetchRecordSet([]));
-
         $expect = [
             [
                 'id' => '1',
@@ -123,6 +163,86 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($actual[2]->getRow(), $again[2]->getRow());
 
         $actual = $this->mapper->fetchRecordSet([997, 998, 999]);
+        $this->assertSame(array(), $actual);
+    }
+
+    public function testFetchRecordSetBy()
+    {
+        $expect = [
+            [
+                'id' => '1',
+                'name' => 'Anna',
+                'building' => '1',
+                'floor' => '1',
+            ],
+            [
+                'id' => '2',
+                'name' => 'Betty',
+                'building' => '1',
+                'floor' => '2',
+            ],
+            [
+                'id' => '3',
+                'name' => 'Clara',
+                'building' => '1',
+                'floor' => '3',
+            ],
+        ];
+
+        $actual = $this->mapper->fetchRecordSetBy(['id' => [1, 2, 3]]);
+        $this->assertCount(3, $actual);
+        $this->assertSame($expect[0], $actual[0]->getRow()->getArrayCopy());
+        $this->assertSame($expect[1], $actual[1]->getRow()->getArrayCopy());
+        $this->assertSame($expect[2], $actual[2]->getRow()->getArrayCopy());
+
+        $again = $this->mapper->fetchRecordSetBy(['id' => [1, 2, 3]]);
+        $this->assertCount(3, $again);
+        $this->assertSame($actual[0]->getRow(), $again[0]->getRow());
+        $this->assertSame($actual[1]->getRow(), $again[1]->getRow());
+        $this->assertSame($actual[2]->getRow(), $again[2]->getRow());
+
+        $actual = $this->mapper->fetchRecordSetBy(['id' => [997, 998, 999]]);
+        $this->assertSame(array(), $actual);
+    }
+
+    public function testFetchRecordSetBySelect()
+    {
+        $expect = [
+            [
+                'id' => '1',
+                'name' => 'Anna',
+                'building' => '1',
+                'floor' => '1',
+            ],
+            [
+                'id' => '2',
+                'name' => 'Betty',
+                'building' => '1',
+                'floor' => '2',
+            ],
+            [
+                'id' => '3',
+                'name' => 'Clara',
+                'building' => '1',
+                'floor' => '3',
+            ],
+        ];
+
+        $select = $this->mapper->select(['id' => [1, 2, 3]]);
+        $actual = $this->mapper->fetchRecordSetBySelect($select);
+        $this->assertCount(3, $actual);
+        $this->assertSame($expect[0], $actual[0]->getRow()->getArrayCopy());
+        $this->assertSame($expect[1], $actual[1]->getRow()->getArrayCopy());
+        $this->assertSame($expect[2], $actual[2]->getRow()->getArrayCopy());
+
+        $again = $this->mapper->fetchRecordSetBySelect($select);
+        $this->assertCount(3, $again);
+        $this->assertSame($actual[0]->getRow(), $again[0]->getRow());
+        $this->assertSame($actual[1]->getRow(), $again[1]->getRow());
+        $this->assertSame($actual[2]->getRow(), $again[2]->getRow());
+
+        $select = $this->mapper->select(['id' => [997,998,999]]);
+        $actual = $this->mapper->fetchRecordSetBySelect($select);
         $this->assertSame(array(), $actual);
     }
 

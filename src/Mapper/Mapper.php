@@ -1,15 +1,15 @@
 <?php
 namespace Atlas\Mapper;
 
-use Atlas\Select;
 use Atlas\Table\Row;
 use Atlas\Table\RowSet;
 use Atlas\Table\Table;
+use Atlas\Table\TableSelect;
 
 // do we even *do* selects at this level? they require knowledge of the other
 // mappers, don't they? or is it enough to construct a "plain" record, and let
 // Atlas fill in the related values?
-// 
+//
 class Mapper
 {
     protected $table;
@@ -32,7 +32,7 @@ class Mapper
     {
         return new Relations($this);
     }
-    
+
     public function getTable()
     {
         return $this->table;
@@ -84,7 +84,7 @@ class Mapper
         return $record;
     }
 
-    public function fetchRecordBySelect(Select $select)
+    public function fetchRecordBySelect(TableSelect $select)
     {
         $record = false;
         $row = $this->table->fetchRowBySelect($select);
@@ -106,7 +106,7 @@ class Mapper
         return $this->collateRecordsFromRows($rows);
     }
 
-    public function fetchRecordsBySelect($select, $col)
+    public function fetchRecordsBySelect(TableSelect $select, $col)
     {
         $rows = $this->table->fetchRowsBySelect($select, $col);
         return $this->collateRecordsFromRows($rows);
@@ -139,7 +139,7 @@ class Mapper
         return $this->newRecordSet($rowSet);
     }
 
-    public function fetchRecordSetBySelect(Select $select)
+    public function fetchRecordSetBySelect(TableSelect $select)
     {
         $rowSet = $this->table->fetchRowSetBySelect($select);
         if (! $rowSet) {
@@ -160,7 +160,7 @@ class Mapper
         return $this->collateRecordSetsFromRowSets($rowSets);
     }
 
-    public function fetchRecordSetsBySelect($select, $col)
+    public function fetchRecordSetsBySelect(TableSelect $select, $col)
     {
         $rowSets = $this->table->fetchRowSetsBySelect($select, $col);
         return $this->collateRecordSetsFromRowSets($rowSets);
