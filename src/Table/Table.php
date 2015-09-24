@@ -478,10 +478,6 @@ class Table
         $this->rowFilter->forInsert($row);
 
         $insert = $this->newInsert($row);
-        if (! $insert) {
-            return null;
-        }
-
         $writeConnection = $this->getWriteConnection();
         $pdoStatement = $writeConnection->perform(
             $insert->getStatement(),
@@ -590,10 +586,6 @@ class Table
     public function delete(Row $row)
     {
         $delete = $this->newDelete($row);
-        if (! $delete) {
-            return null;
-        }
-
         $pdoStatement = $this->getWriteConnection()->perform(
             $delete->getStatement(),
             $delete->getBindValues()
