@@ -133,6 +133,209 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($actual);
     }
 
+    public function testFetchRecords()
+    {
+        $expect = [
+            '1' => [
+                'id' => '1',
+                'name' => 'Anna',
+                'building' => '1',
+                'floor' => '1',
+            ],
+            '2' => [
+                'id' => '2',
+                'name' => 'Betty',
+                'building' => '1',
+                'floor' => '2',
+            ],
+            '3' => [
+                'id' => '3',
+                'name' => 'Clara',
+                'building' => '1',
+                'floor' => '3',
+            ],
+        ];
+
+        $actual = $this->mapper->fetchRecords([1, 2, 3]);
+        $this->assertTrue(is_array($actual));
+        $this->assertCount(3, $actual);
+        $this->assertInstanceOf(Record::CLASS, $actual['1']);
+        $this->assertInstanceOf(Record::CLASS, $actual['2']);
+        $this->assertInstanceOf(Record::CLASS, $actual['3']);
+        $this->assertSame($expect['1'], $actual['1']->getRow()->getArrayCopy());
+        $this->assertSame($expect['2'], $actual['2']->getRow()->getArrayCopy());
+        $this->assertSame($expect['3'], $actual['3']->getRow()->getArrayCopy());
+
+        $again = $this->mapper->fetchRecords([1, 2, 3]);
+        $this->assertTrue(is_array($again));
+        $this->assertCount(3, $again);
+        $this->assertInstanceOf(Record::CLASS, $again['1']);
+        $this->assertInstanceOf(Record::CLASS, $again['2']);
+        $this->assertInstanceOf(Record::CLASS, $again['3']);
+        $this->assertSame($actual['1']->getRow(), $again['1']->getRow());
+        $this->assertSame($actual['2']->getRow(), $again['2']->getRow());
+        $this->assertSame($actual['3']->getRow(), $again['3']->getRow());
+
+        $actual = $this->mapper->fetchRecords([997, 998, 999]);
+        $this->assertSame(array(), $actual);
+    }
+
+    public function testFetchRecordsBy()
+    {
+        $expect = array (
+            '1' => array (
+                'id' => '1',
+                'name' => 'Anna',
+                'building' => '1',
+                'floor' => '1',
+            ),
+            '2' => array (
+                'id' => '2',
+                'name' => 'Betty',
+                'building' => '1',
+                'floor' => '2',
+            ),
+            '3' => array (
+                'id' => '3',
+                'name' => 'Clara',
+                'building' => '1',
+                'floor' => '3',
+            ),
+            '4' => array (
+                'id' => '4',
+                'name' => 'Donna',
+                'building' => '1',
+                'floor' => '1',
+            ),
+            '5' => array (
+                'id' => '5',
+                'name' => 'Edna',
+                'building' => '1',
+                'floor' => '2',
+            ),
+            '6' => array (
+                'id' => '6',
+                'name' => 'Fiona',
+                'building' => '1',
+                'floor' => '3',
+            ),
+        );
+
+        $actual = $this->mapper->fetchRecordsBy(['building' => '1'], 'id');
+        $this->assertTrue(is_array($actual));
+        $this->assertCount(6, $actual);
+        $this->assertInstanceOf(Record::CLASS, $actual['1']);
+        $this->assertInstanceOf(Record::CLASS, $actual['2']);
+        $this->assertInstanceOf(Record::CLASS, $actual['3']);
+        $this->assertInstanceOf(Record::CLASS, $actual['4']);
+        $this->assertInstanceOf(Record::CLASS, $actual['5']);
+        $this->assertInstanceOf(Record::CLASS, $actual['6']);
+        $this->assertSame($expect['1'], $actual['1']->getRow()->getArrayCopy());
+        $this->assertSame($expect['2'], $actual['2']->getRow()->getArrayCopy());
+        $this->assertSame($expect['3'], $actual['3']->getRow()->getArrayCopy());
+        $this->assertSame($expect['4'], $actual['4']->getRow()->getArrayCopy());
+        $this->assertSame($expect['5'], $actual['5']->getRow()->getArrayCopy());
+        $this->assertSame($expect['6'], $actual['6']->getRow()->getArrayCopy());
+
+        $again = $this->mapper->fetchRecordsBy(['building' => '1'], 'id');
+        $this->assertTrue(is_array($again));
+        $this->assertCount(6, $again);
+        $this->assertInstanceOf(Record::CLASS, $again['1']);
+        $this->assertInstanceOf(Record::CLASS, $again['2']);
+        $this->assertInstanceOf(Record::CLASS, $again['3']);
+        $this->assertInstanceOf(Record::CLASS, $again['4']);
+        $this->assertInstanceOf(Record::CLASS, $again['5']);
+        $this->assertInstanceOf(Record::CLASS, $again['6']);
+        $this->assertSame($actual['1']->getRow(), $again['1']->getRow());
+        $this->assertSame($actual['2']->getRow(), $again['2']->getRow());
+        $this->assertSame($actual['3']->getRow(), $again['3']->getRow());
+        $this->assertSame($actual['4']->getRow(), $again['4']->getRow());
+        $this->assertSame($actual['5']->getRow(), $again['5']->getRow());
+        $this->assertSame($actual['6']->getRow(), $again['6']->getRow());
+
+        $actual = $this->mapper->fetchRecordsBy(['building' => '99'], 'id');
+        $this->assertSame(array(), $actual);
+    }
+
+    public function testFetchRecordsBySelect()
+    {
+        $expect = array (
+            '1' => array (
+                'id' => '1',
+                'name' => 'Anna',
+                'building' => '1',
+                'floor' => '1',
+            ),
+            '2' => array (
+                'id' => '2',
+                'name' => 'Betty',
+                'building' => '1',
+                'floor' => '2',
+            ),
+            '3' => array (
+                'id' => '3',
+                'name' => 'Clara',
+                'building' => '1',
+                'floor' => '3',
+            ),
+            '4' => array (
+                'id' => '4',
+                'name' => 'Donna',
+                'building' => '1',
+                'floor' => '1',
+            ),
+            '5' => array (
+                'id' => '5',
+                'name' => 'Edna',
+                'building' => '1',
+                'floor' => '2',
+            ),
+            '6' => array (
+                'id' => '6',
+                'name' => 'Fiona',
+                'building' => '1',
+                'floor' => '3',
+            ),
+        );
+
+        $select = $this->mapper->select(['building' => '1']);
+        $actual = $this->mapper->fetchRecordsBySelect($select, 'id');
+        $this->assertTrue(is_array($actual));
+        $this->assertCount(6, $actual);
+        $this->assertInstanceOf(Record::CLASS, $actual['1']);
+        $this->assertInstanceOf(Record::CLASS, $actual['2']);
+        $this->assertInstanceOf(Record::CLASS, $actual['3']);
+        $this->assertInstanceOf(Record::CLASS, $actual['4']);
+        $this->assertInstanceOf(Record::CLASS, $actual['5']);
+        $this->assertInstanceOf(Record::CLASS, $actual['6']);
+        $this->assertSame($expect['1'], $actual['1']->getRow()->getArrayCopy());
+        $this->assertSame($expect['2'], $actual['2']->getRow()->getArrayCopy());
+        $this->assertSame($expect['3'], $actual['3']->getRow()->getArrayCopy());
+        $this->assertSame($expect['4'], $actual['4']->getRow()->getArrayCopy());
+        $this->assertSame($expect['5'], $actual['5']->getRow()->getArrayCopy());
+        $this->assertSame($expect['6'], $actual['6']->getRow()->getArrayCopy());
+
+        $again = $this->mapper->fetchRecordsBySelect($select, 'id');
+        $this->assertTrue(is_array($again));
+        $this->assertCount(6, $again);
+        $this->assertInstanceOf(Record::CLASS, $again['1']);
+        $this->assertInstanceOf(Record::CLASS, $again['2']);
+        $this->assertInstanceOf(Record::CLASS, $again['3']);
+        $this->assertInstanceOf(Record::CLASS, $again['4']);
+        $this->assertInstanceOf(Record::CLASS, $again['5']);
+        $this->assertInstanceOf(Record::CLASS, $again['6']);
+        $this->assertSame($actual['1']->getRow(), $again['1']->getRow());
+        $this->assertSame($actual['2']->getRow(), $again['2']->getRow());
+        $this->assertSame($actual['3']->getRow(), $again['3']->getRow());
+        $this->assertSame($actual['4']->getRow(), $again['4']->getRow());
+        $this->assertSame($actual['5']->getRow(), $again['5']->getRow());
+        $this->assertSame($actual['6']->getRow(), $again['6']->getRow());
+
+        $select = $this->mapper->select(['building' => '99']);
+        $actual = $this->mapper->fetchRecordsBySelect($select, 'id');
+        $this->assertSame(array(), $actual);
+    }
+
     public function testFetchRecordSet()
     {
         $expect = [
@@ -227,44 +430,6 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(array(), $actual);
     }
 
-    public function fetchRecords()
-    {
-        $expect = [
-            '1' => [
-                'id' => '1',
-                'name' => 'Anna',
-                'building' => '1',
-                'floor' => '1',
-            ],
-            '2' => [
-                'id' => '2',
-                'name' => 'Betty',
-                'building' => '1',
-                'floor' => '2',
-            ],
-            '3' => [
-                'id' => '3',
-                'name' => 'Clara',
-                'building' => '1',
-                'floor' => '3',
-            ],
-        ];
-
-        $actual = $this->table->fetchRows([1, 2, 3]);
-        $this->assertCount(3, $actual);
-        $this->assertSame($expect['1'], $actual['1']->getArrayCopy());
-        $this->assertSame($expect['2'], $actual['2']->getArrayCopy());
-        $this->assertSame($expect['3'], $actual['3']->getArrayCopy());
-
-        $again = $this->table->fetchRows([1, 2, 3]);
-        $this->assertCount(3, $again);
-        $this->assertSame($actual['1'], $again['1']);
-        $this->assertSame($actual['2'], $again['2']);
-        $this->assertSame($actual['3'], $again['3']);
-
-        $actual = $this->table->fetchRows([997, 998, 999]);
-        $this->assertSame(array(), $actual);
-    }
     public function testFetchRecordSetBySelect()
     {
         $expect = [
@@ -306,86 +471,269 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(array(), $actual);
     }
 
-    // public function testInsert()
-    // {
-    //     $row = $this->mapper->newRecord([
-    //         'id' => null,
-    //         'name' => 'Mona',
-    //         'building' => '10',
-    //         'floor' => '99',
-    //     ]);
+    public function testFetchRecordSets()
+    {
+        $expect = [
+            1 => [
+                0 => [
+                    'id' => '1',
+                    'name' => 'Anna',
+                    'building' => '1',
+                    'floor' => '1',
+                ],
+                1 => [
+                    'id' => '4',
+                    'name' => 'Donna',
+                    'building' => '1',
+                    'floor' => '1',
+                ],
+            ],
+            2 => [
+                0 => [
+                    'id' => '2',
+                    'name' => 'Betty',
+                    'building' => '1',
+                    'floor' => '2',
+                ],
+                1 => [
+                    'id' => '5',
+                    'name' => 'Edna',
+                    'building' => '1',
+                    'floor' => '2',
+                ],
+            ],
+            3 => [
+                0 => [
+                    'id' => '3',
+                    'name' => 'Clara',
+                    'building' => '1',
+                    'floor' => '3',
+                ],
+                1 => [
+                    'id' => '6',
+                    'name' => 'Fiona',
+                    'building' => '1',
+                    'floor' => '3',
+                ],
+            ],
+        ];
 
-    //     // does the insert *look* successful?
-    //     $success = $this->mapper->insert($row);
-    //     $this->assertTrue($success);
+        $actualRecordSets = $this->mapper->fetchRecordSets([1, 2, 3, 4, 5, 6], 'floor');
+        $this->assertTrue(is_array($actualRecordSets));
+        $this->assertCount(3, $actualRecordSets);
+        foreach ($actualRecordSets as $floor => $actualRecordSet) {
+            $this->assertInstanceOf(RecordSet::CLASS, $actualRecordSet);
+            $this->assertCount(2, $actualRecordSet);
+            $this->assertSame($expect[$floor][0], $actualRecordSet[0]->getRow()->getArrayCopy());
+            $this->assertSame($expect[$floor][1], $actualRecordSet[1]->getRow()->getArrayCopy());
+        }
+    }
 
-    //     // did the autoincrement ID get retained?
-    //     $this->assertEquals(13, $row->id);
+    public function testFetchRecordSetsBy()
+    {
+        $expect = [
+            1 => [
+                0 => [
+                    'id' => '1',
+                    'name' => 'Anna',
+                    'building' => '1',
+                    'floor' => '1',
+                ],
+                1 => [
+                    'id' => '4',
+                    'name' => 'Donna',
+                    'building' => '1',
+                    'floor' => '1',
+                ],
+            ],
+            2 => [
+                0 => [
+                    'id' => '2',
+                    'name' => 'Betty',
+                    'building' => '1',
+                    'floor' => '2',
+                ],
+                1 => [
+                    'id' => '5',
+                    'name' => 'Edna',
+                    'building' => '1',
+                    'floor' => '2',
+                ],
+            ],
+            3 => [
+                0 => [
+                    'id' => '3',
+                    'name' => 'Clara',
+                    'building' => '1',
+                    'floor' => '3',
+                ],
+                1 => [
+                    'id' => '6',
+                    'name' => 'Fiona',
+                    'building' => '1',
+                    'floor' => '3',
+                ],
+            ],
+        ];
 
-    //     // did it save in the identity map?
-    //     $again = $this->mapper->fetchRecord(13);
-    //     $this->assertSame($row, $again);
+        $actualRecordSets = $this->mapper->fetchRecordSetsBy(['id' => [1, 2, 3, 4, 5, 6]], 'floor');
+        $this->assertTrue(is_array($actualRecordSets));
+        $this->assertCount(3, $actualRecordSets);
+        foreach ($actualRecordSets as $floor => $actualRecordSet) {
+            $this->assertInstanceOf(RecordSet::CLASS, $actualRecordSet);
+            $this->assertCount(2, $actualRecordSet);
+            $this->assertSame($expect[$floor][0], $actualRecordSet[0]->getRow()->getArrayCopy());
+            $this->assertSame($expect[$floor][1], $actualRecordSet[1]->getRow()->getArrayCopy());
+        }
+    }
 
-    //     // was it *actually* inserted?
-    //     $expect = [
-    //         'id' => '13',
-    //         'name' => 'Mona',
-    //         'building' => '10',
-    //         'floor' => '99',
-    //     ];
-    //     $actual = $this->mapper->getReadConnection()->fetchOne(
-    //         'SELECT * FROM employees WHERE id = 13'
-    //     );
-    //     $this->assertSame($expect, $actual);
+    public function testFetchRecordSetsBySelect()
+    {
+        $expect = [
+            1 => [
+                0 => [
+                    'id' => '1',
+                    'name' => 'Anna',
+                    'building' => '1',
+                    'floor' => '1',
+                ],
+                1 => [
+                    'id' => '4',
+                    'name' => 'Donna',
+                    'building' => '1',
+                    'floor' => '1',
+                ],
+            ],
+            2 => [
+                0 => [
+                    'id' => '2',
+                    'name' => 'Betty',
+                    'building' => '1',
+                    'floor' => '2',
+                ],
+                1 => [
+                    'id' => '5',
+                    'name' => 'Edna',
+                    'building' => '1',
+                    'floor' => '2',
+                ],
+            ],
+            3 => [
+                0 => [
+                    'id' => '3',
+                    'name' => 'Clara',
+                    'building' => '1',
+                    'floor' => '3',
+                ],
+                1 => [
+                    'id' => '6',
+                    'name' => 'Fiona',
+                    'building' => '1',
+                    'floor' => '3',
+                ],
+            ],
+        ];
 
-    //     // try to insert again, should fail on unique name
-    //     $this->silenceErrors();
-    //     $this->assertFalse($this->mapper->insert($row));
-    // }
+        $select = $this->mapper->select(['id' => [1, 2, 3, 4, 5, 6]]);
+        $actualRecordSets = $this->mapper->fetchRecordSetsBySelect($select, 'floor');
+        $this->assertTrue(is_array($actualRecordSets));
+        $this->assertCount(3, $actualRecordSets);
+        foreach ($actualRecordSets as $floor => $actualRecordSet) {
+            $this->assertInstanceOf(RecordSet::CLASS, $actualRecordSet);
+            $this->assertCount(2, $actualRecordSet);
+            $this->assertSame($expect[$floor][0], $actualRecordSet[0]->getRow()->getArrayCopy());
+            $this->assertSame($expect[$floor][1], $actualRecordSet[1]->getRow()->getArrayCopy());
+        }
+    }
 
-    // public function testUpdate()
-    // {
-    //     // fetch an object, then modify and update it
-    //     $row = $this->mapper->fetchRecordBy(['name' => 'Anna']);
-    //     $row->name = 'Annabelle';
+    public function testInsert()
+    {
+        $record = $this->mapper->newRecord([
+            'id' => null,
+            'name' => 'Mona',
+            'building' => '10',
+            'floor' => '99',
+        ]);
 
-    //     // did the update *look* successful?
-    //     $success = $this->mapper->update($row);
-    //     $this->assertTrue($success);
+        // does the insert *look* successful?
+        $success = $this->mapper->insert($record);
+        $this->assertTrue($success);
 
-    //     // is it still in the identity map?
-    //     $again = $this->mapper->fetchRecordBy(['name' => 'Annabelle']);
-    //     $this->assertSame($row, $again);
+        // did the autoincrement ID get retained?
+        $this->assertEquals(13, $record->id);
 
-    //     // was it *actually* updated?
-    //     $expect = $row->getArrayCopy();
-    //     $actual = $this->mapper->getReadConnection()->fetchOne(
-    //         "SELECT * FROM employees WHERE name = 'Annabelle'"
-    //     );
-    //     $this->assertSame($expect, $actual);
-    // }
+        // did it save in the identity map?
+        $again = $this->mapper->fetchRecord(13);
+        $this->assertSame($record->getRow(), $again->getRow());
 
-    // public function testDelete()
-    // {
-    //     // fetch an object, then delete it
-    //     $row = $this->mapper->fetchRecordBy(['name' => 'Anna']);
-    //     $this->mapper->delete($row);
+        // was it *actually* inserted?
+        $expect = [
+            'id' => '13',
+            'name' => 'Mona',
+            'building' => '10',
+            'floor' => '99',
+        ];
+        $actual = $this->mapper->getTable()->getReadConnection()->fetchOne(
+            'SELECT * FROM employees WHERE id = 13'
+        );
+        $this->assertSame($expect, $actual);
 
-    //     // did it delete?
-    //     $actual = $this->mapper->fetchRecordBy(['name' => 'Anna']);
-    //     $this->assertFalse($actual);
+        // try to insert again, should fail on unique name
+        $this->silenceErrors();
+        $this->assertFalse($this->mapper->insert($record));
+    }
 
-    //     // do we still have everything else?
-    //     $actual = $this->mapper->fetchRecordSetBySelect(
-    //         $this->mapper->select()->where('id > 0')
-    //     );
-    //     $expect = 11;
-    //     $this->assertEquals($expect, count($actual));
-    // }
+    public function testUpdate()
+    {
+        // fetch a record, then modify and update it
+        $record = $this->mapper->fetchRecordBy(['name' => 'Anna']);
+        $record->name = 'Annabelle';
 
-    // protected function silenceErrors()
-    // {
-    //     $conn = $this->mapper->getWriteConnection();
-    //     $conn->setAttribute($conn::ATTR_ERRMODE, $conn::ERRMODE_SILENT);
-    // }
+        // did the update *look* successful?
+        $success = $this->mapper->update($record);
+        $this->assertTrue($success);
+
+        // is it still in the identity map?
+        $again = $this->mapper->fetchRecordBy(['name' => 'Annabelle']);
+        $this->assertSame($record->getRow(), $again->getRow());
+
+        // was it *actually* updated?
+        $expect = $record->getRow()->getArrayCopy();
+        $actual = $this->mapper->getTable()->getReadConnection()->fetchOne(
+            "SELECT * FROM employees WHERE name = 'Annabelle'"
+        );
+        $this->assertSame($expect, $actual);
+
+        // try to update again, should be a no-op because there are no changes
+        $this->assertNull($this->mapper->update($record));
+
+        // delete the record and try to update it, should fail
+        $this->assertTrue($this->mapper->delete($record));
+        $record->name = 'Foo';
+        $this->assertFalse($this->mapper->update($record));
+    }
+
+    public function testDelete()
+    {
+        // fetch a record, then delete it
+        $record = $this->mapper->fetchRecordBy(['name' => 'Anna']);
+        $this->mapper->delete($record);
+
+        // did it delete?
+        $actual = $this->mapper->fetchRecordBy(['name' => 'Anna']);
+        $this->assertFalse($actual);
+
+        // do we still have everything else?
+        $actual = $this->mapper->fetchRecordSetBySelect(
+            $this->mapper->select()->where('id > 0')
+        );
+        $expect = 11;
+        $this->assertEquals($expect, count($actual));
+    }
+
+    protected function silenceErrors()
+    {
+        $conn = $this->mapper->getTable()->getWriteConnection();
+        $conn->setAttribute($conn::ATTR_ERRMODE, $conn::ERRMODE_SILENT);
+    }
 }

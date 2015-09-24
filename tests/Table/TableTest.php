@@ -189,6 +189,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
         );
 
         $actual = $this->table->fetchRowsBy(['building' => '1'], 'id');
+        $this->assertTrue(is_array($actual));
         $this->assertCount(6, $actual);
         $this->assertInstanceOf(Row::CLASS, $actual['1']);
         $this->assertInstanceOf(Row::CLASS, $actual['2']);
@@ -461,7 +462,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
 
     public function testUpdate()
     {
-        // fetch an object, then modify and update it
+        // fetch a row, then modify and update it
         $row = $this->table->fetchRowBy(['name' => 'Anna']);
         $row->name = 'Annabelle';
 
@@ -491,7 +492,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
 
     public function testDelete()
     {
-        // fetch an object, then delete it
+        // fetch a row, then delete it
         $row = $this->table->fetchRowBy(['name' => 'Anna']);
         $this->table->delete($row);
 

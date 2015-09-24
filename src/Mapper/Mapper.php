@@ -47,8 +47,12 @@ class Mapper
     {
     }
 
-    public function newRecord(Row $row)
+    public function newRecord($row)
     {
+        if (is_array($row)) {
+            $row = $this->getTable()->newRow($row);
+        }
+
         return $this->recordFactory->newRecord(
             $row,
             $this->relations->getEmptyFields()
@@ -148,9 +152,9 @@ class Mapper
         return $this->newRecordSet($rowSet);
     }
 
-    public function fetchRecordSets($primaryVals)
+    public function fetchRecordSets($primaryVals, $col)
     {
-        $rowSets = $this->table->fetchRowSets($primaryVals);
+        $rowSets = $this->table->fetchRowSets($primaryVals, $col);
         return $this->groupRecordSets($rowSets);
     }
 
