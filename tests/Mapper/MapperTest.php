@@ -1,0 +1,211 @@
+<?php
+namespace Atlas\Mapper;
+
+use Atlas\Fake\Auto\AutoMapper;
+use Atlas\Fake\Auto\AutoTable;
+use Atlas\Fake\Employee\EmployeeMapper;
+use Atlas\Fake\Employee\EmployeeTable;
+use Atlas\Mapper\RecordFactory;
+use Atlas\SqliteFixture;
+use Aura\Sql\ConnectionLocator;
+use Aura\Sql\ExtendedPdo;
+use Aura\SqlQuery\QueryFactory;
+use Atlas\Table\IdentityMap;
+use Atlas\Table\RowFilter;
+
+class MapperTest extends \PHPUnit_Framework_TestCase
+{
+    protected $mapper;
+
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $connectionLocator = new ConnectionLocator(function () {
+            return new ExtendedPdo('sqlite::memory:');
+        });
+
+        $table = new EmployeeTable(
+            $connectionLocator,
+            new QueryFactory('sqlite'),
+            new IdentityMap(),
+            new RowFilter()
+        );
+
+        $fixture = new SqliteFixture($table->getWriteConnection());
+        $fixture->exec();
+
+        $this->mapper = new EmployeeMapper($table, new RecordFactory());
+    }
+
+    // public function testAuto()
+    // {
+    //     $connectionLocator = new ConnectionLocator(function () {
+    //         return new ExtendedPdo('sqlite::memory:');
+    //     });
+
+    //     $table = new AutoTable(
+    //         $connectionLocator,
+    //         new QueryFactory('sqlite'),
+    //         new IdentityMap(),
+    //         new RecordFilter()
+    //     );
+
+    //     $mapper = new AutoMapper($table, new RecordFactory());
+
+    //     $this->assertSame('auto', $auto->getTable());
+    //     $this->assertSame('auto_id', $auto->getPrimary());
+    //     $this->assertTrue($auto->getAutoinc());
+    //     $this->assertSame('Atlas\Table\Record', $auto->getRowClass());
+    //     $this->assertSame('Atlas\Table\RecordSet', $auto->getRowSetClass());
+    // }
+
+    public function testFetchRecord()
+    {
+        $expect = [
+            'id' => '1',
+            'name' => 'Anna',
+            'building' => '1',
+            'floor' => '1',
+        ];
+
+        // fetch success
+        $record1 = $this->mapper->fetchRecord(1);
+        $row1 = $record1->getRow();
+        $this->assertSame($expect, $row1->getArrayCopy());
+
+        // fetch again
+        $record2 = $this->mapper->fetchRecord(1);
+        $this->assertNotSame($record1, $record2);
+        $row2 = $record2->getRow();
+        $this->assertSame($row1, $row2);
+
+        // fetch failure
+        $actual = $this->mapper->fetchRecord(-1);
+        $this->assertFalse($actual);
+    }
+
+    public function testFetchRecordSet()
+    {
+        $this->assertSame([], $this->mapper->fetchRecordSet([]));
+
+        $expect = [
+            [
+                'id' => '1',
+                'name' => 'Anna',
+                'building' => '1',
+                'floor' => '1',
+            ],
+            [
+                'id' => '2',
+                'name' => 'Betty',
+                'building' => '1',
+                'floor' => '2',
+            ],
+            [
+                'id' => '3',
+                'name' => 'Clara',
+                'building' => '1',
+                'floor' => '3',
+            ],
+        ];
+
+        $actual = $this->mapper->fetchRecordSet([1, 2, 3]);
+        $this->assertCount(3, $actual);
+        $this->assertSame($expect[0], $actual[0]->getRow()->getArrayCopy());
+        $this->assertSame($expect[1], $actual[1]->getRow()->getArrayCopy());
+        $this->assertSame($expect[2], $actual[2]->getRow()->getArrayCopy());
+
+        $again = $this->mapper->fetchRecordSet([1, 2, 3]);
+        $this->assertCount(3, $again);
+        $this->assertSame($actual[0]->getRow(), $again[0]->getRow());
+        $this->assertSame($actual[1]->getRow(), $again[1]->getRow());
+        $this->assertSame($actual[2]->getRow(), $again[2]->getRow());
+
+        $actual = $this->mapper->fetchRecordSet([997, 998, 999]);
+        $this->assertSame(array(), $actual);
+    }
+
+    // public function testInsert()
+    // {
+    //     $row = $this->mapper->newRecord([
+    //         'id' => null,
+    //         'name' => 'Mona',
+    //         'building' => '10',
+    //         'floor' => '99',
+    //     ]);
+
+    //     // does the insert *look* successful?
+    //     $success = $this->mapper->insert($row);
+    //     $this->assertTrue($success);
+
+    //     // did the autoincrement ID get retained?
+    //     $this->assertEquals(13, $row->id);
+
+    //     // did it save in the identity map?
+    //     $again = $this->mapper->fetchRecord(13);
+    //     $this->assertSame($row, $again);
+
+    //     // was it *actually* inserted?
+    //     $expect = [
+    //         'id' => '13',
+    //         'name' => 'Mona',
+    //         'building' => '10',
+    //         'floor' => '99',
+    //     ];
+    //     $actual = $this->mapper->getReadConnection()->fetchOne(
+    //         'SELECT * FROM employees WHERE id = 13'
+    //     );
+    //     $this->assertSame($expect, $actual);
+
+    //     // try to insert again, should fail on unique name
+    //     $this->silenceErrors();
+    //     $this->assertFalse($this->mapper->insert($row));
+    // }
+
+    // public function testUpdate()
+    // {
+    //     // fetch an object, then modify and update it
+    //     $row = $this->mapper->fetchRecordBy(['name' => 'Anna']);
+    //     $row->name = 'Annabelle';
+
+    //     // did the update *look* successful?
+    //     $success = $this->mapper->update($row);
+    //     $this->assertTrue($success);
+
+    //     // is it still in the identity map?
+    //     $again = $this->mapper->fetchRecordBy(['name' => 'Annabelle']);
+    //     $this->assertSame($row, $again);
+
+    //     // was it *actually* updated?
+    //     $expect = $row->getArrayCopy();
+    //     $actual = $this->mapper->getReadConnection()->fetchOne(
+    //         "SELECT * FROM employees WHERE name = 'Annabelle'"
+    //     );
+    //     $this->assertSame($expect, $actual);
+    // }
+
+    // public function testDelete()
+    // {
+    //     // fetch an object, then delete it
+    //     $row = $this->mapper->fetchRecordBy(['name' => 'Anna']);
+    //     $this->mapper->delete($row);
+
+    //     // did it delete?
+    //     $actual = $this->mapper->fetchRecordBy(['name' => 'Anna']);
+    //     $this->assertFalse($actual);
+
+    //     // do we still have everything else?
+    //     $actual = $this->mapper->fetchRecordSetBySelect(
+    //         $this->mapper->select()->where('id > 0')
+    //     );
+    //     $expect = 11;
+    //     $this->assertEquals($expect, count($actual));
+    // }
+
+    // protected function silenceErrors()
+    // {
+    //     $conn = $this->mapper->getWriteConnection();
+    //     $conn->setAttribute($conn::ATTR_ERRMODE, $conn::ERRMODE_SILENT);
+    // }
+}
