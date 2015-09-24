@@ -1,6 +1,7 @@
 <?php
 namespace Atlas\Table;
 
+use Atlas\Assertions;
 use Atlas\Fake\Auto\AutoTable;
 use Atlas\Fake\Employee\EmployeeTable;
 use Atlas\SqliteFixture;
@@ -10,6 +11,8 @@ use Aura\SqlQuery\QueryFactory;
 
 class TableTest extends \PHPUnit_Framework_TestCase
 {
+    use Assertions;
+
     protected $table;
 
     protected function setUp()
@@ -489,16 +492,18 @@ class TableTest extends \PHPUnit_Framework_TestCase
             $select->limit(10);
         });
 
-        $expect = 'SELECT
-    id
-FROM
-    "employees"
-WHERE
-    "employees"."name" = :_1_
-LIMIT 10';
+        $expect = '
+            SELECT
+                id
+            FROM
+                "employees"
+            WHERE
+                "employees"."name" = :_1_
+            LIMIT 10
+        ';
 
         $actual = $select->__toString();
-        $this->assertSame($expect, $actual);
+        $this->assertSameSql($expect, $actual);
     }
 
     public function testSelectWhereNull()
@@ -507,14 +512,16 @@ LIMIT 10';
             $select->cols(['id']);
         });
 
-        $expect = 'SELECT
-    id
-FROM
-    "employees"
-WHERE
-    "employees"."name" IS NULL';
+        $expect = '
+            SELECT
+                id
+            FROM
+                "employees"
+            WHERE
+                "employees"."name" IS NULL
+        ';
 
         $actual = $select->__toString();
-        $this->assertSame($expect, $actual);
+        $this->assertSameSql($expect, $actual);
     }
 }
