@@ -32,15 +32,14 @@ $baseClass = ltrim(substr($namespace, $lastNsPos), '\\');
 //  create a subdirectory for the base class name
 $subdir = $dir . $baseClass;
 if (is_dir($subdir)) {
-    $stdio->outln("Subdirectory for '$baseClass' exists.");
+    $stdio->outln("SKIPPED: $subdir (already exists)");
 } else {
-    $stdio->out("Creating subdirectory '$baseClass' ... ");
     $result = mkdir($subdir);
     if (! $result) {
-        $stdio->outln('failed.');
+        $stdio->outln('FAILED!: $subdir (could not mkdir)');
         exit(Status::CANTCREAT);
     }
-    $stdio->outln('done.');
+    $stdio->outln('Created: $subdir');
 }
 $subdir .= DIRECTORY_SEPARATOR;
 
@@ -86,7 +85,7 @@ foreach ($typeUses as $type => $uses) {
 
     $code = strtr($tpl, $data);
     file_put_contents($file, $code);
-    $stdio->outln("CREATED: $file");
+    $stdio->outln("Created: $file");
 }
 
 $stdio->outln('Done!');
