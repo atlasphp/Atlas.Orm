@@ -8,7 +8,7 @@ use Atlas\Fake\Summary\SummaryTable;
 use Atlas\Fake\Tag\TagMapper;
 use Atlas\Fake\Thread\ThreadMapper;
 use Atlas\Fake\Thread2Tag\Thread2TagMapper;
-use ExtendedPdo;
+use Aura\Sql\ExtendedPdo;
 
 class AtlasContainerTest extends \PHPUnit_Framework_TestCase
 {
