@@ -76,8 +76,8 @@ abstract class AbstractRelationship
             return;
         }
 
-        $foreignMapper = $atlas->mapper($this->foreignMapperClass);
-        $this->foreignCol = $foreignMapper->getTable()->getPrimary();
+        $nativeMapper = $atlas->mapper($this->nativeMapperClass);
+        $this->foreignCol = $nativeMapper->getTable()->getPrimary();
     }
 
     protected function fixThroughNativeCol(Atlas $atlas)
