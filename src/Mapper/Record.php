@@ -80,4 +80,16 @@ class Record
     {
         return $this->related;
     }
+
+    public function getArrayCopy()
+    {
+        $array = $this->getRow()->getArrayCopy();
+        foreach ($this->getRelated() as $field => $related) {
+            $array[$field] = $related;
+            if ($related) {
+                $array[$field] = $related->getArrayCopy();
+            }
+        }
+        return $array;
+    }
 }
