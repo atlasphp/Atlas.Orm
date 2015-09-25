@@ -30,7 +30,7 @@ class Mapper
     {
         $this->table = $table;
         $this->relations = $this->newRelations();
-        $this->addRelations();
+        $this->setRelations();
     }
 
     protected function newRelations()
@@ -48,7 +48,7 @@ class Mapper
         return $this->relations;
     }
 
-    protected function addRelations()
+    protected function setRelations()
     {
     }
 

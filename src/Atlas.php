@@ -67,10 +67,14 @@ class Atlas
         return $recordSet;
     }
 
-    public function select($spec, array $colsVals = [])
+    public function select($spec, array $colsVals = [], callable $custom = null)
     {
         $mapper = $this->mapper($spec);
-        return $this->newAtlasSelect($mapper, $mapper->select($colsVals));
+        $select = $this->newAtlasSelect($mapper, $mapper->select($colsVals));
+        if ($custom) {
+            $custom($select);
+        }
+        return $select;
     }
 
     public function insert(Record $record)

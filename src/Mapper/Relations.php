@@ -1,7 +1,8 @@
 <?php
 namespace Atlas\Mapper;
 
-use ArrayIterator;
+use Atlas\Atlas;
+use Atlas\Mapper\Mapper;
 use Atlas\Relationship\ManyToMany;
 use Atlas\Relationship\ManyToOne;
 use Atlas\Relationship\OneToMany;
@@ -13,11 +14,11 @@ class Relations
 
     protected $emptyFields = [];
 
-    protected $nativeMapper;
+    protected $nativeMapperClass;
 
-    public function __construct(Mapper $nativeMapper)
+    public function __construct($nativeMapperClass)
     {
-        $this->nativeMapper = $nativeMapper;
+        $this->nativeMapperClass = $nativeMapperClass;
     }
 
     public function getEmptyFields()
@@ -25,83 +26,38 @@ class Relations
         return $this->emptyFields;
     }
 
-    public function oneToOne(
-        $name,
-        $foreignMapperClass,
-        callable $custom = null
-    ) {
-        return $this->set(
-            $name,
-            OneToOne::CLASS,
-            $foreignMapperClass,
-            null,
-            $custom
-        );
+    public function oneToOne($name, $foreignMapperClass)
+    {
+        return $this->set($name, OneToOne::CLASS, $foreignMapperClass);
     }
 
-    public function oneToMany(
-        $name,
-        $foreignMapperClass,
-        callable $custom = null
-    ) {
-        return $this->set(
-            $name,
-            OneToMany::CLASS,
-            $foreignMapperClass,
-            null,
-            $custom
-        );
+    public function oneToMany($name, $foreignMapperClass)
+    {
+        return $this->set($name, OneToMany::CLASS, $foreignMapperClass);
     }
 
-    public function manyToOne(
-        $name,
-        $foreignMapperClass,
-        callable $custom = null
-    ) {
-        $this->set(
-            $name,
-            ManyToOne::CLASS,
-            $foreignMapperClass,
-            null,
-            $custom
-        );
+    public function manyToOne($name, $foreignMapperClass)
+    {
+        $this->set($name, ManyToOne::CLASS, $foreignMapperClass);
     }
 
-    public function manyToMany(
-        $name,
-        $foreignMapperClass,
-        $joinField,
-        callable $custom = null
-    ) {
-        return $this->set(
-            $name,
-            ManyToMany::CLASS,
-            $foreignMapperClass,
-            $joinField,
-            $custom
-        );
+    public function manyToMany($name, $foreignMapperClass, $joinField)
+    {
+        return $this->set($name, ManyToMany::CLASS, $foreignMapperClass, $joinField);
     }
 
-    public function set(
-        $name,
-        $relationClass,
-        $foreignMapperClass,
-        $joinField,
-        callable $custom = null
-    ) {
+    public function set($name, $relationClass, $foreignMapperClass, $joinField = null)
+    {
         $relation = new $relationClass(
-            $this,
+            $this->nativeMapperClass,
             $name,
             $foreignMapperClass,
             $joinField
         );
 
-        if ($custom) {
-            $custom($relation);
-        }
-
         $this->relations[$name] = $relation;
         $this->emptyFields[$name] = null;
+        return $relation;
     }
 
     public function stitchIntoRecord(Atlas $atlas, Record $record, array $with)

@@ -1,24 +1,24 @@
 <?php
-namespace Atlas\Relation;
+namespace Atlas\Relationship;
 
 use Atlas\Atlas;
+use Atlas\Mapper\Record;
+use Atlas\Mapper\RecordSet;
 
 class OneToMany extends AbstractRelationship
 {
-    public function stitchIntoOne(
+    public function stitchIntoRecord(
         Atlas $atlas,
         Record $record,
         callable $custom = null
     ) {
         $this->fix($atlas);
-
-        $record->{$this->field} = $this->foreignMapper->fetchRecordSetBy(
-            [$this->foreignCol => $record->{$this->nativeCol}],
-            $custom
-        );
+        $colsVals = [$this->foreignCol => $record->{$this->nativeCol}];
+        $select = $atlas->select($this->foreignMapperClass, $colsVals, $custom);
+        $record->{$this->field} = $select->fetchRecordSet();
     }
 
-    public function stitchIntoMany(
+    public function stitchIntoRecordSet(
         Atlas $atlas,
         RecordSet $recordSet,
         callable $custom = null

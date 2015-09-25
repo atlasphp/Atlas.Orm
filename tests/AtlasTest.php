@@ -28,6 +28,11 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
             ThreadMapper::CLASS,
             Thread2TagMapper::CLASS,
         ]);
+
+        $connection = $atlasContainer->getConnectionLocator()->getDefault();
+        $fixture = new SqliteFixture($connection);
+        $fixture->exec();
+
         $this->atlas = $atlasContainer->getAtlas();
     }
 
@@ -35,5 +40,14 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
     {
         $select = $this->atlas->select(ThreadMapper::CLASS);
         $this->assertInstanceOf('Atlas\AtlasSelect', $select);
+    }
+
+    public function testFetchRecord()
+    {
+        $author = $this->atlas->fetchRecord(AuthorMapper::CLASS, 1, [
+            'threads',
+            'replies',
+        ]);
+        var_dump($author);
     }
 }

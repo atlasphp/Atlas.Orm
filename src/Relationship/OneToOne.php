@@ -1,11 +1,13 @@
 <?php
-namespace Atlas\Relation;
+namespace Atlas\Relationship;
 
 use Atlas\Atlas;
+use Atlas\Mapper\Record;
+use Atlas\Mapper\RecordSet;
 
 class OneToOne extends AbstractRelationship
 {
-    public function stitchIntoOne(
+    public function stitchIntoRecord(
         Atlas $atlas,
         Record $record,
         callable $custom = null
@@ -18,7 +20,7 @@ class OneToOne extends AbstractRelationship
         );
     }
 
-    public function stitchIntoMany(
+    public function stitchIntoRecordSet(
         Atlas $atlas,
         RecordSet $recordSet,
         callable $custom = null

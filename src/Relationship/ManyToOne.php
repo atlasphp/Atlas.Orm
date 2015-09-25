@@ -1,25 +1,33 @@
 <?php
-namespace Atlas\Relation;
+namespace Atlas\Relationship;
 
 use Atlas\Atlas;
+use Atlas\Mapper\Record;
+use Atlas\Mapper\RecordSet;
 
 class ManyToOne extends AbstractRelationship
 {
-    protected function fixNativeCol()
+    protected function fixNativeCol(Atlas $atlas)
     {
-        if (! isset($this->nativeCol)) {
-            $this->nativeCol = $this->foreignMapper->getTable()->getPrimary();
+        if ($this->nativeCol) {
+            return;
         }
+
+        $foreignMapper = $atlas->mapper($this->foreignMapperClass);
+        $this->nativeCol = $foreignMapper->getTable()->getPrimary();
     }
 
-    protected function fixForeignCol()
+    protected function fixForeignCol(Atlas $atlas)
     {
-        if (! isset($this->foreignCol)) {
-            $this->foreignCol = $this->foreignMapper->getTable()->getPrimary();
+        if ($this->foreignCol) {
+            return;
         }
+
+        $foreignMapper = $atlas->mapper($this->foreignMapperClass);
+        $this->foreignCol = $foreignMapper->getTable()->getPrimary();
     }
 
-    public function stitchIntoOne(
+    public function stitchIntoRecord(
         Atlas $atlas,
         Record $record,
         callable $custom = null
@@ -32,7 +40,7 @@ class ManyToOne extends AbstractRelationship
         );
     }
 
-    public function stitchIntoMany(
+    public function stitchIntoRecordSet(
         Atlas $atlas,
         RecordSet $recordSet,
         callable $custom = null

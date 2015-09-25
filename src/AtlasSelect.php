@@ -62,7 +62,7 @@ class AtlasSelect
             $this->mapper->getRelations()->stitchIntoRecord(
                 $this->atlas,
                 $record,
-                $with
+                $this->with
             );
         }
         return $record;
@@ -75,7 +75,7 @@ class AtlasSelect
             $this->mapper->getRelations()->stitchIntoRecordSet(
                 $this->atlas,
                 $recordSet,
-                $with
+                $this->with
             );
         }
         return $recordSet;

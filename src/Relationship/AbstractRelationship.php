@@ -1,7 +1,10 @@
 <?php
-namespace Atlas\Relation;
+namespace Atlas\Relationship;
 
 use Atlas\Atlas;
+use Atlas\Mapper\Mapper;
+use Atlas\Mapper\Record;
+use Atlas\Mapper\RecordSet;
 
 // the Relation should let you specify what to do when there are no
 // related records. $rel->nullWhenEmpty(), arrayWhenEmpty(), newRecordWhenEmpty(),
@@ -9,12 +12,12 @@ use Atlas\Atlas;
 // default value? maybe Table should return "false" instead of "null" when no
 // row is found.
 
-abstract class AbstractRelationshipship
+abstract class AbstractRelationship
 {
     protected $field;
 
-    protected $foreignRecordClass;
-    protected $foreignMapper;
+    protected $nativeMapperClass;
+    protected $foreignMapperClass;
 
     protected $nativeCol;
     protected $throughNativeCol;
@@ -26,11 +29,11 @@ abstract class AbstractRelationshipship
 
     protected $fixed = false;
 
-    public function __construct($nativeMapper, $field, $foreignRecordClass)
+    public function __construct($nativeMapperClass, $field, $foreignMapperClass)
     {
-        $this->nativeMapper = $nativeMapper;
+        $this->nativeMapperClass = $nativeMapperClass;
         $this->field = $field;
-        $this->foreignRecordClass = $foreignRecordClass;
+        $this->foreignMapperClass = $foreignMapperClass;
     }
 
     public function nativeCol($nativeCol)
@@ -49,40 +52,39 @@ abstract class AbstractRelationshipship
             return;
         }
 
-        $this->fixForeignMapper($atlas);
-
-        $this->fixNativeCol();
-        $this->fixThroughNativeCol();
-        $this->fixThroughForeignCol();
-        $this->fixForeignCol();
+        $this->fixNativeCol($atlas);
+        $this->fixThroughNativeCol($atlas);
+        $this->fixThroughForeignCol($atlas);
+        $this->fixForeignCol($atlas);
 
         $this->fixed = true;
     }
 
-    protected function fixForeignMapper(Atlas $atlas)
+    protected function fixNativeCol(Atlas $atlas)
     {
-        $this->foreignMapper = $atlas->mapper($this->foreignRecordClass);
-    }
-
-    protected function fixNativeCol()
-    {
-        if (! $this->nativeCol) {
-            $this->nativeCol = $this->nativeMapper->getTable()->getPrimary();
+        if ($this->nativeCol) {
+            return;
         }
+
+        $nativeMapper = $atlas->mapper($this->nativeMapperClass);
+        $this->nativeCol = $nativeMapper->getTable()->getPrimary();
     }
 
-    protected function fixForeignCol()
+    protected function fixForeignCol(Atlas $atlas)
     {
-        if (! $this->foreignCol) {
-            $this->foreignCol = $this->nativeMapper->getTable()->getPrimary();
+        if ($this->foreignCol) {
+            return;
         }
+
+        $foreignMapper = $atlas->mapper($this->foreignMapperClass);
+        $this->foreignCol = $foreignMapper->getTable()->getPrimary();
     }
 
-    protected function fixThroughNativeCol()
+    protected function fixThroughNativeCol(Atlas $atlas)
     {
     }
 
-    protected function fixThroughForeignCol()
+    protected function fixThroughForeignCol(Atlas $atlas)
     {
     }
 
