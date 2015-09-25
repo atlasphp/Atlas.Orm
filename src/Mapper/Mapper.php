@@ -14,16 +14,15 @@ class Mapper
 {
     protected $table;
 
-    protected $recordFactory;
-
     protected $relations;
 
-    public function __construct(
-        Table $table,
-        RecordFactory $recordFactory
-    ) {
+    protected $recordClass;
+
+    protected $recordSetClass;
+
+    public function __construct(Table $table)
+    {
         $this->table = $table;
-        $this->recordFactory = $recordFactory;
         $this->relations = $this->newRelations();
         $this->addRelations();
     }
@@ -47,25 +46,30 @@ class Mapper
     {
     }
 
+    // row can be array or Row object
     public function newRecord($row)
     {
         if (is_array($row)) {
             $row = $this->getTable()->newRow($row);
         }
 
-        return $this->recordFactory->newRecord(
+        $recordClass = $this->getRecordClass();
+        return new $recordClass(
             $row,
             $this->relations->getEmptyFields()
         );
     }
 
-    public function newRecordSet(RowSet $rowSet)
+    // rowSet can be array or RowSet object
+    public function newRecordSet($rowSet)
     {
         $records = [];
         foreach ($rowSet as $row) {
             $records[] = $this->newRecord($row);
         }
-        return $this->recordFactory->newRecordSet($records);
+
+        $recordSetClass = $this->getRecordSetClass();
+        return new $recordSetClass($records);
     }
 
     public function fetchRecord($primaryVal)
@@ -88,10 +92,10 @@ class Mapper
         return $record;
     }
 
-    public function fetchRecordBySelect(TableSelect $select)
+    public function fetchRecordBySelect(TableSelect $tableSelect)
     {
         $record = false;
-        $row = $this->table->fetchRowBySelect($select);
+        $row = $this->table->fetchRowBySelect($tableSelect);
         if ($row) {
             $record = $this->newRecord($row);
         }
@@ -110,9 +114,9 @@ class Mapper
         return $this->groupRecords($rows);
     }
 
-    public function fetchRecordsBySelect(TableSelect $select, $col)
+    public function fetchRecordsBySelect(TableSelect $tableSelect, $col)
     {
-        $rows = $this->table->fetchRowsBySelect($select, $col);
+        $rows = $this->table->fetchRowsBySelect($tableSelect, $col);
         return $this->groupRecords($rows);
     }
 
@@ -143,9 +147,9 @@ class Mapper
         return $this->newRecordSet($rowSet);
     }
 
-    public function fetchRecordSetBySelect(TableSelect $select)
+    public function fetchRecordSetBySelect(TableSelect $tableSelect)
     {
-        $rowSet = $this->table->fetchRowSetBySelect($select);
+        $rowSet = $this->table->fetchRowSetBySelect($tableSelect);
         if (! $rowSet) {
             return array();
         }
@@ -164,9 +168,9 @@ class Mapper
         return $this->groupRecordSets($rowSets);
     }
 
-    public function fetchRecordSetsBySelect(TableSelect $select, $col)
+    public function fetchRecordSetsBySelect(TableSelect $tableSelect, $col)
     {
-        $rowSets = $this->table->fetchRowSetsBySelect($select, $col);
+        $rowSets = $this->table->fetchRowSetsBySelect($tableSelect, $col);
         return $this->groupRecordSets($rowSets);
     }
 
@@ -197,5 +201,35 @@ class Mapper
     public function delete(Record $record)
     {
         return $this->getTable()->delete($record->getRow());
+    }
+
+    public function getRecordClass()
+    {
+        if (! $this->recordClass) {
+            // Foo\Bar\BazMapper -> Foo\Bar\BazRecord
+            $class = substr(get_class($this), -6);
+            $this->recordClass = "{$class}Record";
+        }
+
+        if (! class_exists($this->recordClass)) {
+            $this->recordClass = 'Atlas\Mapper\Record';
+        }
+
+        return $this->recordClass;
+    }
+
+    public function getRecordSetClass()
+    {
+        if (! $this->recordSetClass) {
+            // Foo\Bar\BazMapper -> Foo\Bar\BazRecordSet
+            $class = substr(get_class($this), -6);
+            $this->recordSetClass = "{$class}RecordSet";
+        }
+
+        if (! class_exists($this->recordSetClass)) {
+            $this->recordSetClass = 'Atlas\Mapper\RecordSet';
+        }
+
+        return $this->recordSetClass;
     }
 }

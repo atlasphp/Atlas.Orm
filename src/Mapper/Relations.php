@@ -27,13 +27,13 @@ class Relations
 
     public function oneToOne(
         $name,
-        $foreignRecordClass,
+        $foreignMapperClass,
         callable $custom = null
     ) {
         return $this->set(
             $name,
             OneToOne::CLASS,
-            $foreignRecordClass,
+            $foreignMapperClass,
             null,
             $custom
         );
@@ -41,13 +41,13 @@ class Relations
 
     public function oneToMany(
         $name,
-        $foreignRecordClass,
+        $foreignMapperClass,
         callable $custom = null
     ) {
         return $this->set(
             $name,
             OneToMany::CLASS,
-            $foreignRecordClass,
+            $foreignMapperClass,
             null,
             $custom
         );
@@ -55,13 +55,13 @@ class Relations
 
     public function manyToOne(
         $name,
-        $foreignRecordClass,
+        $foreignMapperClass,
         callable $custom = null
     ) {
         $this->set(
             $name,
             ManyToOne::CLASS,
-            $foreignRecordClass,
+            $foreignMapperClass,
             null,
             $custom
         );
@@ -69,14 +69,14 @@ class Relations
 
     public function manyToMany(
         $name,
-        $foreignRecordClass,
+        $foreignMapperClass,
         $joinField,
         callable $custom = null
     ) {
         return $this->set(
             $name,
             ManyToMany::CLASS,
-            $foreignRecordClass,
+            $foreignMapperClass,
             $joinField,
             $custom
         );
@@ -85,14 +85,14 @@ class Relations
     public function set(
         $name,
         $relationClass,
-        $foreignRecordClass,
+        $foreignMapperClass,
         $joinField,
         callable $custom = null
     ) {
         $relation = new $relationClass(
             $this,
             $name,
-            $foreignRecordClass,
+            $foreignMapperClass,
             $joinField
         );
 
@@ -107,16 +107,22 @@ class Relations
     public function stitchIntoRecord(Atlas $atlas, Record $record, array $with)
     {
         foreach ($this->fixWith($with) as $name => $custom) {
-            $relation = $this->relations[$name];
-            $relation->stitchIntoRecord($atlas, $record);
+            $this->relations[$name]->stitchIntoRecord(
+                $atlas,
+                $record,
+                $custom
+            );
         }
     }
 
     public function stitchIntoRecordSet(Atlas $atlas, RecordSet $recordSet, array $with)
     {
         foreach ($this->fixWith($with) as $name => $custom) {
-            $relation = $this->relations[$name];
-            $relation->stitchIntoRecordSet($atlas, $recordSet, $custom);
+            $this->relations[$name]->stitchIntoRecordSet(
+                $atlas,
+                $recordSet,
+                $custom
+            );
         }
         return $recordSet;
     }
