@@ -1,9 +1,9 @@
 <?php
 namespace Atlas;
 
+use Atlas\Mapper\Mapper;
 use Atlas\Mapper\MapperLocator;
-use Atlas\Mapper\MapperInterface;
-use Atlas\Table\Select as TableSelect;
+use Atlas\Table\TableSelect;
 
 class Atlas
 {
@@ -19,17 +19,14 @@ class Atlas
         return $this->mapperLocator;
     }
 
-    public function mapper($type)
+    public function mapper($mapperClass)
     {
-        if (is_object($type)) {
-            $type = get_class($type);
-        }
-        return $this->mapperLocator->get($type);
+        return $this->mapperLocator->get($mapperClass);
     }
 
-    public function fetchRecord($type, $primaryVal, array $with = [])
+    public function fetchRecord($mapperClass, $primaryVal, array $with = [])
     {
-        $mapper = $this->mapper($type);
+        $mapper = $this->mapper($mapperClass);
         $record = $mapper->fetchRecord($primaryVal);
         if ($record) {
             $mapper->getRelations()->stitchIntoRecord(
@@ -41,9 +38,9 @@ class Atlas
         return $record;
     }
 
-    public function fetchRecordSet($type, $primaryVals, array $with = [])
+    public function fetchRecordSet($mapperClass, $primaryVals, array $with = [])
     {
-        $mapper = $this->mapper($type);
+        $mapper = $this->mapper($mapperClass);
         $recordSet = $mapper->fetchRecordSet($primaryVals);
         if ($recordSet) {
             $mapper->getRelations()->stitchIntoRecordSet(
@@ -55,9 +52,9 @@ class Atlas
         return $recordSet;
     }
 
-    public function select($type, array $colsVals = [])
+    public function select($mapperClass, array $colsVals = [])
     {
-        $mapper = $this->mapper($type);
+        $mapper = $this->mapper($mapperClass);
         return $this->newSelect($mapper, $mapper->select($colsVals));
     }
 
