@@ -413,7 +413,7 @@ class Table
 
     protected function getMappedOrNewRow(array $cols)
     {
-        $primaryVal = $cols[$this->primary];
+        $primaryVal = $cols[$this->getPrimary()];
         $row = $this->identityMap->getRow($primaryVal);
         if (! $row) {
             $row = $this->newRow($cols);
