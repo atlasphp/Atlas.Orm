@@ -6,10 +6,16 @@ use Atlas\Table\RowSet;
 use Atlas\Table\Table;
 use Atlas\Table\TableSelect;
 
-// do we even *do* selects at this level? they require knowledge of the other
-// mappers, don't they? or is it enough to construct a "plain" record, and let
-// Atlas fill in the related values?
-//
+/**
+ *
+ * A DataMapper that returns Record and RecordSet objects and defines
+ * relationships for those Records.
+ *
+ * @todo An assertion to check that Record and RecordSet are of the right type.
+ *
+ * @package Atlas.Atlas
+ *
+ */
 class Mapper
 {
     protected $table;

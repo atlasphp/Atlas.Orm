@@ -4,6 +4,12 @@ namespace Atlas\Mapper;
 use Atlas\Exception;
 use Atlas\Table\Row;
 
+/**
+ *
+ * This is a "passive" record, not an active one. It is primarily for mapping a
+ * row *and its related rows* regarding persistence.
+ *
+ */
 class Record
 {
     protected $row;
