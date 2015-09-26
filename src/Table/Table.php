@@ -290,7 +290,7 @@ class Table
         }
 
         // done
-        return $rows;
+        return array_values($rows);
     }
 
     // get existing rows from identity map
@@ -323,13 +323,13 @@ class Table
         }
     }
 
-    public function fetchRowsBy(array $colsVals, $col, callable $custom = null)
+    public function fetchRowsBy(array $colsVals, callable $custom = null)
     {
         $select = $this->select($colsVals, $custom);
-        return $this->fetchRowsBySelect($select, $col);
+        return $this->fetchRowsBySelect($select);
     }
 
-    public function fetchRowsBySelect(TableSelect $select, $col)
+    public function fetchRowsBySelect(TableSelect $select)
     {
         $data = $select->cols($this->getCols())->fetchAll();
         if (! $data) {
@@ -338,8 +338,7 @@ class Table
 
         $rows = [];
         foreach ($data as $cols) {
-            $row = $this->getMappedOrNewRow($cols);
-            $rows[$row->$col] = $row;
+            $rows[] = $this->getMappedOrNewRow($cols);
         }
 
         return $rows;
@@ -362,54 +361,48 @@ class Table
 
     public function fetchRowSetBySelect(TableSelect $select)
     {
-        $data = $select->cols($this->getCols())->fetchAll();
-        if (! $data) {
+        $rows = $this->fetchRowsBySelect($select);
+        if (! $rows) {
             return array();
         }
-
-        $rows = [];
-        foreach ($data as $cols) {
-            $rows[] = $this->getMappedOrNewRow($cols);
-        }
-
         return $this->newRowSet($rows);
     }
 
-    public function fetchRowSets($primaryVals, $col)
-    {
-        $rows = $this->fetchRows($primaryVals);
-        $groups = [];
-        foreach ($rows as $row) {
-            $groups[$row->$col][] = $row;
-        }
-        return $this->rowSetsFromGroups($groups);
-    }
+    // public function fetchRowSets($primaryVals, $col)
+    // {
+    //     $rows = $this->fetchRows($primaryVals);
+    //     $groups = [];
+    //     foreach ($rows as $row) {
+    //         $groups[$row->$col][] = $row;
+    //     }
+    //     return $this->rowSetsFromGroups($groups);
+    // }
 
-    public function fetchRowSetsBy(array $colsVals, $col)
-    {
-        $select = $this->select($colsVals);
-        return $this->fetchRowSetsBySelect($select, $col);
-    }
+    // public function fetchRowSetsBy(array $colsVals, $col)
+    // {
+    //     $select = $this->select($colsVals);
+    //     return $this->fetchRowSetsBySelect($select, $col);
+    // }
 
-    public function fetchRowSetsBySelect(TableSelect $select, $col)
-    {
-        $data = $select->cols($this->getCols())->fetchAll();
-        $groups = [];
-        foreach ($data as $cols) {
-            $row = $this->getMappedOrNewRow($cols);
-            $groups[$row->$col][] = $row;
-        }
-        return $this->rowSetsFromGroups($groups);
-    }
+    // public function fetchRowSetsBySelect(TableSelect $select, $col)
+    // {
+    //     $data = $select->cols($this->getCols())->fetchAll();
+    //     $groups = [];
+    //     foreach ($data as $cols) {
+    //         $row = $this->getMappedOrNewRow($cols);
+    //         $groups[$row->$col][] = $row;
+    //     }
+    //     return $this->rowSetsFromGroups($groups);
+    // }
 
-    protected function rowSetsFromGroups($groups)
-    {
-        $rowSets = [];
-        foreach ($groups as $key => $rows) {
-            $rowSets[$key] = $this->newRowSet($rows);
-        }
-        return $rowSets;
-    }
+    // protected function rowSetsFromGroups($groups)
+    // {
+    //     $rowSets = [];
+    //     foreach ($groups as $key => $rows) {
+    //         $rowSets[$key] = $this->newRowSet($rows);
+    //     }
+    //     return $rowSets;
+    // }
 
     protected function getMappedOrNewRow(array $cols)
     {

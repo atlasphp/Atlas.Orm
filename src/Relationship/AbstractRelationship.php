@@ -24,26 +24,26 @@ abstract class AbstractRelationship
     protected $throughForeignCol;
     protected $foreignCol;
 
-    protected $nativeField; // the has-many collection field on the native record
-    protected $throughField; // the foreign field in the through collection
-
     protected $fixed = false;
 
-    public function __construct($nativeMapperClass, $field, $foreignMapperClass)
+    public function __construct($nativeMapperClass, $field, $foreignMapperClass, $throughField = null)
     {
         $this->nativeMapperClass = $nativeMapperClass;
         $this->field = $field;
         $this->foreignMapperClass = $foreignMapperClass;
+        $this->throughField = $throughField;
     }
 
     public function nativeCol($nativeCol)
     {
         $this->nativeCol = $nativeCol;
+        return $this;
     }
 
     public function foreignCol($foreignCol)
     {
         $this->foreignCol = $foreignCol;
+        return $this;
     }
 
     protected function fix(Atlas $atlas)
@@ -51,12 +51,10 @@ abstract class AbstractRelationship
         if ($this->fixed) {
             return;
         }
-
         $this->fixNativeCol($atlas);
         $this->fixThroughNativeCol($atlas);
         $this->fixThroughForeignCol($atlas);
         $this->fixForeignCol($atlas);
-
         $this->fixed = true;
     }
 

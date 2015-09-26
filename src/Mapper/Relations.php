@@ -42,12 +42,21 @@ class Relations
         $this->set($name, ManyToOne::CLASS, $foreignMapperClass);
     }
 
-    public function manyToMany($name, $foreignMapperClass, $joinField)
+    public function manyToMany($name, $foreignMapperClass, $throughName)
     {
-        return $this->set($name, ManyToMany::CLASS, $foreignMapperClass, $joinField);
+        if (! isset($this->relations[$throughName])) {
+            throw new Exception("Relation '$throughName' does not exist");
+        }
+
+        return $this->set(
+            $name,
+            ManyToMany::CLASS,
+            $foreignMapperClass,
+            $throughName
+        );
     }
 
-    public function set($name, $relationClass, $foreignMapperClass, $joinField = null)
+    public function set($name, $relationClass, $foreignMapperClass, $throughName = null)
     {
         if (! class_exists($foreignMapperClass)) {
             throw new Exception("$foreignMapperClass does not exist");
@@ -57,7 +66,7 @@ class Relations
             $this->nativeMapperClass,
             $name,
             $foreignMapperClass,
-            $joinField
+            $throughName
         );
 
         $this->relations[$name] = $relation;

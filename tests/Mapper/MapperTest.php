@@ -136,19 +136,19 @@ class MapperTest extends \PHPUnit_Framework_TestCase
     public function testFetchRecords()
     {
         $expect = [
-            '1' => [
+            [
                 'id' => '1',
                 'name' => 'Anna',
                 'building' => '1',
                 'floor' => '1',
             ],
-            '2' => [
+            [
                 'id' => '2',
                 'name' => 'Betty',
                 'building' => '1',
                 'floor' => '2',
             ],
-            '3' => [
+            [
                 'id' => '3',
                 'name' => 'Clara',
                 'building' => '1',
@@ -159,22 +159,22 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $actual = $this->mapper->fetchRecords([1, 2, 3]);
         $this->assertTrue(is_array($actual));
         $this->assertCount(3, $actual);
-        $this->assertInstanceOf(Record::CLASS, $actual['1']);
-        $this->assertInstanceOf(Record::CLASS, $actual['2']);
-        $this->assertInstanceOf(Record::CLASS, $actual['3']);
-        $this->assertSame($expect['1'], $actual['1']->getRow()->getArrayCopy());
-        $this->assertSame($expect['2'], $actual['2']->getRow()->getArrayCopy());
-        $this->assertSame($expect['3'], $actual['3']->getRow()->getArrayCopy());
+        $this->assertInstanceOf(Record::CLASS, $actual[0]);
+        $this->assertInstanceOf(Record::CLASS, $actual[1]);
+        $this->assertInstanceOf(Record::CLASS, $actual[2]);
+        $this->assertSame($expect[0], $actual[0]->getRow()->getArrayCopy());
+        $this->assertSame($expect[1], $actual[1]->getRow()->getArrayCopy());
+        $this->assertSame($expect[2], $actual[2]->getRow()->getArrayCopy());
 
         $again = $this->mapper->fetchRecords([1, 2, 3]);
         $this->assertTrue(is_array($again));
         $this->assertCount(3, $again);
-        $this->assertInstanceOf(Record::CLASS, $again['1']);
-        $this->assertInstanceOf(Record::CLASS, $again['2']);
-        $this->assertInstanceOf(Record::CLASS, $again['3']);
-        $this->assertSame($actual['1']->getRow(), $again['1']->getRow());
-        $this->assertSame($actual['2']->getRow(), $again['2']->getRow());
-        $this->assertSame($actual['3']->getRow(), $again['3']->getRow());
+        $this->assertInstanceOf(Record::CLASS, $again[0]);
+        $this->assertInstanceOf(Record::CLASS, $again[1]);
+        $this->assertInstanceOf(Record::CLASS, $again[2]);
+        $this->assertSame($actual[0]->getRow(), $again[0]->getRow());
+        $this->assertSame($actual[1]->getRow(), $again[1]->getRow());
+        $this->assertSame($actual[2]->getRow(), $again[2]->getRow());
 
         $actual = $this->mapper->fetchRecords([997, 998, 999]);
         $this->assertSame(array(), $actual);
@@ -183,37 +183,37 @@ class MapperTest extends \PHPUnit_Framework_TestCase
     public function testFetchRecordsBy()
     {
         $expect = array (
-            '1' => array (
+            array (
                 'id' => '1',
                 'name' => 'Anna',
                 'building' => '1',
                 'floor' => '1',
             ),
-            '2' => array (
+            array (
                 'id' => '2',
                 'name' => 'Betty',
                 'building' => '1',
                 'floor' => '2',
             ),
-            '3' => array (
+            array (
                 'id' => '3',
                 'name' => 'Clara',
                 'building' => '1',
                 'floor' => '3',
             ),
-            '4' => array (
+            array (
                 'id' => '4',
                 'name' => 'Donna',
                 'building' => '1',
                 'floor' => '1',
             ),
-            '5' => array (
+            array (
                 'id' => '5',
                 'name' => 'Edna',
                 'building' => '1',
                 'floor' => '2',
             ),
-            '6' => array (
+            array (
                 'id' => '6',
                 'name' => 'Fiona',
                 'building' => '1',
@@ -221,76 +221,76 @@ class MapperTest extends \PHPUnit_Framework_TestCase
             ),
         );
 
-        $actual = $this->mapper->fetchRecordsBy(['building' => '1'], 'id');
+        $actual = $this->mapper->fetchRecordsBy(['building' => '1']);
         $this->assertTrue(is_array($actual));
         $this->assertCount(6, $actual);
-        $this->assertInstanceOf(Record::CLASS, $actual['1']);
-        $this->assertInstanceOf(Record::CLASS, $actual['2']);
-        $this->assertInstanceOf(Record::CLASS, $actual['3']);
-        $this->assertInstanceOf(Record::CLASS, $actual['4']);
-        $this->assertInstanceOf(Record::CLASS, $actual['5']);
-        $this->assertInstanceOf(Record::CLASS, $actual['6']);
-        $this->assertSame($expect['1'], $actual['1']->getRow()->getArrayCopy());
-        $this->assertSame($expect['2'], $actual['2']->getRow()->getArrayCopy());
-        $this->assertSame($expect['3'], $actual['3']->getRow()->getArrayCopy());
-        $this->assertSame($expect['4'], $actual['4']->getRow()->getArrayCopy());
-        $this->assertSame($expect['5'], $actual['5']->getRow()->getArrayCopy());
-        $this->assertSame($expect['6'], $actual['6']->getRow()->getArrayCopy());
+        $this->assertInstanceOf(Record::CLASS, $actual[0]);
+        $this->assertInstanceOf(Record::CLASS, $actual[1]);
+        $this->assertInstanceOf(Record::CLASS, $actual[2]);
+        $this->assertInstanceOf(Record::CLASS, $actual[3]);
+        $this->assertInstanceOf(Record::CLASS, $actual[4]);
+        $this->assertInstanceOf(Record::CLASS, $actual[5]);
+        $this->assertSame($expect[0], $actual[0]->getRow()->getArrayCopy());
+        $this->assertSame($expect[1], $actual[1]->getRow()->getArrayCopy());
+        $this->assertSame($expect[2], $actual[2]->getRow()->getArrayCopy());
+        $this->assertSame($expect[3], $actual[3]->getRow()->getArrayCopy());
+        $this->assertSame($expect[4], $actual[4]->getRow()->getArrayCopy());
+        $this->assertSame($expect[5], $actual[5]->getRow()->getArrayCopy());
 
-        $again = $this->mapper->fetchRecordsBy(['building' => '1'], 'id');
+        $again = $this->mapper->fetchRecordsBy(['building' => '1']);
         $this->assertTrue(is_array($again));
         $this->assertCount(6, $again);
-        $this->assertInstanceOf(Record::CLASS, $again['1']);
-        $this->assertInstanceOf(Record::CLASS, $again['2']);
-        $this->assertInstanceOf(Record::CLASS, $again['3']);
-        $this->assertInstanceOf(Record::CLASS, $again['4']);
-        $this->assertInstanceOf(Record::CLASS, $again['5']);
-        $this->assertInstanceOf(Record::CLASS, $again['6']);
-        $this->assertSame($actual['1']->getRow(), $again['1']->getRow());
-        $this->assertSame($actual['2']->getRow(), $again['2']->getRow());
-        $this->assertSame($actual['3']->getRow(), $again['3']->getRow());
-        $this->assertSame($actual['4']->getRow(), $again['4']->getRow());
-        $this->assertSame($actual['5']->getRow(), $again['5']->getRow());
-        $this->assertSame($actual['6']->getRow(), $again['6']->getRow());
+        $this->assertInstanceOf(Record::CLASS, $again[0]);
+        $this->assertInstanceOf(Record::CLASS, $again[1]);
+        $this->assertInstanceOf(Record::CLASS, $again[2]);
+        $this->assertInstanceOf(Record::CLASS, $again[3]);
+        $this->assertInstanceOf(Record::CLASS, $again[4]);
+        $this->assertInstanceOf(Record::CLASS, $again[5]);
+        $this->assertSame($actual[0]->getRow(), $again[0]->getRow());
+        $this->assertSame($actual[1]->getRow(), $again[1]->getRow());
+        $this->assertSame($actual[2]->getRow(), $again[2]->getRow());
+        $this->assertSame($actual[3]->getRow(), $again[3]->getRow());
+        $this->assertSame($actual[4]->getRow(), $again[4]->getRow());
+        $this->assertSame($actual[5]->getRow(), $again[5]->getRow());
 
-        $actual = $this->mapper->fetchRecordsBy(['building' => '99'], 'id');
+        $actual = $this->mapper->fetchRecordsBy(['building' => '99']);
         $this->assertSame(array(), $actual);
     }
 
     public function testFetchRecordsBySelect()
     {
         $expect = array (
-            '1' => array (
+            array (
                 'id' => '1',
                 'name' => 'Anna',
                 'building' => '1',
                 'floor' => '1',
             ),
-            '2' => array (
+            array (
                 'id' => '2',
                 'name' => 'Betty',
                 'building' => '1',
                 'floor' => '2',
             ),
-            '3' => array (
+            array (
                 'id' => '3',
                 'name' => 'Clara',
                 'building' => '1',
                 'floor' => '3',
             ),
-            '4' => array (
+            array (
                 'id' => '4',
                 'name' => 'Donna',
                 'building' => '1',
                 'floor' => '1',
             ),
-            '5' => array (
+            array (
                 'id' => '5',
                 'name' => 'Edna',
                 'building' => '1',
                 'floor' => '2',
             ),
-            '6' => array (
+            array (
                 'id' => '6',
                 'name' => 'Fiona',
                 'building' => '1',
@@ -299,40 +299,40 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         );
 
         $select = $this->mapper->select(['building' => '1']);
-        $actual = $this->mapper->fetchRecordsBySelect($select, 'id');
+        $actual = $this->mapper->fetchRecordsBySelect($select);
         $this->assertTrue(is_array($actual));
         $this->assertCount(6, $actual);
-        $this->assertInstanceOf(Record::CLASS, $actual['1']);
-        $this->assertInstanceOf(Record::CLASS, $actual['2']);
-        $this->assertInstanceOf(Record::CLASS, $actual['3']);
-        $this->assertInstanceOf(Record::CLASS, $actual['4']);
-        $this->assertInstanceOf(Record::CLASS, $actual['5']);
-        $this->assertInstanceOf(Record::CLASS, $actual['6']);
-        $this->assertSame($expect['1'], $actual['1']->getRow()->getArrayCopy());
-        $this->assertSame($expect['2'], $actual['2']->getRow()->getArrayCopy());
-        $this->assertSame($expect['3'], $actual['3']->getRow()->getArrayCopy());
-        $this->assertSame($expect['4'], $actual['4']->getRow()->getArrayCopy());
-        $this->assertSame($expect['5'], $actual['5']->getRow()->getArrayCopy());
-        $this->assertSame($expect['6'], $actual['6']->getRow()->getArrayCopy());
+        $this->assertInstanceOf(Record::CLASS, $actual[0]);
+        $this->assertInstanceOf(Record::CLASS, $actual[1]);
+        $this->assertInstanceOf(Record::CLASS, $actual[2]);
+        $this->assertInstanceOf(Record::CLASS, $actual[3]);
+        $this->assertInstanceOf(Record::CLASS, $actual[4]);
+        $this->assertInstanceOf(Record::CLASS, $actual[5]);
+        $this->assertSame($expect[0], $actual[0]->getRow()->getArrayCopy());
+        $this->assertSame($expect[1], $actual[1]->getRow()->getArrayCopy());
+        $this->assertSame($expect[2], $actual[2]->getRow()->getArrayCopy());
+        $this->assertSame($expect[3], $actual[3]->getRow()->getArrayCopy());
+        $this->assertSame($expect[4], $actual[4]->getRow()->getArrayCopy());
+        $this->assertSame($expect[5], $actual[5]->getRow()->getArrayCopy());
 
-        $again = $this->mapper->fetchRecordsBySelect($select, 'id');
+        $again = $this->mapper->fetchRecordsBySelect($select);
         $this->assertTrue(is_array($again));
         $this->assertCount(6, $again);
-        $this->assertInstanceOf(Record::CLASS, $again['1']);
-        $this->assertInstanceOf(Record::CLASS, $again['2']);
-        $this->assertInstanceOf(Record::CLASS, $again['3']);
-        $this->assertInstanceOf(Record::CLASS, $again['4']);
-        $this->assertInstanceOf(Record::CLASS, $again['5']);
-        $this->assertInstanceOf(Record::CLASS, $again['6']);
-        $this->assertSame($actual['1']->getRow(), $again['1']->getRow());
-        $this->assertSame($actual['2']->getRow(), $again['2']->getRow());
-        $this->assertSame($actual['3']->getRow(), $again['3']->getRow());
-        $this->assertSame($actual['4']->getRow(), $again['4']->getRow());
-        $this->assertSame($actual['5']->getRow(), $again['5']->getRow());
-        $this->assertSame($actual['6']->getRow(), $again['6']->getRow());
+        $this->assertInstanceOf(Record::CLASS, $again[0]);
+        $this->assertInstanceOf(Record::CLASS, $again[1]);
+        $this->assertInstanceOf(Record::CLASS, $again[2]);
+        $this->assertInstanceOf(Record::CLASS, $again[3]);
+        $this->assertInstanceOf(Record::CLASS, $again[4]);
+        $this->assertInstanceOf(Record::CLASS, $again[5]);
+        $this->assertSame($actual[0]->getRow(), $again[0]->getRow());
+        $this->assertSame($actual[1]->getRow(), $again[1]->getRow());
+        $this->assertSame($actual[2]->getRow(), $again[2]->getRow());
+        $this->assertSame($actual[3]->getRow(), $again[3]->getRow());
+        $this->assertSame($actual[4]->getRow(), $again[4]->getRow());
+        $this->assertSame($actual[5]->getRow(), $again[5]->getRow());
 
         $select = $this->mapper->select(['building' => '99']);
-        $actual = $this->mapper->fetchRecordsBySelect($select, 'id');
+        $actual = $this->mapper->fetchRecordsBySelect($select);
         $this->assertSame(array(), $actual);
     }
 
@@ -471,180 +471,180 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(array(), $actual);
     }
 
-    public function testFetchRecordSets()
-    {
-        $expect = [
-            1 => [
-                0 => [
-                    'id' => '1',
-                    'name' => 'Anna',
-                    'building' => '1',
-                    'floor' => '1',
-                ],
-                1 => [
-                    'id' => '4',
-                    'name' => 'Donna',
-                    'building' => '1',
-                    'floor' => '1',
-                ],
-            ],
-            2 => [
-                0 => [
-                    'id' => '2',
-                    'name' => 'Betty',
-                    'building' => '1',
-                    'floor' => '2',
-                ],
-                1 => [
-                    'id' => '5',
-                    'name' => 'Edna',
-                    'building' => '1',
-                    'floor' => '2',
-                ],
-            ],
-            3 => [
-                0 => [
-                    'id' => '3',
-                    'name' => 'Clara',
-                    'building' => '1',
-                    'floor' => '3',
-                ],
-                1 => [
-                    'id' => '6',
-                    'name' => 'Fiona',
-                    'building' => '1',
-                    'floor' => '3',
-                ],
-            ],
-        ];
+    // public function testFetchRecordSets()
+    // {
+    //     $expect = [
+    //         1 => [
+    //             0 => [
+    //                 'id' => '1',
+    //                 'name' => 'Anna',
+    //                 'building' => '1',
+    //                 'floor' => '1',
+    //             ],
+    //             1 => [
+    //                 'id' => '4',
+    //                 'name' => 'Donna',
+    //                 'building' => '1',
+    //                 'floor' => '1',
+    //             ],
+    //         ],
+    //         2 => [
+    //             0 => [
+    //                 'id' => '2',
+    //                 'name' => 'Betty',
+    //                 'building' => '1',
+    //                 'floor' => '2',
+    //             ],
+    //             1 => [
+    //                 'id' => '5',
+    //                 'name' => 'Edna',
+    //                 'building' => '1',
+    //                 'floor' => '2',
+    //             ],
+    //         ],
+    //         3 => [
+    //             0 => [
+    //                 'id' => '3',
+    //                 'name' => 'Clara',
+    //                 'building' => '1',
+    //                 'floor' => '3',
+    //             ],
+    //             1 => [
+    //                 'id' => '6',
+    //                 'name' => 'Fiona',
+    //                 'building' => '1',
+    //                 'floor' => '3',
+    //             ],
+    //         ],
+    //     ];
 
-        $actualRecordSets = $this->mapper->fetchRecordSets([1, 2, 3, 4, 5, 6], 'floor');
-        $this->assertTrue(is_array($actualRecordSets));
-        $this->assertCount(3, $actualRecordSets);
-        foreach ($actualRecordSets as $floor => $actualRecordSet) {
-            $this->assertInstanceOf(RecordSet::CLASS, $actualRecordSet);
-            $this->assertCount(2, $actualRecordSet);
-            $this->assertSame($expect[$floor][0], $actualRecordSet[0]->getRow()->getArrayCopy());
-            $this->assertSame($expect[$floor][1], $actualRecordSet[1]->getRow()->getArrayCopy());
-        }
-    }
+    //     $actualRecordSets = $this->mapper->fetchRecordSets([1, 2, 3, 4, 5, 6], 'floor');
+    //     $this->assertTrue(is_array($actualRecordSets));
+    //     $this->assertCount(3, $actualRecordSets);
+    //     foreach ($actualRecordSets as $floor => $actualRecordSet) {
+    //         $this->assertInstanceOf(RecordSet::CLASS, $actualRecordSet);
+    //         $this->assertCount(2, $actualRecordSet);
+    //         $this->assertSame($expect[$floor][0], $actualRecordSet[0]->getRow()->getArrayCopy());
+    //         $this->assertSame($expect[$floor][1], $actualRecordSet[1]->getRow()->getArrayCopy());
+    //     }
+    // }
 
-    public function testFetchRecordSetsBy()
-    {
-        $expect = [
-            1 => [
-                0 => [
-                    'id' => '1',
-                    'name' => 'Anna',
-                    'building' => '1',
-                    'floor' => '1',
-                ],
-                1 => [
-                    'id' => '4',
-                    'name' => 'Donna',
-                    'building' => '1',
-                    'floor' => '1',
-                ],
-            ],
-            2 => [
-                0 => [
-                    'id' => '2',
-                    'name' => 'Betty',
-                    'building' => '1',
-                    'floor' => '2',
-                ],
-                1 => [
-                    'id' => '5',
-                    'name' => 'Edna',
-                    'building' => '1',
-                    'floor' => '2',
-                ],
-            ],
-            3 => [
-                0 => [
-                    'id' => '3',
-                    'name' => 'Clara',
-                    'building' => '1',
-                    'floor' => '3',
-                ],
-                1 => [
-                    'id' => '6',
-                    'name' => 'Fiona',
-                    'building' => '1',
-                    'floor' => '3',
-                ],
-            ],
-        ];
+    // public function testFetchRecordSetsBy()
+    // {
+    //     $expect = [
+    //         1 => [
+    //             0 => [
+    //                 'id' => '1',
+    //                 'name' => 'Anna',
+    //                 'building' => '1',
+    //                 'floor' => '1',
+    //             ],
+    //             1 => [
+    //                 'id' => '4',
+    //                 'name' => 'Donna',
+    //                 'building' => '1',
+    //                 'floor' => '1',
+    //             ],
+    //         ],
+    //         2 => [
+    //             0 => [
+    //                 'id' => '2',
+    //                 'name' => 'Betty',
+    //                 'building' => '1',
+    //                 'floor' => '2',
+    //             ],
+    //             1 => [
+    //                 'id' => '5',
+    //                 'name' => 'Edna',
+    //                 'building' => '1',
+    //                 'floor' => '2',
+    //             ],
+    //         ],
+    //         3 => [
+    //             0 => [
+    //                 'id' => '3',
+    //                 'name' => 'Clara',
+    //                 'building' => '1',
+    //                 'floor' => '3',
+    //             ],
+    //             1 => [
+    //                 'id' => '6',
+    //                 'name' => 'Fiona',
+    //                 'building' => '1',
+    //                 'floor' => '3',
+    //             ],
+    //         ],
+    //     ];
 
-        $actualRecordSets = $this->mapper->fetchRecordSetsBy(['id' => [1, 2, 3, 4, 5, 6]], 'floor');
-        $this->assertTrue(is_array($actualRecordSets));
-        $this->assertCount(3, $actualRecordSets);
-        foreach ($actualRecordSets as $floor => $actualRecordSet) {
-            $this->assertInstanceOf(RecordSet::CLASS, $actualRecordSet);
-            $this->assertCount(2, $actualRecordSet);
-            $this->assertSame($expect[$floor][0], $actualRecordSet[0]->getRow()->getArrayCopy());
-            $this->assertSame($expect[$floor][1], $actualRecordSet[1]->getRow()->getArrayCopy());
-        }
-    }
+    //     $actualRecordSets = $this->mapper->fetchRecordSetsBy(['id' => [1, 2, 3, 4, 5, 6]], 'floor');
+    //     $this->assertTrue(is_array($actualRecordSets));
+    //     $this->assertCount(3, $actualRecordSets);
+    //     foreach ($actualRecordSets as $floor => $actualRecordSet) {
+    //         $this->assertInstanceOf(RecordSet::CLASS, $actualRecordSet);
+    //         $this->assertCount(2, $actualRecordSet);
+    //         $this->assertSame($expect[$floor][0], $actualRecordSet[0]->getRow()->getArrayCopy());
+    //         $this->assertSame($expect[$floor][1], $actualRecordSet[1]->getRow()->getArrayCopy());
+    //     }
+    // }
 
-    public function testFetchRecordSetsBySelect()
-    {
-        $expect = [
-            1 => [
-                0 => [
-                    'id' => '1',
-                    'name' => 'Anna',
-                    'building' => '1',
-                    'floor' => '1',
-                ],
-                1 => [
-                    'id' => '4',
-                    'name' => 'Donna',
-                    'building' => '1',
-                    'floor' => '1',
-                ],
-            ],
-            2 => [
-                0 => [
-                    'id' => '2',
-                    'name' => 'Betty',
-                    'building' => '1',
-                    'floor' => '2',
-                ],
-                1 => [
-                    'id' => '5',
-                    'name' => 'Edna',
-                    'building' => '1',
-                    'floor' => '2',
-                ],
-            ],
-            3 => [
-                0 => [
-                    'id' => '3',
-                    'name' => 'Clara',
-                    'building' => '1',
-                    'floor' => '3',
-                ],
-                1 => [
-                    'id' => '6',
-                    'name' => 'Fiona',
-                    'building' => '1',
-                    'floor' => '3',
-                ],
-            ],
-        ];
+    // public function testFetchRecordSetsBySelect()
+    // {
+    //     $expect = [
+    //         1 => [
+    //             0 => [
+    //                 'id' => '1',
+    //                 'name' => 'Anna',
+    //                 'building' => '1',
+    //                 'floor' => '1',
+    //             ],
+    //             1 => [
+    //                 'id' => '4',
+    //                 'name' => 'Donna',
+    //                 'building' => '1',
+    //                 'floor' => '1',
+    //             ],
+    //         ],
+    //         2 => [
+    //             0 => [
+    //                 'id' => '2',
+    //                 'name' => 'Betty',
+    //                 'building' => '1',
+    //                 'floor' => '2',
+    //             ],
+    //             1 => [
+    //                 'id' => '5',
+    //                 'name' => 'Edna',
+    //                 'building' => '1',
+    //                 'floor' => '2',
+    //             ],
+    //         ],
+    //         3 => [
+    //             0 => [
+    //                 'id' => '3',
+    //                 'name' => 'Clara',
+    //                 'building' => '1',
+    //                 'floor' => '3',
+    //             ],
+    //             1 => [
+    //                 'id' => '6',
+    //                 'name' => 'Fiona',
+    //                 'building' => '1',
+    //                 'floor' => '3',
+    //             ],
+    //         ],
+    //     ];
 
-        $select = $this->mapper->select(['id' => [1, 2, 3, 4, 5, 6]]);
-        $actualRecordSets = $this->mapper->fetchRecordSetsBySelect($select, 'floor');
-        $this->assertTrue(is_array($actualRecordSets));
-        $this->assertCount(3, $actualRecordSets);
-        foreach ($actualRecordSets as $floor => $actualRecordSet) {
-            $this->assertInstanceOf(RecordSet::CLASS, $actualRecordSet);
-            $this->assertCount(2, $actualRecordSet);
-            $this->assertSame($expect[$floor][0], $actualRecordSet[0]->getRow()->getArrayCopy());
-            $this->assertSame($expect[$floor][1], $actualRecordSet[1]->getRow()->getArrayCopy());
-        }
-    }
+    //     $select = $this->mapper->select(['id' => [1, 2, 3, 4, 5, 6]]);
+    //     $actualRecordSets = $this->mapper->fetchRecordSetsBySelect($select, 'floor');
+    //     $this->assertTrue(is_array($actualRecordSets));
+    //     $this->assertCount(3, $actualRecordSets);
+    //     foreach ($actualRecordSets as $floor => $actualRecordSet) {
+    //         $this->assertInstanceOf(RecordSet::CLASS, $actualRecordSet);
+    //         $this->assertCount(2, $actualRecordSet);
+    //         $this->assertSame($expect[$floor][0], $actualRecordSet[0]->getRow()->getArrayCopy());
+    //         $this->assertSame($expect[$floor][1], $actualRecordSet[1]->getRow()->getArrayCopy());
+    //     }
+    // }
 
     public function testInsert()
     {

@@ -25,23 +25,21 @@ class OneToMany extends AbstractRelationship
     ) {
         $this->fix($atlas);
 
-        $foreignColVals = array();
-        foreach ($recordSet as $record) {
-            $foreignColVals[] = $record->{$this->nativeCol};
-        }
-        array_unique($foreignColVals);
-
-        $colsVals = [$this->foreignCol => $foreignColVals];
+        $colsVals = [$this->foreignCol => $recordSet->getUniqueVals($this->nativeCol)];
         $select = $atlas->select($this->foreignMapperClass, $colsVals, $custom);
-        $related = $this->foreignMapper->fetchRecordsBySelect(
-            $select,
-            $this->foreignCol,
-            $custom
-        );
+        $foreignRecordSet = $select->fetchRecordSet();
 
-        foreach ($rows as &$row) {
+        $foreignGroups = array();
+        if ($foreignRecordSet) {
+            $foreignGroups = $foreignRecordSet->getGroupsBy($this->foreignCol);
+        }
+
+        foreach ($recordSet as $record) {
+            $record->{$this->field} = array(); // not false
             $key = $record->{$this->nativeCol};
-            $record->{$this->field} = $related[$key][0];
+            if (isset($foreignGroups[$key])) {
+                $record->{$this->field} = $foreignGroups[$key]; // not [$key][0]
+            }
         }
     }
 }

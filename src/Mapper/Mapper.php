@@ -114,15 +114,15 @@ class Mapper
         return $this->groupRecords($rows);
     }
 
-    public function fetchRecordsBy($colsVals, $col, callable $custom = null)
+    public function fetchRecordsBy($colsVals, callable $custom = null)
     {
-        $rows = $this->table->fetchRowsBy($colsVals, $col, $custom);
+        $rows = $this->table->fetchRowsBy($colsVals, $custom);
         return $this->groupRecords($rows);
     }
 
-    public function fetchRecordsBySelect(TableSelect $tableSelect, $col)
+    public function fetchRecordsBySelect(TableSelect $tableSelect)
     {
-        $rows = $this->table->fetchRowsBySelect($tableSelect, $col);
+        $rows = $this->table->fetchRowsBySelect($tableSelect);
         return $this->groupRecords($rows);
     }
 
@@ -162,32 +162,32 @@ class Mapper
         return $this->newRecordSet($rowSet);
     }
 
-    public function fetchRecordSets($primaryVals, $col)
-    {
-        $rowSets = $this->table->fetchRowSets($primaryVals, $col);
-        return $this->groupRecordSets($rowSets);
-    }
+    // public function fetchRecordSets($primaryVals, $col)
+    // {
+    //     $rowSets = $this->table->fetchRowSets($primaryVals, $col);
+    //     return $this->groupRecordSets($rowSets);
+    // }
 
-    public function fetchRecordSetsBy($colsVals, $col, callable $custom = null)
-    {
-        $rowSets = $this->table->fetchRowSetsBy($colsVals, $col, $custom);
-        return $this->groupRecordSets($rowSets);
-    }
+    // public function fetchRecordSetsBy($colsVals, $col, callable $custom = null)
+    // {
+    //     $rowSets = $this->table->fetchRowSetsBy($colsVals, $col, $custom);
+    //     return $this->groupRecordSets($rowSets);
+    // }
 
-    public function fetchRecordSetsBySelect(TableSelect $tableSelect, $col)
-    {
-        $rowSets = $this->table->fetchRowSetsBySelect($tableSelect, $col);
-        return $this->groupRecordSets($rowSets);
-    }
+    // public function fetchRecordSetsBySelect(TableSelect $tableSelect, $col)
+    // {
+    //     $rowSets = $this->table->fetchRowSetsBySelect($tableSelect, $col);
+    //     return $this->groupRecordSets($rowSets);
+    // }
 
-    protected function groupRecordSets(array $rowSets)
-    {
-        $recordSets = [];
-        foreach ($rowSets as $key => $rowSet) {
-            $recordSets[$key] = $this->newRecordSet($rowSet);
-        }
-        return $recordSets;
-    }
+    // protected function groupRecordSets(array $rowSets)
+    // {
+    //     $recordSets = [];
+    //     foreach ($rowSets as $key => $rowSet) {
+    //         $recordSets[$key] = $this->newRecordSet($rowSet);
+    //     }
+    //     return $recordSets;
+    // }
 
     public function select(array $colsVals = [])
     {

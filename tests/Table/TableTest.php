@@ -105,19 +105,19 @@ class TableTest extends \PHPUnit_Framework_TestCase
     public function testFetchRows()
     {
         $expect = [
-            '1' => [
+            [
                 'id' => '1',
                 'name' => 'Anna',
                 'building' => '1',
                 'floor' => '1',
             ],
-            '2' => [
+            [
                 'id' => '2',
                 'name' => 'Betty',
                 'building' => '1',
                 'floor' => '2',
             ],
-            '3' => [
+            [
                 'id' => '3',
                 'name' => 'Clara',
                 'building' => '1',
@@ -127,21 +127,21 @@ class TableTest extends \PHPUnit_Framework_TestCase
 
         $actual = $this->table->fetchRows([1, 2, 3]);
         $this->assertCount(3, $actual);
-        $this->assertInstanceOf(Row::CLASS, $actual['1']);
-        $this->assertInstanceOf(Row::CLASS, $actual['2']);
-        $this->assertInstanceOf(Row::CLASS, $actual['3']);
-        $this->assertSame($expect['1'], $actual['1']->getArrayCopy());
-        $this->assertSame($expect['2'], $actual['2']->getArrayCopy());
-        $this->assertSame($expect['3'], $actual['3']->getArrayCopy());
+        $this->assertInstanceOf(Row::CLASS, $actual[0]);
+        $this->assertInstanceOf(Row::CLASS, $actual[1]);
+        $this->assertInstanceOf(Row::CLASS, $actual[2]);
+        $this->assertSame($expect[0], $actual[0]->getArrayCopy());
+        $this->assertSame($expect[1], $actual[1]->getArrayCopy());
+        $this->assertSame($expect[2], $actual[2]->getArrayCopy());
 
         $again = $this->table->fetchRows([1, 2, 3]);
         $this->assertCount(3, $again);
-        $this->assertInstanceOf(Row::CLASS, $again['1']);
-        $this->assertInstanceOf(Row::CLASS, $again['2']);
-        $this->assertInstanceOf(Row::CLASS, $again['3']);
-        $this->assertSame($actual['1'], $again['1']);
-        $this->assertSame($actual['2'], $again['2']);
-        $this->assertSame($actual['3'], $again['3']);
+        $this->assertInstanceOf(Row::CLASS, $again[0]);
+        $this->assertInstanceOf(Row::CLASS, $again[1]);
+        $this->assertInstanceOf(Row::CLASS, $again[2]);
+        $this->assertSame($actual[0], $again[0]);
+        $this->assertSame($actual[1], $again[1]);
+        $this->assertSame($actual[2], $again[2]);
 
         $actual = $this->table->fetchRows([997, 998, 999]);
         $this->assertSame(array(), $actual);
@@ -150,37 +150,37 @@ class TableTest extends \PHPUnit_Framework_TestCase
     public function testFetchRowsBy()
     {
         $expect = array (
-            '1' => array (
+            array (
                 'id' => '1',
                 'name' => 'Anna',
                 'building' => '1',
                 'floor' => '1',
             ),
-            '2' => array (
+            array (
                 'id' => '2',
                 'name' => 'Betty',
                 'building' => '1',
                 'floor' => '2',
             ),
-            '3' => array (
+            array (
                 'id' => '3',
                 'name' => 'Clara',
                 'building' => '1',
                 'floor' => '3',
             ),
-            '4' => array (
+            array (
                 'id' => '4',
                 'name' => 'Donna',
                 'building' => '1',
                 'floor' => '1',
             ),
-            '5' => array (
+            array (
                 'id' => '5',
                 'name' => 'Edna',
                 'building' => '1',
                 'floor' => '2',
             ),
-            '6' => array (
+            array (
                 'id' => '6',
                 'name' => 'Fiona',
                 'building' => '1',
@@ -188,38 +188,38 @@ class TableTest extends \PHPUnit_Framework_TestCase
             ),
         );
 
-        $actual = $this->table->fetchRowsBy(['building' => '1'], 'id');
+        $actual = $this->table->fetchRowsBy(['building' => '1']);
         $this->assertTrue(is_array($actual));
         $this->assertCount(6, $actual);
-        $this->assertInstanceOf(Row::CLASS, $actual['1']);
-        $this->assertInstanceOf(Row::CLASS, $actual['2']);
-        $this->assertInstanceOf(Row::CLASS, $actual['3']);
-        $this->assertInstanceOf(Row::CLASS, $actual['4']);
-        $this->assertInstanceOf(Row::CLASS, $actual['5']);
-        $this->assertInstanceOf(Row::CLASS, $actual['6']);
-        $this->assertSame($expect['1'], $actual['1']->getArrayCopy());
-        $this->assertSame($expect['2'], $actual['2']->getArrayCopy());
-        $this->assertSame($expect['3'], $actual['3']->getArrayCopy());
-        $this->assertSame($expect['4'], $actual['4']->getArrayCopy());
-        $this->assertSame($expect['5'], $actual['5']->getArrayCopy());
-        $this->assertSame($expect['6'], $actual['6']->getArrayCopy());
+        $this->assertInstanceOf(Row::CLASS, $actual[0]);
+        $this->assertInstanceOf(Row::CLASS, $actual[1]);
+        $this->assertInstanceOf(Row::CLASS, $actual[2]);
+        $this->assertInstanceOf(Row::CLASS, $actual[3]);
+        $this->assertInstanceOf(Row::CLASS, $actual[4]);
+        $this->assertInstanceOf(Row::CLASS, $actual[5]);
+        $this->assertSame($expect[0], $actual[0]->getArrayCopy());
+        $this->assertSame($expect[1], $actual[1]->getArrayCopy());
+        $this->assertSame($expect[2], $actual[2]->getArrayCopy());
+        $this->assertSame($expect[3], $actual[3]->getArrayCopy());
+        $this->assertSame($expect[4], $actual[4]->getArrayCopy());
+        $this->assertSame($expect[5], $actual[5]->getArrayCopy());
 
-        $again = $this->table->fetchRowsBy(['building' => '1'], 'id');
+        $again = $this->table->fetchRowsBy(['building' => '1']);
         $this->assertCount(6, $again);
-        $this->assertInstanceOf(Row::CLASS, $again['1']);
-        $this->assertInstanceOf(Row::CLASS, $again['2']);
-        $this->assertInstanceOf(Row::CLASS, $again['3']);
-        $this->assertInstanceOf(Row::CLASS, $again['4']);
-        $this->assertInstanceOf(Row::CLASS, $again['5']);
-        $this->assertInstanceOf(Row::CLASS, $again['6']);
-        $this->assertSame($actual['1'], $again['1']);
-        $this->assertSame($actual['2'], $again['2']);
-        $this->assertSame($actual['3'], $again['3']);
-        $this->assertSame($actual['4'], $again['4']);
-        $this->assertSame($actual['5'], $again['5']);
-        $this->assertSame($actual['6'], $again['6']);
+        $this->assertInstanceOf(Row::CLASS, $again[0]);
+        $this->assertInstanceOf(Row::CLASS, $again[1]);
+        $this->assertInstanceOf(Row::CLASS, $again[2]);
+        $this->assertInstanceOf(Row::CLASS, $again[3]);
+        $this->assertInstanceOf(Row::CLASS, $again[4]);
+        $this->assertInstanceOf(Row::CLASS, $again[5]);
+        $this->assertSame($actual[0], $again[0]);
+        $this->assertSame($actual[1], $again[1]);
+        $this->assertSame($actual[2], $again[2]);
+        $this->assertSame($actual[3], $again[3]);
+        $this->assertSame($actual[4], $again[4]);
+        $this->assertSame($actual[5], $again[5]);
 
-        $actual = $this->table->fetchRowsBy(['building' => '99'], 'id');
+        $actual = $this->table->fetchRowsBy(['building' => '99']);
         $this->assertSame(array(), $actual);
     }
 
@@ -307,121 +307,121 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(array(), $actual);
     }
 
-    public function testFetchRowSets()
-    {
-        $expect = [
-            1 => [
-                0 => [
-                    'id' => '1',
-                    'name' => 'Anna',
-                    'building' => '1',
-                    'floor' => '1',
-                ],
-                1 => [
-                    'id' => '4',
-                    'name' => 'Donna',
-                    'building' => '1',
-                    'floor' => '1',
-                ],
-            ],
-            2 => [
-                0 => [
-                    'id' => '2',
-                    'name' => 'Betty',
-                    'building' => '1',
-                    'floor' => '2',
-                ],
-                1 => [
-                    'id' => '5',
-                    'name' => 'Edna',
-                    'building' => '1',
-                    'floor' => '2',
-                ],
-            ],
-            3 => [
-                0 => [
-                    'id' => '3',
-                    'name' => 'Clara',
-                    'building' => '1',
-                    'floor' => '3',
-                ],
-                1 => [
-                    'id' => '6',
-                    'name' => 'Fiona',
-                    'building' => '1',
-                    'floor' => '3',
-                ],
-            ],
-        ];
+    // public function testFetchRowSets()
+    // {
+    //     $expect = [
+    //         1 => [
+    //             0 => [
+    //                 'id' => '1',
+    //                 'name' => 'Anna',
+    //                 'building' => '1',
+    //                 'floor' => '1',
+    //             ],
+    //             1 => [
+    //                 'id' => '4',
+    //                 'name' => 'Donna',
+    //                 'building' => '1',
+    //                 'floor' => '1',
+    //             ],
+    //         ],
+    //         2 => [
+    //             0 => [
+    //                 'id' => '2',
+    //                 'name' => 'Betty',
+    //                 'building' => '1',
+    //                 'floor' => '2',
+    //             ],
+    //             1 => [
+    //                 'id' => '5',
+    //                 'name' => 'Edna',
+    //                 'building' => '1',
+    //                 'floor' => '2',
+    //             ],
+    //         ],
+    //         3 => [
+    //             0 => [
+    //                 'id' => '3',
+    //                 'name' => 'Clara',
+    //                 'building' => '1',
+    //                 'floor' => '3',
+    //             ],
+    //             1 => [
+    //                 'id' => '6',
+    //                 'name' => 'Fiona',
+    //                 'building' => '1',
+    //                 'floor' => '3',
+    //             ],
+    //         ],
+    //     ];
 
-        $actualRowSets = $this->table->fetchRowSets([1, 2, 3, 4, 5, 6], 'floor');
-        $this->assertTrue(is_array($actualRowSets));
-        $this->assertCount(3, $actualRowSets);
-        foreach ($actualRowSets as $floor => $actualRowSet) {
-            $this->assertInstanceOf(RowSet::CLASS, $actualRowSet);
-            $this->assertCount(2, $actualRowSet);
-            $this->assertSame($expect[$floor][0], $actualRowSet[0]->getArrayCopy());
-            $this->assertSame($expect[$floor][1], $actualRowSet[1]->getArrayCopy());
-        }
-    }
+    //     $actualRowSets = $this->table->fetchRowSets([1, 2, 3, 4, 5, 6], 'floor');
+    //     $this->assertTrue(is_array($actualRowSets));
+    //     $this->assertCount(3, $actualRowSets);
+    //     foreach ($actualRowSets as $floor => $actualRowSet) {
+    //         $this->assertInstanceOf(RowSet::CLASS, $actualRowSet);
+    //         $this->assertCount(2, $actualRowSet);
+    //         $this->assertSame($expect[$floor][0], $actualRowSet[0]->getArrayCopy());
+    //         $this->assertSame($expect[$floor][1], $actualRowSet[1]->getArrayCopy());
+    //     }
+    // }
 
-    public function testFetchRowSetsBy()
-    {
-        $expect = [
-            1 => [
-                0 => [
-                    'id' => '1',
-                    'name' => 'Anna',
-                    'building' => '1',
-                    'floor' => '1',
-                ],
-                1 => [
-                    'id' => '4',
-                    'name' => 'Donna',
-                    'building' => '1',
-                    'floor' => '1',
-                ],
-            ],
-            2 => [
-                0 => [
-                    'id' => '2',
-                    'name' => 'Betty',
-                    'building' => '1',
-                    'floor' => '2',
-                ],
-                1 => [
-                    'id' => '5',
-                    'name' => 'Edna',
-                    'building' => '1',
-                    'floor' => '2',
-                ],
-            ],
-            3 => [
-                0 => [
-                    'id' => '3',
-                    'name' => 'Clara',
-                    'building' => '1',
-                    'floor' => '3',
-                ],
-                1 => [
-                    'id' => '6',
-                    'name' => 'Fiona',
-                    'building' => '1',
-                    'floor' => '3',
-                ],
-            ],
-        ];
+    // public function testFetchRowSetsBy()
+    // {
+    //     $expect = [
+    //         1 => [
+    //             0 => [
+    //                 'id' => '1',
+    //                 'name' => 'Anna',
+    //                 'building' => '1',
+    //                 'floor' => '1',
+    //             ],
+    //             1 => [
+    //                 'id' => '4',
+    //                 'name' => 'Donna',
+    //                 'building' => '1',
+    //                 'floor' => '1',
+    //             ],
+    //         ],
+    //         2 => [
+    //             0 => [
+    //                 'id' => '2',
+    //                 'name' => 'Betty',
+    //                 'building' => '1',
+    //                 'floor' => '2',
+    //             ],
+    //             1 => [
+    //                 'id' => '5',
+    //                 'name' => 'Edna',
+    //                 'building' => '1',
+    //                 'floor' => '2',
+    //             ],
+    //         ],
+    //         3 => [
+    //             0 => [
+    //                 'id' => '3',
+    //                 'name' => 'Clara',
+    //                 'building' => '1',
+    //                 'floor' => '3',
+    //             ],
+    //             1 => [
+    //                 'id' => '6',
+    //                 'name' => 'Fiona',
+    //                 'building' => '1',
+    //                 'floor' => '3',
+    //             ],
+    //         ],
+    //     ];
 
-        $actualRowSets = $this->table->fetchRowSetsBy(['id' => [1, 2, 3, 4, 5, 6]], 'floor');
-        $this->assertTrue(is_array($actualRowSets));
-        $this->assertCount(3, $actualRowSets);
-        foreach ($actualRowSets as $floor => $actualRowSet) {
-            $this->assertInstanceOf(RowSet::CLASS, $actualRowSet);
-            $this->assertCount(2, $actualRowSet);
-            $this->assertSame($expect[$floor][0], $actualRowSet[0]->getArrayCopy());
-            $this->assertSame($expect[$floor][1], $actualRowSet[1]->getArrayCopy());
-        }
-    }
+    //     $actualRowSets = $this->table->fetchRowSetsBy(['id' => [1, 2, 3, 4, 5, 6]], 'floor');
+    //     $this->assertTrue(is_array($actualRowSets));
+    //     $this->assertCount(3, $actualRowSets);
+    //     foreach ($actualRowSets as $floor => $actualRowSet) {
+    //         $this->assertInstanceOf(RowSet::CLASS, $actualRowSet);
+    //         $this->assertCount(2, $actualRowSet);
+    //         $this->assertSame($expect[$floor][0], $actualRowSet[0]->getArrayCopy());
+    //         $this->assertSame($expect[$floor][1], $actualRowSet[1]->getArrayCopy());
+    //     }
+    // }
 
     public function testInsert()
     {
