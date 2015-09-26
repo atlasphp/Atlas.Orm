@@ -2,6 +2,7 @@
 namespace Atlas\Mapper;
 
 use Atlas\Atlas;
+use Atlas\Exception;
 use Atlas\Mapper\Mapper;
 use Atlas\Relationship\ManyToMany;
 use Atlas\Relationship\ManyToOne;
@@ -48,6 +49,10 @@ class Relations
 
     public function set($name, $relationClass, $foreignMapperClass, $joinField = null)
     {
+        if (! class_exists($foreignMapperClass)) {
+            throw new Exception("$foreignMapperClass does not exist");
+        }
+
         $relation = new $relationClass(
             $this->nativeMapperClass,
             $name,

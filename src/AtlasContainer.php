@@ -81,12 +81,17 @@ class AtlasContainer
 
     public function setMapper($mapperClass, $tableClass = null)
     {
-        // @todo -- class_exists($mapperClass) check?
+        if (! class_exists($mapperClass)) {
+            throw new Exception("$mapperClass does not exist");
+        }
 
         if (! $tableClass) {
             // Foo\Bar\BazMapper => Foo\Bar\BazTable
             $tableClass = substr($mapperClass, 0, -6) . 'Table';
-            // @todo -- class_exists($tableClass) check?
+        }
+
+        if (! class_exists($tableClass)) {
+            throw new Exception("$tableClass does not exist");
         }
 
         if (! $this->tableLocator->has($tableClass)) {
