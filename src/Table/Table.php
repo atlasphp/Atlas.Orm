@@ -368,42 +368,6 @@ class Table
         return $this->newRowSet($rows);
     }
 
-    // public function fetchRowSets($primaryVals, $col)
-    // {
-    //     $rows = $this->fetchRows($primaryVals);
-    //     $groups = [];
-    //     foreach ($rows as $row) {
-    //         $groups[$row->$col][] = $row;
-    //     }
-    //     return $this->rowSetsFromGroups($groups);
-    // }
-
-    // public function fetchRowSetsBy(array $colsVals, $col)
-    // {
-    //     $select = $this->select($colsVals);
-    //     return $this->fetchRowSetsBySelect($select, $col);
-    // }
-
-    // public function fetchRowSetsBySelect(TableSelect $select, $col)
-    // {
-    //     $data = $select->cols($this->getCols())->fetchAll();
-    //     $groups = [];
-    //     foreach ($data as $cols) {
-    //         $row = $this->getMappedOrNewRow($cols);
-    //         $groups[$row->$col][] = $row;
-    //     }
-    //     return $this->rowSetsFromGroups($groups);
-    // }
-
-    // protected function rowSetsFromGroups($groups)
-    // {
-    //     $rowSets = [];
-    //     foreach ($groups as $key => $rows) {
-    //         $rowSets[$key] = $this->newRowSet($rows);
-    //     }
-    //     return $rowSets;
-    // }
-
     protected function getMappedOrNewRow(array $cols)
     {
         $primaryVal = $cols[$this->getPrimary()];

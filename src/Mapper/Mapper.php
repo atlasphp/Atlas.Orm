@@ -162,33 +162,6 @@ class Mapper
         return $this->newRecordSet($rowSet);
     }
 
-    // public function fetchRecordSets($primaryVals, $col)
-    // {
-    //     $rowSets = $this->table->fetchRowSets($primaryVals, $col);
-    //     return $this->groupRecordSets($rowSets);
-    // }
-
-    // public function fetchRecordSetsBy($colsVals, $col, callable $custom = null)
-    // {
-    //     $rowSets = $this->table->fetchRowSetsBy($colsVals, $col, $custom);
-    //     return $this->groupRecordSets($rowSets);
-    // }
-
-    // public function fetchRecordSetsBySelect(TableSelect $tableSelect, $col)
-    // {
-    //     $rowSets = $this->table->fetchRowSetsBySelect($tableSelect, $col);
-    //     return $this->groupRecordSets($rowSets);
-    // }
-
-    // protected function groupRecordSets(array $rowSets)
-    // {
-    //     $recordSets = [];
-    //     foreach ($rowSets as $key => $rowSet) {
-    //         $recordSets[$key] = $this->newRecordSet($rowSet);
-    //     }
-    //     return $recordSets;
-    // }
-
     public function select(array $colsVals = [])
     {
         return $this->getTable()->select($colsVals);
