@@ -78,7 +78,6 @@ class ManyToMany extends AbstractRelationship
             );
         }
         $foreignColVals = array_unique($foreignColVals);
-        var_dump($foreignColVals);
 
         $colsVals = [$this->foreignCol => $foreignColVals];
         $select = $atlas->select($this->foreignMapperClass, $colsVals, $custom);
