@@ -271,7 +271,7 @@ class Table
             add row in set on ID key
         return rows
     */
-    public function fetchRows($primaryVals)
+    public function fetchRowSet(array $primaryVals)
     {
         // pre-empt working on empty array
         if (! $primaryVals) {
@@ -289,8 +289,12 @@ class Table
             }
         }
 
-        // done
-        return array_values($rows);
+        // anything left?
+        if (! $rows) {
+            return array();
+        }
+
+        return $this->newRowSet(array_values($rows));
     }
 
     // get existing rows from identity map
@@ -323,13 +327,13 @@ class Table
         }
     }
 
-    public function fetchRowsBy(array $colsVals, callable $custom = null)
+    public function fetchRowSetBy(array $colsVals, callable $custom = null)
     {
         $select = $this->select($colsVals, $custom);
-        return $this->fetchRowsBySelect($select);
+        return $this->fetchRowSetBySelect($select);
     }
 
-    public function fetchRowsBySelect(TableSelect $select)
+    public function fetchRowSetBySelect(TableSelect $select)
     {
         $data = $select->cols($this->getCols())->fetchAll();
         if (! $data) {
@@ -341,30 +345,6 @@ class Table
             $rows[] = $this->getMappedOrNewRow($cols);
         }
 
-        return $rows;
-    }
-
-    public function fetchRowSet(array $primaryVals)
-    {
-        $rows = $this->fetchRows($primaryVals, $this->getPrimary());
-        if (! $rows) {
-            return array();
-        }
-        return $this->newRowSet(array_values($rows));
-    }
-
-    public function fetchRowSetBy(array $colsVals, callable $custom = null)
-    {
-        $select = $this->select($colsVals, $custom);
-        return $this->fetchRowSetBySelect($select);
-    }
-
-    public function fetchRowSetBySelect(TableSelect $select)
-    {
-        $rows = $this->fetchRowsBySelect($select);
-        if (! $rows) {
-            return array();
-        }
         return $this->newRowSet($rows);
     }
 
@@ -385,6 +365,10 @@ class Table
         return new $rowClass($cols, $this->getPrimary());
     }
 
+    /**
+     * @todo Throw Exception when custom class does not exist.
+     * @todo Set this value in the constructor?
+     */
     public function getRowClass()
     {
         if (! $this->rowClass) {
@@ -406,6 +390,10 @@ class Table
         return new $rowSetClass($rows);
     }
 
+    /**
+     * @todo Throw Exception when custom class does not exist.
+     * @todo Set this value in the constructor?
+     */
     public function getRowSetClass()
     {
         if (! $this->rowSetClass) {

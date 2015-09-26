@@ -108,33 +108,6 @@ class Mapper
         return $record;
     }
 
-    public function fetchRecords($primaryVals)
-    {
-        $rows = $this->table->fetchRows($primaryVals);
-        return $this->groupRecords($rows);
-    }
-
-    public function fetchRecordsBy($colsVals, callable $custom = null)
-    {
-        $rows = $this->table->fetchRowsBy($colsVals, $custom);
-        return $this->groupRecords($rows);
-    }
-
-    public function fetchRecordsBySelect(TableSelect $tableSelect)
-    {
-        $rows = $this->table->fetchRowsBySelect($tableSelect);
-        return $this->groupRecords($rows);
-    }
-
-    protected function groupRecords(array $rows)
-    {
-        $records = [];
-        foreach ($rows as $key => $row) {
-            $records[$key] = $this->newRecord($row);
-        }
-        return $records;
-    }
-
     public function fetchRecordSet(array $primaryVals)
     {
         $rowSet = $this->table->fetchRowSet($primaryVals);
@@ -182,6 +155,10 @@ class Mapper
         return $this->getTable()->delete($record->getRow());
     }
 
+    /**
+     * @todo Throw Exception when custom class does not exist.
+     * @todo Set this value in the constructor?
+     */
     public function getRecordClass()
     {
         if (! $this->recordClass) {
@@ -197,6 +174,10 @@ class Mapper
         return $this->recordClass;
     }
 
+    /**
+     * @todo Throw Exception when custom class does not exist.
+     * @todo Set this value in the constructor?
+     */
     public function getRecordSetClass()
     {
         if (! $this->recordSetClass) {
