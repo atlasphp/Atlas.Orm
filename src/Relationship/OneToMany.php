@@ -26,13 +26,15 @@ class OneToMany extends AbstractRelationship
         $this->fix($atlas);
 
         $foreignColVals = array();
-        foreach ($rows as $row) {
+        foreach ($recordSet as $record) {
             $foreignColVals[] = $record->{$this->nativeCol};
         }
         array_unique($foreignColVals);
 
-        $related = $this->foreignMapper->fetchRecordSetsBy(
-            [$this->foreignCol => $foreignColVals],
+        $colsVals = [$this->foreignCol => $foreignColVals];
+        $select = $atlas->select($this->foreignMapperClass, $colsVals, $custom);
+        $related = $this->foreignMapper->fetchRecordsBySelect(
+            $select,
             $this->foreignCol,
             $custom
         );

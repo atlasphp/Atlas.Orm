@@ -33,11 +33,10 @@ class ManyToOne extends AbstractRelationship
         callable $custom = null
     ) {
         $this->fix($atlas);
-
-        $record->{$this->field} = $this->foreignMapper->fetchRecordBy(
-            [$this->foreignCol => $record->{$this->nativeCol}],
-            $custom
-        );
+        $colsVals = [$this->foreignCol => $record->{$this->nativeCol}];
+        $select = $atlas->select($this->foreignMapperClass, $colsVals, $custom);
+        $record->{$this->field} = $select->fetchRecord();
+        $this->fix($atlas);
     }
 
     public function stitchIntoRecordSet(

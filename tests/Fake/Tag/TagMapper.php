@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Fake\Tag;
 
-use Atlas\Fake\Thread2TagMapper;
-use Atlas\Fake\ThreadMapper;
+use Atlas\Fake\Thread2Tag\Thread2TagMapper;
+use Atlas\Fake\Thread\ThreadMapper;
 use Atlas\Mapper\Mapper;
 
 class TagMapper extends Mapper

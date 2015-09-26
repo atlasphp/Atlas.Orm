@@ -6,8 +6,8 @@ use Atlas\Fake\Reply\ReplyMapper;
 use Atlas\Fake\Summary\SummaryMapper;
 use Atlas\Fake\Summary\SummaryTable;
 use Atlas\Fake\Tag\TagMapper;
-use Atlas\Fake\Thread\ThreadMapper;
 use Atlas\Fake\Thread2Tag\Thread2TagMapper;
+use Atlas\Fake\Thread\ThreadMapper;
 use Aura\Sql\ExtendedPdo;
 
 class AtlasTest extends \PHPUnit_Framework_TestCase
@@ -44,10 +44,13 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
 
     public function testFetchRecord()
     {
-        $author = $this->atlas->fetchRecord(AuthorMapper::CLASS, 1, [
-            'threads',
-            'replies',
+        $thread = $this->atlas->fetchRecord(ThreadMapper::CLASS, 1, [
+            'author', // manyToOne
+            'summary', // oneToOne
+            'replies', // oneToMany
+            'threads2tags', // oneToMany,
+            'tags', // manyToMany
         ]);
-        var_dump($author);
+        var_export($thread->getArrayCopy());
     }
 }
