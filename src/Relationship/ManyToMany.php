@@ -69,26 +69,28 @@ class ManyToMany extends AbstractRelationship
     ) {
         $this->fix($atlas);
 
-        $foreignColVals = array();
-        foreach ($records as $record) {
-            foreach ($record->{$this->through} as $throughRecord) {
-                $foreignColVals[] = $throughRecord->{$this->throughField};
-            }
+        $foreignColVals = [];
+        foreach ($recordSet as $record) {
+            $throughRecordSet = $record->{$this->throughField};
+            $foreignColVals = array_merge(
+                $foreignColVals,
+                $throughRecordSet->getUniqueVals($this->throughForeignCol)
+            );
         }
-        array_unique($foreignColVals);
+        $foreignColVals = array_unique($foreignColVals);
+        var_dump($foreignColVals);
 
-        $select = $this->foreignMapper->select([$this->foreignCol => $foreignColVals]);
-        if ($custom) {
-            $custom($select);
-        }
+        $colsVals = [$this->foreignCol => $foreignColVals];
+        $select = $atlas->select($this->foreignMapperClass, $colsVals, $custom);
+        $foreignRecordSet = $select->fetchRecordSet();
 
-        $collections = $this->foreignMapper->fetchRecordSetsBySelect(
-            $select,
-            $this->foreignCol
-        );
-
-        foreach ($records as &$record) {
-            $record->{$this->field} = $collections[$record->{$this->nativeCol}];
+        foreach ($recordSet as $record) {
+            $throughRecordSet = $record->{$this->throughField};
+            $vals = $throughRecordSet->getUniqueVals($this->throughForeignCol);
+            $record->{$this->field} = $foreignRecordSet->newRecordSetBy(
+                $this->foreignCol,
+                $vals
+            );
         }
     }
 }

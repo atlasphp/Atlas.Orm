@@ -50,28 +50,30 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
             [
             'author', // manyToOne
             'summary', // oneToOne
-            'replies', // oneToMany
+            'replies' => function ($select) {
+                $select->with(['author']);
+            }, // oneToMany
             'threads2tags', // oneToMany,
             'tags', // manyToMany
         ]);
-        var_export($thread->getArrayCopy());
+        // var_export($thread->getArrayCopy());
     }
 
-    // public function testFetchRecordSet()
-    // {
-    //     $threads = $this->atlas->fetchRecordSet(
-    //         ThreadMapper::CLASS,
-    //         [1, 2, 3],
-    //         [
-    //             'author', // manyToOne
-    //             'summary', // oneToOne
-    //             'replies' => function ($select) {
-    //                 $select->with(['author']);
-    //             }, // oneToMany
-    //             'threads2tags', // oneToMany,
-    //             // 'tags', // manyToMany
-    //         ]
-    //     );
-    //     var_export($threads->getArrayCopy());
-    // }
+    public function testFetchRecordSet()
+    {
+        $threads = $this->atlas->fetchRecordSet(
+            ThreadMapper::CLASS,
+            [1, 2, 3],
+            [
+                // 'author', // manyToOne
+                // 'summary', // oneToOne
+                // 'replies' => function ($select) {
+                //     $select->with(['author']);
+                // }, // oneToMany
+                'threads2tags', // oneToMany,
+                'tags', // manyToMany
+            ]
+        );
+        var_export($threads->getArrayCopy());
+    }
 }

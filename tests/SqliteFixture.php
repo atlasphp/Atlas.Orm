@@ -139,17 +139,15 @@ class SqliteFixture
             tag_id INTEGER NOT NULL
         )");
 
-        // add 5 tags to each thread
+        // add 3 tags to each thread
         $stm = "INSERT INTO threads2tags (thread_id, tag_id) VALUES (?, ?)";
         for ($i = 0; $i < 20; $i ++) {
+            $thread_id = $i + 1;
             $tags = [
                 (($i + 0) % 5) + 1,
                 (($i + 1) % 5) + 1,
                 (($i + 2) % 5) + 1,
-                (($i + 3) % 5) + 1,
-                (($i + 4) % 5) + 1,
             ];
-            $thread_id = $i + 1;
             foreach ($tags as $tag_id) {
                 $this->connection->perform($stm, [$thread_id, $tag_id]);
             }

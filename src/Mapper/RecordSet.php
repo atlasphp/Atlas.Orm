@@ -25,8 +25,7 @@ class RecordSet extends ArrayObject
         foreach ($this as $record) {
             $vals[] = $record->{$field};
         }
-        array_unique($vals);
-        return $vals;
+        return array_unique($vals);
     }
 
     public function getGroupsBy($field)
@@ -40,5 +39,22 @@ class RecordSet extends ArrayObject
             $groups[$key][] = $record;
         }
         return $groups;
+    }
+
+    public function newRecordSetBy($field, $vals)
+    {
+        $vals = (array) $vals;
+        $records = [];
+        foreach ($this as $record) {
+            if (in_array($record->$field, $vals)) {
+                $records[] = $record;
+            }
+        }
+
+        if ($records) {
+            return new self($records);
+        }
+
+        return $records;
     }
 }
