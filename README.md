@@ -1,0 +1,79 @@
+# Atlas
+
+> No schema discovery. No migrations. No annotations. No lazy loading. No domain models. No opinions. Just data mapping.
+
+Atlas is an ORM for your **persistence** (or **data source**) model, not for your domain model. Use Atlas data source objects to populate your domain model objects.
+
+**ATLAS IS A WORK IN PROGRESS. FOR ENTERTAINMENT PURPOSES ONLY. DO NOT USE IN PRODUCTION OR EVEN IN SIDE PROJECTS. BREAKING CHANGES ARE GUARANTEED.**
+
+* * *
+
+Atlas works in 3 layers. The lower _Table_ layer is a table data gatway implementation:
+
+- A _Row_ represents a single table row.
+
+- A _RowSet_ represents a collection of _Row_ objects.
+
+- A _Table_ acts as a gateway to a single SQL table to select _Row_ and _RowSet_ objects from that table, and insert/update/delete _Row_ objects in that table.
+
+- A _RowFilter_ acts as a validator and sanitizer on _Row_ data for inserts and updates.
+
+The middle _Mapper_ layer is a Data Mapper implementation **for the persistence model**. As such, Atlas uses the term "record" to indicate that its objects are *not* a domain entities.
+
+- A _Record_ combines a single _Row_ object with its related _Record_ and _RecordSet_ objects.
+
+- A _RecordSet_ is a collection of _Record_ objects.
+
+- A _Mapper_ wraps _Row_ and _RowSet_ objects from a _Table_ in _Record_ and _RecordSet_ objects. It also defines, but does not load, relationships to other _Mapper_ objects.
+
+Finally, the upper _Atlas_ layer relates the _Mapper_ objects to each other, allowing you to fetch _Record_ and _RecordSet_ objects with their related objects.
+
+* * *
+
+Create your data source classes by hand, or using a skeleton generator:
+
+```bash
+cd src/App/DataSource
+php ../../bin/atlas-skeleton App\\DataSource\\Author
+```
+> N.b.: No database connection is needed. You can hand-edit the files afterwards as necessary; some sensible defaults are applied.
+
+That creates this directory and these empty extended classes in `src/App/DataSource/`:
+
+    └── Author
+        ├── AuthorMapper.php
+        ├── AuthorRecord.php
+        ├── AuthorRecordSet.php
+        ├── AuthorRow.php
+        ├── AuthorRowFilter.php
+        ├── AuthorRowSet.php
+        └── AuthorTable.php
+
+Do that once for each SQL table in your database.
+
+Then create an _Atlas_ instance using the _AtlasContainer_:
+
+```php
+<?php
+$atlasContainer = new AtlasContainer('mysql');
+$atlasContainer->setDefaultConnection(function () {
+    return new ExtendedPdo(
+        'mysql:host=localhost;dbname=testdb',
+        'username',
+        'password'
+    );
+});
+
+$atlasContainer->setMappers([
+    AuthorMapper::CLASS,
+    ReplyMapper::CLASS,
+    SummaryMapper::CLASS,
+    TagMapper::CLASS,
+    ThreadMapper::CLASS,
+    Thread2TagMapper::CLASS,
+]);
+
+$atlas = $atlasContainer->getAtlas();
+)
+?>
+```
