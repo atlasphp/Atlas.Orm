@@ -19,6 +19,7 @@ class MapperFactory
     {
         $mapperClass = $this->mapperClass;
         $table = $this->atlasContainer->getTable($this->tableClass);
-        return new $mapperClass($table);
+        $relations = new Relations($mapperClass);
+        return new $mapperClass($table, $relations);
     }
 }

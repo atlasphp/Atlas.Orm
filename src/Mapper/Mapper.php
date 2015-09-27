@@ -27,10 +27,10 @@ class Mapper
 
     protected $recordSetClass;
 
-    public function __construct(Table $table)
+    public function __construct(Table $table, Relations $relations)
     {
         $this->table = $table;
-        $this->relations = $this->newRelations();
+        $this->relations = $relations;
 
         // Foo\Bar\BazMapper -> Foo\Bar\Baz
         $type = substr(get_class($this), 0, -6);
@@ -46,11 +46,6 @@ class Mapper
         }
 
         $this->setRelations();
-    }
-
-    protected function newRelations()
-    {
-        return new Relations($this);
     }
 
     public function getTable()

@@ -37,7 +37,10 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $fixture = new SqliteFixture($this->table->getWriteConnection());
         $fixture->exec();
 
-        $this->mapper = new EmployeeMapper($this->table);
+        $this->mapper = new EmployeeMapper(
+            $this->table,
+            new Relations(EmployeeMapper::CLASS)
+        );
     }
 
     public function testGetTable()
