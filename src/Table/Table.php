@@ -218,16 +218,12 @@ class Table
      * @return TableSelect
      *
      */
-    public function select(array $colsVals = [], callable $custom = null)
+    public function select(array $colsVals = [])
     {
         $select = $this->newSelect()->from($this->getTable());
 
         foreach ($colsVals as $col => $val) {
             $this->selectWhere($select, $col, $val);
-        }
-
-        if ($custom) {
-            $custom($select);
         }
 
         return $select;
@@ -267,9 +263,9 @@ class Table
         return $row;
     }
 
-    public function fetchRowBy(array $colsVals, callable $custom = null)
+    public function fetchRowBy(array $colsVals)
     {
-        $select = $this->select($colsVals, $custom);
+        $select = $this->select($colsVals);
         return $this->fetchRowBySelect($select);
     }
 
@@ -356,9 +352,9 @@ class Table
         }
     }
 
-    public function fetchRowSetBy(array $colsVals, callable $custom = null)
+    public function fetchRowSetBy(array $colsVals)
     {
-        $select = $this->select($colsVals, $custom);
+        $select = $this->select($colsVals);
         return $this->fetchRowSetBySelect($select);
     }
 

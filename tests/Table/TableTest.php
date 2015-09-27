@@ -257,32 +257,11 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $conn->setAttribute($conn::ATTR_ERRMODE, $conn::ERRMODE_SILENT);
     }
 
-    public function testSelectCustom()
-    {
-        $select = $this->table->select(['name' => 'Anna'], function ($select) {
-            $select->cols(['id']);
-            $select->limit(10);
-        });
-
-        $expect = '
-            SELECT
-                id
-            FROM
-                "employees"
-            WHERE
-                "employees"."name" = :_1_
-            LIMIT 10
-        ';
-
-        $actual = $select->__toString();
-        $this->assertSameSql($expect, $actual);
-    }
-
     public function testSelectWhereNull()
     {
-        $select = $this->table->select(['name' => null], function ($select) {
-            $select->cols(['id']);
-        });
+        $select = $this->table
+            ->select(['name' => null])
+            ->cols(['id']);
 
         $expect = '
             SELECT
