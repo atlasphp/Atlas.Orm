@@ -75,7 +75,6 @@ $atlasContainer->setMappers([
 ]);
 
 $atlas = $atlasContainer->getAtlas();
-)
 ?>
 ```
 
@@ -109,12 +108,12 @@ $threadRecordSet = $atlas
     ])
     ->fetchRecordSet();
 ?>
-
+```
 If you do not load a record "with" a related, it will not be lazy-loaded for you later. This means you need to think ahead as to exactly what you will need from the database.
 
 You can then address the _Record_'s underlying table columns as properties, and its relationship fields as properties as well.
 
-```phhp
+```php
 <?php
 echo $thread->title;
 echo $thread->body;
