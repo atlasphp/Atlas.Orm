@@ -10,6 +10,7 @@
  */
 namespace Atlas\Table;
 
+use Atlas\Exception;
 use Aura\Sql\ConnectionLocator;
 use Aura\SqlQuery\QueryFactory;
 use Aura\SqlQuery\Common\Delete;
@@ -89,16 +90,40 @@ class Table
         $this->queryFactory = $queryFactory;
         $this->identityMap = $identityMap;
         $this->rowFilter = $rowFilter;
+        $this->setDefaults();
+    }
+
+    protected function setDefaults()
+    {
+        // Foo\Bar\BazTable -> Foo\Bar\Baz
+        $type = substr(get_class($this), 0, -5);
+
+        // Foo\Bar\Baz => baz
+        $name = strtolower(substr($type, strrpos($type, '\\') + 1));
+
+        if (! $this->table) {
+            $this->table = $name;
+        }
+
+        if (! $this->primary) {
+            $this->primary = "{$name}_id";
+        }
+
+        $this->autoinc = (bool) $this->autoinc;
+
+        $this->rowClass = "{$type}Row";
+        if (! class_exists($this->rowClass)) {
+            throw new Exception("{$this->rowClass} not defined.");
+        }
+
+        $this->rowSetClass = "{$type}RowSet";
+        if (! class_exists($this->rowSetClass)) {
+            throw new Exception("{$this->rowSetClass} not defined.");
+        }
     }
 
     public function getTable()
     {
-        if (! $this->table) {
-            // Foo\Bar\BazTable -> baz
-            $class = get_class($this);
-            $pos = strrpos($class, '\\') + 1;
-            $this->table = strtolower(substr($class, $pos, -5));
-        }
         return $this->table;
     }
 
@@ -111,12 +136,6 @@ class Table
      */
     public function getPrimary()
     {
-        if (! $this->primary) {
-            // Foo\Bar\BazTable -> baz_id
-            $class = get_class($this);
-            $pos = strrpos($class, '\\') + 1;
-            $this->primary = strtolower(substr($class, $pos, -5)) . '_id';
-        }
         return $this->primary;
     }
 
@@ -130,6 +149,16 @@ class Table
     public function getAutoinc()
     {
         return $this->autoinc;
+    }
+
+    public function getRowClass()
+    {
+        return $this->rowClass;
+    }
+
+    public function getRowSetClass()
+    {
+        return $this->rowSetClass;
     }
 
     /**
@@ -365,48 +394,10 @@ class Table
         return new $rowClass($cols, $this->getPrimary());
     }
 
-    /**
-     * @todo Throw Exception when custom class does not exist.
-     * @todo Set this value in the constructor?
-     */
-    public function getRowClass()
-    {
-        if (! $this->rowClass) {
-            // Foo\Bar\BazTable -> Foo\Bar\BazRow
-            $class = substr(get_class($this), -5);
-            $this->rowClass = "{$class}Row";
-        }
-
-        if (! class_exists($this->rowClass)) {
-            $this->rowClass = 'Atlas\Table\Row';
-        }
-
-        return $this->rowClass;
-    }
-
     public function newRowSet(array $rows)
     {
         $rowSetClass = $this->getRowSetClass();
         return new $rowSetClass($rows);
-    }
-
-    /**
-     * @todo Throw Exception when custom class does not exist.
-     * @todo Set this value in the constructor?
-     */
-    public function getRowSetClass()
-    {
-        if (! $this->rowSetClass) {
-            // Foo\Bar\BazTable -> Foo\Bar\BazRowSet
-            $class = substr(get_class($this), -5);
-            $this->rowSetClass = "{$class}RowSet";
-        }
-
-        if (! class_exists($this->rowSetClass)) {
-            $this->rowSetClass = 'Atlas\Table\RowSet';
-        }
-
-        return $this->rowSetClass;
     }
 
     /**

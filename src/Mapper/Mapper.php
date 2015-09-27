@@ -1,6 +1,7 @@
 <?php
 namespace Atlas\Mapper;
 
+use Atlas\Exception;
 use Atlas\Table\Row;
 use Atlas\Table\RowSet;
 use Atlas\Table\Table;
@@ -30,6 +31,20 @@ class Mapper
     {
         $this->table = $table;
         $this->relations = $this->newRelations();
+
+        // Foo\Bar\BazMapper -> Foo\Bar\Baz
+        $type = substr(get_class($this), 0, -6);
+
+        $this->recordClass = "{$type}Record";
+        if (! class_exists($this->recordClass)) {
+            throw new Exception("{$this->recordClass} not defined.");
+        }
+
+        $this->recordSetClass = "{$type}RecordSet";
+        if (! class_exists($this->recordSetClass)) {
+            throw new Exception("{$this->recordSetClass} not defined.");
+        }
+
         $this->setRelations();
     }
 
@@ -50,6 +65,16 @@ class Mapper
 
     protected function setRelations()
     {
+    }
+
+    public function getRecordClass()
+    {
+        return $this->recordClass;
+    }
+
+    public function getRecordSetClass()
+    {
+        return $this->recordSetClass;
     }
 
     // row can be array or Row object
@@ -153,43 +178,5 @@ class Mapper
     public function delete(Record $record)
     {
         return $this->getTable()->delete($record->getRow());
-    }
-
-    /**
-     * @todo Throw Exception when custom class does not exist.
-     * @todo Set this value in the constructor?
-     */
-    public function getRecordClass()
-    {
-        if (! $this->recordClass) {
-            // Foo\Bar\BazMapper -> Foo\Bar\BazRecord
-            $class = substr(get_class($this), -6);
-            $this->recordClass = "{$class}Record";
-        }
-
-        if (! class_exists($this->recordClass)) {
-            $this->recordClass = 'Atlas\Mapper\Record';
-        }
-
-        return $this->recordClass;
-    }
-
-    /**
-     * @todo Throw Exception when custom class does not exist.
-     * @todo Set this value in the constructor?
-     */
-    public function getRecordSetClass()
-    {
-        if (! $this->recordSetClass) {
-            // Foo\Bar\BazMapper -> Foo\Bar\BazRecordSet
-            $class = substr(get_class($this), -6);
-            $this->recordSetClass = "{$class}RecordSet";
-        }
-
-        if (! class_exists($this->recordSetClass)) {
-            $this->recordSetClass = 'Atlas\Mapper\RecordSet';
-        }
-
-        return $this->recordSetClass;
     }
 }

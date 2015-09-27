@@ -34,26 +34,6 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $fixture->exec();
     }
 
-    public function testAuto()
-    {
-        $connectionLocator = new ConnectionLocator(function () {
-            return new ExtendedPdo('sqlite::memory:');
-        });
-
-        $auto = new AutoTable(
-            $connectionLocator,
-            new QueryFactory('sqlite'),
-            new IdentityMap(),
-            new RowFilter()
-        );
-
-        $this->assertSame('auto', $auto->getTable());
-        $this->assertSame('auto_id', $auto->getPrimary());
-        $this->assertTrue($auto->getAutoinc());
-        $this->assertSame('Atlas\Table\Row', $auto->getRowClass());
-        $this->assertSame('Atlas\Table\RowSet', $auto->getRowSetClass());
-    }
-
     public function testGetIdentityMap()
     {
         $this->assertInstanceOf(
