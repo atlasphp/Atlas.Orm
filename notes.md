@@ -1,5 +1,3 @@
-Lose the idea of injecting your own classes. This is a bound system, not for the domain but for persistence only. The idea specifically is that it is for DDD repos to pull from and send back to.  DDD entities and aggregates get mapped out of it and back into it.
-
 Add checks on Row and Record types in the Table and Mapper.
 
 The relationships may be reusing record objects, rather than building new ones. Is that a problem?
@@ -29,6 +27,10 @@ Complex primary keys.
 Fetching strategies and identity lookups for compelex keys.
 
 In RecordSets and Record relations, automatically set IdentityField when attaching.
+
+Consider having each Mapper fetch its own relateds; that would mean each Mapper needs a reference back to the MapperLocator *at construction time*.
+
+Alternatively, consider defining relationships in Atlas, not in each Mapper.
 
 * * *
 
