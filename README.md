@@ -18,7 +18,7 @@ Atlas works in 3 layers. The lower _Table_ layer is a table data gatway implemen
 
 - A _RowFilter_ acts as a validator and sanitizer on _Row_ data for inserts and updates.
 
-The middle _Mapper_ layer is a Data Mapper implementation **for the persistence model**. As such, Atlas uses the term "record" to indicate that its objects are *not* a domain entities.
+The middle _Mapper_ layer is a Data Mapper implementation **for the persistence model**. As such, Atlas uses the term "record" to indicate that its objects are *not* domain entities. Note that this is a *passive* record, not an active record; you do not add behaviors to it.
 
 - A _Record_ combines a single _Row_ object with its related _Record_ and _RecordSet_ objects.
 
@@ -111,3 +111,16 @@ $threadRecordSet = $atlas
 ?>
 
 If you do not load a record "with" a related, it will not be lazy-loaded for you later. This means you need to think ahead as to exactly what you will need from the database.
+
+You can then address the _Record_'s underlying table columns as properties, and its relationship fields as properties as well.
+
+```phhp
+<?php
+echo $thread->title;
+echo $thread->body;
+foreach ($thread->reples as $reply) {
+    echo $reply->author->name;
+    echo $reply->body;
+}
+?>
+```
