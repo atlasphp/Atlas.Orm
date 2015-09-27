@@ -77,3 +77,36 @@ $atlas = $atlasContainer->getAtlas();
 )
 ?>
 ```
+
+Then you can use Atlas to select a _Record_ or a _RecordSet_:
+
+```php
+<?php
+// fetch thread_id 1, with the top 10 replies in descending order,
+// including each reply author
+$threadRecord = $atlas->fetchRecord(
+    ThreadMapper::CLASS,
+    '1',
+    [
+        'author',
+        'summary',
+        'replies' => function ($select) {
+            $select->limit(10)->with(['author']);
+        },
+        'threads2tags',
+        'tags',
+    ]
+);
+
+// a more complex select of only the last 10 threads, with only some relateds
+$threadRecordSet = $atlas
+    ->select(ThreadMapper::CLASS)
+    ->orderBy('thread_id DESC')
+    ->with([
+        'author',
+        'summary'
+    ])
+    ->fetchRecordSet();
+?>
+
+If you do not load a record "with" a related, it will not be lazy-loaded for you later. This means you need to think ahead as to exactly what you will need from the database.
