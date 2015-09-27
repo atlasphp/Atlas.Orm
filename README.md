@@ -30,12 +30,13 @@ Finally, the upper _Atlas_ layer relates the _Mapper_ objects to each other, all
 
 * * *
 
-Create your data source classes by hand, or using a skeleton generator:
+Create your data source classes by hand, or use a skeleton generator in the directory where you want the classes to be created:
 
 ```bash
 cd src/App/DataSource
 php ../../bin/atlas-skeleton App\\DataSource\\Author
 ```
+
 > N.b.: No database connection is needed. You can hand-edit the files afterwards as necessary; some sensible defaults are applied.
 
 That creates this directory and these empty extended classes in `src/App/DataSource/`:

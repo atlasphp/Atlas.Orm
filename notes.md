@@ -46,6 +46,6 @@ In generator, allow for:
     --primary={primarycol}
     --autoinc={bool}
 
-That will allow specification of pertinent values.
+That will allow specification of pertinent values. It also means different templates for different classes.
 
-That also means different templates for different classes.
+Also allow for `--dir={dir}` so you don't need to `cd` into the right directory.
