@@ -20,56 +20,54 @@ class ManyToMany extends AbstractRelationship
         return $this;
     }
 
-    protected function fixThroughNativeCol(MapperLocator $mapperLocator)
+    protected function fixThroughNativeCol()
     {
         if ($this->throughNativeCol) {
             return;
         }
 
-        $nativeMapper = $mapperLocator->get($this->nativeMapperClass);
+        $nativeMapper = $this->mapperLocator->get($this->nativeMapperClass);
         $this->throughNativeCol = $nativeMapper->getTable()->getPrimary();
     }
 
-    protected function fixThroughForeignCol(MapperLocator $mapperLocator)
+    protected function fixThroughForeignCol()
     {
         if ($this->throughForeignCol) {
             return;
         }
 
-        $foreignMapper = $mapperLocator->get($this->foreignMapperClass);
+        $foreignMapper = $this->mapperLocator->get($this->foreignMapperClass);
         $this->throughForeignCol = $foreignMapper->getTable()->getPrimary();
     }
 
-    protected function fixForeignCol(MapperLocator $mapperLocator)
+    protected function fixForeignCol()
     {
         if ($this->foreignCol) {
             return;
         }
 
-        $foreignMapper = $mapperLocator->get($this->foreignMapperClass);
+        $foreignMapper = $this->mapperLocator->get($this->foreignMapperClass);
         $this->foreignCol = $foreignMapper->getTable()->getPrimary();
     }
 
     public function fetchForRow(
-        MapperLocator $mapperLocator,
         Row $row,
         array &$related,
         callable $custom = null
     ) {
-        $this->fix($mapperLocator);
+        $this->fix();
         $throughRecordSet = $related[$this->throughName];
         $foreignVals = $this->getUniqueVals($throughRecordSet, $this->throughForeignCol);
-        $foreign = $this->fetchForeignRecordSet($mapperLocator, $foreignVals, $custom);
+        $foreign = $this->fetchForeignRecordSet($foreignVals, $custom);
         $related[$this->name] = $foreign;
     }
 
     public function fetchForRowSet(
-        MapperLocator $mapperLocator,
         RowSet $rowSet,
         array &$relatedSet,
         callable $custom = null
     ) {
-        $this->fix($mapperLocator);
+        $this->fix();
 
         $foreignColVals = [];
         foreach ($rowSet as $row) {
@@ -82,7 +80,7 @@ class ManyToMany extends AbstractRelationship
         }
         $foreignColVals = array_unique($foreignColVals);
 
-        $foreignRecordSet = $this->fetchForeignRecordSet($mapperLocator, $foreignColVals, $custom);
+        $foreignRecordSet = $this->fetchForeignRecordSet($foreignColVals, $custom);
 
         foreach ($rowSet as $row) {
             $primaryVal = $row->getPrimaryVal();

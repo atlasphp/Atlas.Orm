@@ -5,23 +5,23 @@ use Atlas\Mapper\MapperLocator;
 
 class ManyToOne extends OneToOne
 {
-    protected function fixNativeCol(MapperLocator $mapperLocator)
+    protected function fixNativeCol()
     {
         if ($this->nativeCol) {
             return;
         }
 
-        $foreignMapper = $mapperLocator->get($this->foreignMapperClass);
+        $foreignMapper = $this->mapperLocator->get($this->foreignMapperClass);
         $this->nativeCol = $foreignMapper->getTable()->getPrimary();
     }
 
-    protected function fixForeignCol(MapperLocator $mapperLocator)
+    protected function fixForeignCol()
     {
         if ($this->foreignCol) {
             return;
         }
 
-        $foreignMapper = $mapperLocator->get($this->foreignMapperClass);
+        $foreignMapper = $this->mapperLocator->get($this->foreignMapperClass);
         $this->foreignCol = $foreignMapper->getTable()->getPrimary();
     }
 }

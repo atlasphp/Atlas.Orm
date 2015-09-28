@@ -8,6 +8,8 @@ use Atlas\Table\RowSet;
 
 abstract class AbstractRelationship
 {
+    protected $mapperLocator;
+
     protected $name;
 
     protected $nativeMapperClass;
@@ -20,8 +22,9 @@ abstract class AbstractRelationship
 
     protected $fixed = false;
 
-    public function __construct($nativeMapperClass, $name, $foreignMapperClass, $throughName = null)
+    public function __construct(MapperLocator $mapperLocator, $nativeMapperClass, $name, $foreignMapperClass, $throughName = null)
     {
+        $this->mapperLocator = $mapperLocator;
         $this->nativeMapperClass = $nativeMapperClass;
         $this->name = $name;
         $this->foreignMapperClass = $foreignMapperClass;
@@ -40,52 +43,51 @@ abstract class AbstractRelationship
         return $this;
     }
 
-    protected function fix(MapperLocator $mapperLocator)
+    protected function fix()
     {
         if ($this->fixed) {
             return;
         }
-        $this->fixNativeCol($mapperLocator);
-        $this->fixThroughNativeCol($mapperLocator);
-        $this->fixThroughForeignCol($mapperLocator);
-        $this->fixForeignCol($mapperLocator);
+        $this->fixNativeCol();
+        $this->fixThroughNativeCol();
+        $this->fixThroughForeignCol();
+        $this->fixForeignCol();
         $this->fixed = true;
     }
 
-    protected function fixNativeCol(MapperLocator $mapperLocator)
+    protected function fixNativeCol()
     {
         if ($this->nativeCol) {
             return;
         }
 
-        $nativeMapper = $mapperLocator->get($this->nativeMapperClass);
+        $nativeMapper = $this->mapperLocator->get($this->nativeMapperClass);
         $this->nativeCol = $nativeMapper->getTable()->getPrimary();
     }
 
-    protected function fixForeignCol(MapperLocator $mapperLocator)
+    protected function fixForeignCol()
     {
         if ($this->foreignCol) {
             return;
         }
 
-        $nativeMapper = $mapperLocator->get($this->nativeMapperClass);
+        $nativeMapper = $this->mapperLocator->get($this->nativeMapperClass);
         $this->foreignCol = $nativeMapper->getTable()->getPrimary();
     }
 
-    protected function fixThroughNativeCol(MapperLocator $mapperLocator)
+    protected function fixThroughNativeCol()
     {
     }
 
-    protected function fixThroughForeignCol(MapperLocator $mapperLocator)
+    protected function fixThroughForeignCol()
     {
     }
 
     protected function fetchForeignRecord(
-        MapperLocator $mapperLocator,
         $foreignVal,
         callable $custom = null
     ) {
-        $foreignMapper = $mapperLocator->get($this->foreignMapperClass);
+        $foreignMapper = $this->mapperLocator->get($this->foreignMapperClass);
         return $foreignMapper->fetchRecordBySelect($this->foreignSelect(
             $foreignMapper,
             $foreignVal,
@@ -94,11 +96,10 @@ abstract class AbstractRelationship
     }
 
     protected function fetchForeignRecordSet(
-        MapperLocator $mapperLocator,
         $foreignVal,
         callable $custom = null
     ) {
-        $foreignMapper = $mapperLocator->get($this->foreignMapperClass);
+        $foreignMapper = $this->mapperLocator->get($this->foreignMapperClass);
         return $foreignMapper->fetchRecordSetBySelect($this->foreignSelect(
             $foreignMapper,
             $foreignVal,
@@ -128,14 +129,12 @@ abstract class AbstractRelationship
     }
 
     abstract public function fetchForRow(
-        MapperLocator $mapperLocator,
         Row $row,
         array &$related,
         callable $custom = null
     );
 
     abstract public function fetchForRowSet(
-        MapperLocator $mapperLocator,
         RowSet $row,
         array &$relatedSet,
         callable $custom = null

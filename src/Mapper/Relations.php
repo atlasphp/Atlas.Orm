@@ -61,6 +61,7 @@ class Relations
         }
 
         $relation = new $relationClass(
+            $this->mapperLocator,
             $this->nativeMapperClass,
             $name,
             $foreignMapperClass,
@@ -76,7 +77,6 @@ class Relations
         $related = [];
         foreach ($this->fixWith($with) as $name => $custom) {
             $this->relations[$name]->fetchForRow(
-                $this->mapperLocator,
                 $row,
                 $related, // should this be an object?
                 $custom
@@ -90,7 +90,6 @@ class Relations
         $relatedSet = [];
         foreach ($this->fixWith($with) as $name => $custom) {
             $this->relations[$name]->fetchForRowSet(
-                $this->mapperLocator,
                 $rowSet,
                 $relatedSet, // should this be an object?
                 $custom

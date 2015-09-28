@@ -29,10 +29,6 @@ Fetching strategies and identity lookups for compelex keys.
 
 In RecordSets and Record relations, automatically set IdentityField when attaching.
 
-Consider having each Mapper fetch its own relateds; that would mean each Mapper needs a reference back to the MapperLocator *at construction time*.
-
-Alternatively, consider defining relationships in Atlas, not in each Mapper.
-
 Move away from ArrayObject for Sets and implement Countable, ArrayAccess, IteratorAggregate.
 
 Add "append()" to Sets to append a new Row/Record of the proper type. Probably need to keep a reference back to the original Table/Mapper for the "new" logic.

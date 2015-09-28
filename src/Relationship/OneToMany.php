@@ -9,27 +9,25 @@ use Atlas\Table\RowSet;
 class OneToMany extends AbstractRelationship
 {
     public function fetchForRow(
-        MapperLocator $mapperLocator,
         Row $row,
         array &$related,
         callable $custom = null
     ) {
-        $this->fix($mapperLocator);
+        $this->fix();
         $foreignVal = $row->{$this->nativeCol};
-        $foreign = $this->fetchForeignRecordSet($mapperLocator, $foreignVal, $custom);
+        $foreign = $this->fetchForeignRecordSet($foreignVal, $custom);
         $related[$this->name] = $foreign;
     }
 
     public function fetchForRowSet(
-        MapperLocator $mapperLocator,
         RowSet $rowSet,
         array &$relatedSet,
         callable $custom = null
     ) {
-        $this->fix($mapperLocator);
+        $this->fix();
 
         $foreignVals = $this->getUniqueVals($rowSet, $this->nativeCol);
-        $foreignRecordSet = $this->fetchForeignRecordSet($mapperLocator, $foreignVals, $custom);
+        $foreignRecordSet = $this->fetchForeignRecordSet($foreignVals, $custom);
 
         $foreignGroups = array();
         if ($foreignRecordSet) {
