@@ -17,7 +17,7 @@ class OneToMany extends AbstractRelationship
         $this->fix($mapperLocator);
         $foreignVal = $row[$this->nativeCol];
         $foreign = $this->fetchForeignRecordSet($foreignVal, $custom);
-        $related[$this->field] = $foreign;
+        $related[$this->name] = $foreign;
     }
 
     public function fetchForRowSet(
@@ -42,7 +42,7 @@ class OneToMany extends AbstractRelationship
             if (isset($foreignGroups[$key])) {
                 $foreign = $foreignGroups[$key];
             }
-            $relatedSet[$row->getPrimaryVal()][$this->field] = $foreign;
+            $relatedSet[$row->getPrimaryVal()][$this->name] = $foreign;
         }
     }
 }

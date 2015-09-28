@@ -60,7 +60,7 @@ class ManyToMany extends AbstractRelationship
         $throughRecordSet = $related[$this->throughName];
         $foreignVals = $this->getUniqueVals($throughRecordSet, $this->throughForeignCol);
         $foreign = $this->fetchForeignRecordSet($foreignVals, $custom);
-        $related[$this->field] = $foreign;
+        $related[$this->name] = $foreign;
     }
 
     public function fetchForRowSet(
@@ -89,7 +89,7 @@ class ManyToMany extends AbstractRelationship
             $primaryVal = $row->getPrimaryVal();
             $throughRecordSet = $relatedSet[$primaryVal][$this->throughName];
             $vals = $this->getUniqueVals($throughRecordSet, $this->throughForeignCol);
-            $relatedSet[$primaryVal][$this->field] = $foreignRecordSet->newRecordSetBy(
+            $relatedSet[$primaryVal][$this->name] = $foreignRecordSet->newRecordSetBy(
                 $this->foreignCol,
                 $vals
             );

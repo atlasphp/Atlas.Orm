@@ -8,7 +8,7 @@ use Atlas\Table\RowSet;
 
 abstract class AbstractRelationship
 {
-    protected $field;
+    protected $name;
 
     protected $nativeMapperClass;
     protected $foreignMapperClass;
@@ -20,10 +20,10 @@ abstract class AbstractRelationship
 
     protected $fixed = false;
 
-    public function __construct($nativeMapperClass, $field, $foreignMapperClass, $throughName = null)
+    public function __construct($nativeMapperClass, $name, $foreignMapperClass, $throughName = null)
     {
         $this->nativeMapperClass = $nativeMapperClass;
-        $this->field = $field;
+        $this->name = $name;
         $this->foreignMapperClass = $foreignMapperClass;
         $this->throughName = $throughName;
     }
