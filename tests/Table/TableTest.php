@@ -244,9 +244,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($actual);
 
         // do we still have everything else?
-        $actual = $this->table->fetchRowSetBySelect(
-            $this->table->select()->where('id > 0')
-        );
+        $actual = $this->table->select()->where('id > 0')->fetchRowSet();
         $expect = 11;
         $this->assertEquals($expect, count($actual));
     }
@@ -257,32 +255,9 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $conn->setAttribute($conn::ATTR_ERRMODE, $conn::ERRMODE_SILENT);
     }
 
-    public function testSelectCustom()
-    {
-        $select = $this->table->select(['name' => 'Anna'], function ($select) {
-            $select->cols(['id']);
-            $select->limit(10);
-        });
-
-        $expect = '
-            SELECT
-                id
-            FROM
-                "employees"
-            WHERE
-                "employees"."name" = :_1_
-            LIMIT 10
-        ';
-
-        $actual = $select->__toString();
-        $this->assertSameSql($expect, $actual);
-    }
-
     public function testSelectWhereNull()
     {
-        $select = $this->table->select(['name' => null], function ($select) {
-            $select->cols(['id']);
-        });
+        $select = $this->table->select(['name' => null])->cols(['id']);
 
         $expect = '
             SELECT

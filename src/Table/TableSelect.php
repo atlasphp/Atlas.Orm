@@ -34,6 +34,10 @@ class TableSelect implements SubselectInterface
 
     protected $table;
 
+    protected $identityMap;
+
+    protected $primaryCol;
+
     /**
      *
      * @param SelectInterface $select
@@ -45,6 +49,8 @@ class TableSelect implements SubselectInterface
     ) {
         $this->table = $table;
         $this->select = $select;
+        $this->identityMap = $this->table->getIdentityMap();
+        $this->primaryCol = $this->table->getPrimary();
     }
 
     /**
@@ -95,6 +101,7 @@ class TableSelect implements SubselectInterface
     {
         return $this->select->getBindValues();
     }
+
     /**
      *
      * Fetches a sequential array of rows from the database; the rows
@@ -192,5 +199,45 @@ class TableSelect implements SubselectInterface
             $this->select->getStatement(),
             $this->select->getBindValues()
         );
+    }
+
+    public function fetchRow()
+    {
+        $this->select->cols($this->table->getCols());
+
+        $cols = $this->fetchOne();
+        if (! $cols) {
+            return false;
+        }
+
+        return $this->getMappedOrNewRow($cols);
+    }
+
+    public function fetchRowSet()
+    {
+        $this->select->cols($this->table->getCols());
+
+        $data = $this->fetchAll();
+        if (! $data) {
+            return array();
+        }
+
+        $rows = [];
+        foreach ($data as $cols) {
+            $rows[] = $this->getMappedOrNewRow($cols);
+        }
+
+        return $this->table->newRowSet($rows);
+    }
+
+    protected function getMappedOrNewRow(array $cols)
+    {
+        $primaryVal = $cols[$this->primaryCol];
+        $row = $this->identityMap->getRow($primaryVal);
+        if (! $row) {
+            $row = $this->table->newRow($cols);
+            $this->identityMap->set($row);
+        }
+        return $row;
     }
 }

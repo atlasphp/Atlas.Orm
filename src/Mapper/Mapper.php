@@ -113,8 +113,7 @@ class Mapper
 
     public function fetchRecordBySelect(MapperSelect $mapperSelect)
     {
-        $tableSelect = $mapperSelect->getTableSelect();
-        $row = $this->table->fetchRowBySelect($tableSelect);
+        $row = $mapperSelect->getTableSelect()->fetchRow();
         return $this->convertRow($row, $mapperSelect->getWith());
     }
 
@@ -142,8 +141,7 @@ class Mapper
 
     public function fetchRecordSetBySelect(MapperSelect $mapperSelect)
     {
-        $tableSelect = $mapperSelect->getTableSelect();
-        $rowSet = $this->table->fetchRowSetBySelect($tableSelect);
+        $rowSet = $mapperSelect->getTableSelect()->fetchRowSet();
         return $this->convertRowSet($rowSet, $mapperSelect->getWith());
     }
 

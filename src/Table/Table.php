@@ -215,16 +215,12 @@ class Table
      * @return TableSelect
      *
      */
-    public function select(array $colsVals = [], callable $custom = null)
+    public function select(array $colsVals = [])
     {
         $select = $this->newSelect()->from($this->getTable());
 
         foreach ($colsVals as $col => $val) {
             $this->selectWhere($select, $col, $val);
-        }
-
-        if ($custom) {
-            $custom($select);
         }
 
         return $select;
@@ -255,28 +251,14 @@ class Table
         $row = $this->identityMap->getRow($primaryVal);
         if (! $row) {
             $colsVals = [$this->getPrimary() => $primaryVal];
-            $select = $this->select($colsVals);
-            $row = $this->fetchRowBySelect($select);
+            $row = $this->select($colsVals)->fetchRow();
         }
         return $row;
     }
 
-    public function fetchRowBy(array $colsVals, callable $custom = null)
+    public function fetchRowBy(array $colsVals)
     {
-        $select = $this->select($colsVals, $custom);
-        return $this->fetchRowBySelect($select);
-    }
-
-    public function fetchRowBySelect(TableSelect $select)
-    {
-        $select->cols($this->getCols());
-
-        $cols = $select->fetchOne();
-        if (! $cols) {
-            return false;
-        }
-
-        return $this->getMappedOrNewRow($cols);
+        return $this->select($colsVals)->fetchRow();
     }
 
     /*
@@ -350,36 +332,9 @@ class Table
         }
     }
 
-    public function fetchRowSetBy(array $colsVals, callable $custom = null)
+    public function fetchRowSetBy(array $colsVals)
     {
-        $select = $this->select($colsVals, $custom);
-        return $this->fetchRowSetBySelect($select);
-    }
-
-    public function fetchRowSetBySelect(TableSelect $select)
-    {
-        $data = $select->cols($this->getCols())->fetchAll();
-        if (! $data) {
-            return array();
-        }
-
-        $rows = [];
-        foreach ($data as $cols) {
-            $rows[] = $this->getMappedOrNewRow($cols);
-        }
-
-        return $this->newRowSet($rows);
-    }
-
-    protected function getMappedOrNewRow(array $cols)
-    {
-        $primaryVal = $cols[$this->getPrimary()];
-        $row = $this->identityMap->getRow($primaryVal);
-        if (! $row) {
-            $row = $this->newRow($cols);
-            $this->identityMap->set($row);
-        }
-        return $row;
+        return $this->select($colsVals)->fetchRowSet();
     }
 
     public function newRow(array $cols)
