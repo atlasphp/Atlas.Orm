@@ -85,11 +85,6 @@ class TableSelect implements SubselectInterface
         return ($result === $this->select) ? $this : $result;
     }
 
-    public function getSelect()
-    {
-        return $this->select;
-    }
-
     // subselect interface
     public function getStatement()
     {

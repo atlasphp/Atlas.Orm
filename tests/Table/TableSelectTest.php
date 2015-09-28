@@ -35,14 +35,6 @@ class TableSelectTest extends \PHPUnit_Framework_TestCase
         $this->tableSelect = $table->select();
     }
 
-    public function testGetSelect()
-    {
-        $this->assertInstanceOf(
-            'Aura\SqlQuery\Common\SelectInterface',
-            $this->tableSelect->getSelect()
-        );
-    }
-
     public function testGetStatement()
     {
         $this->tableSelect->cols(['*']);
