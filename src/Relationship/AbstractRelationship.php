@@ -20,12 +20,12 @@ abstract class AbstractRelationship
 
     protected $fixed = false;
 
-    public function __construct($nativeMapperClass, $field, $foreignMapperClass, $throughField = null)
+    public function __construct($nativeMapperClass, $field, $foreignMapperClass, $throughRelated = null)
     {
         $this->nativeMapperClass = $nativeMapperClass;
         $this->field = $field;
         $this->foreignMapperClass = $foreignMapperClass;
-        $this->throughField = $throughField;
+        $this->throughRelated = $throughRelated;
     }
 
     public function nativeCol($nativeCol)
