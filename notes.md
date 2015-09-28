@@ -8,7 +8,7 @@ Have the ManyToMany load the through-relationship if it's NULL.
 
 More tests for when relationships are missing.
 
-Consider moving fetch*BySelect() into the level-specific Select classes. This means creating a MapperSelect class.
+Consider moving fetch*BySelect() into the level-specific Select classes.
 
 Consider creating an underlying GatewaySelect that talks directly to the database, without any table-specific stuff.
 
@@ -18,8 +18,6 @@ If a related is not set, no fetch was attempted. Empties ...
 - ARRAY means "failed to fetch a rowset/recordset"
 
 ... but then do we sometimes want a new Row/Record or empty RowSet/RecordSet? Especially in a relationship.
-
-Consider a way to construct the Mapper with the Mapper Locator so it can fetch its own relateds.
 
 Identity Field.
 
