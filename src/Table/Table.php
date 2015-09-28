@@ -217,7 +217,7 @@ class Table
      */
     public function select(array $colsVals = [])
     {
-        $select = $this->newSelect()->from($this->getTable());
+        $select = $this->newTableSelect()->from($this->getTable());
 
         foreach ($colsVals as $col => $val) {
             $this->selectWhere($select, $col, $val);
@@ -226,7 +226,7 @@ class Table
         return $select;
     }
 
-    protected function newSelect()
+    protected function newTableSelect()
     {
         return new TableSelect($this, $this->queryFactory->newSelect());
     }

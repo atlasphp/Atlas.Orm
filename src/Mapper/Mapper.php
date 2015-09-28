@@ -111,13 +111,7 @@ class Mapper
         return $this->convertRow($row, $with);
     }
 
-    public function fetchRecordBySelect(MapperSelect $mapperSelect)
-    {
-        $row = $mapperSelect->getTableSelect()->fetchRow();
-        return $this->convertRow($row, $mapperSelect->getWith());
-    }
-
-    protected function convertRow($row, array $with)
+    public function convertRow($row, array $with)
     {
         if (! $row) {
             return false;
@@ -139,13 +133,7 @@ class Mapper
         return $this->convertRowSet($rowSet, $with);
     }
 
-    public function fetchRecordSetBySelect(MapperSelect $mapperSelect)
-    {
-        $rowSet = $mapperSelect->getTableSelect()->fetchRowSet();
-        return $this->convertRowSet($rowSet, $mapperSelect->getWith());
-    }
-
-    protected function convertRowSet($rowSet, array $with)
+    public function convertRowSet($rowSet, array $with)
     {
         if (! $rowSet) {
             return array();
@@ -155,15 +143,15 @@ class Mapper
         return $this->newRecordSet($rowSet, $relatedSet);
     }
 
-    protected function newSelect(TableSelect $tableSelect)
+    protected function newMapperSelect(TableSelect $tableSelect)
     {
-        return new MapperSelect($tableSelect);
+        return new MapperSelect($this, $tableSelect);
     }
 
     public function select(array $colsVals = [])
     {
         $tableSelect = $this->getTable()->select($colsVals);
-        return $this->newSelect($tableSelect);
+        return $this->newMapperSelect($tableSelect);
     }
 
     public function insert(Record $record)

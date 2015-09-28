@@ -10,8 +10,9 @@ class MapperSelect
 
     protected $tableSelect;
 
-    public function __construct(TableSelect $tableSelect)
+    public function __construct(Mapper $mapper, TableSelect $tableSelect)
     {
+        $this->mapper = $mapper;
         $this->tableSelect = $tableSelect;
     }
 
@@ -35,8 +36,15 @@ class MapperSelect
         return $this->tableSelect;
     }
 
-    public function getWith()
+    public function fetchRecord()
     {
-        return $this->with;
+        $row = $this->tableSelect->fetchRow();
+        return $this->mapper->convertRow($row, $this->with);
+    }
+
+    public function fetchRecordSet()
+    {
+        $rowSet = $this->tableSelect->fetchRowSet();
+        return $this->mapper->convertRowSet($rowSet, $this->with);
     }
 }
