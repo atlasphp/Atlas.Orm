@@ -32,17 +32,19 @@ class TableSelect implements SubselectInterface
      */
     protected $select;
 
+    protected $table;
+
     /**
      *
      * @param SelectInterface $select
      *
      */
     public function __construct(
-        SelectInterface $select,
-        ExtendedPdo $connection
+        Table $table,
+        SelectInterface $select
     ) {
+        $this->table = $table;
         $this->select = $select;
-        $this->connection = $connection;
     }
 
     /**
@@ -103,7 +105,7 @@ class TableSelect implements SubselectInterface
      */
     public function fetchAll()
     {
-        return $this->connection->fetchAll(
+        return $this->table->getReadConnection()->fetchAll(
             $this->select->getStatement(),
             $this->select->getBindValues()
         );
@@ -123,7 +125,7 @@ class TableSelect implements SubselectInterface
      */
     public function fetchAssoc()
     {
-        return $this->connection->fetchAssoc(
+        return $this->table->getReadConnection()->fetchAssoc(
             $this->select->getStatement(),
             $this->select->getBindValues()
         );
@@ -138,7 +140,7 @@ class TableSelect implements SubselectInterface
      */
     public function fetchCol()
     {
-        return $this->connection->fetchCol(
+        return $this->table->getReadConnection()->fetchCol(
             $this->select->getStatement(),
             $this->select->getBindValues()
         );
@@ -153,7 +155,7 @@ class TableSelect implements SubselectInterface
      */
     public function fetchOne()
     {
-        return $this->connection->fetchOne(
+        return $this->table->getReadConnection()->fetchOne(
             $this->select->getStatement(),
             $this->select->getBindValues()
         );
@@ -171,7 +173,7 @@ class TableSelect implements SubselectInterface
      */
     public function fetchPairs()
     {
-        return $this->connection->fetchPairs(
+        return $this->table->getReadConnection()->fetchPairs(
             $this->select->getStatement(),
             $this->select->getBindValues()
         );
@@ -186,7 +188,7 @@ class TableSelect implements SubselectInterface
      */
     public function fetchValue()
     {
-        return $this->connection->fetchValue(
+        return $this->table->getReadConnection()->fetchValue(
             $this->select->getStatement(),
             $this->select->getBindValues()
         );

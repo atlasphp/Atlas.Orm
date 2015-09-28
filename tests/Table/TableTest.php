@@ -2,8 +2,8 @@
 namespace Atlas\Table;
 
 use Atlas\Assertions;
-use Atlas\Fake\Auto\AutoTable;
 use Atlas\Fake\Employee\EmployeeTable;
+use Atlas\Fake\Employee\EmployeeRowFilter;
 use Atlas\SqliteFixture;
 use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
@@ -27,7 +27,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
             $connectionLocator,
             new QueryFactory('sqlite'),
             new IdentityMap(),
-            new RowFilter()
+            new EmployeeRowFilter()
         );
 
         $fixture = new SqliteFixture($this->table->getWriteConnection());

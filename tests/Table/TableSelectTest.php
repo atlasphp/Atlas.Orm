@@ -2,7 +2,10 @@
 namespace Atlas\Table;
 
 use Atlas\Assertions;
+use Atlas\Fake\Employee\EmployeeTable;
+use Atlas\Fake\Employee\EmployeeRowFilter;
 use Atlas\SqliteFixture;
+use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\QueryFactory;
 
@@ -15,28 +18,39 @@ class TableSelectTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $connection = new ExtendedPdo('sqlite::memory:');
-        $fixture = new SqliteFixture($connection);
+        $connectionLocator = new ConnectionLocator(function () {
+            return new ExtendedPdo('sqlite::memory:');
+        });
+
+        $table = new EmployeeTable(
+            $connectionLocator,
+            new QueryFactory('sqlite'),
+            new IdentityMap(),
+            new EmployeeRowFilter()
+        );
+
+        $fixture = new SqliteFixture($table->getWriteConnection());
         $fixture->exec();
 
-        $queryFactory = new QueryFactory('sqlite');
-        $this->decoratedSelect = $queryFactory->newSelect();
-        $this->tableSelect = new TableSelect($this->decoratedSelect, $connection);
+        $this->tableSelect = $table->select();
     }
 
     public function testGetSelect()
     {
-        $this->assertSame($this->decoratedSelect, $this->tableSelect->getSelect());
+        $this->assertInstanceOf(
+            'Aura\SqlQuery\Common\SelectInterface',
+            $this->tableSelect->getSelect()
+        );
     }
 
     public function testGetStatement()
     {
-        $this->tableSelect->cols(['*'])->from('foo');
+        $this->tableSelect->cols(['*']);
         $expect = '
             SELECT
                 *
             FROM
-                "foo"
+                "employees"
         ';
         $actual = $this->tableSelect->getStatement();
         $this->assertSameSql($expect, $actual);
@@ -75,7 +89,6 @@ class TableSelectTest extends \PHPUnit_Framework_TestCase
 
         $actual = $this->tableSelect
             ->cols(['*'])
-            ->from('employees')
             ->where('id <= ?', 3)
             ->fetchAssoc();
 
@@ -88,7 +101,6 @@ class TableSelectTest extends \PHPUnit_Framework_TestCase
 
         $actual = $this->tableSelect
             ->cols(['name'])
-            ->from('employees')
             ->where('id <= ?', 3)
             ->fetchCol();
 
@@ -105,7 +117,6 @@ class TableSelectTest extends \PHPUnit_Framework_TestCase
 
         $actual = $this->tableSelect
             ->cols(['id', 'name'])
-            ->from('employees')
             ->where('id <= ?', 3)
             ->fetchPairs();
 
@@ -117,7 +128,6 @@ class TableSelectTest extends \PHPUnit_Framework_TestCase
         $expect = 'Clara';
         $actual = $this->tableSelect
             ->cols(['name'])
-            ->from('employees')
             ->where('id = ?', 3)
             ->fetchValue();
 

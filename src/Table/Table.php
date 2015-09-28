@@ -70,7 +70,7 @@ class Table
 
     protected $table;
 
-    protected $cols = [];
+    protected $cols = ['*'];
 
     protected $rowClass;
 
@@ -168,11 +168,8 @@ class Table
      * @return array
      *
      */
-    protected function getCols()
+    public function getCols()
     {
-        if (! $this->cols) {
-            $this->cols = ['*'];
-        }
         return (array) $this->cols;
     }
 
@@ -235,10 +232,7 @@ class Table
 
     protected function newSelect()
     {
-        return new TableSelect(
-            $this->queryFactory->newSelect(),
-            $this->getReadConnection()
-        );
+        return new TableSelect($this, $this->queryFactory->newSelect());
     }
 
     protected function selectWhere($select, $col, $val)
