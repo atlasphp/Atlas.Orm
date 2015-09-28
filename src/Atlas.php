@@ -20,6 +20,31 @@ class Atlas
         return $this->mapperLocator->get($class);
     }
 
+    public function fetchRecord($class, $primaryVal, array $with = [])
+    {
+        return $this->mapper($class)->fetchRecord($primaryVal, $with);
+    }
+
+    public function fetchRecordBy($class, array $colsVals, array $with = [])
+    {
+        return $this->mapper($class)->fetchRecordBy($colsVals, $with);
+    }
+
+    public function fetchRecordSet($class, array $primaryVals, array $with = [])
+    {
+        return $this->mapper($class)->fetchRecordSet($primaryVals, $with);
+    }
+
+    public function fetchRecordSetBy($class, array $colsVals, array $with = [])
+    {
+        return $this->mapper($class)->fetchRecordSetBy($colsVals, $with);
+    }
+
+    public function select($class, array $colsVals = [])
+    {
+        return $this->mapper($class)->select($colsVals);
+    }
+
     public function insert(Record $record)
     {
         return $this->mapper($record)->insert($record);

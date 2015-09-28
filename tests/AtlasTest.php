@@ -38,8 +38,8 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
 
     public function testFetchRecord()
     {
-        $mapper = $this->atlas->mapper(ThreadMapper::CLASS);
-        $actual = $mapper->fetchRecord(
+        $actual = $this->atlas->fetchRecord(
+            ThreadMapper::CLASS,
             1,
             [
                 'author', // manyToOne
@@ -156,8 +156,8 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
 
     public function testFetchRecordSet()
     {
-        $mapper = $this->atlas->mapper(ThreadMapper::CLASS);
-        $actual = $mapper->fetchRecordSet(
+        $actual = $this->atlas->fetchRecordSet(
+            ThreadMapper::CLASS,
             [1, 2, 3],
             [
                 'author', // manyToOne
