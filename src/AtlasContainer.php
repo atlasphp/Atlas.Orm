@@ -129,6 +129,6 @@ class AtlasContainer
 
     public function newRelations($mapperClass)
     {
-        return new Relations($mapperClass);
+        return new Relations($mapperClass, $this->mapperLocator);
     }
 }

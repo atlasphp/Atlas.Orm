@@ -73,91 +73,99 @@ class Mapper
     }
 
     // row can be array or Row object
-    public function newRecord($row)
+    public function newRecord($row, array $related = [])
     {
         if (is_array($row)) {
             $row = $this->getTable()->newRow($row);
         }
 
         $recordClass = $this->getRecordClass();
-        return new $recordClass(
-            $row,
-            $this->relations->getEmptyFields()
-        );
+        return new $recordClass($row, $related);
     }
 
-    // rowSet can be array or RowSet object
-    public function newRecordSet($rowSet)
+    // rowSet can be array of Rows, or RowSet object
+    public function newRecordSet($rowSet, array $relatedSet = [])
     {
         $records = [];
         foreach ($rowSet as $row) {
-            $records[] = $this->newRecord($row);
+            $primaryVal = $row->getPrimaryVal();
+            $related = isset($relatedSet[$primaryVal])
+                     ? $relatedSet[$primaryVal]
+                     : array();
+            $records[] = $this->newRecord($row, $related);
         }
 
         $recordSetClass = $this->getRecordSetClass();
         return new $recordSetClass($records);
     }
 
-    public function fetchRecord($primaryVal)
+    public function fetchRecord($primaryVal, array $with = [])
     {
-        $record = false;
         $row = $this->table->fetchRow($primaryVal);
-        if ($row) {
-            $record = $this->newRecord($row);
-        }
-        return $record;
+        return $this->convertRow($row, $with);
     }
 
-    public function fetchRecordBy(array $colsVals = [], callable $custom = null)
+    public function fetchRecordBy(array $colsVals = [], array $with = [])
     {
-        $record = false;
-        $row = $this->table->fetchRowBy($colsVals, $custom);
-        if ($row) {
-            $record = $this->newRecord($row);
-        }
-        return $record;
+        $row = $this->table->fetchRowBy($colsVals);
+        return $this->convertRow($row, $with);
     }
 
-    public function fetchRecordBySelect(TableSelect $tableSelect)
+    public function fetchRecordBySelect(MapperSelect $mapperSelect)
     {
-        $record = false;
+        $tableSelect = $mapperSelect->getTableSelect();
         $row = $this->table->fetchRowBySelect($tableSelect);
-        if ($row) {
-            $record = $this->newRecord($row);
-        }
-        return $record;
+        return $this->convertRow($row, $mapperSelect->getWith());
     }
 
-    public function fetchRecordSet(array $primaryVals)
+    protected function convertRow($row, array $with)
+    {
+        if (! $row) {
+            return false;
+        }
+
+        $related = $this->relations->fetchForRow($row, $with);
+        return $this->newRecord($row, $related);
+    }
+
+    public function fetchRecordSet(array $primaryVals, array $with = array())
     {
         $rowSet = $this->table->fetchRowSet($primaryVals);
-        if (! $rowSet) {
-            return array();
-        }
-        return $this->newRecordSet($rowSet);
+        return $this->convertRowSet($rowSet, $with);
     }
 
-    public function fetchRecordSetBy(array $colsVals = [], callable $custom = null)
+    public function fetchRecordSetBy(array $colsVals = [], array $with = array())
     {
-        $rowSet = $this->table->fetchRowSetBy($colsVals, $custom);
-        if (! $rowSet) {
-            return array();
-        }
-        return $this->newRecordSet($rowSet);
+        $rowSet = $this->table->fetchRowSetBy($colsVals);
+        return $this->convertRowSet($rowSet, $with);
     }
 
-    public function fetchRecordSetBySelect(TableSelect $tableSelect)
+    public function fetchRecordSetBySelect(MapperSelect $mapperSelect)
     {
+        $tableSelect = $mapperSelect->getTableSelect();
         $rowSet = $this->table->fetchRowSetBySelect($tableSelect);
+        return $this->convertRowSet($rowSet, $mapperSelect->getWith());
+    }
+
+    protected function convertRowSet($rowSet, array $with)
+    {
         if (! $rowSet) {
             return array();
         }
-        return $this->newRecordSet($rowSet);
+
+        $relatedSet = $this->relations->fetchForRowSet($rowSet, $with);
+        return $this->newRecordSet($rowSet, $relatedSet);
+    }
+
+    protected function newSelect(TableSelect $tableSelect)
+    {
+        return new MapperSelect($tableSelect);
     }
 
     public function select(array $colsVals = [])
     {
-        return $this->getTable()->select($colsVals);
+        $tableSelect = $this->getTable()->select($colsVals);
+        return $this->newSelect($tableSelect);
     }
 
     public function insert(Record $record)

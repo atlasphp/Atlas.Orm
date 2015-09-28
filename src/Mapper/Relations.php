@@ -1,13 +1,13 @@
 <?php
 namespace Atlas\Mapper;
 
-use Atlas\Atlas;
 use Atlas\Exception;
-use Atlas\Mapper\Mapper;
 use Atlas\Relationship\ManyToMany;
 use Atlas\Relationship\ManyToOne;
 use Atlas\Relationship\OneToMany;
 use Atlas\Relationship\OneToOne;
+use Atlas\Table\Row;
+use Atlas\Table\RowSet;
 
 class Relations
 {
@@ -17,9 +17,14 @@ class Relations
 
     protected $nativeMapperClass;
 
-    public function __construct($nativeMapperClass)
-    {
+    protected $mapperLocator;
+
+    public function __construct(
+        $nativeMapperClass,
+        MapperLocator $mapperLocator
+    ) {
         $this->nativeMapperClass = $nativeMapperClass;
+        $this->mapperLocator = $mapperLocator;
     }
 
     public function getEmptyFields()
@@ -74,27 +79,32 @@ class Relations
         return $relation;
     }
 
-    public function stitchIntoRecord(Atlas $atlas, Record $record, array $with)
+    public function fetchForRow(Row $row, array $with = [])
     {
+        $related = [];
         foreach ($this->fixWith($with) as $name => $custom) {
-            $this->relations[$name]->stitchIntoRecord(
-                $atlas,
-                $record,
+            $this->relations[$name]->fetchForRow(
+                $this->mapperLocator,
+                $row,
+                $related, // should this be an object?
                 $custom
             );
         }
+        return $related;
     }
 
-    public function stitchIntoRecordSet(Atlas $atlas, RecordSet $recordSet, array $with)
+    public function fetchForRowSet(RowSet $rowSet, array $with = [])
     {
+        $relatedSet = [];
         foreach ($this->fixWith($with) as $name => $custom) {
-            $this->relations[$name]->stitchIntoRecordSet(
-                $atlas,
-                $recordSet,
+            $this->relations[$name]->fetchForRow(
+                $this->mapperLocator,
+                $rowSet,
+                $relatedSet, // should this be an object?
                 $custom
             );
         }
-        return $recordSet;
+        return $relatedSet;
     }
 
     protected function fixWith($spec)

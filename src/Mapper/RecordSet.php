@@ -19,15 +19,6 @@ class RecordSet extends ArrayObject
         return $array;
     }
 
-    public function getUniqueVals($field)
-    {
-        $vals = [];
-        foreach ($this as $record) {
-            $vals[] = $record->{$field};
-        }
-        return array_unique($vals);
-    }
-
     public function getGroupsBy($field)
     {
         $groups = array();

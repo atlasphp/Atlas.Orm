@@ -1,16 +1,10 @@
 <?php
 namespace Atlas\Relationship;
 
-use Atlas\Atlas;
 use Atlas\Mapper\Mapper;
-use Atlas\Mapper\Record;
-use Atlas\Mapper\RecordSet;
-
-// the Relation should let you specify what to do when there are no
-// related records. $rel->nullWhenEmpty(), arrayWhenEmpty(), newRecordWhenEmpty(),
-// newRecordSetWhenEmpty()? or should it be a $rel->default() to indicate the
-// default value? maybe Table should return "false" instead of "null" when no
-// row is found.
+use Atlas\Mapper\MapperLocator;
+use Atlas\Table\Row;
+use Atlas\Table\RowSet;
 
 abstract class AbstractRelationship
 {
@@ -46,55 +40,95 @@ abstract class AbstractRelationship
         return $this;
     }
 
-    protected function fix(Atlas $atlas)
+    protected function fix(MapperLocator $mapperLocator)
     {
         if ($this->fixed) {
             return;
         }
-        $this->fixNativeCol($atlas);
-        $this->fixThroughNativeCol($atlas);
-        $this->fixThroughForeignCol($atlas);
-        $this->fixForeignCol($atlas);
+        $this->fixNativeCol($mapperLocator);
+        $this->fixThroughNativeCol($mapperLocator);
+        $this->fixThroughForeignCol($mapperLocator);
+        $this->fixForeignCol($mapperLocator);
         $this->fixed = true;
     }
 
-    protected function fixNativeCol(Atlas $atlas)
+    protected function fixNativeCol(MapperLocator $mapperLocator)
     {
         if ($this->nativeCol) {
             return;
         }
 
-        $nativeMapper = $atlas->mapper($this->nativeMapperClass);
+        $nativeMapper = $mapperLocator->get($this->nativeMapperClass);
         $this->nativeCol = $nativeMapper->getTable()->getPrimary();
     }
 
-    protected function fixForeignCol(Atlas $atlas)
+    protected function fixForeignCol(MapperLocator $mapperLocator)
     {
         if ($this->foreignCol) {
             return;
         }
 
-        $nativeMapper = $atlas->mapper($this->nativeMapperClass);
+        $nativeMapper = $mapperLocator->get($this->nativeMapperClass);
         $this->foreignCol = $nativeMapper->getTable()->getPrimary();
     }
 
-    protected function fixThroughNativeCol(Atlas $atlas)
+    protected function fixThroughNativeCol(MapperLocator $mapperLocator)
     {
     }
 
-    protected function fixThroughForeignCol(Atlas $atlas)
+    protected function fixThroughForeignCol(MapperLocator $mapperLocator)
     {
     }
 
-    abstract public function stitchIntoRecord(
-        Atlas $atlas,
-        Record $record,
+    protected function fetchForeignRecord($foreignVal, callable $custom = null)
+    {
+        $foreignMapper = $this->mapperLocator->get($this->foreignMapperClass);
+        return $foreignMapper->fetchRecordBySelect($this->foreignSelect(
+            $foreignMapper,
+            $foreignVal,
+            $custom
+        ));
+    }
+
+    protected function fetchForeignRecordSet($foreignVal, callable $custom = null)
+    {
+        $foreignMapper = $this->mapperLocator->get($this->foreignMapperClass);
+        return $foreignMapper->fetchRecordSetBySelect($this->foreignSelect(
+            $foreignMapper,
+            $foreignVal,
+            $custom
+        ));
+    }
+
+    protected function foreignSelect(Mapper $foreignMapper, $foreignVal, callable $custom = null)
+    {
+        $select = $foreignMapper->select([$this->foreignCol => $foreignVal]);
+        if ($custom) {
+            $custom($select);
+        }
+        return $select;
+    }
+
+    protected function getUniqueVals($set, $col)
+    {
+        $vals = [];
+        foreach ($set as $item) {
+            $vals[] = $item->$col;
+        }
+        return array_unique($vals);
+    }
+
+    abstract public function fetchForRow(
+        MapperLocator $mapperLocator,
+        Row $row,
+        array &$related,
         callable $custom = null
     );
 
-    abstract public function stitchIntoRecordSet(
-        Atlas $atlas,
-        RecordSet $recordSet,
+    abstract public function fetchForRowSet(
+        MapperLocator $mapperLocator,
+        RowSet $row,
+        array &$relatedSet,
         callable $custom = null
     );
 }
