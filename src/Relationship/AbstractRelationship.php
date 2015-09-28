@@ -83,16 +83,6 @@ abstract class AbstractRelationship
     {
     }
 
-    protected function fetchForeignRecord($foreignVal, callable $custom = null)
-    {
-        return $this->foreignSelect($foreignVal, $custom)->fetchRecord();
-    }
-
-    protected function fetchForeignRecordSet($foreignVal, callable $custom = null)
-    {
-        return $this->foreignSelect($foreignVal, $custom)->fetchRecordSet();
-    }
-
     protected function foreignSelect($foreignVal, callable $custom = null)
     {
         $foreignMapper = $this->mapperLocator->get($this->foreignMapperClass);
