@@ -60,16 +60,20 @@ class Relations
             throw new Exception("$foreignMapperClass does not exist");
         }
 
-        $relation = new $relationClass(
+        $relation = $this->newRelation($name, $relationClass, $foreignMapperClass, $throughName);
+        $this->relations[$name] = $relation;
+        return $relation;
+    }
+
+    protected function newRelation($name, $relationClass, $foreignMapperClass, $throughName = null)
+    {
+        return new $relationClass(
             $this->mapperLocator,
             $this->nativeMapperClass,
             $name,
             $foreignMapperClass,
             $throughName
         );
-
-        $this->relations[$name] = $relation;
-        return $relation;
     }
 
     public function fetchForRow(Row $row, array $with = [])
