@@ -27,16 +27,18 @@ class OneToMany extends AbstractRelationship
         $this->fix();
 
         $foreignVals = $this->getUniqueVals($rowSet, $this->nativeCol);
-        $foreignRecordSet = $this->foreignSelect($foreignVals, $custom)->fetchRecordSet();
-        $foreignGroups = $this->groupRecordSets($foreignRecordSet, $this->foreignCol);
+        $foreignRecordSets = $this->groupRecordSets(
+            $this->foreignSelect($foreignVals, $custom)->fetchRecordSet(),
+            $this->foreignCol
+        );
 
         foreach ($rowSet as $row) {
-            $foreign = false;
+            $foreignGroup = false;
             $key = $row->{$this->nativeCol};
-            if (isset($foreignGroups[$key])) {
-                $foreign = $foreignGroups[$key];
+            if (isset($foreignRecordSets[$key])) {
+                $foreignRecordSet = $foreignRecordSets[$key];
             }
-            $relatedSet[$row->getPrimaryVal()][$this->name] = $foreign;
+            $relatedSet[$row->getPrimaryVal()][$this->name] = $foreignRecordSet;
         }
     }
 }
