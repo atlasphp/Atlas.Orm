@@ -15,8 +15,8 @@ class OneToOne extends AbstractRelationship
         callable $custom = null
     ) {
         $this->fix($mapperLocator);
-        $foreignVal = $row[$this->nativeCol];
-        $foreign = $this->fetchForeignRecord($foreignVal, $custom);
+        $foreignVal = $row->{$this->nativeCol};
+        $foreign = $this->fetchForeignRecord($mapperLocator, $foreignVal, $custom);
         $related[$this->name] = $foreign;
     }
 
@@ -29,7 +29,7 @@ class OneToOne extends AbstractRelationship
         $this->fix($mapperLocator);
 
         $foreignVals = $this->getUniqueVals($rowSet, $this->nativeCol);
-        $foreignRecordSet = $this->fetchForeignRecordSet($foreignVals, $custom);
+        $foreignRecordSet = $this->fetchForeignRecordSet($mapperLocator, $foreignVals, $custom);
 
         $foreignGroups = array();
         if ($foreignRecordSet) {
@@ -38,7 +38,7 @@ class OneToOne extends AbstractRelationship
 
         foreach ($rowSet as $row) {
             $foreign = false;
-            $key = $row[$this->nativeCol];
+            $key = $row->{$this->nativeCol};
             if (isset($foreignGroups[$key])) {
                 $foreign = $foreignGroups[$key][0];
             }

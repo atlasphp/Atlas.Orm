@@ -36,16 +36,10 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
         $this->atlas = $atlasContainer->getAtlas();
     }
 
-    public function testSelect()
-    {
-        $select = $this->atlas->select(ThreadMapper::CLASS);
-        $this->assertInstanceOf('Atlas\AtlasSelect', $select);
-    }
-
     public function testFetchRecord()
     {
-        $actual = $this->atlas->fetchRecord(
-            ThreadMapper::CLASS,
+        $mapper = $this->atlas->mapper(ThreadMapper::CLASS);
+        $actual = $mapper->fetchRecord(
             1,
             [
                 'author', // manyToOne
@@ -66,14 +60,11 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
             'author' => [
                 'author_id' => '1',
                 'name' => 'Anna',
-                'replies' => null,
-                'threads' => null,
             ],
             'summary' => [
                 'thread_id' => '1',
                 'reply_count' => '5',
                 'view_count' => '0',
-                'thread' => null,
             ],
             'replies' => [
                 0 => [
@@ -84,8 +75,6 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
                     'author' => [
                         'author_id' => '2',
                         'name' => 'Betty',
-                        'replies' => null,
-                        'threads' => null,
                     ],
                 ],
                 1 => [
@@ -96,8 +85,6 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
                     'author' => [
                         'author_id' => '3',
                         'name' => 'Clara',
-                        'replies' => null,
-                        'threads' => null,
                     ],
                 ],
                 2 => [
@@ -108,8 +95,6 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
                     'author' => [
                         'author_id' => '4',
                         'name' => 'Donna',
-                        'replies' => null,
-                        'threads' => null,
                     ],
                 ],
                 3 => [
@@ -120,8 +105,6 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
                     'author' => [
                         'author_id' => '5',
                         'name' => 'Edna',
-                        'replies' => null,
-                        'threads' => null,
                     ],
                 ],
                 4 => [
@@ -132,8 +115,6 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
                     'author' => [
                         'author_id' => '6',
                         'name' => 'Fiona',
-                        'replies' => null,
-                        'threads' => null,
                     ],
                 ],
             ],
@@ -158,20 +139,14 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
                 0 => [
                     'tag_id' => '1',
                     'name' => 'foo',
-                    'threads2tags' => null,
-                    'threads' => null,
                 ],
                 1 => [
                     'tag_id' => '2',
                     'name' => 'bar',
-                    'threads2tags' => null,
-                    'threads' => null,
                 ],
                 2 => [
                     'tag_id' => '3',
                     'name' => 'baz',
-                    'threads2tags' => null,
-                    'threads' => null,
                 ],
             ],
         ];
@@ -181,8 +156,8 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
 
     public function testFetchRecordSet()
     {
-        $actual = $this->atlas->fetchRecordSet(
-            ThreadMapper::CLASS,
+        $mapper = $this->atlas->mapper(ThreadMapper::CLASS);
+        $actual = $mapper->fetchRecordSet(
             [1, 2, 3],
             [
                 'author', // manyToOne
@@ -204,14 +179,11 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
                 'author' => [
                     'author_id' => '1',
                     'name' => 'Anna',
-                    'replies' => null,
-                    'threads' => null,
                 ],
                 'summary' => [
                     'thread_id' => '1',
                     'reply_count' => '5',
                     'view_count' => '0',
-                    'thread' => null,
                 ],
                 'replies' => [
                     0 => [
@@ -222,8 +194,6 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
                         'author' => [
                             'author_id' => '2',
                             'name' => 'Betty',
-                            'replies' => null,
-                            'threads' => null,
                         ],
                     ],
                     1 => [
@@ -234,8 +204,6 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
                         'author' => [
                             'author_id' => '3',
                             'name' => 'Clara',
-                            'replies' => null,
-                            'threads' => null,
                         ],
                     ],
                     2 => [
@@ -246,8 +214,6 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
                         'author' => [
                             'author_id' => '4',
                             'name' => 'Donna',
-                            'replies' => null,
-                            'threads' => null,
                         ],
                     ],
                     3 => [
@@ -258,8 +224,6 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
                         'author' => [
                             'author_id' => '5',
                             'name' => 'Edna',
-                            'replies' => null,
-                            'threads' => null,
                         ],
                     ],
                     4 => [
@@ -270,8 +234,6 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
                         'author' => [
                             'author_id' => '6',
                             'name' => 'Fiona',
-                            'replies' => null,
-                            'threads' => null,
                         ],
                     ],
                 ],
@@ -296,20 +258,14 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
                     0 => [
                         'tag_id' => '1',
                         'name' => 'foo',
-                        'threads2tags' => null,
-                        'threads' => null,
                     ],
                     1 => [
                         'tag_id' => '2',
                         'name' => 'bar',
-                        'threads2tags' => null,
-                        'threads' => null,
                     ],
                     2 => [
                         'tag_id' => '3',
                         'name' => 'baz',
-                        'threads2tags' => null,
-                        'threads' => null,
                     ],
                 ],
             ],
@@ -321,14 +277,11 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
                 'author' => [
                     'author_id' => '2',
                     'name' => 'Betty',
-                    'replies' => null,
-                    'threads' => null,
                 ],
                 'summary' => [
                     'thread_id' => '2',
                     'reply_count' => '5',
                     'view_count' => '0',
-                    'thread' => null,
                 ],
                 'replies' => [
                     0 => [
@@ -339,8 +292,6 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
                         'author' => [
                             'author_id' => '3',
                             'name' => 'Clara',
-                            'replies' => null,
-                            'threads' => null,
                         ],
                     ],
                     1 => [
@@ -351,8 +302,6 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
                         'author' => [
                             'author_id' => '4',
                             'name' => 'Donna',
-                            'replies' => null,
-                            'threads' => null,
                         ],
                     ],
                     2 => [
@@ -363,8 +312,6 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
                         'author' => [
                             'author_id' => '5',
                             'name' => 'Edna',
-                            'replies' => null,
-                            'threads' => null,
                         ],
                     ],
                     3 => [
@@ -375,8 +322,6 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
                         'author' => [
                             'author_id' => '6',
                             'name' => 'Fiona',
-                            'replies' => null,
-                            'threads' => null,
                         ],
                     ],
                     4 => [
@@ -387,8 +332,6 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
                         'author' => [
                             'author_id' => '7',
                             'name' => 'Gina',
-                            'replies' => null,
-                            'threads' => null,
                         ],
                     ],
                 ],
@@ -413,20 +356,14 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
                     0 => [
                         'tag_id' => '2',
                         'name' => 'bar',
-                        'threads2tags' => null,
-                        'threads' => null,
                     ],
                     1 => [
                         'tag_id' => '3',
                         'name' => 'baz',
-                        'threads2tags' => null,
-                        'threads' => null,
                     ],
                     2 => [
                         'tag_id' => '4',
                         'name' => 'dib',
-                        'threads2tags' => null,
-                        'threads' => null,
                     ],
                 ],
             ],
@@ -438,14 +375,11 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
                 'author' => [
                     'author_id' => '3',
                     'name' => 'Clara',
-                    'replies' => null,
-                    'threads' => null,
                 ],
                 'summary' => [
                     'thread_id' => '3',
                     'reply_count' => '5',
                     'view_count' => '0',
-                    'thread' => null,
                 ],
                 'replies' => [
                     0 => [
@@ -456,8 +390,6 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
                         'author' => [
                             'author_id' => '4',
                             'name' => 'Donna',
-                            'replies' => null,
-                            'threads' => null,
                         ],
                     ],
                     1 => [
@@ -468,8 +400,6 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
                         'author' => [
                             'author_id' => '5',
                             'name' => 'Edna',
-                            'replies' => null,
-                            'threads' => null,
                         ],
                     ],
                     2 => [
@@ -480,8 +410,6 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
                         'author' => [
                             'author_id' => '6',
                             'name' => 'Fiona',
-                            'replies' => null,
-                            'threads' => null,
                         ],
                     ],
                     3 => [
@@ -492,8 +420,6 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
                         'author' => [
                             'author_id' => '7',
                             'name' => 'Gina',
-                            'replies' => null,
-                            'threads' => null,
                         ],
                     ],
                     4 => [
@@ -504,8 +430,6 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
                         'author' => [
                             'author_id' => '8',
                             'name' => 'Hanna',
-                            'replies' => null,
-                            'threads' => null,
                         ],
                     ],
                 ],
@@ -530,20 +454,14 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
                     0 => [
                         'tag_id' => '3',
                         'name' => 'baz',
-                        'threads2tags' => null,
-                        'threads' => null,
                     ],
                     1 => [
                         'tag_id' => '4',
                         'name' => 'dib',
-                        'threads2tags' => null,
-                        'threads' => null,
                     ],
                     2 => [
                         'tag_id' => '5',
                         'name' => 'zim',
-                        'threads2tags' => null,
-                        'threads' => null,
                     ],
                 ],
             ],

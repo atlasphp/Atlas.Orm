@@ -59,7 +59,7 @@ class ManyToMany extends AbstractRelationship
         $this->fix($mapperLocator);
         $throughRecordSet = $related[$this->throughName];
         $foreignVals = $this->getUniqueVals($throughRecordSet, $this->throughForeignCol);
-        $foreign = $this->fetchForeignRecordSet($foreignVals, $custom);
+        $foreign = $this->fetchForeignRecordSet($mapperLocator, $foreignVals, $custom);
         $related[$this->name] = $foreign;
     }
 
@@ -82,8 +82,7 @@ class ManyToMany extends AbstractRelationship
         }
         $foreignColVals = array_unique($foreignColVals);
 
-        $colsVals = [$this->foreignCol => $foreignColVals];
-        $foreignRecordSet = $this->fetchForeignRecordSet($colsVals, $custom);
+        $foreignRecordSet = $this->fetchForeignRecordSet($mapperLocator, $foreignColVals, $custom);
 
         foreach ($rowSet as $row) {
             $primaryVal = $row->getPrimaryVal();

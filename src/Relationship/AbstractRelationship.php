@@ -80,9 +80,12 @@ abstract class AbstractRelationship
     {
     }
 
-    protected function fetchForeignRecord($foreignVal, callable $custom = null)
-    {
-        $foreignMapper = $this->mapperLocator->get($this->foreignMapperClass);
+    protected function fetchForeignRecord(
+        MapperLocator $mapperLocator,
+        $foreignVal,
+        callable $custom = null
+    ) {
+        $foreignMapper = $mapperLocator->get($this->foreignMapperClass);
         return $foreignMapper->fetchRecordBySelect($this->foreignSelect(
             $foreignMapper,
             $foreignVal,
@@ -90,9 +93,12 @@ abstract class AbstractRelationship
         ));
     }
 
-    protected function fetchForeignRecordSet($foreignVal, callable $custom = null)
-    {
-        $foreignMapper = $this->mapperLocator->get($this->foreignMapperClass);
+    protected function fetchForeignRecordSet(
+        MapperLocator $mapperLocator,
+        $foreignVal,
+        callable $custom = null
+    ) {
+        $foreignMapper = $mapperLocator->get($this->foreignMapperClass);
         return $foreignMapper->fetchRecordSetBySelect($this->foreignSelect(
             $foreignMapper,
             $foreignVal,
@@ -100,8 +106,11 @@ abstract class AbstractRelationship
         ));
     }
 
-    protected function foreignSelect(Mapper $foreignMapper, $foreignVal, callable $custom = null)
-    {
+    protected function foreignSelect(
+        Mapper $foreignMapper,
+        $foreignVal,
+        callable $custom = null
+    ) {
         $select = $foreignMapper->select([$this->foreignCol => $foreignVal]);
         if ($custom) {
             $custom($select);

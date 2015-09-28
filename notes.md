@@ -12,9 +12,8 @@ Consider moving fetch*BySelect() into the level-specific Select classes. This me
 
 Consider creating an underlying GatewaySelect that talks directly to the database, without any table-specific stuff.
 
-Empties ...
+If a related is not set, no fetch was attempted. Empties ...
 
-- NULL means "never attempted to fetch"
 - FALSE means "failed to fetch a row/record"
 - ARRAY means "failed to fetch a rowset/recordset"
 

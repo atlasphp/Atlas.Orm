@@ -89,7 +89,7 @@ class Relations
     {
         $relatedSet = [];
         foreach ($this->fixWith($with) as $name => $custom) {
-            $this->relations[$name]->fetchForRow(
+            $this->relations[$name]->fetchForRowSet(
                 $this->mapperLocator,
                 $rowSet,
                 $relatedSet, // should this be an object?
