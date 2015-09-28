@@ -127,13 +127,13 @@ abstract class AbstractRelationship
     }
 
     abstract public function fetchForRow(
-        Row $row,
+        Row $nativeRow,
         array &$related,
         callable $custom = null
     );
 
     abstract public function fetchForRowSet(
-        RowSet $row,
+        RowSet $nativeRow,
         array &$relatedSet,
         callable $custom = null
     );

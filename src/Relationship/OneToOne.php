@@ -9,36 +9,36 @@ use Atlas\Table\RowSet;
 class OneToOne extends AbstractRelationship
 {
     public function fetchForRow(
-        Row $row,
+        Row $nativeRow,
         array &$related,
         callable $custom = null
     ) {
         $this->fix();
-        $foreignVal = $row->{$this->nativeCol};
+        $foreignVal = $nativeRow->{$this->nativeCol};
         $foreign = $this->foreignSelect($foreignVal, $custom)->fetchRecord();
         $related[$this->name] = $foreign;
     }
 
     public function fetchForRowSet(
-        RowSet $rowSet,
+        RowSet $nativeRowSet,
         array &$relatedSet,
         callable $custom = null
     ) {
         $this->fix();
 
-        $foreignVals = $this->getUniqueVals($rowSet, $this->nativeCol);
+        $foreignVals = $this->getUniqueVals($nativeRowSet, $this->nativeCol);
         $foreignRecords = $this->groupRecordSets(
             $this->foreignSelect($foreignVals, $custom)->fetchRecordSet(),
             $this->foreignCol
         );
 
-        foreach ($rowSet as $row) {
+        foreach ($nativeRowSet as $nativeRow) {
             $foreignRecord = false;
-            $key = $row->{$this->nativeCol};
+            $key = $nativeRow->{$this->nativeCol};
             if (isset($foreignRecords[$key])) {
                 $foreignRecord = $foreignRecords[$key][0];
             }
-            $relatedSet[$row->getPrimaryVal()][$this->name] = $foreignRecord;
+            $relatedSet[$nativeRow->getPrimaryVal()][$this->name] = $foreignRecord;
         }
     }
 }

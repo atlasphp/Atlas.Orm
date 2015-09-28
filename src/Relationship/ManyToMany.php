@@ -48,7 +48,7 @@ class ManyToMany extends AbstractRelationship
     }
 
     public function fetchForRow(
-        Row $row,
+        Row $nativeRow,
         array &$related,
         callable $custom = null
     ) {
@@ -60,15 +60,15 @@ class ManyToMany extends AbstractRelationship
     }
 
     public function fetchForRowSet(
-        RowSet $rowSet,
+        RowSet $nativeRowSet,
         array &$relatedSet,
         callable $custom = null
     ) {
         $this->fix();
 
         $foreignVals = [];
-        foreach ($rowSet as $row) {
-            $primaryVal = $row->getPrimaryVal();
+        foreach ($nativeRowSet as $nativeRow) {
+            $primaryVal = $nativeRow->getPrimaryVal();
             $throughRecordSet = $relatedSet[$primaryVal][$this->throughName];
             $foreignVals = array_merge(
                 $foreignVals,
@@ -79,8 +79,8 @@ class ManyToMany extends AbstractRelationship
 
         $foreignRecordSet = $this->foreignSelect($foreignVals, $custom)->fetchRecordSet();
 
-        foreach ($rowSet as $row) {
-            $primaryVal = $row->getPrimaryVal();
+        foreach ($nativeRowSet as $nativeRow) {
+            $primaryVal = $nativeRow->getPrimaryVal();
             $throughRecordSet = $relatedSet[$primaryVal][$this->throughName];
             $vals = $this->getUniqueVals($throughRecordSet, $this->throughForeignCol);
             $relatedSet[$primaryVal][$this->name] = $this->extractRecordSet(
