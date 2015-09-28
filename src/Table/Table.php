@@ -113,12 +113,12 @@ class Table
 
         $this->rowClass = "{$type}Row";
         if (! class_exists($this->rowClass)) {
-            throw new Exception("{$this->rowClass} not defined.");
+            throw new Exception("{$this->rowClass} does not exist");
         }
 
         $this->rowSetClass = "{$type}RowSet";
         if (! class_exists($this->rowSetClass)) {
-            throw new Exception("{$this->rowSetClass} not defined.");
+            throw new Exception("{$this->rowSetClass} does not exist");
         }
     }
 

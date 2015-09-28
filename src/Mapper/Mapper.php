@@ -37,12 +37,12 @@ class Mapper
 
         $this->recordClass = "{$type}Record";
         if (! class_exists($this->recordClass)) {
-            throw new Exception("{$this->recordClass} not defined.");
+            throw new Exception("{$this->recordClass} does not exist");
         }
 
         $this->recordSetClass = "{$type}RecordSet";
         if (! class_exists($this->recordSetClass)) {
-            throw new Exception("{$this->recordSetClass} not defined.");
+            throw new Exception("{$this->recordSetClass} does not exist");
         }
 
         $this->setRelations();
