@@ -13,8 +13,6 @@ class Relations
 {
     protected $relations = [];
 
-    protected $emptyFields = [];
-
     protected $nativeMapperClass;
 
     protected $mapperLocator;
@@ -25,11 +23,6 @@ class Relations
     ) {
         $this->nativeMapperClass = $nativeMapperClass;
         $this->mapperLocator = $mapperLocator;
-    }
-
-    public function getEmptyFields()
-    {
-        return $this->emptyFields;
     }
 
     public function oneToOne($name, $foreignMapperClass)
@@ -75,7 +68,6 @@ class Relations
         );
 
         $this->relations[$name] = $relation;
-        $this->emptyFields[$name] = null;
         return $relation;
     }
 
