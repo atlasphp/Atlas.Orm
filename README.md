@@ -117,6 +117,7 @@ $threadRecordSet = $atlas
     ])
     ->fetchRecordSet();
 ?>
+```
 
 If you do not load a _Record_ "with" a related, it will not be present in the _Record, and it will not be lazy-loaded for you later. This means you need to think ahead as to exactly what you will need from the database.
 
