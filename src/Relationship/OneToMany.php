@@ -1,45 +1,46 @@
 <?php
 namespace Atlas\Relationship;
 
-use Atlas\Atlas;
-use Atlas\Mapper\Record;
-use Atlas\Mapper\RecordSet;
+use Atlas\Mapper\Mapper;
+use Atlas\Mapper\MapperLocator;
+use Atlas\Table\Row;
+use Atlas\Table\RowSet;
 
 class OneToMany extends AbstractRelationship
 {
-    public function stitchIntoRecord(
-        Atlas $atlas,
-        Record $record,
+    public function fetchForRow(
+        Row $row,
+        array &$related,
         callable $custom = null
     ) {
-        $this->fix($atlas);
-        $colsVals = [$this->foreignCol => $record->{$this->nativeCol}];
-        $select = $atlas->select($this->foreignMapperClass, $colsVals, $custom);
-        $record->{$this->field} = $select->fetchRecordSet();
+        $this->fix();
+        $foreignVal = $row->{$this->nativeCol};
+        $foreign = $this->foreignSelect($foreignVal, $custom)->fetchRecordSet();
+        $related[$this->name] = $foreign;
     }
 
-    public function stitchIntoRecordSet(
-        Atlas $atlas,
-        RecordSet $recordSet,
+    public function fetchForRowSet(
+        RowSet $rowSet,
+        array &$relatedSet,
         callable $custom = null
     ) {
-        $this->fix($atlas);
+        $this->fix();
 
-        $colsVals = [$this->foreignCol => $recordSet->getUniqueVals($this->nativeCol)];
-        $select = $atlas->select($this->foreignMapperClass, $colsVals, $custom);
-        $foreignRecordSet = $select->fetchRecordSet();
+        $foreignVals = $this->getUniqueVals($rowSet, $this->nativeCol);
+        $foreignRecordSet = $this->foreignSelect($foreignVals, $custom)->fetchRecordSet();
 
         $foreignGroups = array();
         if ($foreignRecordSet) {
             $foreignGroups = $foreignRecordSet->getGroupsBy($this->foreignCol);
         }
 
-        foreach ($recordSet as $record) {
-            $record->{$this->field} = array(); // not false
-            $key = $record->{$this->nativeCol};
+        foreach ($rowSet as $row) {
+            $foreign = false;
+            $key = $row->{$this->nativeCol};
             if (isset($foreignGroups[$key])) {
-                $record->{$this->field} = $foreignGroups[$key]; // not [$key][0]
+                $foreign = $foreignGroups[$key];
             }
+            $relatedSet[$row->getPrimaryVal()][$this->name] = $foreign;
         }
     }
 }

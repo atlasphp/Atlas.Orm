@@ -1,30 +1,28 @@
 <?php
 namespace Atlas\Mapper;
 
-use Atlas\Atlas;
 use Atlas\Exception;
-use Atlas\Mapper\Mapper;
 use Atlas\Relationship\ManyToMany;
 use Atlas\Relationship\ManyToOne;
 use Atlas\Relationship\OneToMany;
 use Atlas\Relationship\OneToOne;
+use Atlas\Table\Row;
+use Atlas\Table\RowSet;
 
 class Relations
 {
     protected $relations = [];
 
-    protected $emptyFields = [];
-
     protected $nativeMapperClass;
 
-    public function __construct($nativeMapperClass)
-    {
-        $this->nativeMapperClass = $nativeMapperClass;
-    }
+    protected $mapperLocator;
 
-    public function getEmptyFields()
-    {
-        return $this->emptyFields;
+    public function __construct(
+        $nativeMapperClass,
+        MapperLocator $mapperLocator
+    ) {
+        $this->nativeMapperClass = $nativeMapperClass;
+        $this->mapperLocator = $mapperLocator;
     }
 
     public function oneToOne($name, $foreignMapperClass)
@@ -62,39 +60,46 @@ class Relations
             throw new Exception("$foreignMapperClass does not exist");
         }
 
-        $relation = new $relationClass(
+        $relation = $this->newRelation($name, $relationClass, $foreignMapperClass, $throughName);
+        $this->relations[$name] = $relation;
+        return $relation;
+    }
+
+    protected function newRelation($name, $relationClass, $foreignMapperClass, $throughName = null)
+    {
+        return new $relationClass(
+            $this->mapperLocator,
             $this->nativeMapperClass,
             $name,
             $foreignMapperClass,
             $throughName
         );
-
-        $this->relations[$name] = $relation;
-        $this->emptyFields[$name] = null;
-        return $relation;
     }
 
-    public function stitchIntoRecord(Atlas $atlas, Record $record, array $with)
+    public function fetchForRow(Row $row, array $with = [])
     {
+        $related = [];
         foreach ($this->fixWith($with) as $name => $custom) {
-            $this->relations[$name]->stitchIntoRecord(
-                $atlas,
-                $record,
+            $this->relations[$name]->fetchForRow(
+                $row,
+                $related, // should this be an object?
                 $custom
             );
         }
+        return $related;
     }
 
-    public function stitchIntoRecordSet(Atlas $atlas, RecordSet $recordSet, array $with)
+    public function fetchForRowSet(RowSet $rowSet, array $with = [])
     {
+        $relatedSet = [];
         foreach ($this->fixWith($with) as $name => $custom) {
-            $this->relations[$name]->stitchIntoRecordSet(
-                $atlas,
-                $recordSet,
+            $this->relations[$name]->fetchForRowSet(
+                $rowSet,
+                $relatedSet, // should this be an object?
                 $custom
             );
         }
-        return $recordSet;
+        return $relatedSet;
     }
 
     protected function fixWith($spec)

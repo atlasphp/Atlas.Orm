@@ -1,9 +1,10 @@
 <?php
 namespace Atlas\Relationship;
 
-use Atlas\Atlas;
-use Atlas\Mapper\Record;
-use Atlas\Mapper\RecordSet;
+use Atlas\Mapper\Mapper;
+use Atlas\Mapper\MapperLocator;
+use Atlas\Table\Row;
+use Atlas\Table\RowSet;
 
 class ManyToMany extends AbstractRelationship
 {
@@ -19,74 +20,73 @@ class ManyToMany extends AbstractRelationship
         return $this;
     }
 
-    protected function fixThroughNativeCol(Atlas $atlas)
+    protected function fixThroughNativeCol()
     {
         if ($this->throughNativeCol) {
             return;
         }
 
-        $nativeMapper = $atlas->mapper($this->nativeMapperClass);
+        $nativeMapper = $this->mapperLocator->get($this->nativeMapperClass);
         $this->throughNativeCol = $nativeMapper->getTable()->getPrimary();
     }
 
-    protected function fixThroughForeignCol(Atlas $atlas)
+    protected function fixThroughForeignCol()
     {
         if ($this->throughForeignCol) {
             return;
         }
 
-        $foreignMapper = $atlas->mapper($this->foreignMapperClass);
+        $foreignMapper = $this->mapperLocator->get($this->foreignMapperClass);
         $this->throughForeignCol = $foreignMapper->getTable()->getPrimary();
     }
 
-    protected function fixForeignCol(Atlas $atlas)
+    protected function fixForeignCol()
     {
         if ($this->foreignCol) {
             return;
         }
 
-        $foreignMapper = $atlas->mapper($this->foreignMapperClass);
+        $foreignMapper = $this->mapperLocator->get($this->foreignMapperClass);
         $this->foreignCol = $foreignMapper->getTable()->getPrimary();
     }
 
-    public function stitchIntoRecord(
-        Atlas $atlas,
-        Record $record,
+    public function fetchForRow(
+        Row $row,
+        array &$related,
         callable $custom = null
     ) {
-        $this->fix($atlas);
-        $throughRecordSet = $record->{$this->throughField};
-        $foreignColVals = $throughRecordSet->getUniqueVals($this->throughForeignCol);
-        $colsVals = [$this->foreignCol => $foreignColVals];
-        $select = $atlas->select($this->foreignMapperClass, $colsVals, $custom);
-        $record->{$this->field} = $select->fetchRecordSet();
+        $this->fix();
+        $throughRecordSet = $related[$this->throughName];
+        $foreignVals = $this->getUniqueVals($throughRecordSet, $this->throughForeignCol);
+        $foreign = $this->foreignSelect($foreignVals, $custom)->fetchRecordSet();
+        $related[$this->name] = $foreign;
     }
 
-    public function stitchIntoRecordSet(
-        Atlas $atlas,
-        RecordSet $recordSet,
+    public function fetchForRowSet(
+        RowSet $rowSet,
+        array &$relatedSet,
         callable $custom = null
     ) {
-        $this->fix($atlas);
+        $this->fix();
 
         $foreignColVals = [];
-        foreach ($recordSet as $record) {
-            $throughRecordSet = $record->{$this->throughField};
+        foreach ($rowSet as $row) {
+            $primaryVal = $row->getPrimaryVal();
+            $throughRecordSet = $relatedSet[$primaryVal][$this->throughName];
             $foreignColVals = array_merge(
                 $foreignColVals,
-                $throughRecordSet->getUniqueVals($this->throughForeignCol)
+                $this->getUniqueVals($throughRecordSet, $this->throughForeignCol)
             );
         }
         $foreignColVals = array_unique($foreignColVals);
 
-        $colsVals = [$this->foreignCol => $foreignColVals];
-        $select = $atlas->select($this->foreignMapperClass, $colsVals, $custom);
-        $foreignRecordSet = $select->fetchRecordSet();
+        $foreignRecordSet = $this->foreignSelect($foreignColVals, $custom)->fetchRecordSet();
 
-        foreach ($recordSet as $record) {
-            $throughRecordSet = $record->{$this->throughField};
-            $vals = $throughRecordSet->getUniqueVals($this->throughForeignCol);
-            $record->{$this->field} = $foreignRecordSet->newRecordSetBy(
+        foreach ($rowSet as $row) {
+            $primaryVal = $row->getPrimaryVal();
+            $throughRecordSet = $relatedSet[$primaryVal][$this->throughName];
+            $vals = $this->getUniqueVals($throughRecordSet, $this->throughForeignCol);
+            $relatedSet[$primaryVal][$this->name] = $foreignRecordSet->newRecordSetBy(
                 $this->foreignCol,
                 $vals
             );

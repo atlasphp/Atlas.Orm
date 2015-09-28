@@ -1,29 +1,27 @@
 <?php
 namespace Atlas\Relationship;
 
-use Atlas\Atlas;
-use Atlas\Mapper\Record;
-use Atlas\Mapper\RecordSet;
+use Atlas\Mapper\MapperLocator;
 
 class ManyToOne extends OneToOne
 {
-    protected function fixNativeCol(Atlas $atlas)
+    protected function fixNativeCol()
     {
         if ($this->nativeCol) {
             return;
         }
 
-        $foreignMapper = $atlas->mapper($this->foreignMapperClass);
+        $foreignMapper = $this->mapperLocator->get($this->foreignMapperClass);
         $this->nativeCol = $foreignMapper->getTable()->getPrimary();
     }
 
-    protected function fixForeignCol(Atlas $atlas)
+    protected function fixForeignCol()
     {
         if ($this->foreignCol) {
             return;
         }
 
-        $foreignMapper = $atlas->mapper($this->foreignMapperClass);
+        $foreignMapper = $this->mapperLocator->get($this->foreignMapperClass);
         $this->foreignCol = $foreignMapper->getTable()->getPrimary();
     }
 }

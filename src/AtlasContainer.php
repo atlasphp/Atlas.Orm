@@ -11,19 +11,19 @@ use Aura\SqlQuery\QueryFactory;
 
 class AtlasContainer
 {
+    protected $atlas;
     protected $connectionLocator;
+    protected $factories;
     protected $mapperLocator;
     protected $queryFactory;
     protected $tableLocator;
-    protected $factories;
-    protected $atlas;
 
     public function __construct($db, $common = null)
     {
-        $this->connectionLocator = new ConnectionLocator();
-        $this->mapperLocator = new MapperLocator();
         $this->queryFactory = new QueryFactory($db, $common);
+        $this->connectionLocator = new ConnectionLocator();
         $this->tableLocator = new TableLocator();
+        $this->mapperLocator = new MapperLocator();
         $this->atlas = new Atlas($this->mapperLocator);
     }
 
@@ -129,6 +129,6 @@ class AtlasContainer
 
     public function newRelations($mapperClass)
     {
-        return new Relations($mapperClass);
+        return new Relations($mapperClass, $this->mapperLocator);
     }
 }

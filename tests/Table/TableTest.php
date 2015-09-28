@@ -2,8 +2,8 @@
 namespace Atlas\Table;
 
 use Atlas\Assertions;
-use Atlas\Fake\Auto\AutoTable;
 use Atlas\Fake\Employee\EmployeeTable;
+use Atlas\Fake\Employee\EmployeeRowFilter;
 use Atlas\SqliteFixture;
 use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
@@ -27,7 +27,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
             $connectionLocator,
             new QueryFactory('sqlite'),
             new IdentityMap(),
-            new RowFilter()
+            new EmployeeRowFilter()
         );
 
         $fixture = new SqliteFixture($this->table->getWriteConnection());
@@ -244,9 +244,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($actual);
 
         // do we still have everything else?
-        $actual = $this->table->fetchRowSetBySelect(
-            $this->table->select()->where('id > 0')
-        );
+        $actual = $this->table->select()->where('id > 0')->fetchRowSet();
         $expect = 11;
         $this->assertEquals($expect, count($actual));
     }
@@ -259,9 +257,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
 
     public function testSelectWhereNull()
     {
-        $select = $this->table
-            ->select(['name' => null])
-            ->cols(['id']);
+        $select = $this->table->select(['name' => null])->cols(['id']);
 
         $expect = '
             SELECT

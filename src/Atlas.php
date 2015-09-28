@@ -15,66 +15,34 @@ class Atlas
         $this->mapperLocator = $mapperLocator;
     }
 
-    public function getMapperLocator()
+    public function mapper($class)
     {
-        return $this->mapperLocator;
+        return $this->mapperLocator->get($class);
     }
 
-    public function mapper($spec)
+    public function fetchRecord($class, $primaryVal, array $with = [])
     {
-        $mapperClass = $this->getMapperClass($spec);
-        return $this->mapperLocator->get($mapperClass);
+        return $this->mapper($class)->fetchRecord($primaryVal, $with);
     }
 
-    protected function getMapperClass($spec)
+    public function fetchRecordBy($class, array $colsVals, array $with = [])
     {
-        if (is_object($spec)) {
-            $spec = get_class($spec);
-        }
-
-        if (substr($spec, -6) == 'Record') {
-            $spec = substr($spec, 0, -6) . 'Mapper';
-        }
-
-        return $spec;
+        return $this->mapper($class)->fetchRecordBy($colsVals, $with);
     }
 
-    public function fetchRecord($spec, $primaryVal, array $with = [])
+    public function fetchRecordSet($class, array $primaryVals, array $with = [])
     {
-        $mapper = $this->mapper($spec);
-        $record = $mapper->fetchRecord($primaryVal);
-        if ($record) {
-            $mapper->getRelations()->stitchIntoRecord(
-                $this,
-                $record,
-                $with
-            );
-        }
-        return $record;
+        return $this->mapper($class)->fetchRecordSet($primaryVals, $with);
     }
 
-    public function fetchRecordSet($spec, $primaryVals, array $with = [])
+    public function fetchRecordSetBy($class, array $colsVals, array $with = [])
     {
-        $mapper = $this->mapper($spec);
-        $recordSet = $mapper->fetchRecordSet($primaryVals);
-        if ($recordSet) {
-            $mapper->getRelations()->stitchIntoRecordSet(
-                $this,
-                $recordSet,
-                $with
-            );
-        }
-        return $recordSet;
+        return $this->mapper($class)->fetchRecordSetBy($colsVals, $with);
     }
 
-    public function select($spec, array $colsVals = [], callable $custom = null)
+    public function select($class, array $colsVals = [])
     {
-        $mapper = $this->mapper($spec);
-        $select = $this->newAtlasSelect($mapper, $mapper->select($colsVals));
-        if ($custom) {
-            $custom($select);
-        }
-        return $select;
+        return $this->mapper($class)->select($colsVals);
     }
 
     public function insert(Record $record)
@@ -90,10 +58,5 @@ class Atlas
     public function delete(Record $record)
     {
         return $this->mapper($record)->delete($record);
-    }
-
-    protected function newAtlasSelect(Mapper $mapper, TableSelect $select)
-    {
-        return new AtlasSelect($this, $mapper, $select);
     }
 }

@@ -39,7 +39,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
 
         $this->mapper = new EmployeeMapper(
             $this->table,
-            new Relations(EmployeeMapper::CLASS)
+            new Relations(EmployeeMapper::CLASS, new MapperLocator())
         );
     }
 
@@ -107,7 +107,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($actual);
     }
 
-    public function testFetchRecordBySelect()
+    public function testSelectFetchRecord()
     {
         $expect = [
             'id' => '1',
@@ -118,13 +118,13 @@ class MapperTest extends \PHPUnit_Framework_TestCase
 
         // fetch success
         $select = $this->mapper->select(['id' => '1']);
-        $record1 = $this->mapper->fetchRecordBySelect($select);
+        $record1 = $select->fetchRecord();
         $this->assertInstanceOf(Record::CLASS, $record1);
         $row1 = $record1->getRow();
         $this->assertSame($expect, $row1->getArrayCopy());
 
         // fetch again
-        $record2 = $this->mapper->fetchRecordBySelect($select);
+        $record2 = $select->fetchRecord();
         $this->assertInstanceOf(Record::CLASS, $record2);
         $this->assertNotSame($record1, $record2);
         $row2 = $record2->getRow();
@@ -132,7 +132,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
 
         // fetch failure
         $select = $this->mapper->select(['id' => '-1']);
-        $actual = $this->mapper->fetchRecordBySelect($select);
+        $actual = $select->fetchRecord();
         $this->assertFalse($actual);
     }
 
@@ -230,7 +230,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(array(), $actual);
     }
 
-    public function testFetchRecordSetBySelect()
+    public function testSelectFetchRecordSet()
     {
         $expect = [
             [
@@ -254,20 +254,20 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         ];
 
         $select = $this->mapper->select(['id' => [1, 2, 3]]);
-        $actual = $this->mapper->fetchRecordSetBySelect($select);
+        $actual = $select->fetchRecordSet();
         $this->assertCount(3, $actual);
         $this->assertSame($expect[0], $actual[0]->getRow()->getArrayCopy());
         $this->assertSame($expect[1], $actual[1]->getRow()->getArrayCopy());
         $this->assertSame($expect[2], $actual[2]->getRow()->getArrayCopy());
 
-        $again = $this->mapper->fetchRecordSetBySelect($select);
+        $again = $select->fetchRecordSet();
         $this->assertCount(3, $again);
         $this->assertSame($actual[0]->getRow(), $again[0]->getRow());
         $this->assertSame($actual[1]->getRow(), $again[1]->getRow());
         $this->assertSame($actual[2]->getRow(), $again[2]->getRow());
 
         $select = $this->mapper->select(['id' => [997,998,999]]);
-        $actual = $this->mapper->fetchRecordSetBySelect($select);
+        $actual = $select->fetchRecordSet();
         $this->assertSame(array(), $actual);
     }
 
@@ -349,9 +349,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($actual);
 
         // do we still have everything else?
-        $actual = $this->mapper->fetchRecordSetBySelect(
-            $this->mapper->select()->where('id > 0')
-        );
+        $actual = $this->mapper->select()->where('id > 0')->fetchRecordSet();
         $expect = 11;
         $this->assertEquals($expect, count($actual));
     }

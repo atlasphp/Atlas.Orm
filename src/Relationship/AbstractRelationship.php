@@ -1,20 +1,16 @@
 <?php
 namespace Atlas\Relationship;
 
-use Atlas\Atlas;
 use Atlas\Mapper\Mapper;
-use Atlas\Mapper\Record;
-use Atlas\Mapper\RecordSet;
-
-// the Relation should let you specify what to do when there are no
-// related records. $rel->nullWhenEmpty(), arrayWhenEmpty(), newRecordWhenEmpty(),
-// newRecordSetWhenEmpty()? or should it be a $rel->default() to indicate the
-// default value? maybe Table should return "false" instead of "null" when no
-// row is found.
+use Atlas\Mapper\MapperLocator;
+use Atlas\Table\Row;
+use Atlas\Table\RowSet;
 
 abstract class AbstractRelationship
 {
-    protected $field;
+    protected $mapperLocator;
+
+    protected $name;
 
     protected $nativeMapperClass;
     protected $foreignMapperClass;
@@ -26,12 +22,13 @@ abstract class AbstractRelationship
 
     protected $fixed = false;
 
-    public function __construct($nativeMapperClass, $field, $foreignMapperClass, $throughField = null)
+    public function __construct(MapperLocator $mapperLocator, $nativeMapperClass, $name, $foreignMapperClass, $throughName = null)
     {
+        $this->mapperLocator = $mapperLocator;
         $this->nativeMapperClass = $nativeMapperClass;
-        $this->field = $field;
+        $this->name = $name;
         $this->foreignMapperClass = $foreignMapperClass;
-        $this->throughField = $throughField;
+        $this->throughName = $throughName;
     }
 
     public function nativeCol($nativeCol)
@@ -46,55 +43,74 @@ abstract class AbstractRelationship
         return $this;
     }
 
-    protected function fix(Atlas $atlas)
+    protected function fix()
     {
         if ($this->fixed) {
             return;
         }
-        $this->fixNativeCol($atlas);
-        $this->fixThroughNativeCol($atlas);
-        $this->fixThroughForeignCol($atlas);
-        $this->fixForeignCol($atlas);
+        $this->fixNativeCol();
+        $this->fixThroughNativeCol();
+        $this->fixThroughForeignCol();
+        $this->fixForeignCol();
         $this->fixed = true;
     }
 
-    protected function fixNativeCol(Atlas $atlas)
+    protected function fixNativeCol()
     {
         if ($this->nativeCol) {
             return;
         }
 
-        $nativeMapper = $atlas->mapper($this->nativeMapperClass);
+        $nativeMapper = $this->mapperLocator->get($this->nativeMapperClass);
         $this->nativeCol = $nativeMapper->getTable()->getPrimary();
     }
 
-    protected function fixForeignCol(Atlas $atlas)
+    protected function fixForeignCol()
     {
         if ($this->foreignCol) {
             return;
         }
 
-        $nativeMapper = $atlas->mapper($this->nativeMapperClass);
+        $nativeMapper = $this->mapperLocator->get($this->nativeMapperClass);
         $this->foreignCol = $nativeMapper->getTable()->getPrimary();
     }
 
-    protected function fixThroughNativeCol(Atlas $atlas)
+    protected function fixThroughNativeCol()
     {
     }
 
-    protected function fixThroughForeignCol(Atlas $atlas)
+    protected function fixThroughForeignCol()
     {
     }
 
-    abstract public function stitchIntoRecord(
-        Atlas $atlas,
-        Record $record,
+    protected function foreignSelect($foreignVal, callable $custom = null)
+    {
+        $foreignMapper = $this->mapperLocator->get($this->foreignMapperClass);
+        $select = $foreignMapper->select([$this->foreignCol => $foreignVal]);
+        if ($custom) {
+            $custom($select);
+        }
+        return $select;
+    }
+
+    protected function getUniqueVals($set, $col)
+    {
+        $vals = [];
+        foreach ($set as $item) {
+            $vals[] = $item->$col;
+        }
+        return array_unique($vals);
+    }
+
+    abstract public function fetchForRow(
+        Row $row,
+        array &$related,
         callable $custom = null
     );
 
-    abstract public function stitchIntoRecordSet(
-        Atlas $atlas,
-        RecordSet $recordSet,
+    abstract public function fetchForRowSet(
+        RowSet $row,
+        array &$relatedSet,
         callable $custom = null
     );
 }

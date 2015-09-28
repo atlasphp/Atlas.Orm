@@ -70,7 +70,7 @@ class Table
 
     protected $table;
 
-    protected $cols = [];
+    protected $cols = ['*'];
 
     protected $rowClass;
 
@@ -113,12 +113,12 @@ class Table
 
         $this->rowClass = "{$type}Row";
         if (! class_exists($this->rowClass)) {
-            throw new Exception("{$this->rowClass} not defined.");
+            throw new Exception("{$this->rowClass} does not exist");
         }
 
         $this->rowSetClass = "{$type}RowSet";
         if (! class_exists($this->rowSetClass)) {
-            throw new Exception("{$this->rowSetClass} not defined.");
+            throw new Exception("{$this->rowSetClass} does not exist");
         }
     }
 
@@ -168,11 +168,8 @@ class Table
      * @return array
      *
      */
-    protected function getCols()
+    public function getCols()
     {
-        if (! $this->cols) {
-            $this->cols = ['*'];
-        }
         return (array) $this->cols;
     }
 
@@ -220,7 +217,7 @@ class Table
      */
     public function select(array $colsVals = [])
     {
-        $select = $this->newSelect()->from($this->getTable());
+        $select = $this->newTableSelect()->from($this->getTable());
 
         foreach ($colsVals as $col => $val) {
             $this->selectWhere($select, $col, $val);
@@ -229,12 +226,9 @@ class Table
         return $select;
     }
 
-    protected function newSelect()
+    protected function newTableSelect()
     {
-        return new TableSelect(
-            $this->queryFactory->newSelect(),
-            $this->getReadConnection()
-        );
+        return new TableSelect($this, $this->queryFactory->newSelect());
     }
 
     protected function selectWhere($select, $col, $val)
@@ -257,28 +251,14 @@ class Table
         $row = $this->identityMap->getRow($primaryVal);
         if (! $row) {
             $colsVals = [$this->getPrimary() => $primaryVal];
-            $select = $this->select($colsVals);
-            $row = $this->fetchRowBySelect($select);
+            $row = $this->select($colsVals)->fetchRow();
         }
         return $row;
     }
 
     public function fetchRowBy(array $colsVals)
     {
-        $select = $this->select($colsVals);
-        return $this->fetchRowBySelect($select);
-    }
-
-    public function fetchRowBySelect(TableSelect $select)
-    {
-        $select->cols($this->getCols());
-
-        $cols = $select->fetchOne();
-        if (! $cols) {
-            return false;
-        }
-
-        return $this->getMappedOrNewRow($cols);
+        return $this->select($colsVals)->fetchRow();
     }
 
     /*
@@ -354,34 +334,7 @@ class Table
 
     public function fetchRowSetBy(array $colsVals)
     {
-        $select = $this->select($colsVals);
-        return $this->fetchRowSetBySelect($select);
-    }
-
-    public function fetchRowSetBySelect(TableSelect $select)
-    {
-        $data = $select->cols($this->getCols())->fetchAll();
-        if (! $data) {
-            return array();
-        }
-
-        $rows = [];
-        foreach ($data as $cols) {
-            $rows[] = $this->getMappedOrNewRow($cols);
-        }
-
-        return $this->newRowSet($rows);
-    }
-
-    protected function getMappedOrNewRow(array $cols)
-    {
-        $primaryVal = $cols[$this->getPrimary()];
-        $row = $this->identityMap->getRow($primaryVal);
-        if (! $row) {
-            $row = $this->newRow($cols);
-            $this->identityMap->set($row);
-        }
-        return $row;
+        return $this->select($colsVals)->fetchRowSet();
     }
 
     public function newRow(array $cols)
