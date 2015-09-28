@@ -15,27 +15,9 @@ class Atlas
         $this->mapperLocator = $mapperLocator;
     }
 
-    protected function getMapperClass($spec)
+    public function mapper($class)
     {
-        if (is_object($spec)) {
-            $spec = get_class($spec);
-        }
-
-        if (substr($spec, -6) == 'Record') {
-            $spec = substr($spec, 0, -6) . 'Mapper';
-        }
-
-        if (substr($spec, -9) == 'RecordSet') {
-            $spec = substr($spec, 0, -9) . 'Mapper';
-        }
-
-        return $spec;
-    }
-
-    public function mapper($spec)
-    {
-        $mapperClass = $this->getMapperClass($spec);
-        return $this->mapperLocator->get($mapperClass);
+        return $this->mapperLocator->get($class);
     }
 
     public function insert(Record $record)
