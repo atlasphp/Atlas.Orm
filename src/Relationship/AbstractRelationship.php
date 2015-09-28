@@ -113,7 +113,7 @@ abstract class AbstractRelationship
     }
 
 
-    protected function getGroupsBy($recordSet, $field)
+    protected function groupRecordSets($recordSet, $field)
     {
         $groups = array();
         foreach ($recordSet as $record) {

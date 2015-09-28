@@ -83,7 +83,7 @@ class ManyToMany extends AbstractRelationship
             $primaryVal = $row->getPrimaryVal();
             $throughRecordSet = $relatedSet[$primaryVal][$this->throughName];
             $vals = $this->getUniqueVals($throughRecordSet, $this->throughForeignCol);
-            $relatedSet[$primaryVal][$this->name] = $this->newRecordSetBy(
+            $relatedSet[$primaryVal][$this->name] = $this->extractRecordSet(
                 $foreignRecordSet,
                 $this->foreignCol,
                 $vals
@@ -91,21 +91,20 @@ class ManyToMany extends AbstractRelationship
         }
     }
 
-    protected function newRecordSetBy($recordSet, $field, $vals)
+    protected function extractRecordSet($recordSet, $field, $vals)
     {
         $vals = (array) $vals;
-        $newRecordSet = $this->foreignMapper->newRecordSet([]);
+        $extracted = $this->foreignMapper->newRecordSet([]);
         foreach ($recordSet as $record) {
             if (in_array($record->$field, $vals)) {
-                $newRecordSet[] = $record;
+                $extracted[] = $record;
             }
         }
 
-        if ($newRecordSet->isEmpty()) {
+        if ($extracted->isEmpty()) {
             return [];
         }
 
-        // empty array
-        return $newRecordSet;
+        return $extracted;
     }
 }
