@@ -1,6 +1,7 @@
 <?php
 namespace Atlas\Relationship;
 
+use Atlas\Exception;
 use Atlas\Mapper\Mapper;
 use Atlas\Mapper\MapperLocator;
 use Atlas\Table\Row;
@@ -53,6 +54,12 @@ class ManyToMany extends AbstractRelationship
         callable $custom = null
     ) {
         $this->fix();
+
+        // make sure the "through" relation is loaded already
+        if (! isset($related[$this->throughName])) {
+            throw new Exception("Cannot fetch '{$this->name}' relation without '{$this->throughName}' relation");
+        }
+
         $throughRecordSet = $related[$this->throughName];
         $foreignVals = $this->getUniqueVals($throughRecordSet, $this->throughForeignCol);
         $foreign = $this->foreignSelect($foreignVals, $custom)->fetchRecordSet();
@@ -65,6 +72,14 @@ class ManyToMany extends AbstractRelationship
         callable $custom = null
     ) {
         $this->fix();
+
+        // this is a bit hackish.
+        // the "through" relation should be loaded for everything, so if even
+        // one is loaded, then all the others ought to have been loaded too.
+        $related = current($relatedSet);
+        if (! isset($related[$this->throughName])) {
+            throw new Exception("Cannot fetch '{$this->name}' relation without '{$this->throughName}' relation");
+        }
 
         $foreignVals = [];
         foreach ($nativeRowSet as $nativeRow) {
