@@ -84,10 +84,10 @@ class Mapper
     }
 
     // rowSet can be array of Rows, or RowSet object
-    public function newRecordSet($rowSet, array $relatedSet = [])
+    public function newRecordSet($rows, array $relatedSet = [])
     {
         $records = [];
-        foreach ($rowSet as $row) {
+        foreach ($rows as $row) {
             $primaryVal = $row->getPrimaryVal();
             $related = isset($relatedSet[$primaryVal])
                      ? $relatedSet[$primaryVal]

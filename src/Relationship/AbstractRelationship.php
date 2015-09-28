@@ -112,6 +112,20 @@ abstract class AbstractRelationship
         return array_unique($vals);
     }
 
+
+    protected function getGroupsBy($recordSet, $field)
+    {
+        $groups = array();
+        foreach ($recordSet as $record) {
+            $key = $record->$field;
+            if (! isset($groups[$key])) {
+                $groups[$key] = $this->foreignMapper->newRecordSet([]);
+            }
+            $groups[$key][] = $record;
+        }
+        return $groups;
+    }
+
     abstract public function fetchForRow(
         Row $row,
         array &$related,

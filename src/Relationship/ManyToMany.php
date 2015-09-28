@@ -66,27 +66,46 @@ class ManyToMany extends AbstractRelationship
     ) {
         $this->fix();
 
-        $foreignColVals = [];
+        $foreignVals = [];
         foreach ($rowSet as $row) {
             $primaryVal = $row->getPrimaryVal();
             $throughRecordSet = $relatedSet[$primaryVal][$this->throughName];
-            $foreignColVals = array_merge(
-                $foreignColVals,
+            $foreignVals = array_merge(
+                $foreignVals,
                 $this->getUniqueVals($throughRecordSet, $this->throughForeignCol)
             );
         }
-        $foreignColVals = array_unique($foreignColVals);
+        $foreignVals = array_unique($foreignVals);
 
-        $foreignRecordSet = $this->foreignSelect($foreignColVals, $custom)->fetchRecordSet();
+        $foreignRecordSet = $this->foreignSelect($foreignVals, $custom)->fetchRecordSet();
 
         foreach ($rowSet as $row) {
             $primaryVal = $row->getPrimaryVal();
             $throughRecordSet = $relatedSet[$primaryVal][$this->throughName];
             $vals = $this->getUniqueVals($throughRecordSet, $this->throughForeignCol);
-            $relatedSet[$primaryVal][$this->name] = $foreignRecordSet->newRecordSetBy(
+            $relatedSet[$primaryVal][$this->name] = $this->newRecordSetBy(
+                $foreignRecordSet,
                 $this->foreignCol,
                 $vals
             );
         }
+    }
+
+    protected function newRecordSetBy($recordSet, $field, $vals)
+    {
+        $vals = (array) $vals;
+        $newRecordSet = $this->foreignMapper->newRecordSet([]);
+        foreach ($recordSet as $record) {
+            if (in_array($record->$field, $vals)) {
+                $newRecordSet[] = $record;
+            }
+        }
+
+        if ($newRecordSet->isEmpty()) {
+            return [];
+        }
+
+        // empty array
+        return $newRecordSet;
     }
 }

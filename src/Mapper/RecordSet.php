@@ -18,34 +18,4 @@ class RecordSet extends ArrayObject
         }
         return $array;
     }
-
-    public function getGroupsBy($field)
-    {
-        $groups = array();
-        foreach ($this as $record) {
-            $key = $record->$field;
-            if (! isset($groups[$key])) {
-                $groups[$key] = new self([]);
-            }
-            $groups[$key][] = $record;
-        }
-        return $groups;
-    }
-
-    public function newRecordSetBy($field, $vals)
-    {
-        $vals = (array) $vals;
-        $records = [];
-        foreach ($this as $record) {
-            if (in_array($record->$field, $vals)) {
-                $records[] = $record;
-            }
-        }
-
-        if ($records) {
-            return new self($records);
-        }
-
-        return $records;
-    }
 }
