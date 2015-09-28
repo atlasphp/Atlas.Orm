@@ -11,8 +11,7 @@ class ManyToOne extends OneToOne
             return;
         }
 
-        $foreignMapper = $this->mapperLocator->get($this->foreignMapperClass);
-        $this->nativeCol = $foreignMapper->getTable()->getPrimary();
+        $this->nativeCol = $this->foreignMapper->getTable()->getPrimary();
     }
 
     protected function fixForeignCol()
@@ -21,7 +20,6 @@ class ManyToOne extends OneToOne
             return;
         }
 
-        $foreignMapper = $this->mapperLocator->get($this->foreignMapperClass);
-        $this->foreignCol = $foreignMapper->getTable()->getPrimary();
+        $this->foreignCol = $this->foreignMapper->getTable()->getPrimary();
     }
 }

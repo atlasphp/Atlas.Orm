@@ -26,8 +26,7 @@ class ManyToMany extends AbstractRelationship
             return;
         }
 
-        $nativeMapper = $this->mapperLocator->get($this->nativeMapperClass);
-        $this->throughNativeCol = $nativeMapper->getTable()->getPrimary();
+        $this->throughNativeCol = $this->nativeMapper->getTable()->getPrimary();
     }
 
     protected function fixThroughForeignCol()
@@ -36,8 +35,7 @@ class ManyToMany extends AbstractRelationship
             return;
         }
 
-        $foreignMapper = $this->mapperLocator->get($this->foreignMapperClass);
-        $this->throughForeignCol = $foreignMapper->getTable()->getPrimary();
+        $this->throughForeignCol = $this->foreignMapper->getTable()->getPrimary();
     }
 
     protected function fixForeignCol()
@@ -46,8 +44,7 @@ class ManyToMany extends AbstractRelationship
             return;
         }
 
-        $foreignMapper = $this->mapperLocator->get($this->foreignMapperClass);
-        $this->foreignCol = $foreignMapper->getTable()->getPrimary();
+        $this->foreignCol = $this->foreignMapper->getTable()->getPrimary();
     }
 
     public function fetchForRow(

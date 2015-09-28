@@ -13,7 +13,10 @@ abstract class AbstractRelationship
     protected $name;
 
     protected $nativeMapperClass;
+    protected $nativeMapper;
+
     protected $foreignMapperClass;
+    protected $forignMapper;
 
     protected $nativeCol;
     protected $throughNativeCol;
@@ -22,8 +25,13 @@ abstract class AbstractRelationship
 
     protected $fixed = false;
 
-    public function __construct(MapperLocator $mapperLocator, $nativeMapperClass, $name, $foreignMapperClass, $throughName = null)
-    {
+    public function __construct(
+        MapperLocator $mapperLocator,
+        $nativeMapperClass,
+        $name,
+        $foreignMapperClass,
+        $throughName = null
+    ) {
         $this->mapperLocator = $mapperLocator;
         $this->nativeMapperClass = $nativeMapperClass;
         $this->name = $name;
@@ -48,10 +56,15 @@ abstract class AbstractRelationship
         if ($this->fixed) {
             return;
         }
+
+        $this->nativeMapper = $this->mapperLocator->get($this->nativeMapperClass);
+        $this->foreignMapper = $this->mapperLocator->get($this->foreignMapperClass);
+
         $this->fixNativeCol();
         $this->fixThroughNativeCol();
         $this->fixThroughForeignCol();
         $this->fixForeignCol();
+
         $this->fixed = true;
     }
 
@@ -61,8 +74,7 @@ abstract class AbstractRelationship
             return;
         }
 
-        $nativeMapper = $this->mapperLocator->get($this->nativeMapperClass);
-        $this->nativeCol = $nativeMapper->getTable()->getPrimary();
+        $this->nativeCol = $this->nativeMapper->getTable()->getPrimary();
     }
 
     protected function fixForeignCol()
@@ -71,8 +83,7 @@ abstract class AbstractRelationship
             return;
         }
 
-        $nativeMapper = $this->mapperLocator->get($this->nativeMapperClass);
-        $this->foreignCol = $nativeMapper->getTable()->getPrimary();
+        $this->foreignCol = $this->nativeMapper->getTable()->getPrimary();
     }
 
     protected function fixThroughNativeCol()
@@ -85,8 +96,7 @@ abstract class AbstractRelationship
 
     protected function foreignSelect($foreignVal, callable $custom = null)
     {
-        $foreignMapper = $this->mapperLocator->get($this->foreignMapperClass);
-        $select = $foreignMapper->select([$this->foreignCol => $foreignVal]);
+        $select = $this->foreignMapper->select([$this->foreignCol => $foreignVal]);
         if ($custom) {
             $custom($select);
         }
