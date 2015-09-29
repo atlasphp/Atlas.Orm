@@ -7,7 +7,7 @@ use Atlas\Mapper\MapperLocator;
 use Atlas\Table\Row;
 use Atlas\Table\RowSet;
 
-class ManyToMany extends AbstractRelationship
+class HasManyThrough extends AbstractRelationship
 {
     public function throughNativeCol($throughNativeCol)
     {

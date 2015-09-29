@@ -12,10 +12,10 @@ class ThreadMapper extends Mapper
 {
     protected function setRelations()
     {
-        $this->relations->manyToOne('author', AuthorMapper::CLASS);
-        $this->relations->oneToOne('summary', SummaryMapper::CLASS);
-        $this->relations->oneToMany('replies', ReplyMapper::CLASS);
-        $this->relations->oneToMany('threads2tags', Thread2TagMapper::CLASS);
-        $this->relations->manyToMany('tags', TagMapper::CLASS, 'threads2tags');
+        $this->relations->belongsTo('author', AuthorMapper::CLASS);
+        $this->relations->hasOne('summary', SummaryMapper::CLASS);
+        $this->relations->hasMany('replies', ReplyMapper::CLASS);
+        $this->relations->hasMany('threads2tags', Thread2TagMapper::CLASS);
+        $this->relations->hasManyThrough('tags', TagMapper::CLASS, 'threads2tags');
     }
 }

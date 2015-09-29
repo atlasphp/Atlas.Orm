@@ -9,7 +9,7 @@ class AuthorMapper extends Mapper
 {
     protected function setRelations()
     {
-        $this->relations->oneToMany('replies', ReplyMapper::CLASS);
-        $this->relations->oneToMany('threads', ThreadMapper::CLASS);
+        $this->relations->hasMany('replies', ReplyMapper::CLASS);
+        $this->relations->hasMany('threads', ThreadMapper::CLASS);
     }
 }

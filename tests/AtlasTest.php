@@ -42,13 +42,13 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
             ThreadMapper::CLASS,
             1,
             [
-                'author', // manyToOne
-                'summary', // oneToOne
+                'author', // belongsTo
+                'summary', // hasOne
                 'replies' => function ($select) {
                     $select->with(['author']);
-                }, // oneToMany
-                'threads2tags', // oneToMany,
-                'tags', // manyToMany
+                }, // hasMany
+                'threads2tags', // hasMany,
+                'tags', // hasManyThrough
             ]
         );
 
@@ -160,13 +160,13 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
             ThreadMapper::CLASS,
             [1, 2, 3],
             [
-                'author', // manyToOne
-                'summary', // oneToOne
+                'author', // belongsTo
+                'summary', // hasOne
                 'replies' => function ($select) {
                     $select->with(['author']);
-                }, // oneToMany
-                'threads2tags', // oneToMany,
-                'tags', // manyToMany
+                }, // hasMany
+                'threads2tags', // hasMany,
+                'tags', // hasManyThrough
             ]
         );
 

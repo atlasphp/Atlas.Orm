@@ -9,7 +9,7 @@ class TagMapper extends Mapper
 {
     protected function setRelations()
     {
-        $this->relations->oneToMany('threads2tags', Thread2TagMapper::CLASS);
-        $this->relations->manyToMany('threads', ThreadMapper::CLASS, 'threads2tags');
+        $this->relations->hasMany('threads2tags', Thread2TagMapper::CLASS);
+        $this->relations->hasManyThrough('threads', ThreadMapper::CLASS, 'threads2tags');
     }
 }

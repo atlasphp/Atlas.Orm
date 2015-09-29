@@ -8,6 +8,6 @@ class ReplyMapper extends Mapper
 {
     protected function setRelations()
     {
-        $this->relations->manyToOne('author', AuthorMapper::CLASS);
+        $this->relations->belongsTo('author', AuthorMapper::CLASS);
     }
 }

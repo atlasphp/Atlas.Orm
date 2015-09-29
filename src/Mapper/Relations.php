@@ -2,10 +2,10 @@
 namespace Atlas\Mapper;
 
 use Atlas\Exception;
-use Atlas\Relationship\ManyToMany;
-use Atlas\Relationship\ManyToOne;
-use Atlas\Relationship\OneToMany;
-use Atlas\Relationship\OneToOne;
+use Atlas\Relationship\HasManyThrough;
+use Atlas\Relationship\BelongsTo;
+use Atlas\Relationship\HasMany;
+use Atlas\Relationship\HasOne;
 use Atlas\Table\Row;
 use Atlas\Table\RowSet;
 
@@ -25,22 +25,22 @@ class Relations
         $this->mapperLocator = $mapperLocator;
     }
 
-    public function oneToOne($name, $foreignMapperClass)
+    public function hasOne($name, $foreignMapperClass)
     {
-        return $this->set($name, OneToOne::CLASS, $foreignMapperClass);
+        return $this->set($name, HasOne::CLASS, $foreignMapperClass);
     }
 
-    public function oneToMany($name, $foreignMapperClass)
+    public function hasMany($name, $foreignMapperClass)
     {
-        return $this->set($name, OneToMany::CLASS, $foreignMapperClass);
+        return $this->set($name, HasMany::CLASS, $foreignMapperClass);
     }
 
-    public function manyToOne($name, $foreignMapperClass)
+    public function belongsTo($name, $foreignMapperClass)
     {
-        $this->set($name, ManyToOne::CLASS, $foreignMapperClass);
+        $this->set($name, BelongsTo::CLASS, $foreignMapperClass);
     }
 
-    public function manyToMany($name, $foreignMapperClass, $throughName)
+    public function hasManyThrough($name, $foreignMapperClass, $throughName)
     {
         if (! isset($this->relations[$throughName])) {
             throw new Exception("Relation '$throughName' does not exist");
@@ -48,7 +48,7 @@ class Relations
 
         return $this->set(
             $name,
-            ManyToMany::CLASS,
+            HasManyThrough::CLASS,
             $foreignMapperClass,
             $throughName
         );

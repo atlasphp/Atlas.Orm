@@ -6,7 +6,7 @@ use Atlas\Mapper\MapperLocator;
 use Atlas\Table\Row;
 use Atlas\Table\RowSet;
 
-class OneToOne extends AbstractRelationship
+class HasOne extends AbstractRelationship
 {
     public function fetchForRow(
         Row $nativeRow,

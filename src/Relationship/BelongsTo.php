@@ -3,7 +3,7 @@ namespace Atlas\Relationship;
 
 use Atlas\Mapper\MapperLocator;
 
-class ManyToOne extends OneToOne
+class BelongsTo extends HasOne
 {
     protected function fixNativeCol()
     {

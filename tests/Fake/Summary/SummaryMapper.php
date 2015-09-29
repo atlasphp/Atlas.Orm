@@ -8,6 +8,6 @@ class SummaryMapper extends Mapper
 {
     protected function setRelations()
     {
-        $this->relations->oneToOne('thread', ThreadMapper::CLASS);
+        $this->relations->hasOne('thread', ThreadMapper::CLASS);
     }
 }
