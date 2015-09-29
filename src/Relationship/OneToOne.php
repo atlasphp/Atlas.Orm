@@ -33,12 +33,22 @@ class OneToOne extends AbstractRelationship
         );
 
         foreach ($nativeRowSet as $nativeRow) {
-            $foreignRecord = false;
             $key = $nativeRow->{$this->nativeCol};
             if (isset($foreignRecords[$key])) {
                 $foreignRecord = $foreignRecords[$key][0];
+            } else {
+                $foreignRecord = $this->getMissing();
             }
             $relatedSet[$nativeRow->getPrimaryVal()][$this->name] = $foreignRecord;
         }
+    }
+
+    protected function getMissing()
+    {
+        if ($this->orNone) {
+            return false;
+        }
+
+        return $this->foreignMapper->newRecord([]);
     }
 }

@@ -6,13 +6,11 @@ use Atlas\Table\Row;
 use Atlas\Table\RowSet;
 use Atlas\Table\Table;
 use Atlas\Table\TableSelect;
+use UnexpectedValueException;
 
 /**
  *
- * A DataMapper that returns Record and RecordSet objects and defines
- * relationships for those Records.
- *
- * @todo An assertion to check that Record and RecordSet are of the right type.
+ * A DataMapper that returns Record and RecordSet objects.
  *
  * @package Atlas.Atlas
  *
@@ -156,16 +154,27 @@ class Mapper
 
     public function insert(Record $record)
     {
+        $this->assertRecordClass($record);
         return $this->getTable()->insert($record->getRow());
     }
 
     public function update(Record $record)
     {
+        $this->assertRecordClass($record);
         return $this->getTable()->update($record->getRow());
     }
 
     public function delete(Record $record)
     {
+        $this->assertRecordClass($record);
         return $this->getTable()->delete($record->getRow());
+    }
+
+    protected function assertRecordClass(Record $record)
+    {
+        if (! $record instanceof $this->recordClass) {
+            $actual = get_class($record);
+            throw new UnexpectedValueException("Expected {$this->recordClass}, got {$actual} instead");
+        }
     }
 }

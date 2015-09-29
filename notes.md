@@ -1,4 +1,4 @@
-Add checks on Row and Record types in the Table and Mapper.
+Add checks on Row and Record types in the Table and Mapper, and in the Sets.
 
 Add a RecordInterface (and a RecordSet interface?) so that Domain objects can typehint against the interface, and not necessarily an actual record. Maybe also add a <Type>RecordInterface class that extends RecordInterface, and have <Type>Record implement it.
 
@@ -17,8 +17,6 @@ Fetching strategies and identity lookups for compound keys.
 In RecordSets and Record relations, automatically set IdentityField when attaching.
 
 Add "append()" to Sets to append a new Row/Record of the proper type. Probably need to keep a reference back to the original Table/Mapper for the "new" logic.
-
-Move Relationship aggregation/grouping logic out of RecordSet and into Relationship.
 
 * * *
 

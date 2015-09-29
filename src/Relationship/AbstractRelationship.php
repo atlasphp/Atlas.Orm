@@ -23,6 +23,8 @@ abstract class AbstractRelationship
     protected $throughForeignCol;
     protected $foreignCol;
 
+    protected $orNone = false;
+
     protected $fixed = false;
 
     public function __construct(
@@ -49,6 +51,11 @@ abstract class AbstractRelationship
     {
         $this->foreignCol = $foreignCol;
         return $this;
+    }
+
+    public function orNone($flag = true)
+    {
+        $this->orNone = (bool) $flag;
     }
 
     protected function fix()
@@ -112,7 +119,6 @@ abstract class AbstractRelationship
         return array_unique($vals);
     }
 
-
     protected function groupRecordSets($recordSet, $field)
     {
         $groups = array();
@@ -125,6 +131,8 @@ abstract class AbstractRelationship
         }
         return $groups;
     }
+
+    abstract protected function getMissing();
 
     abstract public function fetchForRow(
         Row $nativeRow,

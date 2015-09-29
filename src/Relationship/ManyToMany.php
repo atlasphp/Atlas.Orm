@@ -117,9 +117,19 @@ class ManyToMany extends AbstractRelationship
         }
 
         if ($extracted->isEmpty()) {
-            return [];
+            return $this->getMissing();
         }
 
         return $extracted;
+    }
+
+
+    protected function getMissing()
+    {
+        if ($this->orNone) {
+            return array();
+        }
+
+        return $this->foreignMapper->newRecordSet();
     }
 }

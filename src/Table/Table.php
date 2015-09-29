@@ -16,6 +16,7 @@ use Aura\SqlQuery\QueryFactory;
 use Aura\SqlQuery\Common\Delete;
 use Aura\SqlQuery\Common\Insert;
 use Aura\SqlQuery\Common\Update;
+use UnexpectedValueException;
 
 /**
  *
@@ -360,6 +361,7 @@ class Table
      */
     public function insert(Row $row)
     {
+        $this->assertRowClass($row);
         $this->rowFilter->forInsert($row);
 
         $insert = $this->newInsert($row);
@@ -415,6 +417,7 @@ class Table
      */
     public function update(Row $row)
     {
+        $this->assertRowClass($row);
         $this->rowFilter->forUpdate($row);
 
         $update = $this->newUpdate($row);
@@ -470,6 +473,7 @@ class Table
      */
     public function delete(Row $row)
     {
+        $this->assertRowClass($row);
         $delete = $this->newDelete($row);
         $pdoStatement = $this->getWriteConnection()->perform(
             $delete->getStatement(),
@@ -487,5 +491,13 @@ class Table
         $delete->from($this->getTable());
         $delete->where("{$primaryCol} = ?", $row->getPrimaryVal());
         return $delete;
+    }
+
+    protected function assertRowClass(Row $row)
+    {
+        if (! $row instanceof $this->rowClass) {
+            $actual = get_class($row);
+            throw new UnexpectedValueException("Expected {$this->rowClass}, got {$actual} instead");
+        }
     }
 }
