@@ -34,7 +34,7 @@ class RecordSet implements ArrayAccess, Countable, IteratorAggregate
     {
         if (! $value instanceof $this->recordClass) {
             $actual = get_class($value);
-            throw new UnexpectedValueException("Expected {$this->recordClass}, got {$actual} instead");
+            throw new InvalidArgumentException("Expected {$this->recordClass}, got {$actual} instead");
         }
 
         if ($offset === null) {

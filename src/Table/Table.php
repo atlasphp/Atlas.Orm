@@ -16,7 +16,7 @@ use Aura\SqlQuery\QueryFactory;
 use Aura\SqlQuery\Common\Delete;
 use Aura\SqlQuery\Common\Insert;
 use Aura\SqlQuery\Common\Update;
-use UnexpectedValueException;
+use InvalidArgumentException;
 
 /**
  *
@@ -497,7 +497,7 @@ class Table
     {
         if (! $row instanceof $this->rowClass) {
             $actual = get_class($row);
-            throw new UnexpectedValueException("Expected {$this->rowClass}, got {$actual} instead");
+            throw new InvalidArgumentException("Expected {$this->rowClass}, got {$actual} instead");
         }
     }
 }

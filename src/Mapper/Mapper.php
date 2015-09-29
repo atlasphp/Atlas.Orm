@@ -6,7 +6,7 @@ use Atlas\Table\Row;
 use Atlas\Table\RowSet;
 use Atlas\Table\Table;
 use Atlas\Table\TableSelect;
-use UnexpectedValueException;
+use InvalidArgumentException;
 
 /**
  *
@@ -174,7 +174,7 @@ class Mapper
     {
         if (! $record instanceof $this->recordClass) {
             $actual = get_class($record);
-            throw new UnexpectedValueException("Expected {$this->recordClass}, got {$actual} instead");
+            throw new InvalidArgumentException("Expected {$this->recordClass}, got {$actual} instead");
         }
     }
 }

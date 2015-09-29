@@ -5,7 +5,7 @@ use ArrayAccess;
 use ArrayIterator;
 use Countable;
 use IteratorAggregate;
-use UnexpectedValueException;
+use InvalidArgumentException;
 
 class RowSet implements ArrayAccess, Countable, IteratorAggregate
 {
@@ -35,7 +35,7 @@ class RowSet implements ArrayAccess, Countable, IteratorAggregate
     {
         if (! $value instanceof $this->rowClass) {
             $actual = get_class($value);
-            throw new UnexpectedValueException("Expected {$this->rowClass}, got {$actual} instead");
+            throw new InvalidArgumentException("Expected {$this->rowClass}, got {$actual} instead");
         }
 
         if ($offset === null) {
