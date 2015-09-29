@@ -94,7 +94,7 @@ class Mapper
         }
 
         $recordSetClass = $this->getRecordSetClass();
-        return new $recordSetClass($records);
+        return new $recordSetClass($records, $this->recordClass);
     }
 
     public function fetchRecord($primaryVal, array $with = [])

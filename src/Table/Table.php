@@ -347,7 +347,7 @@ class Table
     public function newRowSet(array $rows)
     {
         $rowSetClass = $this->getRowSetClass();
-        return new $rowSetClass($rows);
+        return new $rowSetClass($rows, $this->rowClass);
     }
 
     /**

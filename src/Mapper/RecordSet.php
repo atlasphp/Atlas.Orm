@@ -8,11 +8,16 @@ use IteratorAggregate;
 
 class RecordSet implements ArrayAccess, Countable, IteratorAggregate
 {
+    protected $recordClass;
+
     protected $records = [];
 
-    public function __construct(array $records)
+    public function __construct(array $records, $recordClass)
     {
-        $this->records = $records;
+        $this->recordClass = $recordClass;
+        foreach ($records as $key => $record) {
+            $this->offsetSet($key, $record);
+        }
     }
 
     public function offsetExists($offset)
@@ -25,16 +30,19 @@ class RecordSet implements ArrayAccess, Countable, IteratorAggregate
         return $this->records[$offset];
     }
 
-    /**
-     * @todo assert $value is a Record instance
-     */
     public function offsetSet($offset, $value)
     {
+        if (! $value instanceof $this->recordClass) {
+            $actual = get_class($value);
+            throw new UnexpectedValueException("Expected {$this->recordClass}, got {$actual} instead");
+        }
+
         if ($offset === null) {
             $this->records[] = $value;
-        } else {
-            $this->records[$offset] = $value;
+            return;
         }
+
+        $this->records[$offset] = $value;
     }
 
     public function offsetUnset($offset)

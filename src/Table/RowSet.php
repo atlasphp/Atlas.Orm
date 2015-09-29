@@ -5,14 +5,20 @@ use ArrayAccess;
 use ArrayIterator;
 use Countable;
 use IteratorAggregate;
+use UnexpectedValueException;
 
 class RowSet implements ArrayAccess, Countable, IteratorAggregate
 {
     protected $rows = [];
 
-    public function __construct(array $rows)
+    protected $rowClass;
+
+    public function __construct(array $rows, $rowClass)
     {
-        $this->rows = $rows;
+        $this->rowClass = $rowClass;
+        foreach ($rows as $key => $row) {
+            $this->offsetSet($key, $row);
+        }
     }
 
     public function offsetExists($offset)
@@ -25,16 +31,19 @@ class RowSet implements ArrayAccess, Countable, IteratorAggregate
         return $this->rows[$offset];
     }
 
-    /**
-     * @todo assert $value is a Row instance
-     */
     public function offsetSet($offset, $value)
     {
+        if (! $value instanceof $this->rowClass) {
+            $actual = get_class($value);
+            throw new UnexpectedValueException("Expected {$this->rowClass}, got {$actual} instead");
+        }
+
         if ($offset === null) {
             $this->rows[] = $value;
-        } else {
-            $this->rows[$offset] = $value;
+            return;
         }
+
+        $this->rows[$offset] = $value;
     }
 
     public function offsetUnset($offset)
