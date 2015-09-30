@@ -71,10 +71,14 @@ class Mapper
     }
 
     // row can be array or Row object
-    public function newRecord($row, array $related = [])
+    public function newRecord($row, Related $related = null)
     {
         if (is_array($row)) {
             $row = $this->getTable()->newRow($row);
+        }
+
+        if (! $related) {
+            $related = new Related($this->relations->getDefinitions());
         }
 
         $recordClass = $this->getRecordClass();
@@ -82,17 +86,19 @@ class Mapper
     }
 
     // rowSet can be array of Rows, or RowSet object
-    public function newRecordSet($rows, array $relatedSet = [])
+    public function newRecordSetFromRows($rows, RelatedSet $relatedSet)
     {
         $records = [];
         foreach ($rows as $row) {
             $primaryVal = $row->getPrimaryVal();
-            $related = isset($relatedSet[$primaryVal])
-                     ? $relatedSet[$primaryVal]
-                     : array();
+            $related = $relatedSet->get($primaryVal);
             $records[] = $this->newRecord($row, $related);
         }
+        return $this->newRecordSet($records);
+    }
 
+    public function newRecordSet(array $records = [])
+    {
         $recordSetClass = $this->getRecordSetClass();
         return new $recordSetClass($records, $this->recordClass);
     }
@@ -138,7 +144,7 @@ class Mapper
         }
 
         $relatedSet = $this->relations->fetchForRowSet($rowSet, $with);
-        return $this->newRecordSet($rowSet, $relatedSet);
+        return $this->newRecordSetFromRows($rowSet, $relatedSet);
     }
 
     protected function newMapperSelect(TableSelect $tableSelect)

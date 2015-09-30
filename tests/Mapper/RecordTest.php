@@ -20,10 +20,10 @@ class RecordTest extends \PHPUnit_Framework_TestCase
             'id'
         );
 
-        $this->related = [
+        $this->related = new Related([
             'zim' => 'gir',
             'irk' => 'doom',
-        ];
+        ]);
 
         $this->record = new Record($this->row, $this->related);
     }

@@ -15,7 +15,7 @@ class Record
     protected $row;
     protected $related;
 
-    public function __construct(Row $row, array $related)
+    public function __construct(Row $row, Related $related)
     {
         $this->row = $row;
         $this->related = $related;
@@ -27,12 +27,12 @@ class Record
             return $this->row->$field;
         }
 
-        if (! array_key_exists($field, $this->related)) {
+        if (! isset($this->related->$field)) {
             $class = get_class($this);
             throw new Exception("{$class}->{$field} does not exist");
         }
 
-        return $this->related[$field];
+        return $this->related->$field;
     }
 
     public function __set($field, $value)
@@ -42,18 +42,18 @@ class Record
             return;
         }
 
-        if (! array_key_exists($field, $this->related)) {
+        if (! isset($this->related->$field)) {
             $class = get_class($this);
             throw new Exception("{$class}->{$field} does not exist");
         }
 
-        $this->related[$field] = $value;
+        $this->related->$field = $value;
     }
 
     public function __isset($field)
     {
         return isset($this->row->$field)
-            || array_key_exists($field, $this->related);
+            || isset($this->related->$field);
     }
 
     public function __unset($field)
@@ -63,12 +63,12 @@ class Record
             return;
         }
 
-        if (! array_key_exists($field, $this->related)) {
+        if (! isset($this->related->$field)) {
             $class = get_class($this);
             throw new Exception("{$class}->{$field} does not exist");
         }
 
-        $this->related[$field] = null;
+        unset($this->related->$field);
     }
 
     public function getRow()
@@ -83,13 +83,9 @@ class Record
 
     public function getArrayCopy()
     {
-        $array = $this->getRow()->getArrayCopy();
-        foreach ($this->getRelated() as $field => $related) {
-            $array[$field] = $related;
-            if ($related) {
-                $array[$field] = $related->getArrayCopy();
-            }
-        }
-        return $array;
+        return array_merge(
+            $this->getRow()->getArrayCopy(),
+            $this->getRelated()->getArrayCopy()
+        );
     }
 }

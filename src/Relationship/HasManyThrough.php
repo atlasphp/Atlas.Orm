@@ -2,8 +2,8 @@
 namespace Atlas\Relationship;
 
 use Atlas\Exception;
-use Atlas\Mapper\Mapper;
-use Atlas\Mapper\MapperLocator;
+use Atlas\Mapper\Related;
+use Atlas\Mapper\RelatedSet;
 use Atlas\Table\Row;
 use Atlas\Table\RowSet;
 
@@ -50,41 +50,44 @@ class HasManyThrough extends AbstractRelationship
 
     public function fetchForRow(
         Row $nativeRow,
-        array &$related,
+        Related $related,
         callable $custom = null
     ) {
         $this->fix();
 
         // make sure the "through" relation is loaded already
-        if (! isset($related[$this->throughName])) {
+        if (! isset($related->{$this->throughName})) {
             throw new Exception("Cannot fetch '{$this->name}' relation without '{$this->throughName}' relation");
         }
 
-        $throughRecordSet = $related[$this->throughName];
+        $throughRecordSet = $related->{$this->throughName};
         $foreignVals = $this->getUniqueVals($throughRecordSet, $this->throughForeignCol);
-        $foreign = $this->foreignSelect($foreignVals, $custom)->fetchRecordSet();
-        $related[$this->name] = $foreign;
+        $foreignRecordSet = $this->foreignSelect($foreignVals, $custom)->fetchRecordSet();
+        $related->{$this->name} = $foreignRecordSet;
     }
 
     public function fetchForRowSet(
         RowSet $nativeRowSet,
-        array &$relatedSet,
+        RelatedSet $relatedSet,
         callable $custom = null
     ) {
         $this->fix();
 
-        // this is a bit hackish.
-        // the "through" relation should be loaded for everything, so if even
+        // this hackish in two ways:
+        // 1. the "through" relation should be loaded for everything, so if even
         // one is loaded, then all the others ought to have been loaded too.
-        $related = current($relatedSet);
-        if (! isset($related[$this->throughName])) {
+        // 2. reset() returns the array from the ArrayIterator. weird.
+        $array = reset($nativeRowSet);
+        $primary = $array[0]->getPrimaryVal();
+        $related = $relatedSet->get($primary);
+        if (! isset($related->{$this->throughName})) {
             throw new Exception("Cannot fetch '{$this->name}' relation without '{$this->throughName}' relation");
         }
 
         $foreignVals = [];
         foreach ($nativeRowSet as $nativeRow) {
             $primaryVal = $nativeRow->getPrimaryVal();
-            $throughRecordSet = $relatedSet[$primaryVal][$this->throughName];
+            $throughRecordSet = $relatedSet->get($primaryVal)->{$this->throughName};
             $foreignVals = array_merge(
                 $foreignVals,
                 $this->getUniqueVals($throughRecordSet, $this->throughForeignCol)
@@ -96,9 +99,10 @@ class HasManyThrough extends AbstractRelationship
 
         foreach ($nativeRowSet as $nativeRow) {
             $primaryVal = $nativeRow->getPrimaryVal();
-            $throughRecordSet = $relatedSet[$primaryVal][$this->throughName];
+            $related = $relatedSet->get($primaryVal);
+            $throughRecordSet = $related->{$this->throughName};
             $vals = $this->getUniqueVals($throughRecordSet, $this->throughForeignCol);
-            $relatedSet[$primaryVal][$this->name] = $this->extractRecordSet(
+            $related->{$this->name} = $this->extractRecordSet(
                 $foreignRecordSet,
                 $this->foreignCol,
                 $vals
@@ -131,5 +135,15 @@ class HasManyThrough extends AbstractRelationship
         }
 
         return $this->foreignMapper->newRecordSet();
+    }
+
+    protected function fixEmptyValue()
+    {
+        $this->emptyValue = [];
+    }
+
+    protected function fixForeignClass()
+    {
+        $this->foreignClass = $this->foreignMapper->getRecordSetClass();
     }
 }

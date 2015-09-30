@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Relationship;
 
-use Atlas\Mapper\Mapper;
-use Atlas\Mapper\MapperLocator;
+use Atlas\Mapper\Related;
+use Atlas\Mapper\RelatedSet;
 use Atlas\Table\Row;
 use Atlas\Table\RowSet;
 
@@ -10,18 +10,18 @@ class HasMany extends AbstractRelationship
 {
     public function fetchForRow(
         Row $nativeRow,
-        array &$related,
+        Related $related,
         callable $custom = null
     ) {
         $this->fix();
         $foreignVal = $nativeRow->{$this->nativeCol};
-        $foreign = $this->foreignSelect($foreignVal, $custom)->fetchRecordSet();
-        $related[$this->name] = $foreign;
+        $foreignRecordSet = $this->foreignSelect($foreignVal, $custom)->fetchRecordSet();
+        $related->{$this->name} = $foreignRecordSet;
     }
 
     public function fetchForRowSet(
         RowSet $nativeRowSet,
-        array &$relatedSet,
+        RelatedSet $relatedSet,
         callable $custom = null
     ) {
         $this->fix();
@@ -39,7 +39,8 @@ class HasMany extends AbstractRelationship
             } else {
                 $foreignRecordSet = $this->getMissing();
             }
-            $relatedSet[$nativeRow->getPrimaryVal()][$this->name] = $foreignRecordSet;
+            $related = $relatedSet->get($nativeRow->getPrimaryVal());
+            $related->{$this->name} = $foreignRecordSet;
         }
     }
 
@@ -50,5 +51,15 @@ class HasMany extends AbstractRelationship
         }
 
         return $this->foreignMapper->newRecordSet();
+    }
+
+    protected function fixEmptyValue()
+    {
+        $this->emptyValue = [];
+    }
+
+    protected function fixForeignClass()
+    {
+        $this->foreignClass = $this->foreignMapper->getRecordSetClass();
     }
 }

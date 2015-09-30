@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Relationship;
 
-use Atlas\Mapper\Mapper;
-use Atlas\Mapper\MapperLocator;
+use Atlas\Mapper\Related;
+use Atlas\Mapper\RelatedSet;
 use Atlas\Table\Row;
 use Atlas\Table\RowSet;
 
@@ -10,18 +10,18 @@ class HasOne extends AbstractRelationship
 {
     public function fetchForRow(
         Row $nativeRow,
-        array &$related,
+        Related $related,
         callable $custom = null
     ) {
         $this->fix();
         $foreignVal = $nativeRow->{$this->nativeCol};
-        $foreign = $this->foreignSelect($foreignVal, $custom)->fetchRecord();
-        $related[$this->name] = $foreign;
+        $foreignRecord = $this->foreignSelect($foreignVal, $custom)->fetchRecord();
+        $related->{$this->name} = $foreignRecord;
     }
 
     public function fetchForRowSet(
         RowSet $nativeRowSet,
-        array &$relatedSet,
+        RelatedSet $relatedSet,
         callable $custom = null
     ) {
         $this->fix();
@@ -39,7 +39,8 @@ class HasOne extends AbstractRelationship
             } else {
                 $foreignRecord = $this->getMissing();
             }
-            $relatedSet[$nativeRow->getPrimaryVal()][$this->name] = $foreignRecord;
+            $related = $relatedSet->get($nativeRow->getPrimaryVal());
+            $related->{$this->name} = $foreignRecord;
         }
     }
 
@@ -50,5 +51,15 @@ class HasOne extends AbstractRelationship
         }
 
         return $this->foreignMapper->newRecord([]);
+    }
+
+    protected function fixEmptyValue()
+    {
+        $this->emptyValue = false;
+    }
+
+    protected function fixForeignClass()
+    {
+        $this->foreignClass = $this->foreignMapper->getRecordClass();
     }
 }

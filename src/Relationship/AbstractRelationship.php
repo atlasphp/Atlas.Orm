@@ -5,6 +5,8 @@ use Atlas\Mapper\Mapper;
 use Atlas\Mapper\MapperLocator;
 use Atlas\Table\Row;
 use Atlas\Table\RowSet;
+use Atlas\Mapper\Related;
+use Atlas\Mapper\RelatedSet;
 
 abstract class AbstractRelationship
 {
@@ -22,8 +24,11 @@ abstract class AbstractRelationship
     protected $throughNativeCol;
     protected $throughForeignCol;
     protected $foreignCol;
+    protected $foreignClass;
 
     protected $orNone = false;
+
+    protected $emptyValue = null;
 
     protected $fixed = false;
 
@@ -39,6 +44,20 @@ abstract class AbstractRelationship
         $this->name = $name;
         $this->foreignMapperClass = $foreignMapperClass;
         $this->throughName = $throughName;
+    }
+
+    public function getDefinition()
+    {
+        $this->fix();
+        return (object) [
+            'type' => get_class($this),
+            'nativeCol' => $this->nativeCol,
+            'throughNativeCol' => $this->throughNativeCol,
+            'throughForeignCol' => $this->throughForeignCol,
+            'foreignCol' => $this->foreignCol,
+            'foreignClass' => $this->foreignClass,
+            'emptyValue' => $this->emptyValue,
+        ];
     }
 
     public function nativeCol($nativeCol)
@@ -71,6 +90,8 @@ abstract class AbstractRelationship
         $this->fixThroughNativeCol();
         $this->fixThroughForeignCol();
         $this->fixForeignCol();
+        $this->fixForeignClass();
+        $this->fixEmptyValue();
 
         $this->fixed = true;
     }
@@ -132,17 +153,21 @@ abstract class AbstractRelationship
         return $groups;
     }
 
+    abstract protected function fixEmptyValue();
+
+    abstract protected function fixForeignClass();
+
     abstract protected function getMissing();
 
     abstract public function fetchForRow(
         Row $nativeRow,
-        array &$related,
+        Related $related,
         callable $custom = null
     );
 
     abstract public function fetchForRowSet(
         RowSet $nativeRow,
-        array &$relatedSet,
+        RelatedSet $relatedSet,
         callable $custom = null
     );
 }

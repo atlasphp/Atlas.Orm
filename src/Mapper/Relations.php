@@ -25,6 +25,11 @@ class Relations
         $this->mapperLocator = $mapperLocator;
     }
 
+    public function getDefinitions()
+    {
+        return $this->relations;
+    }
+
     public function hasOne($name, $foreignMapperClass)
     {
         return $this->set($name, HasOne::CLASS, $foreignMapperClass);
@@ -78,11 +83,11 @@ class Relations
 
     public function fetchForRow(Row $row, array $with = [])
     {
-        $related = [];
+        $related = $this->newRelated();
         foreach ($this->fixWith($with) as $name => $custom) {
             $this->relations[$name]->fetchForRow(
                 $row,
-                $related, // should this be an object?
+                $related,
                 $custom
             );
         }
@@ -91,11 +96,11 @@ class Relations
 
     public function fetchForRowSet(RowSet $rowSet, array $with = [])
     {
-        $relatedSet = [];
+        $relatedSet = $this->newRelatedSet($rowSet);
         foreach ($this->fixWith($with) as $name => $custom) {
             $this->relations[$name]->fetchForRowSet(
                 $rowSet,
-                $relatedSet, // should this be an object?
+                $relatedSet,
                 $custom
             );
         }
@@ -113,5 +118,19 @@ class Relations
             }
         }
         return $with;
+    }
+
+    protected function newRelated()
+    {
+        return new Related();
+    }
+
+    protected function newRelatedSet(RowSet $rowSet)
+    {
+        $relateds = [];
+        foreach ($rowSet as $row) {
+            $relateds[$row->getPrimaryVal()] = $this->newRelated();
+        }
+        return new RelatedSet($relateds);
     }
 }
