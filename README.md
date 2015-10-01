@@ -1,6 +1,6 @@
 # Atlas
 
-> No schema discovery. No migrations. No annotations. No lazy loading. No domain models. No opinions. Just data mapping.
+> No schema discovery. No migrations. No annotations. No lazy loading. No domain models. No behaviors. No opinions. Just data mapping.
 
 Atlas is an ORM for your **persistence** (or **data source**) model, not for your domain model. Use Atlas data source objects to populate your domain model objects.
 
@@ -119,7 +119,7 @@ $threadRecordSet = $atlas
 ?>
 ```
 
-If you do not load a _Record_ "with" a related, it will not be present in the _Record, and it will not be lazy-loaded for you later. This means you need to think ahead as to exactly what you will need from the database.
+If you do not load a _Record_ "with" a related, it will not be present in the _Record_, and it will not be lazy-loaded for you later. This means you need to think ahead as to exactly what you will need from the database.
 
 You can then address the _Record_'s underlying _Row_ columns and the related fields as properties.
 
