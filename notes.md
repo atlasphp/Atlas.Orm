@@ -1,8 +1,3 @@
-Identity Field:
-
-    Create an Identity object for Row objects.  <Type>RowIdentity. Figure out how to deal with it in getArrayCopy() and when getting its value. Maybe $row->row_id gets the value, and $row->getIdentity() gets the actual identity object. What then for compound keys? Need to check the elements of the Identity first, then go on to other cols.
-
-    In RecordSets and Record relations, automatically set foriegn-key IdentityField on appendNew()?
 
 RowSet/RecordSet:
 
@@ -16,9 +11,12 @@ Relationships:
 
     More tests for when relationships are missing.
 
-    Create Related and RelatedSet objects instead of passing around an array?
-
     The relationships may be reusing record objects, rather than building new ones. Is that a problem?
+
+    Have each Record and RecordSet note the record it "belongs to" and the foreign key mapping.
+
+    Then in Record and RecordSet relations, automatically set "belongs to" foriegn key value on appendNew().
+
 
 Compound primary keys:
 
