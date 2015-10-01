@@ -8,7 +8,7 @@ Atlas is an ORM for your **persistence** (or **data source**) model, not for you
 
 * * *
 
-Atlas works in 2 layers. The lower _Table_ layer is a table data gateway implementation:
+Atlas works in 2 layers. The lower _Table_ layer is a [table data gateway](http://martinfowler.com/eaaCatalog/tableDataGateway.html) implementation:
 
 - A _Row_ represents a single table row.
 
@@ -18,7 +18,7 @@ Atlas works in 2 layers. The lower _Table_ layer is a table data gateway impleme
 
 - A _RowFilter_ acts as a validator and sanitizer on _Row_ data for inserts and updates.
 
-The upper _Mapper_ layer is a Data Mapper implementation **for the persistence model**. As such, Atlas uses the term "record" to indicate that its objects are *not* domain entities. Note that this is a *passive* record, not an active record; you do not add behaviors to it.
+The upper _Mapper_ layer is a [data mapper](http://martinfowler.com/eaaCatalog/dataMapper.html) implementation **for the persistence model**. As such, Atlas uses the term "record" to indicate that its objects are *not* domain entities. Note that this is a *passive* record, not an [active record](http://martinfowler.com/eaaCatalog/activeRecord.html); you do not add behaviors to it, and it is disconnected from the database.
 
 - A _Record_ combines a single _Row_ object with its related _Record_ and _RecordSet_ objects.
 
