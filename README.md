@@ -8,7 +8,7 @@ Atlas is an ORM for your **persistence** (or **data source**) model, not for you
 
 * * *
 
-Atlas works in 2 layers. The lower _Table_ layer is a table data gatway implementation:
+Atlas works in 2 layers. The lower _Table_ layer is a table data gateway implementation:
 
 - A _Row_ represents a single table row.
 
