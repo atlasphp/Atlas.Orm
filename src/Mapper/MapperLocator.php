@@ -14,8 +14,7 @@ use Atlas\Exception;
 
 /**
  *
- * A ServiceLocator implementation for loading and retaining Mapper objects;
- * note that new Mappers cannot be added after construction.
+ * A ServiceLocator implementation for creating and retaining Mapper objects.
  *
  * @package Atlas.Atlas
  *

@@ -1,10 +1,14 @@
 Factories:
     
-    Extract newRow(), newRowSet(), newRecord(), newRecordSet() to factory objects? Would allow for finer user control over how they get created, and might be future-proofing.
+    Extract newRow(), newRowSet(), newRecord(), newRecordSet() to factory objects? Would allow for finer user control over how they get created, and might be future-proofing. Does that mean passing the IdentityMap into it?
+
+Identity Map:
+
+    Consider a single Atlas-wide Identity Map, instead of one per table.
 
 RowSet/RecordSet:
 
-    Add "append()" or "addNew()" to Sets to append a new Row/Record of the proper type. Probably need to keep a reference back to the original Table/Mapper for the "new" logic. Alternatively, extract RowFactory and RecordFactory for use in the Sets. Hm, but that entails dealing with the IdentityMap as well.
+    Add "append()" or "addNew()" to Sets to append a new Row/Record of the proper type. Probably need to keep a reference back to the original Table/Mapper for the "new" logic.
 
 Record:
 

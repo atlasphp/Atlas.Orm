@@ -14,8 +14,7 @@ use Atlas\Exception;
 
 /**
  *
- * A ServiceLocator implementation for loading and retaining Table objects;
- * note that new Tables cannot be added after construction.
+ * A ServiceLocator implementation for creating and retaining Table objects.
  *
  * @package Atlas.Atlas
  *
