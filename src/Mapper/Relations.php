@@ -17,6 +17,8 @@ class Relations
 
     protected $mapperLocator;
 
+    protected $fields = [];
+
     public function __construct(
         $nativeMapperClass,
         MapperLocator $mapperLocator
@@ -25,13 +27,9 @@ class Relations
         $this->mapperLocator = $mapperLocator;
     }
 
-    public function getDefinitions()
+    public function getFields()
     {
-        $defs = [];
-        foreach ($this->relations as $name => $relation) {
-            $defs[$name] = null;
-        }
-        return $defs;
+        return $this->fields;
     }
 
     public function hasOne($name, $foreignMapperClass)
@@ -70,6 +68,7 @@ class Relations
         }
 
         $relation = $this->newRelation($name, $relationClass, $foreignMapperClass, $throughName);
+        $this->fields[$name] = null;
         $this->relations[$name] = $relation;
         return $relation;
     }

@@ -77,7 +77,7 @@ class Mapper
             $row = $this->getTable()->newRow($row);
         }
 
-        $related = new Related($this->relations->getDefinitions());
+        $related = new Related($this->relations->getFields());
         $recordClass = $this->getRecordClass();
         return new $recordClass($row, $related);
     }

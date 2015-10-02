@@ -45,20 +45,6 @@ abstract class AbstractRelationship
         $this->throughName = $throughName;
     }
 
-    public function getDefinition()
-    {
-        $this->fix();
-        return (object) [
-            'type' => get_class($this),
-            'nativeCol' => $this->nativeCol,
-            'throughNativeCol' => $this->throughNativeCol,
-            'throughForeignCol' => $this->throughForeignCol,
-            'foreignCol' => $this->foreignCol,
-            'foreignClass' => $this->foreignClass,
-            'emptyValue' => $this->emptyValue,
-        ];
-    }
-
     public function nativeCol($nativeCol)
     {
         $this->nativeCol = $nativeCol;
