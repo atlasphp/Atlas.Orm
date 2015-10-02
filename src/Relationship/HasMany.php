@@ -30,32 +30,12 @@ class HasMany extends AbstractRelationship
         );
 
         foreach ($nativeRecordSet as $nativeRecord) {
+            $foreignRecordSet = [];
             $key = $nativeRecord->{$this->nativeCol};
             if (isset($foreignRecordSets[$key])) {
                 $foreignRecordSet = $foreignRecordSets[$key];
-            } else {
-                $foreignRecordSet = $this->getMissing();
             }
             $nativeRecord->{$this->name} = $foreignRecordSet;
         }
-    }
-
-    protected function getMissing()
-    {
-        if ($this->orNone) {
-            return array();
-        }
-
-        return $this->foreignMapper->newRecordSet();
-    }
-
-    protected function fixEmptyValue()
-    {
-        $this->emptyValue = [];
-    }
-
-    protected function fixForeignClass()
-    {
-        $this->foreignClass = $this->foreignMapper->getRecordSetClass();
     }
 }

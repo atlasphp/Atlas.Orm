@@ -25,10 +25,6 @@ abstract class AbstractRelationship
     protected $foreignCol;
     protected $foreignClass;
 
-    protected $orNone = false;
-
-    protected $emptyValue = null;
-
     protected $fixed = false;
 
     public function __construct(
@@ -57,11 +53,6 @@ abstract class AbstractRelationship
         return $this;
     }
 
-    public function orNone($flag = true)
-    {
-        $this->orNone = (bool) $flag;
-    }
-
     protected function fix()
     {
         if ($this->fixed) {
@@ -75,8 +66,6 @@ abstract class AbstractRelationship
         $this->fixThroughNativeCol();
         $this->fixThroughForeignCol();
         $this->fixForeignCol();
-        $this->fixForeignClass();
-        $this->fixEmptyValue();
 
         $this->fixed = true;
     }
@@ -138,19 +127,13 @@ abstract class AbstractRelationship
         return $groups;
     }
 
-    abstract protected function fixEmptyValue();
-
-    abstract protected function fixForeignClass();
-
-    abstract protected function getMissing();
-
     abstract public function stitchIntoRecord(
         Record $nativeRecord,
         callable $custom = null
     );
 
     abstract public function stitchIntoRecordSet(
-        RecordSet $nativeRecord,
+        RecordSet $nativeRecordSet,
         callable $custom = null
     );
 }

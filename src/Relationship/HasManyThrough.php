@@ -104,37 +104,18 @@ class HasManyThrough extends AbstractRelationship
     protected function extractRecordSet($recordSet, $field, $vals)
     {
         $vals = (array) $vals;
-        $extracted = $this->foreignMapper->newRecordSet();
+
+        $records = [];
         foreach ($recordSet as $record) {
             if (in_array($record->$field, $vals)) {
-                $extracted[] = $record;
+                $records[] = $record;
             }
         }
 
-        if ($extracted->isEmpty()) {
-            return $this->getMissing();
+        if ($records) {
+            return $this->foreignMapper->newRecordSet($records);
         }
 
-        return $extracted;
-    }
-
-
-    protected function getMissing()
-    {
-        if ($this->orNone) {
-            return array();
-        }
-
-        return $this->foreignMapper->newRecordSet();
-    }
-
-    protected function fixEmptyValue()
-    {
-        $this->emptyValue = [];
-    }
-
-    protected function fixForeignClass()
-    {
-        $this->foreignClass = $this->foreignMapper->getRecordSetClass();
+        return [];
     }
 }
