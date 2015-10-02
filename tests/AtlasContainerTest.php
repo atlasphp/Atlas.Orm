@@ -7,7 +7,7 @@ use Atlas\Fake\Summary\SummaryMapper;
 use Atlas\Fake\Summary\SummaryTable;
 use Atlas\Fake\Tag\TagMapper;
 use Atlas\Fake\Thread\ThreadMapper;
-use Atlas\Fake\Thread2Tag\Thread2TagMapper;
+use Atlas\Fake\Tagging\TaggingMapper;
 use Aura\Sql\ExtendedPdo;
 
 class AtlasContainerTest extends \PHPUnit_Framework_TestCase
@@ -33,7 +33,7 @@ class AtlasContainerTest extends \PHPUnit_Framework_TestCase
             SummaryMapper::CLASS => SummaryTable::CLASS,
             TagMapper::CLASS,
             ThreadMapper::CLASS,
-            Thread2TagMapper::CLASS,
+            TaggingMapper::CLASS,
         ]);
 
         $atlas = $this->atlasContainer->getAtlas();
@@ -43,6 +43,6 @@ class AtlasContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf(SummaryMapper::CLASS, $atlas->mapper(SummaryMapper::CLASS));
         $this->assertInstanceOf(TagMapper::CLASS, $atlas->mapper(TagMapper::CLASS));
         $this->assertInstanceOf(ThreadMapper::CLASS, $atlas->mapper(ThreadMapper::CLASS));
-        $this->assertInstanceOf(Thread2TagMapper::CLASS, $atlas->mapper(Thread2TagMapper::CLASS));
+        $this->assertInstanceOf(TaggingMapper::CLASS, $atlas->mapper(TaggingMapper::CLASS));
     }
 }

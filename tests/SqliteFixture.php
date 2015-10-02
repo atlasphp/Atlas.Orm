@@ -17,7 +17,7 @@ class SqliteFixture
         $this->tags();
         $this->threads();
         $this->summaries();
-        $this->threads2tags();
+        $this->taggings();
         $this->replies();
     }
 
@@ -131,16 +131,16 @@ class SqliteFixture
         }
     }
 
-    protected function threads2tags()
+    protected function taggings()
     {
-        $this->connection->query("CREATE TABLE threads2tags (
-            thread2tag_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        $this->connection->query("CREATE TABLE taggings (
+            tagging_id INTEGER PRIMARY KEY AUTOINCREMENT,
             thread_id INTEGER NOT NULL,
             tag_id INTEGER NOT NULL
         )");
 
         // add 3 tags to each thread
-        $stm = "INSERT INTO threads2tags (thread_id, tag_id) VALUES (?, ?)";
+        $stm = "INSERT INTO taggings (thread_id, tag_id) VALUES (?, ?)";
         for ($i = 0; $i < 20; $i ++) {
             $thread_id = $i + 1;
             $tags = [

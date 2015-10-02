@@ -1,10 +1,10 @@
 <?php
-namespace Atlas\Fake\Thread2Tag;
+namespace Atlas\Fake\Tagging;
 
 use Atlas\Mapper\Mapper;
 use Atlas\Fake\Tag\TagMapper;
 use Atlas\Fake\Thread\ThreadMapper;
 
-class Thread2TagMapper extends Mapper
+class TaggingMapper extends Mapper
 {
 }

@@ -6,7 +6,7 @@ use Atlas\Fake\Reply\ReplyMapper;
 use Atlas\Fake\Summary\SummaryMapper;
 use Atlas\Fake\Summary\SummaryTable;
 use Atlas\Fake\Tag\TagMapper;
-use Atlas\Fake\Thread2Tag\Thread2TagMapper;
+use Atlas\Fake\Tagging\TaggingMapper;
 use Atlas\Fake\Thread\ThreadMapper;
 use Aura\Sql\ExtendedPdo;
 
@@ -26,7 +26,7 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
             SummaryMapper::CLASS,
             TagMapper::CLASS,
             ThreadMapper::CLASS,
-            Thread2TagMapper::CLASS,
+            TaggingMapper::CLASS,
         ]);
 
         $connection = $atlasContainer->getConnectionLocator()->getDefault();
@@ -47,7 +47,7 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
                 'replies' => function ($select) {
                     $select->with(['author']);
                 }, // hasMany
-                'threads2tags', // hasMany,
+                'taggings', // hasMany,
                 'tags', // hasManyThrough
             ]
         );
@@ -131,19 +131,19 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
                     ],
                 ],
             ],
-            'threads2tags' => [
+            'taggings' => [
                 0 => [
-                    'thread2tag_id' => '1',
+                    'tagging_id' => '1',
                     'thread_id' => '1',
                     'tag_id' => '1',
                 ],
                 1 => [
-                    'thread2tag_id' => '2',
+                    'tagging_id' => '2',
                     'thread_id' => '1',
                     'tag_id' => '2',
                 ],
                 2 => [
-                    'thread2tag_id' => '3',
+                    'tagging_id' => '3',
                     'thread_id' => '1',
                     'tag_id' => '3',
                 ],
@@ -152,19 +152,19 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
                 0 => [
                     'tag_id' => '1',
                     'name' => 'foo',
-                    'threads2tags' => null,
+                    'taggings' => null,
                     'threads' => null,
                 ],
                 1 => [
                     'tag_id' => '2',
                     'name' => 'bar',
-                    'threads2tags' => null,
+                    'taggings' => null,
                     'threads' => null,
                 ],
                 2 => [
                     'tag_id' => '3',
                     'name' => 'baz',
-                    'threads2tags' => null,
+                    'taggings' => null,
                     'threads' => null,
                 ],
             ],
@@ -184,7 +184,7 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
                 'replies' => function ($select) {
                     $select->with(['author']);
                 }, // hasMany
-                'threads2tags', // hasMany,
+                'taggings', // hasMany,
                 'tags', // hasManyThrough
             ]
         );
@@ -269,19 +269,19 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
                         ],
                     ],
                 ],
-                'threads2tags' => [
+                'taggings' => [
                     0 => [
-                        'thread2tag_id' => '1',
+                        'tagging_id' => '1',
                         'thread_id' => '1',
                         'tag_id' => '1',
                     ],
                     1 => [
-                        'thread2tag_id' => '2',
+                        'tagging_id' => '2',
                         'thread_id' => '1',
                         'tag_id' => '2',
                     ],
                     2 => [
-                        'thread2tag_id' => '3',
+                        'tagging_id' => '3',
                         'thread_id' => '1',
                         'tag_id' => '3',
                     ],
@@ -290,19 +290,19 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
                     0 => [
                         'tag_id' => '1',
                         'name' => 'foo',
-                        'threads2tags' => null,
+                        'taggings' => null,
                         'threads' => null,
                     ],
                     1 => [
                         'tag_id' => '2',
                         'name' => 'bar',
-                        'threads2tags' => null,
+                        'taggings' => null,
                         'threads' => null,
                     ],
                     2 => [
                         'tag_id' => '3',
                         'name' => 'baz',
-                        'threads2tags' => null,
+                        'taggings' => null,
                         'threads' => null,
                     ],
                 ],
@@ -386,19 +386,19 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
                         ],
                     ],
                 ],
-                'threads2tags' => [
+                'taggings' => [
                     0 => [
-                        'thread2tag_id' => '4',
+                        'tagging_id' => '4',
                         'thread_id' => '2',
                         'tag_id' => '2',
                     ],
                     1 => [
-                        'thread2tag_id' => '5',
+                        'tagging_id' => '5',
                         'thread_id' => '2',
                         'tag_id' => '3',
                     ],
                     2 => [
-                        'thread2tag_id' => '6',
+                        'tagging_id' => '6',
                         'thread_id' => '2',
                         'tag_id' => '4',
                     ],
@@ -407,19 +407,19 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
                     0 => [
                         'tag_id' => '2',
                         'name' => 'bar',
-                        'threads2tags' => null,
+                        'taggings' => null,
                         'threads' => null,
                     ],
                     1 => [
                         'tag_id' => '3',
                         'name' => 'baz',
-                        'threads2tags' => null,
+                        'taggings' => null,
                         'threads' => null,
                     ],
                     2 => [
                         'tag_id' => '4',
                         'name' => 'dib',
-                        'threads2tags' => null,
+                        'taggings' => null,
                         'threads' => null,
                     ],
                 ],
@@ -503,19 +503,19 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
                         ],
                     ],
                 ],
-                'threads2tags' => [
+                'taggings' => [
                     0 => [
-                        'thread2tag_id' => '7',
+                        'tagging_id' => '7',
                         'thread_id' => '3',
                         'tag_id' => '3',
                     ],
                     1 => [
-                        'thread2tag_id' => '8',
+                        'tagging_id' => '8',
                         'thread_id' => '3',
                         'tag_id' => '4',
                     ],
                     2 => [
-                        'thread2tag_id' => '9',
+                        'tagging_id' => '9',
                         'thread_id' => '3',
                         'tag_id' => '5',
                     ],
@@ -524,19 +524,19 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
                     0 => [
                         'tag_id' => '3',
                         'name' => 'baz',
-                        'threads2tags' => null,
+                        'taggings' => null,
                         'threads' => null,
                     ],
                     1 => [
                         'tag_id' => '4',
                         'name' => 'dib',
-                        'threads2tags' => null,
+                        'taggings' => null,
                         'threads' => null,
                     ],
                     2 => [
                         'tag_id' => '5',
                         'name' => 'zim',
-                        'threads2tags' => null,
+                        'taggings' => null,
                         'threads' => null,
                     ],
                 ],
