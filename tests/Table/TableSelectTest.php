@@ -42,7 +42,7 @@ class TableSelectTest extends \PHPUnit_Framework_TestCase
             SELECT
                 *
             FROM
-                "employees"
+                "employee"
         ';
         $actual = $this->tableSelect->getStatement();
         $this->assertSameSql($expect, $actual);

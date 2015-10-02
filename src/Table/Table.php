@@ -91,11 +91,7 @@ class Table
         $this->queryFactory = $queryFactory;
         $this->identityMap = $identityMap;
         $this->rowFilter = $rowFilter;
-        $this->setDefaults();
-    }
 
-    protected function setDefaults()
-    {
         // Foo\Bar\BazTable -> Foo\Bar\Baz
         $type = substr(get_class($this), 0, -5);
 
@@ -111,16 +107,8 @@ class Table
         }
 
         $this->autoinc = (bool) $this->autoinc;
-
         $this->rowClass = "{$type}Row";
-        if (! class_exists($this->rowClass)) {
-            throw new Exception("{$this->rowClass} does not exist");
-        }
-
         $this->rowSetClass = "{$type}RowSet";
-        if (! class_exists($this->rowSetClass)) {
-            throw new Exception("{$this->rowSetClass} does not exist");
-        }
     }
 
     public function getTable()

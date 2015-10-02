@@ -301,7 +301,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
             'floor' => '99',
         ];
         $actual = $this->mapper->getTable()->getReadConnection()->fetchOne(
-            'SELECT * FROM employees WHERE id = 13'
+            'SELECT * FROM employee WHERE id = 13'
         );
         $this->assertSame($expect, $actual);
 
@@ -335,7 +335,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         // was it *actually* updated?
         $expect = $record->getRow()->getArrayCopy();
         $actual = $this->mapper->getTable()->getReadConnection()->fetchOne(
-            "SELECT * FROM employees WHERE name = 'Annabelle'"
+            "SELECT * FROM employee WHERE name = 'Annabelle'"
         );
         $this->assertSame($expect, $actual);
 

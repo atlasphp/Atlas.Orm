@@ -8,6 +8,7 @@ use Atlas\SqliteFixture;
 use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\QueryFactory;
+use InvalidArgumentException;
 
 class TableTest extends \PHPUnit_Framework_TestCase
 {
@@ -194,13 +195,21 @@ class TableTest extends \PHPUnit_Framework_TestCase
             'floor' => '99',
         ];
         $actual = $this->table->getReadConnection()->fetchOne(
-            'SELECT * FROM employees WHERE id = 13'
+            'SELECT * FROM employee WHERE id = 13'
         );
         $this->assertSame($expect, $actual);
 
         // try to insert again, should fail on unique name
         $this->silenceErrors();
         $this->assertFalse($this->table->insert($row));
+
+        // try to insert a row of the wrong type
+        $row = new Row([], 'id');
+        $this->setExpectedException(
+            InvalidArgumentException::CLASS,
+            "Expected Atlas\Fake\Employee\EmployeeRow, got Atlas\Table\Row instead"
+        );
+        $this->table->insert($row);
     }
 
     public function testUpdate()
@@ -220,7 +229,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
         // was it *actually* updated?
         $expect = $row->getArrayCopy();
         $actual = $this->table->getReadConnection()->fetchOne(
-            "SELECT * FROM employees WHERE name = 'Annabelle'"
+            "SELECT * FROM employee WHERE name = 'Annabelle'"
         );
         $this->assertSame($expect, $actual);
 
@@ -231,6 +240,14 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->table->delete($row));
         $row->name = 'Foo';
         $this->assertFalse($this->table->update($row));
+
+        // try to update a row of the wrong type
+        $row = new Row([], 'id');
+        $this->setExpectedException(
+            InvalidArgumentException::CLASS,
+            "Expected Atlas\Fake\Employee\EmployeeRow, got Atlas\Table\Row instead"
+        );
+        $this->table->update($row);
     }
 
     public function testDelete()
@@ -247,6 +264,14 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $actual = $this->table->select()->where('id > 0')->fetchRowSet();
         $expect = 11;
         $this->assertEquals($expect, count($actual));
+
+        // try to delete a row of the wrong type
+        $row = new Row([], 'id');
+        $this->setExpectedException(
+            InvalidArgumentException::CLASS,
+            "Expected Atlas\Fake\Employee\EmployeeRow, got Atlas\Table\Row instead"
+        );
+        $this->table->delete($row);
     }
 
     protected function silenceErrors()
@@ -263,9 +288,9 @@ class TableTest extends \PHPUnit_Framework_TestCase
             SELECT
                 id
             FROM
-                "employees"
+                "employee"
             WHERE
-                "employees"."name" IS NULL
+                "employee"."name" IS NULL
         ';
 
         $actual = $select->__toString();

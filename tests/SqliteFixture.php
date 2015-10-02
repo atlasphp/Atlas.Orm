@@ -12,7 +12,7 @@ class SqliteFixture
 
     public function exec()
     {
-        $this->employees();
+        $this->employee();
         $this->authors();
         $this->tags();
         $this->threads();
@@ -21,16 +21,16 @@ class SqliteFixture
         $this->replies();
     }
 
-    protected function employees()
+    protected function employee()
     {
-        $this->connection->query("CREATE TABLE employees (
+        $this->connection->query("CREATE TABLE employee (
             id       INTEGER PRIMARY KEY AUTOINCREMENT,
             name     VARCHAR(50) NOT NULL UNIQUE,
             building INTEGER,
             floor    INTEGER
         )");
 
-        $stm = "INSERT INTO employees (name, building, floor) VALUES (?, ?, ?)";
+        $stm = "INSERT INTO employee (name, building, floor) VALUES (?, ?, ?)";
         $rows = [
             ['Anna',  1, 1],
             ['Betty', 1, 2],
