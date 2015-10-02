@@ -46,6 +46,7 @@ class MapperLocator
 
     public function has($class)
     {
+        $class = $this->getMapperClass($class);
         return isset($this->factories[$class]);
     }
 
