@@ -34,8 +34,7 @@ class RowSet implements ArrayAccess, Countable, IteratorAggregate
     public function offsetSet($offset, $value)
     {
         if (! $value instanceof $this->rowClass) {
-            $actual = get_class($value);
-            throw new InvalidArgumentException("Expected {$this->rowClass}, got {$actual} instead");
+            throw new InvalidArgumentException("Expected {$this->rowClass}");
         }
 
         if ($offset === null) {
