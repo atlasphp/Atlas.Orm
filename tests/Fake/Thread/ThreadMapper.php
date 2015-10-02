@@ -10,12 +10,12 @@ use Atlas\Fake\Tag\TagMapper;
 
 class ThreadMapper extends Mapper
 {
-    protected function setRelations()
+    protected function setMapperRelations()
     {
-        $this->relations->belongsTo('author', AuthorMapper::CLASS);
-        $this->relations->hasOne('summary', SummaryMapper::CLASS);
-        $this->relations->hasMany('replies', ReplyMapper::CLASS);
-        $this->relations->hasMany('threads2tags', Thread2TagMapper::CLASS);
-        $this->relations->hasManyThrough('tags', TagMapper::CLASS, 'threads2tags');
+        $this->belongsTo('author', AuthorMapper::CLASS);
+        $this->hasOne('summary', SummaryMapper::CLASS);
+        $this->hasMany('replies', ReplyMapper::CLASS);
+        $this->hasMany('threads2tags', Thread2TagMapper::CLASS);
+        $this->hasManyThrough('tags', TagMapper::CLASS, 'threads2tags');
     }
 }

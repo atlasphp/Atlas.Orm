@@ -3,7 +3,7 @@ namespace Atlas;
 
 use Atlas\Mapper\MapperFactory;
 use Atlas\Mapper\MapperLocator;
-use Atlas\Mapper\Relations;
+use Atlas\Mapper\MapperRelations;
 use Atlas\Table\TableFactory;
 use Atlas\Table\TableLocator;
 use Aura\Sql\ConnectionLocator;
@@ -127,8 +127,8 @@ class AtlasContainer
         return new TableFactory($this, $tableClass);
     }
 
-    public function newRelations($mapperClass)
+    public function newMapperRelations($mapperClass)
     {
-        return new Relations($mapperClass, $this->mapperLocator);
+        return new MapperRelations($mapperClass, $this->mapperLocator);
     }
 }

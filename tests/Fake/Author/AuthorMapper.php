@@ -7,9 +7,9 @@ use Atlas\Mapper\Mapper;
 
 class AuthorMapper extends Mapper
 {
-    protected function setRelations()
+    protected function setMapperRelations()
     {
-        $this->relations->hasMany('replies', ReplyMapper::CLASS);
-        $this->relations->hasMany('threads', ThreadMapper::CLASS);
+        $this->hasMany('replies', ReplyMapper::CLASS);
+        $this->hasMany('threads', ThreadMapper::CLASS);
     }
 }

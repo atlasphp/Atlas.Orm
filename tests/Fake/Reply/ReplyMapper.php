@@ -6,8 +6,8 @@ use Atlas\Mapper\Mapper;
 
 class ReplyMapper extends Mapper
 {
-    protected function setRelations()
+    protected function setMapperRelations()
     {
-        $this->relations->belongsTo('author', AuthorMapper::CLASS);
+        $this->belongsTo('author', AuthorMapper::CLASS);
     }
 }

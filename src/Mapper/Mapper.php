@@ -2,6 +2,10 @@
 namespace Atlas\Mapper;
 
 use Atlas\Exception;
+use Atlas\Relationship\BelongsTo;
+use Atlas\Relationship\HasMany;
+use Atlas\Relationship\HasManyThrough;
+use Atlas\Relationship\HasOne;
 use Atlas\Table\Row;
 use Atlas\Table\RowSet;
 use Atlas\Table\Table;
@@ -10,7 +14,7 @@ use InvalidArgumentException;
 
 /**
  *
- * A DataMapper that returns Record and RecordSet objects.
+ * A data source mapper that returns Record and RecordSet objects.
  *
  * @package Atlas.Atlas
  *
@@ -19,16 +23,16 @@ class Mapper
 {
     protected $table;
 
-    protected $relations;
+    protected $mapperRelations;
 
     protected $recordClass;
 
     protected $recordSetClass;
 
-    public function __construct(Table $table, Relations $relations)
+    public function __construct(Table $table, MapperRelations $mapperRelations)
     {
         $this->table = $table;
-        $this->relations = $relations;
+        $this->mapperRelations = $mapperRelations;
 
         // Foo\Bar\BazMapper -> Foo\Bar\Baz
         $type = substr(get_class($this), 0, -6);
@@ -43,7 +47,7 @@ class Mapper
             throw new Exception("{$this->recordSetClass} does not exist");
         }
 
-        $this->setRelations();
+        $this->setMapperRelations();
     }
 
     public function getTable()
@@ -51,12 +55,12 @@ class Mapper
         return $this->table;
     }
 
-    public function getRelations()
+    public function getMapperRelations()
     {
-        return $this->relations;
+        return $this->mapperRelations;
     }
 
-    protected function setRelations()
+    protected function setMapperRelations()
     {
     }
 
@@ -77,7 +81,7 @@ class Mapper
             $row = $this->getTable()->newRow($row);
         }
 
-        $related = new Related($this->relations->getFields());
+        $related = new Related($this->mapperRelations->getFields());
         $recordClass = $this->getRecordClass();
         return new $recordClass($row, $related);
     }
@@ -117,7 +121,7 @@ class Mapper
         }
 
         $record = $this->newRecord($row);
-        $this->relations->stitchIntoRecord($record, $with);
+        $this->mapperRelations->stitchIntoRecord($record, $with);
         return $record;
     }
 
@@ -140,7 +144,7 @@ class Mapper
         }
 
         $recordSet = $this->newRecordSetFromRows($rowSet);
-        $this->relations->stitchIntoRecordSet($recordSet, $with);
+        $this->mapperRelations->stitchIntoRecordSet($recordSet, $with);
         return $recordSet;
     }
 
@@ -179,5 +183,42 @@ class Mapper
             $actual = get_class($record);
             throw new InvalidArgumentException("Expected {$this->recordClass}, got {$actual} instead");
         }
+    }
+
+    protected function hasOne($name, $foreignMapperClass)
+    {
+        return $this->mapperRelations->set(
+            $name,
+            HasOne::CLASS,
+            $foreignMapperClass
+        );
+    }
+
+    protected function hasMany($name, $foreignMapperClass)
+    {
+        return $this->mapperRelations->set(
+            $name,
+            HasMany::CLASS,
+            $foreignMapperClass
+        );
+    }
+
+    protected function belongsTo($name, $foreignMapperClass)
+    {
+        $this->mapperRelations->set(
+            $name,
+            BelongsTo::CLASS,
+            $foreignMapperClass
+        );
+    }
+
+    protected function hasManyThrough($name, $foreignMapperClass, $throughName)
+    {
+        return $this->mapperRelations->set(
+            $name,
+            HasManyThrough::CLASS,
+            $foreignMapperClass,
+            $throughName
+        );
     }
 }

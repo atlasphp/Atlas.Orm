@@ -6,7 +6,7 @@ use Atlas\Fake\Auto\AutoTable;
 use Atlas\Fake\Employee\EmployeeMapper;
 use Atlas\Fake\Employee\EmployeeTable;
 use Atlas\Mapper\RecordFactory;
-use Atlas\Mapper\Relations;
+use Atlas\Mapper\MapperRelations;
 use Atlas\SqliteFixture;
 use Atlas\Table\IdentityMap;
 use Atlas\Table\RowFilter;
@@ -39,7 +39,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
 
         $this->mapper = new EmployeeMapper(
             $this->table,
-            new Relations(EmployeeMapper::CLASS, new MapperLocator())
+            new MapperRelations(EmployeeMapper::CLASS, new MapperLocator())
         );
     }
 
@@ -48,9 +48,9 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($this->table, $this->mapper->getTable());
     }
 
-    public function testGetRelations()
+    public function testGetMapperRelations()
     {
-        $this->assertInstanceOf(Relations::CLASS, $this->mapper->getRelations());
+        $this->assertInstanceOf(MapperRelations::CLASS, $this->mapper->getMapperRelations());
     }
 
     public function testFetchRecord()

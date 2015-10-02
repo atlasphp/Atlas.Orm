@@ -2,14 +2,8 @@
 namespace Atlas\Mapper;
 
 use Atlas\Exception;
-use Atlas\Relationship\HasManyThrough;
-use Atlas\Relationship\BelongsTo;
-use Atlas\Relationship\HasMany;
-use Atlas\Relationship\HasOne;
-use Atlas\Table\Row;
-use Atlas\Table\RowSet;
 
-class Relations
+class MapperRelations
 {
     protected $relations = [];
 
@@ -32,39 +26,14 @@ class Relations
         return $this->fields;
     }
 
-    public function hasOne($name, $foreignMapperClass)
-    {
-        return $this->set($name, HasOne::CLASS, $foreignMapperClass);
-    }
-
-    public function hasMany($name, $foreignMapperClass)
-    {
-        return $this->set($name, HasMany::CLASS, $foreignMapperClass);
-    }
-
-    public function belongsTo($name, $foreignMapperClass)
-    {
-        $this->set($name, BelongsTo::CLASS, $foreignMapperClass);
-    }
-
-    public function hasManyThrough($name, $foreignMapperClass, $throughName)
-    {
-        if (! isset($this->relations[$throughName])) {
-            throw new Exception("Relation '$throughName' does not exist");
-        }
-
-        return $this->set(
-            $name,
-            HasManyThrough::CLASS,
-            $foreignMapperClass,
-            $throughName
-        );
-    }
-
     public function set($name, $relationClass, $foreignMapperClass, $throughName = null)
     {
         if (! class_exists($foreignMapperClass)) {
             throw new Exception("$foreignMapperClass does not exist");
+        }
+
+        if ($throughName && ! isset($this->relations[$throughName])) {
+            throw new Exception("Relation '$throughName' does not exist");
         }
 
         $relation = $this->newRelation($name, $relationClass, $foreignMapperClass, $throughName);

@@ -6,8 +6,8 @@ use Atlas\Mapper\Mapper;
 
 class SummaryMapper extends Mapper
 {
-    protected function setRelations()
+    protected function setMapperRelations()
     {
-        $this->relations->hasOne('thread', ThreadMapper::CLASS);
+        $this->hasOne('thread', ThreadMapper::CLASS);
     }
 }
