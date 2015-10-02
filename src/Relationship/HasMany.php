@@ -2,45 +2,41 @@
 namespace Atlas\Relationship;
 
 use Atlas\Mapper\Related;
-use Atlas\Mapper\RelatedSet;
-use Atlas\Table\Row;
-use Atlas\Table\RowSet;
+use Atlas\Mapper\Record;
+use Atlas\Mapper\RecordSet;
 
 class HasMany extends AbstractRelationship
 {
-    public function fetchForRow(
-        Row $nativeRow,
-        Related $related,
+    public function stitchIntoRecord(
+        Record $nativeRecord,
         callable $custom = null
     ) {
         $this->fix();
-        $foreignVal = $nativeRow->{$this->nativeCol};
+        $foreignVal = $nativeRecord->{$this->nativeCol};
         $foreignRecordSet = $this->foreignSelect($foreignVal, $custom)->fetchRecordSet();
-        $related->{$this->name} = $foreignRecordSet;
+        $nativeRecord->{$this->name} = $foreignRecordSet;
     }
 
-    public function fetchForRowSet(
-        RowSet $nativeRowSet,
-        RelatedSet $relatedSet,
+    public function stitchIntoRecordSet(
+        RecordSet $nativeRecordSet,
         callable $custom = null
     ) {
         $this->fix();
 
-        $foreignVals = $this->getUniqueVals($nativeRowSet, $this->nativeCol);
+        $foreignVals = $this->getUniqueVals($nativeRecordSet, $this->nativeCol);
         $foreignRecordSets = $this->groupRecordSets(
             $this->foreignSelect($foreignVals, $custom)->fetchRecordSet(),
             $this->foreignCol
         );
 
-        foreach ($nativeRowSet as $nativeRow) {
-            $key = $nativeRow->{$this->nativeCol};
+        foreach ($nativeRecordSet as $nativeRecord) {
+            $key = $nativeRecord->{$this->nativeCol};
             if (isset($foreignRecordSets[$key])) {
                 $foreignRecordSet = $foreignRecordSets[$key];
             } else {
                 $foreignRecordSet = $this->getMissing();
             }
-            $related = $relatedSet->get($nativeRow->getPrimaryVal());
-            $related->{$this->name} = $foreignRecordSet;
+            $nativeRecord->{$this->name} = $foreignRecordSet;
         }
     }
 

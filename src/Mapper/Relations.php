@@ -27,7 +27,11 @@ class Relations
 
     public function getDefinitions()
     {
-        return $this->relations;
+        $defs = [];
+        foreach ($this->relations as $name => $relation) {
+            $defs[$name] = null;
+        }
+        return $defs;
     }
 
     public function hasOne($name, $foreignMapperClass)
@@ -81,30 +85,24 @@ class Relations
         );
     }
 
-    public function fetchForRow(Row $row, array $with = [])
+    public function stitchIntoRecord(Record $record, array $with = [])
     {
-        $related = $this->newRelated();
         foreach ($this->fixWith($with) as $name => $custom) {
-            $this->relations[$name]->fetchForRow(
-                $row,
-                $related,
+            $this->relations[$name]->stitchIntoRecord(
+                $record,
                 $custom
             );
         }
-        return $related;
     }
 
-    public function fetchForRowSet(RowSet $rowSet, array $with = [])
+    public function stitchIntoRecordSet(RecordSet $recordSet, array $with = [])
     {
-        $relatedSet = $this->newRelatedSet($rowSet);
         foreach ($this->fixWith($with) as $name => $custom) {
-            $this->relations[$name]->fetchForRowSet(
-                $rowSet,
-                $relatedSet,
+            $this->relations[$name]->stitchIntoRecordSet(
+                $recordSet,
                 $custom
             );
         }
-        return $relatedSet;
     }
 
     protected function fixWith($spec)
@@ -118,19 +116,5 @@ class Relations
             }
         }
         return $with;
-    }
-
-    protected function newRelated()
-    {
-        return new Related();
-    }
-
-    protected function newRelatedSet(RowSet $rowSet)
-    {
-        $relateds = [];
-        foreach ($rowSet as $row) {
-            $relateds[$row->getPrimaryVal()] = $this->newRelated();
-        }
-        return new RelatedSet($relateds);
     }
 }

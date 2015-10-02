@@ -34,6 +34,9 @@ class Related
     {
         $array = [];
         foreach ($this->foreign as $name => $foreign) {
+            if ($foreign === null) {
+                continue;
+            }
             $array[$name] = $foreign;
             if ($foreign) {
                 $array[$name] = $foreign->getArrayCopy();

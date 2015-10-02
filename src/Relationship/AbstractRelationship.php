@@ -3,10 +3,9 @@ namespace Atlas\Relationship;
 
 use Atlas\Mapper\Mapper;
 use Atlas\Mapper\MapperLocator;
-use Atlas\Table\Row;
-use Atlas\Table\RowSet;
+use Atlas\Mapper\Record;
+use Atlas\Mapper\RecordSet;
 use Atlas\Mapper\Related;
-use Atlas\Mapper\RelatedSet;
 
 abstract class AbstractRelationship
 {
@@ -159,15 +158,13 @@ abstract class AbstractRelationship
 
     abstract protected function getMissing();
 
-    abstract public function fetchForRow(
-        Row $nativeRow,
-        Related $related,
+    abstract public function stitchIntoRecord(
+        Record $nativeRecord,
         callable $custom = null
     );
 
-    abstract public function fetchForRowSet(
-        RowSet $nativeRow,
-        RelatedSet $relatedSet,
+    abstract public function stitchIntoRecordSet(
+        RecordSet $nativeRecord,
         callable $custom = null
     );
 }

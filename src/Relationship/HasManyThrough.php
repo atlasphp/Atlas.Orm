@@ -3,9 +3,8 @@ namespace Atlas\Relationship;
 
 use Atlas\Exception;
 use Atlas\Mapper\Related;
-use Atlas\Mapper\RelatedSet;
-use Atlas\Table\Row;
-use Atlas\Table\RowSet;
+use Atlas\Mapper\Record;
+use Atlas\Mapper\RecordSet;
 
 class HasManyThrough extends AbstractRelationship
 {
@@ -48,46 +47,40 @@ class HasManyThrough extends AbstractRelationship
         $this->foreignCol = $this->foreignMapper->getTable()->getPrimary();
     }
 
-    public function fetchForRow(
-        Row $nativeRow,
-        Related $related,
+    public function stitchIntoRecord(
+        Record $nativeRecord,
         callable $custom = null
     ) {
         $this->fix();
 
         // make sure the "through" relation is loaded already
-        if (! isset($related->{$this->throughName})) {
+        if (! isset($nativeRecord->{$this->throughName})) {
             throw new Exception("Cannot fetch '{$this->name}' relation without '{$this->throughName}' relation");
         }
 
-        $throughRecordSet = $related->{$this->throughName};
+        $throughRecordSet = $nativeRecord->{$this->throughName};
         $foreignVals = $this->getUniqueVals($throughRecordSet, $this->throughForeignCol);
         $foreignRecordSet = $this->foreignSelect($foreignVals, $custom)->fetchRecordSet();
-        $related->{$this->name} = $foreignRecordSet;
+        $nativeRecord->{$this->name} = $foreignRecordSet;
     }
 
-    public function fetchForRowSet(
-        RowSet $nativeRowSet,
-        RelatedSet $relatedSet,
+    public function stitchIntoRecordSet(
+        RecordSet $nativeRecordSet,
         callable $custom = null
     ) {
         $this->fix();
 
-        // this hackish in two ways:
-        // 1. the "through" relation should be loaded for everything, so if even
-        // one is loaded, then all the others ought to have been loaded too.
-        // 2. reset() returns the array from the ArrayIterator. weird.
-        $array = reset($nativeRowSet);
-        $primary = $array[0]->getPrimaryVal();
-        $related = $relatedSet->get($primary);
-        if (! isset($related->{$this->throughName})) {
+        // this hackish. the "through" relation should be loaded for everything,
+        // so if even one is loaded, all the others ought to have been too.
+        $firstNative = $nativeRecordSet[0];
+        $firstThrough = $firstNative->{$this->throughName};
+        if ($firstThrough === null) {
             throw new Exception("Cannot fetch '{$this->name}' relation without '{$this->throughName}' relation");
         }
 
         $foreignVals = [];
-        foreach ($nativeRowSet as $nativeRow) {
-            $primaryVal = $nativeRow->getPrimaryVal();
-            $throughRecordSet = $relatedSet->get($primaryVal)->{$this->throughName};
+        foreach ($nativeRecordSet as $nativeRecord) {
+            $throughRecordSet = $nativeRecord->{$this->throughName};
             $foreignVals = array_merge(
                 $foreignVals,
                 $this->getUniqueVals($throughRecordSet, $this->throughForeignCol)
@@ -97,12 +90,10 @@ class HasManyThrough extends AbstractRelationship
 
         $foreignRecordSet = $this->foreignSelect($foreignVals, $custom)->fetchRecordSet();
 
-        foreach ($nativeRowSet as $nativeRow) {
-            $primaryVal = $nativeRow->getPrimaryVal();
-            $related = $relatedSet->get($primaryVal);
-            $throughRecordSet = $related->{$this->throughName};
+        foreach ($nativeRecordSet as $nativeRecord) {
+            $throughRecordSet = $nativeRecord->{$this->throughName};
             $vals = $this->getUniqueVals($throughRecordSet, $this->throughForeignCol);
-            $related->{$this->name} = $this->extractRecordSet(
+            $nativeRecord->{$this->name} = $this->extractRecordSet(
                 $foreignRecordSet,
                 $this->foreignCol,
                 $vals
@@ -113,7 +104,7 @@ class HasManyThrough extends AbstractRelationship
     protected function extractRecordSet($recordSet, $field, $vals)
     {
         $vals = (array) $vals;
-        $extracted = $this->foreignMapper->newRecordSet([]);
+        $extracted = $this->foreignMapper->newRecordSet();
         foreach ($recordSet as $record) {
             if (in_array($record->$field, $vals)) {
                 $extracted[] = $record;
