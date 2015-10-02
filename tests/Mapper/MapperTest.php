@@ -9,10 +9,12 @@ use Atlas\Mapper\RecordFactory;
 use Atlas\Mapper\MapperRelations;
 use Atlas\SqliteFixture;
 use Atlas\Table\IdentityMap;
+use Atlas\Table\Row;
 use Atlas\Table\RowFilter;
 use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\QueryFactory;
+use InvalidArgumentException;
 
 class MapperTest extends \PHPUnit_Framework_TestCase
 {
@@ -306,6 +308,14 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         // try to insert again, should fail on unique name
         $this->silenceErrors();
         $this->assertFalse($this->mapper->insert($record));
+
+        // try to insert a record of the wrong type
+        $record = new Record(new Row([], 'id'), new Related([]));
+        $this->setExpectedException(
+            InvalidArgumentException::CLASS,
+            "Expected Atlas\Fake\Employee\EmployeeRecord, got Atlas\Mapper\Record instead"
+        );
+        $this->mapper->insert($record);
     }
 
     public function testUpdate()
@@ -336,6 +346,14 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->mapper->delete($record));
         $record->name = 'Foo';
         $this->assertFalse($this->mapper->update($record));
+
+        // try to update a record of the wrong type
+        $record = new Record(new Row([], 'id'), new Related([]));
+        $this->setExpectedException(
+            InvalidArgumentException::CLASS,
+            "Expected Atlas\Fake\Employee\EmployeeRecord, got Atlas\Mapper\Record instead"
+        );
+        $this->mapper->update($record);
     }
 
     public function testDelete()
@@ -349,9 +367,18 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($actual);
 
         // do we still have everything else?
-        $actual = $this->mapper->select()->where('id > 0')->fetchRecordSet();
+        $select = $this->mapper->select()->cols(['id'])->where('id > 0');
+        $actual = $select->getTableSelect()->fetchAll();
         $expect = 11;
         $this->assertEquals($expect, count($actual));
+
+        // try to update a record of the wrong type
+        $record = new Record(new Row([], 'id'), new Related([]));
+        $this->setExpectedException(
+            InvalidArgumentException::CLASS,
+            "Expected Atlas\Fake\Employee\EmployeeRecord, got Atlas\Mapper\Record instead"
+        );
+        $this->mapper->delete($record);
     }
 
     protected function silenceErrors()

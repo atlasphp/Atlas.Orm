@@ -36,17 +36,9 @@ class Mapper
 
         // Foo\Bar\BazMapper -> Foo\Bar\Baz
         $type = substr(get_class($this), 0, -6);
-
         $this->recordClass = "{$type}Record";
-        if (! class_exists($this->recordClass)) {
-            throw new Exception("{$this->recordClass} does not exist");
-        }
-
         $this->recordSetClass = "{$type}RecordSet";
-        if (! class_exists($this->recordSetClass)) {
-            throw new Exception("{$this->recordSetClass} does not exist");
-        }
-
+        
         $this->setMapperRelations();
     }
 

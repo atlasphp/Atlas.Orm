@@ -5,6 +5,7 @@ use ArrayAccess;
 use ArrayIterator;
 use Countable;
 use IteratorAggregate;
+use InvalidArgumentException;
 
 class RecordSet implements ArrayAccess, Countable, IteratorAggregate
 {
@@ -33,8 +34,7 @@ class RecordSet implements ArrayAccess, Countable, IteratorAggregate
     public function offsetSet($offset, $value)
     {
         if (! $value instanceof $this->recordClass) {
-            $actual = get_class($value);
-            throw new InvalidArgumentException("Expected {$this->recordClass}, got {$actual} instead");
+            throw new InvalidArgumentException("Expected object of type {$this->recordClass}");
         }
 
         if ($offset === null) {
