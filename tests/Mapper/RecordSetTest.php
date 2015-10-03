@@ -47,8 +47,10 @@ class RecordSetTest extends \PHPUnit_Framework_TestCase
 
     public function testOffsetUnset()
     {
+        $this->assertFalse($this->recordSet->isEmpty());
         $this->assertTrue(isset($this->recordSet[0]));
         unset($this->recordSet[0]);
         $this->assertFalse(isset($this->recordSet[0]));
+        $this->assertTrue($this->recordSet->isEmpty());
     }
 }

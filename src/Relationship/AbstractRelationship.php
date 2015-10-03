@@ -17,13 +17,13 @@ abstract class AbstractRelationship
     protected $nativeMapper;
 
     protected $foreignMapperClass;
-    protected $forignMapper;
+    protected $foreignMapper;
 
     protected $nativeCol;
+    protected $throughName;
     protected $throughNativeCol;
     protected $throughForeignCol;
     protected $foreignCol;
-    protected $foreignClass;
 
     protected $fixed = false;
 
@@ -39,6 +39,17 @@ abstract class AbstractRelationship
         $this->name = $name;
         $this->foreignMapperClass = $foreignMapperClass;
         $this->throughName = $throughName;
+    }
+
+    public function getSettings()
+    {
+        $settings = get_object_vars($this);
+        unset($settings['fixed']);
+        unset($settings['mapperLocator']);
+        unset($settings['nativeMapper']);
+        unset($settings['foreignMapping']);
+        unset($settings['mapperLocator']);
+        return $settings;
     }
 
     public function nativeCol($nativeCol)
@@ -105,11 +116,11 @@ abstract class AbstractRelationship
         return $select;
     }
 
-    protected function getUniqueVals($set, $col)
+    protected function getUniqueVals(RecordSet $recordSet, $col)
     {
         $vals = [];
-        foreach ($set as $item) {
-            $vals[] = $item->$col;
+        foreach ($recordSet as $record) {
+            $vals[] = $record->$col;
         }
         return array_unique($vals);
     }
