@@ -29,9 +29,6 @@ class AtlasContainer
 
     public function getAtlas()
     {
-        if (! $this->atlas) {
-            $this->atlas = new Atlas($this->mapperLocator);
-        }
         return $this->atlas;
     }
 
@@ -49,28 +46,10 @@ class AtlasContainer
     {
         return $this->mapperLocator;
     }
-    
+
     public function getTable($tableClass)
     {
         return $this->tableLocator->get($tableClass);
-    }
-
-    public function setFactoryFor($class, callable $callable)
-    {
-        $this->factories[$class] = $callable;
-    }
-
-    public function invokeFactoryFor($class)
-    {
-        if (isset($this->factories[$class])) {
-            $factory = $this->factories[$class];
-        } else {
-            $factory = function () use ($class) {
-                return new $class();
-            };
-        }
-
-        return $factory();
     }
 
     public function setDefaultConnection(callable $callable)
@@ -120,6 +99,21 @@ class AtlasContainer
                 $this->setMapper($key, $val);
             }
         }
+    }
+
+    public function setFactoryFor($class, callable $callable)
+    {
+        $this->factories[$class] = $callable;
+    }
+
+    public function newInstance($class)
+    {
+        if (isset($this->factories[$class])) {
+            $factory = $this->factories[$class];
+            return $factory();
+        }
+
+        return new $class();
     }
 
     public function newMapperFactory($mapperClass, $tableClass)
