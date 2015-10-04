@@ -2,10 +2,10 @@
 namespace Atlas\Mapper;
 
 use Atlas\Exception;
-use Atlas\Relationship\BelongsTo;
-use Atlas\Relationship\HasMany;
-use Atlas\Relationship\HasManyThrough;
-use Atlas\Relationship\HasOne;
+use Atlas\Relation\BelongsTo;
+use Atlas\Relation\HasMany;
+use Atlas\Relation\HasManyThrough;
+use Atlas\Relation\HasOne;
 use Atlas\Table\Row;
 use Atlas\Table\RowSet;
 use Atlas\Table\Table;
@@ -38,7 +38,7 @@ class Mapper
         $type = substr(get_class($this), 0, -6);
         $this->recordClass = "{$type}Record";
         $this->recordSetClass = "{$type}RecordSet";
-        
+
         $this->setMapperRelations();
     }
 

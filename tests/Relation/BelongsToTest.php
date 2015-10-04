@@ -1,10 +1,10 @@
 <?php
-namespace Atlas\Relationship;
+namespace Atlas\Relation;
 
 use Atlas\Fake\Author\AuthorMapper;
 use Atlas\Fake\Thread\ThreadMapper;
 
-class BelongsToTest extends AbstractRelationshipTest
+class BelongsToTest extends AbstractRelationTest
 {
     public function testCustomSettings()
     {

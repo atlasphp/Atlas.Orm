@@ -1,5 +1,5 @@
 <?php
-namespace Atlas\Relationship;
+namespace Atlas\Relation;
 
 use Atlas\Mapper\Mapper;
 use Atlas\Mapper\MapperLocator;
@@ -7,7 +7,7 @@ use Atlas\Mapper\Record;
 use Atlas\Mapper\RecordSet;
 use Atlas\Mapper\Related;
 
-abstract class AbstractRelationship
+abstract class AbstractRelation
 {
     protected $mapperLocator;
 

@@ -6,7 +6,7 @@ use Atlas\Fake\Employee\EmployeeMapper;
 use Atlas\Fake\Employee\EmployeeRecord;
 use Atlas\Fake\Employee\EmployeeRecordSet;
 use Atlas\Fake\Employee\EmployeeRow;
-use Atlas\Relationship\HasManyThrough;
+use Atlas\Relation\HasManyThrough;
 
 class MapperRelationsTest extends \PHPUnit_Framework_TestCase
 {

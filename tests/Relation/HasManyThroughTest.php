@@ -1,12 +1,12 @@
 <?php
-namespace Atlas\Relationship;
+namespace Atlas\Relation;
 
 use Atlas\Exception;
 use Atlas\Fake\Tag\TagMapper;
 use Atlas\Fake\Tagging\TaggingMapper;
 use Atlas\Fake\Thread\ThreadMapper;
 
-class HasManyThroughTest extends AbstractRelationshipTest
+class HasManyThroughTest extends AbstractRelationTest
 {
     public function testCustomSettings()
     {
@@ -53,7 +53,7 @@ class HasManyThroughTest extends AbstractRelationshipTest
         );
 
         $thread = $this->mapperLocator->get(ThreadMapper::CLASS)->newRecord([]);
-        
+
         $this->setExpectedException(
             Exception::CLASS,
             "Cannot fetch 'tags' relation without 'taggings'"

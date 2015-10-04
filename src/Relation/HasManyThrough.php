@@ -1,12 +1,12 @@
 <?php
-namespace Atlas\Relationship;
+namespace Atlas\Relation;
 
 use Atlas\Exception;
 use Atlas\Mapper\Related;
 use Atlas\Mapper\Record;
 use Atlas\Mapper\RecordSet;
 
-class HasManyThrough extends AbstractRelationship
+class HasManyThrough extends AbstractRelation
 {
     public function throughNativeCol($throughNativeCol)
     {

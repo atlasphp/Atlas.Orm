@@ -1,11 +1,11 @@
 <?php
-namespace Atlas\Relationship;
+namespace Atlas\Relation;
 
 use Atlas\Mapper\Related;
 use Atlas\Mapper\Record;
 use Atlas\Mapper\RecordSet;
 
-class HasMany extends AbstractRelationship
+class HasOne extends AbstractRelation
 {
     public function stitchIntoRecord(
         Record $nativeRecord,
@@ -13,8 +13,8 @@ class HasMany extends AbstractRelationship
     ) {
         $this->fix();
         $foreignVal = $nativeRecord->{$this->nativeCol};
-        $foreignRecordSet = $this->foreignSelect($foreignVal, $custom)->fetchRecordSet();
-        $nativeRecord->{$this->name} = $foreignRecordSet;
+        $foreignRecord = $this->foreignSelect($foreignVal, $custom)->fetchRecord();
+        $nativeRecord->{$this->name} = $foreignRecord;
     }
 
     public function stitchIntoRecordSet(
@@ -24,18 +24,18 @@ class HasMany extends AbstractRelationship
         $this->fix();
 
         $foreignVals = $this->getUniqueVals($nativeRecordSet, $this->nativeCol);
-        $foreignRecordSets = $this->groupRecordSets(
+        $foreignRecords = $this->groupRecordSets(
             $this->foreignSelect($foreignVals, $custom)->fetchRecordSet(),
             $this->foreignCol
         );
 
         foreach ($nativeRecordSet as $nativeRecord) {
-            $foreignRecordSet = [];
+            $foreignRecord = false;
             $key = $nativeRecord->{$this->nativeCol};
-            if (isset($foreignRecordSets[$key])) {
-                $foreignRecordSet = $foreignRecordSets[$key];
+            if (isset($foreignRecords[$key])) {
+                $foreignRecord = $foreignRecords[$key][0];
             }
-            $nativeRecord->{$this->name} = $foreignRecordSet;
+            $nativeRecord->{$this->name} = $foreignRecord;
         }
     }
 }

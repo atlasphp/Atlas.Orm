@@ -1,10 +1,10 @@
 <?php
-namespace Atlas\Relationship;
+namespace Atlas\Relation;
 
 use Atlas\Fake\Summary\SummaryMapper;
 use Atlas\Fake\Thread\ThreadMapper;
 
-class HasOneTest extends AbstractRelationshipTest
+class HasOneTest extends AbstractRelationTest
 {
     public function testCustomSettings()
     {

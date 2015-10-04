@@ -1,5 +1,5 @@
 <?php
-namespace Atlas\Relationship;
+namespace Atlas\Relation;
 
 use Atlas\AtlasContainer;
 use Atlas\Fake\Author\AuthorMapper;
@@ -13,7 +13,7 @@ use Atlas\Mapper\MapperLocator;
 use Aura\Sql\ExtendedPdo;
 use Atlas\SqliteFixture;
 
-abstract class AbstractRelationshipTest extends \PHPUnit_Framework_TestCase
+abstract class AbstractRelationTest extends \PHPUnit_Framework_TestCase
 {
     protected $mapperLocator;
 
