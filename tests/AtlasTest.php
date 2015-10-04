@@ -14,6 +14,8 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
 {
     protected $atlas;
 
+    // The $expect* properties are at the end, because they are so long
+
     protected function setUp()
     {
         $atlasContainer = new AtlasContainer('sqlite');
@@ -52,7 +54,122 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
             ]
         );
 
-        $expect = [
+        $this->assertSame($this->expectRecord, $actual->getArrayCopy());
+    }
+
+    public function testFetchRecordBy()
+    {
+        $actual = $this->atlas->fetchRecordBy(
+            ThreadMapper::CLASS,
+            ['thread_id' => 1],
+            [
+                'author', // belongsTo
+                'summary', // hasOne
+                'replies' => function ($select) {
+                    $select->with(['author']);
+                }, // hasMany
+                'taggings', // hasMany,
+                'tags', // hasManyThrough
+            ]
+        );
+
+        $this->assertSame($this->expectRecord, $actual->getArrayCopy());
+    }
+
+    public function testFetchRecordSet()
+    {
+        $actual = $this->atlas->fetchRecordSet(
+            ThreadMapper::CLASS,
+            [1, 2, 3],
+            [
+                'author', // belongsTo
+                'summary', // hasOne
+                'replies' => function ($select) {
+                    $select->with(['author']);
+                }, // hasMany
+                'taggings', // hasMany,
+                'tags', // hasManyThrough
+            ]
+        );
+
+
+        $this->assertSame($this->expectRecordSet, $actual->getArrayCopy());
+    }
+
+    public function testFetchRecordSetBy()
+    {
+        $actual = $this->atlas->fetchRecordSetBy(
+            ThreadMapper::CLASS,
+            ['thread_id' => [1, 2, 3]],
+            [
+                'author', // belongsTo
+                'summary', // hasOne
+                'replies' => function ($select) {
+                    $select->with(['author']);
+                }, // hasMany
+                'taggings', // hasMany,
+                'tags', // hasManyThrough
+            ]
+        );
+
+
+        $this->assertSame($this->expectRecordSet, $actual->getArrayCopy());
+    }
+
+    public function testSelect_fetchRecord()
+    {
+        $actual = $this->atlas
+            ->select(ThreadMapper::CLASS)
+            ->where('thread_id < ?', 2)
+            ->with([
+                'author', // belongsTo
+                'summary', // hasOne
+                'replies' => function ($select) {
+                    $select->with(['author']);
+                }, // hasMany
+                'taggings', // hasMany,
+                'tags', // hasManyThrough
+            ])
+            ->fetchRecord();
+
+        $this->assertSame($this->expectRecord, $actual->getArrayCopy());
+    }
+
+    public function testSelect_fetchRecordSet()
+    {
+        $actual = $this->atlas
+            ->select(ThreadMapper::CLASS)
+            ->where('thread_id < ?', 4)
+            ->with([
+                'author', // belongsTo
+                'summary', // hasOne
+                'replies' => function ($select) {
+                    $select->with(['author']);
+                }, // hasMany
+                'taggings', // hasMany,
+                'tags', // hasManyThrough
+            ])
+            ->fetchRecordSet();
+
+        $this->assertSame($this->expectRecordSet, $actual->getArrayCopy());
+    }
+
+    public function testInsert()
+    {
+        $this->markTestIncomplete();
+    }
+
+    public function testUpdate()
+    {
+        $this->markTestIncomplete();
+    }
+
+    public function testDelete()
+    {
+        $this->markTestIncomplete();
+    }
+
+    protected $expectRecord = [
             'thread_id' => '1',
             'author_id' => '1',
             'subject' => 'Thread subject 1',
@@ -170,26 +287,7 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
             ],
         ];
 
-        $this->assertSame($expect, $actual->getArrayCopy());
-    }
-
-    public function testFetchRecordSet()
-    {
-        $actual = $this->atlas->fetchRecordSet(
-            ThreadMapper::CLASS,
-            [1, 2, 3],
-            [
-                'author', // belongsTo
-                'summary', // hasOne
-                'replies' => function ($select) {
-                    $select->with(['author']);
-                }, // hasMany
-                'taggings', // hasMany,
-                'tags', // hasManyThrough
-            ]
-        );
-
-        $expect = [
+        protected $expectRecordSet = [
             0 => [
                 'thread_id' => '1',
                 'author_id' => '1',
@@ -542,7 +640,4 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
                 ],
             ],
         ];
-
-        $this->assertSame($expect, $actual->getArrayCopy());
-    }
 }
