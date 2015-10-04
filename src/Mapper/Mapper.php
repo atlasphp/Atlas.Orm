@@ -67,7 +67,7 @@ class Mapper
     }
 
     // row can be array or Row object
-    public function newRecord($row)
+    public function newRecord($row = [])
     {
         if (is_array($row)) {
             $row = $this->getTable()->newRow($row);

@@ -70,11 +70,14 @@ class HasManyThrough extends AbstractRelationship
     ) {
         $this->fix();
 
+        if ($nativeRecordSet->isEmpty()) {
+            return;
+        }
+
         // this hackish. the "through" relation should be loaded for everything,
         // so if even one is loaded, all the others ought to have been too.
         $firstNative = $nativeRecordSet[0];
-        $firstThrough = $firstNative->{$this->throughName};
-        if ($firstThrough === null) {
+        if (! isset($firstNative->{$this->throughName})) {
             throw new Exception("Cannot fetch '{$this->name}' relation without '{$this->throughName}' relation");
         }
 
