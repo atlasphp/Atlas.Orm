@@ -1,6 +1,6 @@
-Isset:
-
-    Make isset() work more like expected on Record/Row. Use has() to see if the col or field actually exists.
+Row:
+    If should *know* what its primary col is. No need to pass it in. This means
+    the skeleton generator will need it in the template.
 
 Factories:
 
@@ -19,8 +19,6 @@ Record:
     Add a RecordInterface (and a RecordSet interface?) so that Domain objects can typehint against the interface, and not necessarily an actual record. Maybe also add a <Type>RecordInterface class that extends RecordInterface, and have <Type>Record implement it.
 
 Relationships:
-
-    More tests for when relationships are missing.
 
     Have each Record and RecordSet note the record it "belongs to" and the foreign key mapping?
 
