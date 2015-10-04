@@ -156,7 +156,34 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
 
     public function testInsert()
     {
-        $this->markTestIncomplete();
+        // create a new record
+        $author = $this->atlas->mapper(AuthorMapper::CLASS)->newRecord();
+        $author->name = 'Mona';
+
+        // does the insert *look* successful?
+        $success = $this->atlas->insert($author);
+        $this->assertTrue($success);
+
+        // did the autoincrement ID get retained?
+        $this->assertEquals(13, $author->author_id);
+
+        // did it save in the identity map?
+        $again = $this->atlas->fetchRecord(AuthorMapper::CLASS, 13);
+        $this->assertSame($author->getRow(), $again->getRow());
+
+        // was it *actually* inserted?
+        $expect = [
+            'author_id' => '13',
+            'name' => 'Mona',
+        ];
+        $actual = $this->atlas
+            ->mapper(AuthorMapper::CLASS)
+            ->getTable()
+            ->getReadConnection()
+            ->fetchOne(
+                'SELECT * FROM authors WHERE author_id = 13'
+            );
+        $this->assertSame($expect, $actual);
     }
 
     public function testUpdate()
