@@ -43,11 +43,12 @@ abstract class AbstractRelationship
 
     public function getSettings()
     {
+        $this->fix();
         $settings = get_object_vars($this);
         unset($settings['fixed']);
         unset($settings['mapperLocator']);
         unset($settings['nativeMapper']);
-        unset($settings['foreignMapping']);
+        unset($settings['foreignMapper']);
         unset($settings['mapperLocator']);
         return $settings;
     }
@@ -87,7 +88,7 @@ abstract class AbstractRelationship
             return;
         }
 
-        $this->nativeCol = $this->nativeMapper->getTable()->getPrimary();
+        $this->nativeCol($this->nativeMapper->getTable()->getPrimary());
     }
 
     protected function fixForeignCol()
@@ -96,7 +97,7 @@ abstract class AbstractRelationship
             return;
         }
 
-        $this->foreignCol = $this->nativeMapper->getTable()->getPrimary();
+        $this->foreignCol($this->nativeMapper->getTable()->getPrimary());
     }
 
     protected function fixThroughNativeCol()

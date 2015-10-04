@@ -27,26 +27,19 @@ class Row
 
     public function __get($col)
     {
-        if (! array_key_exists($col, $this->cols)) {
-            $class = get_class($this);
-            throw new Exception("{$class}->{$col} does not exist");
-        }
-
+        $this->assertHas($col);
         return $this->cols[$col];
     }
 
     public function __set($col, $val)
     {
-        if (! array_key_exists($col, $this->cols)) {
-            $class = get_class($this);
-            throw new Exception("{$class}->{$col} does not exist");
-        }
+        $this->assertHas($col);
 
         $setPrimary = $col == $this->primaryCol
                    && $this->cols[$this->primaryCol] !== null;
         if ($setPrimary) {
             $class = get_class($this);
-            throw new Exception("{$class}->{$col} is immutable");
+            throw new Exception("{$class}::\${$col} is immutable");
         }
 
         $this->cols[$col] = $val;
@@ -54,26 +47,37 @@ class Row
 
     public function __isset($col)
     {
-        return array_key_exists($col, $this->cols);
+        $this->assertHas($col);
+        return isset($this->cols[$col]);
     }
 
     public function __unset($col)
     {
-        if (! array_key_exists($col, $this->cols)) {
-            $class = get_class($this);
-            throw new Exception("{$class}->{$col} does not exist");
-        }
+        $this->assertHas($col);
 
         $unsetPrimary = $col == $this->primaryCol
                      && $this->cols[$this->primaryCol] !== null;
         if ($unsetPrimary) {
             $class = get_class($this);
-            throw new Exception("{$class}->{$col} is immutable");
+            throw new Exception("{$class}::\${$col} is immutable");
         }
 
         $this->cols[$col] = null;
     }
 
+    protected function assertHas($col)
+    {
+        if (! $this->has($col)) {
+            $class = get_class($this);
+            throw new Exception("{$class}::\${$col} does not exist");
+        }
+    }
+
+    public function has($col)
+    {
+        return array_key_exists($col, $this->cols);
+    }
+    
     public function init()
     {
         $this->init = $this->cols;

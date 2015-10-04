@@ -1,6 +1,7 @@
 <?php
 namespace Atlas\Mapper;
 
+use Atlas\Exception;
 use Atlas\Table\Row;
 
 class RecordTest extends \PHPUnit_Framework_TestCase
@@ -49,7 +50,7 @@ class RecordTest extends \PHPUnit_Framework_TestCase
         // missing
         $this->setExpectedException(
             'Atlas\Exception',
-            'Atlas\Mapper\Record->noSuchField does not exist'
+            'Atlas\Mapper\Record::$noSuchField does not exist'
         );
         $this->record->noSuchField;
     }
@@ -68,7 +69,7 @@ class RecordTest extends \PHPUnit_Framework_TestCase
         // missing
         $this->setExpectedException(
             'Atlas\Exception',
-            'Atlas\Mapper\Record->noSuchField does not exist'
+            'Atlas\Mapper\Record::$noSuchField does not exist'
         );
         $this->record->noSuchField = 'missing';
     }
@@ -82,7 +83,11 @@ class RecordTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(isset($this->record->zim));
 
         // missing
-        $this->assertFalse(isset($this->record->noSuchField));
+        $this->setExpectedException(
+            'Atlas\Exception',
+            'Atlas\Mapper\Record::$noSuchField does not exist'
+        );
+        isset($this->record->noSuchField);
     }
 
     public function test__unset()
@@ -99,8 +104,20 @@ class RecordTest extends \PHPUnit_Framework_TestCase
         // missing
         $this->setExpectedException(
             'Atlas\Exception',
-            'Atlas\Mapper\Record->noSuchField does not exist'
+            'Atlas\Mapper\Record::$noSuchField does not exist'
         );
         unset($this->record->noSuchField);
+    }
+
+    public function testHas()
+    {
+        // row
+        $this->assertTrue($this->record->has('foo'));
+
+        // related
+        $this->assertTrue($this->record->has('zim'));
+
+        // missing
+        $this->assertFalse($this->record->has('noSuchField'));
     }
 }

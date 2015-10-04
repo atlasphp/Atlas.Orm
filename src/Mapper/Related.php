@@ -22,7 +22,7 @@ class Related
 
     public function __isset($name)
     {
-        return array_key_exists($name, $this->foreign);
+        return isset($this->foreign[$name]);
     }
 
     public function __unset($name)
@@ -30,6 +30,11 @@ class Related
         $this->foreign[$name] = null;
     }
 
+    public function has($name)
+    {
+        return array_key_exists($name, $this->foreign);
+    }
+    
     public function getArrayCopy()
     {
         $array = [];

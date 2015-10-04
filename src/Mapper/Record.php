@@ -23,52 +23,68 @@ class Record
 
     public function __get($field)
     {
-        if (isset($this->row->$field)) {
+        if ($this->row->has($field)) {
             return $this->row->$field;
         }
 
-        if (! isset($this->related->$field)) {
-            $class = get_class($this);
-            throw new Exception("{$class}->{$field} does not exist");
+        if ($this->related->has($field)) {
+            return $this->related->$field;
         }
 
-        return $this->related->$field;
+        $class = get_class($this);
+        throw new Exception("{$class}::\${$field} does not exist");
     }
 
     public function __set($field, $value)
     {
-        if (isset($this->row->$field)) {
+        if ($this->row->has($field)) {
             $this->row->$field = $value;
             return;
         }
 
-        if (! isset($this->related->$field)) {
-            $class = get_class($this);
-            throw new Exception("{$class}->{$field} does not exist");
+        if ($this->related->has($field)) {
+            $this->related->$field = $value;
+            return;
         }
 
-        $this->related->$field = $value;
+        $class = get_class($this);
+        throw new Exception("{$class}::\${$field} does not exist");
     }
 
     public function __isset($field)
     {
-        return isset($this->row->$field)
-            || isset($this->related->$field);
+        if ($this->row->has($field)) {
+            return isset($this->row->$field);
+        }
+
+        if ($this->related->has($field)) {
+            return isset($this->related->$field);
+        }
+
+        $class = get_class($this);
+        throw new Exception("{$class}::\${$field} does not exist");
     }
 
     public function __unset($field)
     {
-        if (isset($this->row->$field)) {
+        if ($this->row->has($field)) {
             unset($this->row->$field);
             return;
         }
 
-        if (! isset($this->related->$field)) {
-            $class = get_class($this);
-            throw new Exception("{$class}->{$field} does not exist");
+        if ($this->related->has($field)) {
+            unset($this->related->$field);
+            return;
         }
 
-        unset($this->related->$field);
+        $class = get_class($this);
+        throw new Exception("{$class}::\${$field} does not exist");
+    }
+
+    public function has($field)
+    {
+        return $this->row->has($field)
+            || $this->related->has($field);
     }
 
     public function getRow()

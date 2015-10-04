@@ -34,9 +34,10 @@ class RowTest extends \PHPUnit_Framework_TestCase
 
     public function testIsset()
     {
-        $row = new Row(['id' => 1], 'id');
+        $row = new Row([], 'id');
+        $this->assertFalse(isset($row->id));
+        $row->id = 1;
         $this->assertTrue(isset($row->id));
-        $this->assertFalse(isset($row->no_such_col));
     }
 
     public function testUnset()

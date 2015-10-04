@@ -45,6 +45,11 @@ class AtlasContainer
         return $this->queryFactory;
     }
 
+    public function getMapperLocator()
+    {
+        return $this->mapperLocator;
+    }
+    
     public function getTable($tableClass)
     {
         return $this->tableLocator->get($tableClass);
