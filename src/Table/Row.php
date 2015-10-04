@@ -10,16 +10,16 @@ use Atlas\Exception;
 class Row
 {
     protected $init = []; // initial data
-    protected $cols = []; // current data, including default values
+    protected $data = []; // current data, including default values
     protected $primaryCol; // primary column
 
-    public function __construct(array $cols, $primaryCol)
+    public function __construct(array $data, $primaryCol)
     {
-        $this->cols = array_merge($this->cols, $cols);
+        $this->data = array_merge($this->data, $data);
         $this->primaryCol = $primaryCol;
 
-        if (! array_key_exists($this->primaryCol, $this->cols)) {
-            $this->cols[$this->primaryCol] = null;
+        if (! array_key_exists($this->primaryCol, $this->data)) {
+            $this->data[$this->primaryCol] = null;
         }
 
         $this->init();
@@ -28,7 +28,7 @@ class Row
     public function __get($col)
     {
         $this->assertHas($col);
-        return $this->cols[$col];
+        return $this->data[$col];
     }
 
     public function __set($col, $val)
@@ -36,19 +36,19 @@ class Row
         $this->assertHas($col);
 
         $setPrimary = $col == $this->primaryCol
-                   && $this->cols[$this->primaryCol] !== null;
+                   && $this->data[$this->primaryCol] !== null;
         if ($setPrimary) {
             $class = get_class($this);
             throw new Exception("{$class}::\${$col} is immutable");
         }
 
-        $this->cols[$col] = $val;
+        $this->data[$col] = $val;
     }
 
     public function __isset($col)
     {
         $this->assertHas($col);
-        return isset($this->cols[$col]);
+        return isset($this->data[$col]);
     }
 
     public function __unset($col)
@@ -56,13 +56,13 @@ class Row
         $this->assertHas($col);
 
         $unsetPrimary = $col == $this->primaryCol
-                     && $this->cols[$this->primaryCol] !== null;
+                     && $this->data[$this->primaryCol] !== null;
         if ($unsetPrimary) {
             $class = get_class($this);
             throw new Exception("{$class}::\${$col} is immutable");
         }
 
-        $this->cols[$col] = null;
+        $this->data[$col] = null;
     }
 
     protected function assertHas($col)
@@ -75,12 +75,12 @@ class Row
 
     public function has($col)
     {
-        return array_key_exists($col, $this->cols);
+        return array_key_exists($col, $this->data);
     }
-    
+
     public function init()
     {
-        $this->init = $this->cols;
+        $this->init = $this->data;
     }
 
     public function getPrimaryCol()
@@ -90,12 +90,12 @@ class Row
 
     public function getPrimaryVal()
     {
-        return $this->cols[$this->primaryCol];
+        return $this->data[$this->primaryCol];
     }
 
     public function getArrayCopy()
     {
-        return $this->cols;
+        return $this->data;
     }
 
     public function getArrayCopyForInsert()
@@ -106,7 +106,7 @@ class Row
     public function getArrayCopyForUpdate()
     {
         $copy = $this->getArrayCopy();
-        foreach ($this->cols as $col => $curr) {
+        foreach ($this->data as $col => $curr) {
             $init = $this->init[$col];
             $same = (is_numeric($curr) && is_numeric($init))
                  ? $curr == $init // numeric, compare loosely
