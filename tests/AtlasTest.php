@@ -188,12 +188,54 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
 
     public function testUpdate()
     {
-        $this->markTestIncomplete();
+        // fetch a record, then modify and update it
+        $author = $this->atlas->fetchRecordBy(
+            AuthorMapper::CLASS,
+            ['name' => 'Anna']
+        );
+        $author->name = 'Annabelle';
+
+        // did the update *look* successful?
+        $success = $this->atlas->update($author);
+        $this->assertTrue($success);
+
+        // is it still in the identity map?
+        $again = $this->atlas->fetchRecordBy(
+            AuthorMapper::CLASS,
+            ['name' => 'Annabelle']
+        );
+        $this->assertSame($author->getRow(), $again->getRow());
+
+        // was it *actually* updated?
+        $expect = $author->getRow()->getArrayCopy();
+        $actual = $this->atlas
+            ->mapper(AuthorMapper::CLASS)
+            ->getTable()
+            ->getReadConnection()
+            ->fetchOne(
+                "SELECT * FROM authors WHERE name = 'Annabelle'"
+            );
+        $this->assertSame($expect, $actual);
+
+        // try to update again, should be a no-op because there are no changes
+        $this->assertNull($this->atlas->update($author));
     }
 
     public function testDelete()
     {
-        $this->markTestIncomplete();
+        // fetch a record, then delete it
+        $author = $this->atlas->fetchRecordBy(
+            AuthorMapper::CLASS,
+            ['name' => 'Anna']
+        );
+        $this->atlas->delete($author);
+
+        // did it delete?
+        $actual = $this->atlas->fetchRecordBy(
+            AuthorMapper::CLASS,
+            ['name' => 'Anna']
+        );
+        $this->assertFalse($actual);
     }
 
     protected $expectRecord = [

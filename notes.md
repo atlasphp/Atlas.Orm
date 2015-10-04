@@ -1,9 +1,9 @@
 Isset:
 
     Make isset() work more like expected on Record/Row. Use has() to see if the col or field actually exists.
-    
+
 Factories:
-    
+
     Extract newRow(), newRowSet(), newRecord(), newRecordSet() to factory objects? Would allow for finer user control over how they get created, and might be future-proofing. Does that mean passing the IdentityMap into it?
 
 Identity Map:
@@ -46,6 +46,7 @@ Skeleton generator:
         --table={tablename}
         --primary={primarycol}
         --autoinc={bool}
+        --cols="foo,bar,baz"
 
     ... to specify pertinent values. It also means different templates for different classes.
 
