@@ -9,25 +9,28 @@ use Atlas\Exception;
  */
 class Row
 {
+    protected $identity;
+
     protected $init = []; // initial data
+
+    // should default data be on the table, not the row?
     protected $data = []; // current data, including default values
-    protected $primaryCol; // primary column
 
-    public function __construct(array $data, $primaryCol)
+    public function __construct(RowIdentity $identity, array $data)
     {
+        $this->identity = $identity;
         $this->data = array_merge($this->data, $data);
-        $this->primaryCol = $primaryCol;
-
-        if (! array_key_exists($this->primaryCol, $this->data)) {
-            $this->data[$this->primaryCol] = null;
-        }
-
         $this->init();
     }
 
     public function __get($col)
     {
         $this->assertHas($col);
+
+        if ($this->identity->has($col)) {
+            return $this->identity->$col;
+        }
+
         return $this->data[$col];
     }
 
@@ -35,11 +38,9 @@ class Row
     {
         $this->assertHas($col);
 
-        $setPrimary = $col == $this->primaryCol
-                   && $this->data[$this->primaryCol] !== null;
-        if ($setPrimary) {
-            $class = get_class($this);
-            throw new Exception("{$class}::\${$col} is immutable");
+        if ($this->identity->has($col)) {
+            $this->identity->$col = $val;
+            return;
         }
 
         $this->data[$col] = $val;
@@ -48,6 +49,11 @@ class Row
     public function __isset($col)
     {
         $this->assertHas($col);
+
+        if ($this->identity->has($col)) {
+            return isset($this->identity->$col);
+        }
+
         return isset($this->data[$col]);
     }
 
@@ -55,11 +61,9 @@ class Row
     {
         $this->assertHas($col);
 
-        $unsetPrimary = $col == $this->primaryCol
-                     && $this->data[$this->primaryCol] !== null;
-        if ($unsetPrimary) {
-            $class = get_class($this);
-            throw new Exception("{$class}::\${$col} is immutable");
+        if ($this->identity->has($col)) {
+            unset($this->identity->$col);
+            return;
         }
 
         $this->data[$col] = null;
@@ -75,27 +79,34 @@ class Row
 
     public function has($col)
     {
-        return array_key_exists($col, $this->data);
+        return array_key_exists($col, $this->data)
+            || $this->identity->has($col);
     }
 
     public function init()
     {
-        $this->init = $this->data;
+        $this->init = array_merge(
+            $this->identity->getPrimary(),
+            $this->data
+        );
     }
 
     public function getPrimaryCol()
     {
-        return $this->primaryCol;
+        return $this->identity->getCol();
     }
 
     public function getPrimaryVal()
     {
-        return $this->data[$this->primaryCol];
+        return $this->identity->getVal();
     }
 
     public function getArrayCopy()
     {
-        return $this->data;
+        return array_merge(
+            $this->identity->getPrimary(),
+            $this->data
+        );
     }
 
     public function getArrayCopyForInsert()
@@ -121,5 +132,10 @@ class Row
     public function getObjectCopy()
     {
         return (object) $this->getArrayCopy();
+    }
+
+    public function getIdentity()
+    {
+        return $this->identity;
     }
 }

@@ -6,6 +6,7 @@ use Atlas\Fake\Employee\EmployeeMapper;
 use Atlas\Fake\Employee\EmployeeRecord;
 use Atlas\Fake\Employee\EmployeeRecordSet;
 use Atlas\Fake\Employee\EmployeeRow;
+use Atlas\Fake\Employee\EmployeeRowIdentity;
 use Atlas\Mapper\Related;
 
 class MapperLocatorTest extends \PHPUnit_Framework_TestCase
@@ -36,8 +37,10 @@ class MapperLocatorTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expect, $this->mapperLocator->get(EmployeeRecord::CLASS));
         $this->assertSame($expect, $this->mapperLocator->get(EmployeeRecordSet::CLASS));
 
-        $object = new EmployeeRecord(new EmployeeRow([], 'id'), new Related([]));
-        $this->assertSame($expect, $this->mapperLocator->get($object));
+        $row = new EmployeeRow(new EmployeeRowIdentity('id', null), []);
+        $related = new Related([]);
+        $record = new EmployeeRecord($row, $related);
+        $this->assertSame($expect, $this->mapperLocator->get($record));
 
         $this->setExpectedException(Exception::CLASS, "Atlas\Fake\Employee not found in locator");
         $this->mapperLocator->get('Atlas\Fake\Employee');
