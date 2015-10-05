@@ -11,7 +11,9 @@ $context = $cli_factory->newContext($GLOBALS);
 $stdio = $cli_factory->newStdio();
 
 // define options and named arguments through getopt
-$options = [];
+$options = [
+    'dir:',
+];
 $getopt = $context->getopt($options);
 
 // do we have a class to create?
@@ -22,7 +24,11 @@ if (! $namespace) {
     exit(Status::USAGE);
 }
 
-$dir = getcwd(). DIRECTORY_SEPARATOR;
+// set the working directory
+$dir = $getopt->get('--dir');
+if (! $dir) {
+    $dir = getcwd(). DIRECTORY_SEPARATOR;
+}
 $stdio->outln("Working in directory '$dir'.");
 
 // repeat the last namespace name as the base class name
