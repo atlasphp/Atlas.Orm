@@ -91,11 +91,6 @@ class Row
         );
     }
 
-    public function getPrimaryCol()
-    {
-        return $this->identity->getCol();
-    }
-
     public function getPrimaryVal()
     {
         return $this->identity->getVal();

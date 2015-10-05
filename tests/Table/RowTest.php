@@ -62,12 +62,6 @@ class RowTest extends \PHPUnit_Framework_TestCase
         unset($row->id);
     }
 
-    public function testGetPrimaryCol()
-    {
-        $row = new Row(new RowIdentity('id', '1'), []);
-        $this->assertSame('id', $row->getPrimaryCol());
-    }
-
     public function testGetObjectCopy()
     {
         $row = new Row(new RowIdentity('id', '1'), ['foo' => 'bar']);
