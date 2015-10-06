@@ -27,8 +27,9 @@ if (! $namespace) {
 // set the working directory
 $dir = $getopt->get('--dir');
 if (! $dir) {
-    $dir = getcwd(). DIRECTORY_SEPARATOR;
+    $dir = getcwd();
 }
+$dir = rtrim($dir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 $stdio->outln("Working in directory '$dir'.");
 
 // repeat the last namespace name as the base class name
@@ -45,7 +46,7 @@ if (is_dir($subdir)) {
         $stdio->outln('FAILED!: $subdir (could not mkdir)');
         exit(Status::CANTCREAT);
     }
-    $stdio->outln('Created: $subdir');
+    $stdio->outln("Created: $subdir");
 }
 $subdir .= DIRECTORY_SEPARATOR;
 
@@ -53,6 +54,7 @@ $subdir .= DIRECTORY_SEPARATOR;
 $typeUses = [
     'Table' => 'Atlas\Table\Table',
     'Row' => 'Atlas\Table\Row',
+    'RowIdentity' => 'Atlas\Table\RowIdentity',
     'RowSet' => 'Atlas\Table\RowSet',
     'RowFilter' => 'Atlas\Table\RowFilter',
     'Mapper' => 'Atlas\Mapper\Mapper',

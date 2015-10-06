@@ -5,12 +5,13 @@ use Atlas\Fake\Auto\AutoMapper;
 use Atlas\Fake\Auto\AutoTable;
 use Atlas\Fake\Employee\EmployeeMapper;
 use Atlas\Fake\Employee\EmployeeTable;
-use Atlas\Mapper\RecordFactory;
 use Atlas\Mapper\MapperRelations;
+use Atlas\Mapper\RecordFactory;
 use Atlas\SqliteFixture;
 use Atlas\Table\IdentityMap;
 use Atlas\Table\Row;
 use Atlas\Table\RowFilter;
+use Atlas\Table\RowIdentity;
 use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\QueryFactory;
@@ -310,7 +311,9 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->mapper->insert($record));
 
         // try to insert a record of the wrong type
-        $record = new Record(new Row([], 'id'), new Related([]));
+        $row = new Row(new RowIdentity('id', null), []);
+        $related = new Related([]);
+        $record = new Record($row, $related);
         $this->setExpectedException(
             InvalidArgumentException::CLASS,
             "Expected Atlas\Fake\Employee\EmployeeRecord, got Atlas\Mapper\Record instead"
@@ -348,7 +351,9 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->mapper->update($record));
 
         // try to update a record of the wrong type
-        $record = new Record(new Row([], 'id'), new Related([]));
+        $row = new Row(new RowIdentity('id', null), []);
+        $related = new Related([]);
+        $record = new Record($row, $related);
         $this->setExpectedException(
             InvalidArgumentException::CLASS,
             "Expected Atlas\Fake\Employee\EmployeeRecord, got Atlas\Mapper\Record instead"
@@ -373,7 +378,9 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expect, count($actual));
 
         // try to update a record of the wrong type
-        $record = new Record(new Row([], 'id'), new Related([]));
+        $row = new Row(new RowIdentity('id', null), []);
+        $related = new Related([]);
+        $record = new Record($row, $related);
         $this->setExpectedException(
             InvalidArgumentException::CLASS,
             "Expected Atlas\Fake\Employee\EmployeeRecord, got Atlas\Mapper\Record instead"

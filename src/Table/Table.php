@@ -77,6 +77,8 @@ class Table
 
     protected $rowSetClass;
 
+    protected $rowIdentityClass;
+
     protected $rowFilter;
 
     protected $identityMap = [];
@@ -109,6 +111,7 @@ class Table
         $this->autoinc = (bool) $this->autoinc;
         $this->rowClass = "{$type}Row";
         $this->rowSetClass = "{$type}RowSet";
+        $this->rowIdentityClass = "{$type}RowIdentity";
     }
 
     public function getTable()
@@ -143,6 +146,11 @@ class Table
     public function getRowClass()
     {
         return $this->rowClass;
+    }
+
+    public function getRowIdentityClass()
+    {
+        return $this->rowIdentityClass;
     }
 
     public function getRowSetClass()
@@ -328,8 +336,22 @@ class Table
 
     public function newRow(array $cols)
     {
+        $rowIdentity = $this->newRowIdentity($cols);
         $rowClass = $this->getRowClass();
-        return new $rowClass($cols, $this->getPrimary());
+        return new $rowClass($rowIdentity, $cols);
+    }
+
+    protected function newRowIdentity(array &$cols)
+    {
+        $primaryCol = $this->getPrimary();
+        $primaryVal = null;
+        if (array_key_exists($primaryCol, $cols)) {
+            $primaryVal = $cols[$primaryCol];
+            unset($cols[$primaryCol]);
+        }
+
+        $rowIdentityClass = $this->getRowIdentityClass();
+        return new $rowIdentityClass($primaryCol, $primaryVal);
     }
 
     public function newRowSet(array $rows)

@@ -3,6 +3,7 @@ namespace Atlas\Mapper;
 
 use Atlas\Exception;
 use Atlas\Table\Row;
+use Atlas\Table\RowIdentity;
 
 class RecordTest extends \PHPUnit_Framework_TestCase
 {
@@ -13,12 +14,11 @@ class RecordTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->row = new Row(
+            new RowIdentity('id', '1'),
             [
-                'id' => '1',
                 'foo' => 'bar',
                 'baz' => 'dib',
-            ],
-            'id'
+            ]
         );
 
         $this->related = new Related([
