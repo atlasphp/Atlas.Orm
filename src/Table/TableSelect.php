@@ -228,7 +228,8 @@ class TableSelect implements SubselectInterface
     protected function getMappedOrNewRow(array $cols)
     {
         $primaryVal = $cols[$this->primaryCol];
-        $row = $this->identityMap->getRowByPrimary($primaryVal);
+        $primaryIdentity = $this->table->getPrimaryIdentity($primaryVal);
+        $row = $this->identityMap->getRowByPrimary($primaryIdentity);
         if (! $row) {
             $row = $this->table->newRow($cols);
             $this->identityMap->set($row);
