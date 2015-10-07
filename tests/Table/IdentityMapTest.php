@@ -17,12 +17,4 @@ class IdentityMapTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('Atlas\Exception');
         $this->identityMap->set($row);
     }
-
-    public function testGetPrimaryVal()
-    {
-        $row = new Row(new RowIdentity(['id' => '1']), []);
-        $this->assertFalse($this->identityMap->getPrimaryVal($row));
-        $this->identityMap->set($row);
-        $this->assertSame('1', $this->identityMap->getPrimaryVal($row));
-    }
 }

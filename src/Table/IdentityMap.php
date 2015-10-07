@@ -9,17 +9,17 @@ class IdentityMap
     /**
      * @var array
      */
-    protected $primaryValToRow;
+    protected $serialToRow;
 
     /**
      * @var SplObjectStorage
      */
-    protected $rowToPrimaryVal;
+    protected $rowToSerial;
 
     public function __construct()
     {
-        $this->rowToPrimaryVal = new SplObjectStorage();
-        $this->primaryValToRow = [];
+        $this->rowToSerial = new SplObjectStorage();
+        $this->serialToRow = [];
     }
 
     /**
@@ -31,9 +31,9 @@ class IdentityMap
             throw new Exception('Row already exists in IdentityMap');
         }
 
-        $primaryVal = $row->getPrimaryVal();
-        $this->primaryValToRow[$primaryVal] = $row;
-        $this->rowToPrimaryVal[$row] = $primaryVal;
+        $serial = $this->getSerial($row->getPrimaryVal());
+        $this->serialToRow[$serial] = $row;
+        $this->rowToSerial[$row] = $serial;
     }
 
     /**
@@ -42,7 +42,7 @@ class IdentityMap
      */
     public function hasRow($row)
     {
-        return isset($this->rowToPrimaryVal[$row]);
+        return isset($this->rowToSerial[$row]);
     }
 
     /**
@@ -51,7 +51,8 @@ class IdentityMap
      */
     public function hasPrimaryVal($primaryVal)
     {
-        return isset($this->primaryValToRow[$primaryVal]);
+        $serial = $this->getSerial($primaryVal);
+        return isset($this->serialToRow[$serial]);
     }
 
     /**
@@ -60,23 +61,48 @@ class IdentityMap
      */
     public function getRow($primaryVal)
     {
-        if (! $this->hasPrimaryVal($primaryVal)) {
+        $serial = $this->getSerial($primaryVal);
+        if (! isset($this->serialToRow[$serial])) {
             return false;
         }
 
-        return $this->primaryValToRow[$primaryVal];
+        return $this->serialToRow[$serial];
     }
 
     /**
-     * @param Row $row
-     * @return mixed
+     *
+     * This is a ghetto hack to serialize a composite primary key to a string,
+     * so it can be used for array key lookups. It works just as well for
+     * single-value keys as well.
+     *
+     * All it does it implode() the primary values with a pipe (to make it
+     * easier for people to see the separator) and an ASCII "unit separator"
+     * character (to include something that is unlikely to be used in a real
+     * primary-key value, and thus help prevent the serial string from being
+     * subverted).
+     *
+     * WARNING: You should sanitize your primary-key values to disallow ASCII
+     * character 31 (hex 1F) to keep the lookup working properly. This is only
+     * a problem with non-integer keys
+     *
+     * WARNING: Null, false, and empty-string key values are treated as
+     * identical by this algorithm. That means these values are interchangeable
+     * and are not differentiated. You should sanitize your primary-key values
+     * to disallow null, false, and empty-string values. This is only a problem
+     * with non-integer keys.
+     *
+     * WARNING: The serial string version of the primary key depends on the
+     * values always being in the same order. E.g., `['foo' => 1, 'bar' => 2]`
+     * will result in a different serial than `['bar' => 2, 'foo' => 1]`, even
+     * though the key-value pairs themselves are the same.
+     *
      */
-    public function getPrimaryVal($row)
+    public function getSerial($primary)
     {
-        if (! $this->hasRow($row)) {
-            return false;
-        }
-
-        return $this->rowToPrimaryVal[$row];
+        $separator = "|\x1F"; // a pipe, and ASCII 31 ("unit separator")
+        $serial = $separator
+                . implode($separator, (array) $primary)
+                . $separator;
+        return $serial;
     }
 }
