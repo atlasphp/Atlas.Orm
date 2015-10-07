@@ -48,8 +48,6 @@ Skeleton generator:
 
     ... to specify pertinent values. It also means different templates for different classes.
 
-    Also allow for `--dir={dir}` so you don't need to `cd` into the right directory.
-
 * * *
 
 What we're going for is "Domain Model composed of Persistence Model". That is, the Domain entities/aggregates use Records and RecordSets internally, but never expose them. They can manipulate the PM internally as much as they wish. E.g., an Entity might have "getAddress()" and read from the internal Record (which in turn reads from its internal Row).
