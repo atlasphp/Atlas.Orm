@@ -3,16 +3,14 @@ namespace Atlas\Table;
 
 use Atlas\Exception;
 
-// using arrays to plan ahead for compound keys
+// using arrays to plan ahead for composite keys
 class RowIdentity
 {
-    protected $col;
     protected $primary;
 
-    public function __construct($col, $val)
+    public function __construct(array $primary)
     {
-        $this->col = $col;
-        $this->primary = [$col => $val];
+        $this->primary = $primary;
     }
 
     public function __get($col)
@@ -71,11 +69,6 @@ class RowIdentity
 
     public function getVal()
     {
-        return $this->primary[$this->col];
-    }
-
-    public function getCol()
-    {
-        return $this->col;
+        return current($this->primary);
     }
 }

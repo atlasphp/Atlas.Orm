@@ -37,7 +37,7 @@ class MapperLocatorTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expect, $this->mapperLocator->get(EmployeeRecord::CLASS));
         $this->assertSame($expect, $this->mapperLocator->get(EmployeeRecordSet::CLASS));
 
-        $row = new EmployeeRow(new EmployeeRowIdentity('id', null), []);
+        $row = new EmployeeRow(new EmployeeRowIdentity(['id' => null]), []);
         $related = new Related([]);
         $record = new EmployeeRecord($row, $related);
         $this->assertSame($expect, $this->mapperLocator->get($record));

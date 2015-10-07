@@ -351,7 +351,7 @@ class Table
         }
 
         $rowIdentityClass = $this->getRowIdentityClass();
-        return new $rowIdentityClass($primaryCol, $primaryVal);
+        return new $rowIdentityClass([$primaryCol => $primaryVal]);
     }
 
     public function newRowSet(array $rows)

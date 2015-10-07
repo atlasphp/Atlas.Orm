@@ -15,7 +15,7 @@ class RecordSetTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->row = new Row(
-            new RowIdentity('id', '1'),
+            new RowIdentity(['id' => '1']),
             [
                 'foo' => 'bar',
                 'baz' => 'dib',
