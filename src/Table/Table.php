@@ -245,7 +245,7 @@ class Table
 
     public function fetchRow($primaryVal)
     {
-        $row = $this->identityMap->getRow($primaryVal);
+        $row = $this->identityMap->getRowByPrimary($primaryVal);
         if (! $row) {
             $colsVals = [$this->getPrimary() => $primaryVal];
             $row = $this->select($colsVals)->fetchRow();
@@ -304,8 +304,8 @@ class Table
     {
         foreach ($primaryVals as $i => $primaryVal) {
             $rows[$primaryVal] = null;
-            if ($this->identityMap->hasPrimaryVal($primaryVal)) {
-                $rows[$primaryVal] = $this->identityMap->getRow($primaryVal);
+            if ($this->identityMap->hasPrimary($primaryVal)) {
+                $rows[$primaryVal] = $this->identityMap->getRowByPrimary($primaryVal);
                 unset($primaryVals[$i]);
             }
         }

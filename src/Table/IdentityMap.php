@@ -46,22 +46,22 @@ class IdentityMap
     }
 
     /**
-     * @param mixed $primaryVal
+     * @param mixed $primary
      * @return boolean
      */
-    public function hasPrimaryVal($primaryVal)
+    public function hasPrimary($primary)
     {
-        $serial = $this->getSerial($primaryVal);
+        $serial = $this->getSerial($primary);
         return isset($this->serialToRow[$serial]);
     }
 
     /**
-     * @param mixed $primaryVal
+     * @param mixed $primary
      * @return Row
      */
-    public function getRow($primaryVal)
+    public function getRowByPrimary($primary)
     {
-        $serial = $this->getSerial($primaryVal);
+        $serial = $this->getSerial($primary);
         if (! isset($this->serialToRow[$serial])) {
             return false;
         }
