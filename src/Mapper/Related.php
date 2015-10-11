@@ -12,21 +12,25 @@ class Related
 
     public function __get($name)
     {
+        // @todo assertHas($name)
         return $this->foreign[$name];
     }
 
     public function __set($name, $foreign)
     {
+        // @todo assertHas($name)
         $this->foreign[$name] = $foreign;
     }
 
     public function __isset($name)
     {
+        // @todo assertHas($name)
         return isset($this->foreign[$name]);
     }
 
     public function __unset($name)
     {
+        // @todo assertHas($name)
         $this->foreign[$name] = null;
     }
 
@@ -34,7 +38,7 @@ class Related
     {
         return array_key_exists($name, $this->foreign);
     }
-    
+
     public function getArrayCopy()
     {
         $array = [];
