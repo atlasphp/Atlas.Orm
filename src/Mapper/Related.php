@@ -12,26 +12,34 @@ class Related
 
     public function __get($name)
     {
-        // @todo assertHas($name)
+        $this->assertHas($name);
         return $this->foreign[$name];
     }
 
     public function __set($name, $foreign)
     {
-        // @todo assertHas($name)
+        $this->assertHas($name);
         $this->foreign[$name] = $foreign;
     }
 
     public function __isset($name)
     {
-        // @todo assertHas($name)
+        $this->assertHas($name);
         return isset($this->foreign[$name]);
     }
 
     public function __unset($name)
     {
-        // @todo assertHas($name)
+        $this->assertHas($name);
         $this->foreign[$name] = null;
+    }
+
+    protected function assertHas($name)
+    {
+        if (! $this->has($name)) {
+            $class = get_class($this);
+            throw new Exception("{$class}::\${$name} does not exist");
+        }
     }
 
     public function has($name)
