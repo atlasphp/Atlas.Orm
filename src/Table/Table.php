@@ -332,7 +332,7 @@ class Table
         foreach ($data as $cols) {
             $row = $this->newRow($cols);
             $this->identityMap->set($row);
-            $rows[$row->getPrimaryVal()] = $row;
+            $rows[$row->getIdentity()->getVal()] = $row;
         }
     }
 
@@ -474,7 +474,7 @@ class Table
         $update = $this->queryFactory->newUpdate();
         $update->table($this->getTable());
         $update->cols($cols);
-        $update->where("{$primaryCol} = ?", $row->getPrimaryVal());
+        $update->where("{$primaryCol} = ?", $row->getIdentity()->getVal());
         return $update;
     }
 
@@ -506,7 +506,7 @@ class Table
 
         $delete = $this->queryFactory->newDelete();
         $delete->from($this->getTable());
-        $delete->where("{$primaryCol} = ?", $row->getPrimaryVal());
+        $delete->where("{$primaryCol} = ?", $row->getIdentity()->getVal());
         return $delete;
     }
 

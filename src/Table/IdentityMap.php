@@ -31,7 +31,7 @@ class IdentityMap
             throw new Exception('Row already exists in IdentityMap');
         }
 
-        $serial = $this->getSerial($row->getPrimaryVal());
+        $serial = $this->getSerial($row->getIdentity()->getPrimary());
         $this->serialToRow[$serial] = $row;
         $this->rowToSerial[$row] = $serial;
     }

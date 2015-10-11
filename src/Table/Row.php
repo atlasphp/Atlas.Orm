@@ -91,11 +91,6 @@ class Row
         );
     }
 
-    public function getPrimaryVal()
-    {
-        return $this->identity->getVal();
-    }
-
     public function getArrayCopy()
     {
         return array_merge(
