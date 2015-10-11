@@ -83,6 +83,8 @@ class Table
 
     protected $identityMap = [];
 
+    protected $default = [];
+
     public function __construct(
         ConnectionLocator $connectionLocator,
         QueryFactory $queryFactory,
@@ -106,6 +108,17 @@ class Table
 
         if (! $this->primary) {
             $this->primary = "{$name}_id";
+        }
+
+        settype($this->cols, 'array');
+
+        if (! $this->default) {
+            $this->default = [$this->primary => null];
+            foreach ($this->cols as $col) {
+                if ($col != '*') {
+                    $this->default[$col] = null;
+                }
+            }
         }
 
         $this->autoinc = (bool) $this->autoinc;
@@ -167,7 +180,19 @@ class Table
      */
     public function getCols()
     {
-        return (array) $this->cols;
+        return $this->cols;
+    }
+
+    /**
+     *
+     * Default values for a new row.
+     *
+     * @return array
+     *
+     */
+    public function getDefault()
+    {
+        return $this->default;
     }
 
     /**
@@ -343,6 +368,7 @@ class Table
 
     public function newRow(array $cols)
     {
+        $cols = array_merge($this->getDefault(), $cols);
         $rowIdentity = $this->newRowIdentity($cols);
         $rowClass = $this->getRowClass();
         return new $rowClass($rowIdentity, $cols);

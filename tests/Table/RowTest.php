@@ -61,11 +61,4 @@ class RowTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('Atlas\Exception');
         unset($row->id);
     }
-
-    public function testGetObjectCopy()
-    {
-        $row = new Row(new RowIdentity(['id' => '1']), ['foo' => 'bar']);
-        $expect = (object) ['id' => '1', 'foo' => 'bar'];
-        $this->assertEquals($expect, $row->getObjectCopy());
-    }
 }

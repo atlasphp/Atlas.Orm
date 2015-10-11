@@ -3,21 +3,16 @@ namespace Atlas\Table;
 
 use Atlas\Exception;
 
-/**
- * @todo Should $primary really be a constructor param? Or should it figure it
- * out the same way the table does? Or should it be an Identity object?
- */
 class Row
 {
     protected $identity;
 
-    // should default data be on the table, not the row?
-    protected $data = []; // current data, including default values
+    protected $data = [];
 
     public function __construct(RowIdentity $identity, array $data)
     {
         $this->identity = $identity;
-        $this->data = array_merge($this->data, $data);
+        $this->data = $data;
     }
 
     public function __get($col)
@@ -86,11 +81,6 @@ class Row
             $this->identity->getPrimary(),
             $this->data
         );
-    }
-
-    public function getObjectCopy()
-    {
-        return (object) $this->getArrayCopy();
     }
 
     public function getIdentity()
