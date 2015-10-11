@@ -9,17 +9,22 @@ class IdentityMap
     /**
      * @var array
      */
-    protected $serialToRow;
+    protected $serialToRow = [];
 
     /**
      * @var SplObjectStorage
      */
     protected $rowToSerial;
 
+    /**
+     * @var SplObjectStorage
+     */
+    protected $initial;
+
     public function __construct()
     {
         $this->rowToSerial = new SplObjectStorage();
-        $this->serialToRow = [];
+        $this->initial = new SplObjectStorage();
     }
 
     /**
@@ -34,6 +39,7 @@ class IdentityMap
         $serial = $this->getSerial($row->getIdentity()->getPrimary());
         $this->serialToRow[$serial] = $row;
         $this->rowToSerial[$row] = $serial;
+        $this->setInitial($row);
     }
 
     /**
@@ -104,5 +110,23 @@ class IdentityMap
                 . implode($separator, (array) $primary)
                 . $separator;
         return $serial;
+    }
+
+    public function setInitial(Row $row)
+    {
+        if (! $this->hasRow($row)) {
+            throw new Exception('Row does not exist in IdentityMap');
+        }
+        
+        $this->initial[$row] = $row->getArrayCopy();
+    }
+
+    public function getInitial(Row $row)
+    {
+        if (! $this->hasRow($row)) {
+            throw new Exception('Row does not exist in IdentityMap');
+        }
+
+        return $this->initial[$row];
     }
 }

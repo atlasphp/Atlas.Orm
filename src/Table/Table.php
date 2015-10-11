@@ -400,16 +400,13 @@ class Table
         // set into the identity map
         $this->identityMap->set($row);
 
-        // reinitialize the initial data for later updates
-        $row->init();
-
         // @todo add support for "returning" into the row
         return true;
     }
 
     protected function newInsert(Row $row)
     {
-        $cols = $row->getArrayCopyForInsert();
+        $cols = $this->getArrayCopyForInsert($row);
 
         if ($this->getAutoinc()) {
             unset($cols[$this->getPrimary()]);
@@ -452,7 +449,7 @@ class Table
         }
 
         // reinitialize the initial data for later updates
-        $row->init();
+        $this->identityMap->setInitial($row);
 
         // @todo add support for "returning" into the row
         return true;
@@ -461,7 +458,7 @@ class Table
     protected function newUpdate(Row $row)
     {
         // get the columns to update, and unset primary column
-        $cols = $row->getArrayCopyForUpdate();
+        $cols = $this->getArrayCopyForUpdate($row);
         $primaryCol = $this->getPrimary();
         unset($cols[$primaryCol]);
 
@@ -517,4 +514,25 @@ class Table
             throw new InvalidArgumentException("Expected {$this->rowClass}, got {$actual} instead");
         }
     }
+
+    protected function getArrayCopyForInsert(Row $row)
+    {
+        return $row->getArrayCopy();
+    }
+
+    public function getArrayCopyForUpdate(Row $row)
+    {
+        $copy = $row->getArrayCopy();
+        $init = $this->identityMap->getInitial($row);
+        foreach ($copy as $col => $val) {
+            $same = (is_numeric($copy[$col]) && is_numeric($init[$col]))
+                 ? $copy[$col] == $init[$col] // numeric, compare loosely
+                 : $copy[$col] === $init[$col]; // not numeric, compare strictly
+            if ($same) {
+                unset($copy[$col]);
+            }
+        }
+        return $copy;
+    }
+
 }

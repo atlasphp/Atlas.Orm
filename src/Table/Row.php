@@ -11,8 +11,6 @@ class Row
 {
     protected $identity;
 
-    protected $init = []; // initial data
-
     // should default data be on the table, not the row?
     protected $data = []; // current data, including default values
 
@@ -20,7 +18,6 @@ class Row
     {
         $this->identity = $identity;
         $this->data = array_merge($this->data, $data);
-        $this->init();
     }
 
     public function __get($col)
@@ -83,40 +80,12 @@ class Row
             || $this->identity->has($col);
     }
 
-    public function init()
-    {
-        $this->init = array_merge(
-            $this->identity->getPrimary(),
-            $this->data
-        );
-    }
-
     public function getArrayCopy()
     {
         return array_merge(
             $this->identity->getPrimary(),
             $this->data
         );
-    }
-
-    public function getArrayCopyForInsert()
-    {
-        return $this->getArrayCopy();
-    }
-
-    public function getArrayCopyForUpdate()
-    {
-        $copy = $this->getArrayCopy();
-        foreach ($this->data as $col => $curr) {
-            $init = $this->init[$col];
-            $same = (is_numeric($curr) && is_numeric($init))
-                 ? $curr == $init // numeric, compare loosely
-                 : $curr === $init; // not numeric, compare strictly
-            if ($same) {
-                unset($copy[$col]);
-            }
-        }
-        return $copy;
     }
 
     public function getObjectCopy()
