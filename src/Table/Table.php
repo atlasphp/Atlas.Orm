@@ -356,7 +356,7 @@ class Table
         $data = $select->cols($this->getCols())->fetchAll();
         foreach ($data as $cols) {
             $row = $this->newRow($cols);
-            $this->identityMap->set($row);
+            $this->identityMap->setRow($row);
             $rows[$row->getIdentity()->getVal()] = $row;
         }
     }
@@ -424,7 +424,7 @@ class Table
         }
 
         // set into the identity map
-        $this->identityMap->set($row);
+        $this->identityMap->setRow($row);
 
         // @todo add support for "returning" into the row
         return true;

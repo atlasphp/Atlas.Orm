@@ -232,7 +232,7 @@ class TableSelect implements SubselectInterface
         $row = $this->identityMap->getRowByPrimary($primaryIdentity);
         if (! $row) {
             $row = $this->table->newRow($cols);
-            $this->identityMap->set($row);
+            $this->identityMap->setRow($row);
         }
         return $row;
     }

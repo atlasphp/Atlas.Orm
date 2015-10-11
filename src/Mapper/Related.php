@@ -1,6 +1,8 @@
 <?php
 namespace Atlas\Mapper;
 
+use Atlas\Exception;
+
 class Related
 {
     protected $foreign = [];
