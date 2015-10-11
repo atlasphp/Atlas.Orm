@@ -6,7 +6,13 @@ Atlas is an ORM for your **persistence** (or **data source**) model, not for you
 
 **ATLAS IS A WORK IN PROGRESS. FOR ENTERTAINMENT PURPOSES ONLY. DO NOT USE IN PRODUCTION OR EVEN IN SIDE PROJECTS. BREAKING CHANGES ARE GUARANTEED.**
 
-* * *
+## Rationale
+
+Per [this article from Mehdi Khalili](http://www.mehdi-khalili.com/orm-anti-patterns-part-4-persistence-domain-model/), we're targeting "Domain Model composed of Persistence Model". That is, the domain Entities and Aggregates use data source Records and RecordSets internally, but never expose them. They can manipulate the persistence model internally as much as they wish. E.g., an Entity might have "getAddress()" and read from the internal Record (which in turn reads from its internal Row).
+
+Alternatively, we can do "DDD on top of ORM" where Repositories map the data source Records to domain Entities, Value Objects, and Aggregates.
+
+## Operation
 
 Atlas works in 2 layers. The lower _Table_ layer is a [table data gateway](http://martinfowler.com/eaaCatalog/tableDataGateway.html) implementation:
 
@@ -28,7 +34,9 @@ The upper _Mapper_ layer is a [data mapper](http://martinfowler.com/eaaCatalog/d
 
 Finally, an _Atlas_ object acts as a collection point for all _Mapper_ objects, allowing you to work with them as a cohesive whole.
 
-* * *
+## Basic Usage
+
+> This section is sorely incomplete.
 
 Create your data source classes by hand, or use a skeleton generator in the directory where you want the classes to be created:
 

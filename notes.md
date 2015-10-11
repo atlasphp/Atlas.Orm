@@ -1,7 +1,3 @@
-Row:
-    If should *know* what its primary col is. No need to pass it in. This means
-    the skeleton generator will need it in the template.
-
 Factories:
 
     Extract newRow(), newRowSet(), newRecord(), newRecordSet() to factory objects? Would allow for finer user control over how they get created, and might be future-proofing. Does that mean passing the IdentityMap into it?
@@ -49,10 +45,6 @@ Skeleton generator:
     ... to specify pertinent values. It also means different templates for different classes.
 
 * * *
-
-What we're going for is "Domain Model composed of Persistence Model". That is, the Domain entities/aggregates use Records and RecordSets internally, but never expose them. They can manipulate the PM internally as much as they wish. E.g., an Entity might have "getAddress()" and read from the internal Record (which in turn reads from its internal Row).
-
-Alternatively, we can do "DDD on top of ORM" where repositories map the Records to Entities/Aggregates.
 
 If you have two instances of a particular domain Entity, and you change values on the data Row, it's now reflected across all instances of that particular Entity, because the Row is identity-mapped. Is that a problem?
 
