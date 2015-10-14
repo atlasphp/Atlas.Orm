@@ -141,3 +141,8 @@ foreach ($thread->reples as $reply) {
 }
 ?>
 ```
+
+### Installation
+It is installable and autoloadable via Composer as [atlas/atlas](https://packagist.org/packages/atlas/atlas).
+
+Alternatively, [download a release](https://github.com/atlasphp/Atlas.Atlas/releases) or clone this repository, then require or include its _autoload.php_ file.
