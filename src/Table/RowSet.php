@@ -9,9 +9,9 @@ use InvalidArgumentException;
 
 class RowSet implements ArrayAccess, Countable, IteratorAggregate
 {
-    protected $rows = [];
+    private $rows = [];
 
-    protected $rowClass;
+    private $rowClass;
 
     public function __construct(array $rows, $rowClass)
     {

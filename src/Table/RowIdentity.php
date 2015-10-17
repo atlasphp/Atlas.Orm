@@ -6,7 +6,7 @@ use Atlas\Exception;
 // using arrays to plan ahead for composite keys
 class RowIdentity
 {
-    protected $primary;
+    private $primary;
 
     public function __construct(array $primary)
     {

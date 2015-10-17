@@ -12,8 +12,8 @@ use Atlas\Table\Row;
  */
 class Record
 {
-    protected $row;
-    protected $related;
+    private $row;
+    private $related;
 
     public function __construct(Row $row, Related $related)
     {

@@ -9,9 +9,9 @@ use InvalidArgumentException;
 
 class RecordSet implements ArrayAccess, Countable, IteratorAggregate
 {
-    protected $recordClass;
+    private $recordClass;
 
-    protected $records = [];
+    private $records = [];
 
     public function __construct(array $records, $recordClass)
     {

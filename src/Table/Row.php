@@ -5,9 +5,9 @@ use Atlas\Exception;
 
 class Row
 {
-    protected $identity;
+    private $identity;
 
-    protected $data = [];
+    private $data = [];
 
     public function __construct(RowIdentity $identity, array $data)
     {

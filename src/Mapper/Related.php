@@ -5,7 +5,7 @@ use Atlas\Exception;
 
 class Related
 {
-    protected $foreign = [];
+    private $foreign = [];
 
     public function __construct(array $foreign = [])
     {
