@@ -27,7 +27,7 @@ use InvalidArgumentException;
  * @package Atlas.Atlas
  *
  */
-class Table
+abstract class Table
 {
     /**
      *
@@ -65,25 +65,9 @@ class Table
      */
     protected $writeConnection;
 
-    protected $primary;
-
-    protected $autoinc = true;
-
-    protected $table;
-
-    protected $cols = ['*'];
-
-    protected $rowClass;
-
-    protected $rowSetClass;
-
-    protected $rowIdentityClass;
-
     protected $rowFilter;
 
     protected $identityMap = [];
-
-    protected $default = [];
 
     public function __construct(
         ConnectionLocator $connectionLocator,
@@ -95,42 +79,9 @@ class Table
         $this->queryFactory = $queryFactory;
         $this->identityMap = $identityMap;
         $this->rowFilter = $rowFilter;
-
-        // Foo\Bar\BazTable -> Foo\Bar\Baz
-        $type = substr(get_class($this), 0, -5);
-
-        // Foo\Bar\Baz => baz
-        $name = strtolower(substr($type, strrpos($type, '\\') + 1));
-
-        if (! $this->table) {
-            $this->table = $name;
-        }
-
-        if (! $this->primary) {
-            $this->primary = "{$name}_id";
-        }
-
-        settype($this->cols, 'array');
-
-        if (! $this->default) {
-            $this->default = [$this->primary => null];
-            foreach ($this->cols as $col) {
-                if ($col != '*') {
-                    $this->default[$col] = null;
-                }
-            }
-        }
-
-        $this->autoinc = (bool) $this->autoinc;
-        $this->rowClass = "{$type}Row";
-        $this->rowSetClass = "{$type}RowSet";
-        $this->rowIdentityClass = "{$type}RowIdentity";
     }
 
-    public function getTable()
-    {
-        return $this->table;
-    }
+    abstract public function getTable();
 
     /**
      *
@@ -139,10 +90,7 @@ class Table
      * @return string The primary column name.
      *
      */
-    public function getPrimary()
-    {
-        return $this->primary;
-    }
+    abstract public function getPrimary();
 
     /**
      *
@@ -151,25 +99,13 @@ class Table
      * @return bool
      *
      */
-    public function getAutoinc()
-    {
-        return $this->autoinc;
-    }
+    abstract public function getAutoinc();
 
-    public function getRowClass()
-    {
-        return $this->rowClass;
-    }
+    abstract public function getRowClass();
 
-    public function getRowIdentityClass()
-    {
-        return $this->rowIdentityClass;
-    }
+    abstract public function getRowIdentityClass();
 
-    public function getRowSetClass()
-    {
-        return $this->rowSetClass;
-    }
+    abstract public function getRowSetClass();
 
     /**
      *
@@ -178,10 +114,8 @@ class Table
      * @return array
      *
      */
-    public function getCols()
-    {
-        return $this->cols;
-    }
+    abstract public function getCols();
+
 
     /**
      *
@@ -190,10 +124,7 @@ class Table
      * @return array
      *
      */
-    public function getDefault()
-    {
-        return $this->default;
-    }
+    abstract public function getDefault();
 
     /**
      *
@@ -281,7 +212,7 @@ class Table
 
     public function getPrimaryIdentity($primaryVal)
     {
-        return [$this->primary => $primaryVal];
+        return [$this->getPrimary() => $primaryVal];
     }
 
     public function fetchRowBy(array $colsVals)
@@ -390,7 +321,7 @@ class Table
     public function newRowSet(array $rows)
     {
         $rowSetClass = $this->getRowSetClass();
-        return new $rowSetClass($rows, $this->rowClass);
+        return new $rowSetClass($rows, $this->getRowClass());
     }
 
     /**
@@ -535,9 +466,10 @@ class Table
 
     protected function assertRowClass(Row $row)
     {
-        if (! $row instanceof $this->rowClass) {
+        $rowClass = $this->getRowClass();
+        if (! $row instanceof $rowClass) {
             $actual = get_class($row);
-            throw new InvalidArgumentException("Expected {$this->rowClass}, got {$actual} instead");
+            throw new InvalidArgumentException("Expected {$rowClass}, got {$actual} instead");
         }
     }
 
