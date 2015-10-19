@@ -1,9 +1,9 @@
 <?php
 namespace Atlas\Fake\Reply;
 
-use Atlas\Table\Table;
+use Atlas\Table\AbstractTable;
 
-class ReplyTable extends Table
+class ReplyTable extends AbstractTable
 {
     public function getTable()
     {

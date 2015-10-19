@@ -1,9 +1,9 @@
 <?php
 namespace Atlas\Fake\Author;
 
-use Atlas\Table\Table;
+use Atlas\Table\AbstractTable;
 
-class AuthorTable extends Table
+class AuthorTable extends AbstractTable
 {
     public function getTable()
     {

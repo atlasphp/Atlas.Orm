@@ -1,9 +1,9 @@
 <?php
 namespace Atlas\Fake\Summary;
 
-use Atlas\Table\Table;
+use Atlas\Table\AbstractTable;
 
-class SummaryTable extends Table
+class SummaryTable extends AbstractTable
 {
     public function getTable()
     {

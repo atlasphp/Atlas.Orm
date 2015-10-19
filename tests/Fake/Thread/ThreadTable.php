@@ -1,9 +1,9 @@
 <?php
 namespace Atlas\Fake\Thread;
 
-use Atlas\Table\Table;
+use Atlas\Table\AbstractTable;
 
-class ThreadTable extends Table
+class ThreadTable extends AbstractTable
 {
     public function getTable()
     {

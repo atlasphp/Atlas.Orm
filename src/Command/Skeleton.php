@@ -187,9 +187,9 @@ class Skeleton
 <?php
 namespace {NAMESPACE};
 
-use Atlas\Table\Table;
+use Atlas\Table\AbstractTable;
 
-class {TYPE}Table extends Table
+class {TYPE}Table extends AbstractTable
 {
     public function getTable()
     {

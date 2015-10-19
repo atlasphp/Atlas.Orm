@@ -1,9 +1,9 @@
 <?php
 namespace Atlas\Fake\Tagging;
 
-use Atlas\Table\Table;
+use Atlas\Table\AbstractTable;
 
-class TaggingTable extends Table
+class TaggingTable extends AbstractTable
 {
     public function getTable()
     {

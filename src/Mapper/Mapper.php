@@ -8,7 +8,7 @@ use Atlas\Relation\HasManyThrough;
 use Atlas\Relation\HasOne;
 use Atlas\Table\Row;
 use Atlas\Table\RowSet;
-use Atlas\Table\Table;
+use Atlas\Table\AbstractTable;
 use Atlas\Table\TableSelect;
 use InvalidArgumentException;
 
@@ -29,7 +29,7 @@ class Mapper
 
     protected $recordSetClass;
 
-    public function __construct(Table $table, MapperRelations $mapperRelations)
+    public function __construct(AbstractTable $table, MapperRelations $mapperRelations)
     {
         $this->table = $table;
         $this->mapperRelations = $mapperRelations;

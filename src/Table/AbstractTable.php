@@ -27,7 +27,7 @@ use InvalidArgumentException;
  * @package Atlas.Atlas
  *
  */
-abstract class Table
+abstract class AbstractTable
 {
     /**
      *

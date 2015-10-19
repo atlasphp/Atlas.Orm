@@ -44,7 +44,7 @@ class TableSelect implements SubselectInterface
      *
      */
     public function __construct(
-        Table $table,
+        AbstractTable $table,
         SelectInterface $select
     ) {
         $this->table = $table;
