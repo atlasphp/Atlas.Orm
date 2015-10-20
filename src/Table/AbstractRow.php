@@ -3,7 +3,7 @@ namespace Atlas\Table;
 
 use Atlas\Exception;
 
-class Row
+abstract class AbstractRow
 {
     private $identity;
 

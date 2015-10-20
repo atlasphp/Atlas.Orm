@@ -10,7 +10,7 @@ class RowSetTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->row = new Row(
+        $this->row = new FakeRow(
             new RowIdentity(['id' => '1']),
             [
                 'foo' => 'bar',
@@ -18,7 +18,7 @@ class RowSetTest extends \PHPUnit_Framework_TestCase
             ]
         );
 
-        $this->rowSet = new RowSet([], Row::CLASS);
+        $this->rowSet = new RowSet([], FakeRow::CLASS);
         $this->rowSet[] = $this->row;
     }
 
@@ -31,7 +31,7 @@ class RowSetTest extends \PHPUnit_Framework_TestCase
     public function testOffsetSet_nonObject()
     {
         $this->setExpectedException(InvalidArgumentException::CLASS);
-        $this->rowSet[] = Row::CLASS;
+        $this->rowSet[] = FakeRow::CLASS;
     }
 
     public function testOffsetUnset()

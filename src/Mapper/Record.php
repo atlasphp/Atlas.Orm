@@ -2,7 +2,7 @@
 namespace Atlas\Mapper;
 
 use Atlas\Exception;
-use Atlas\Table\Row;
+use Atlas\Table\AbstractRow;
 
 /**
  *
@@ -15,7 +15,7 @@ class Record
     private $row;
     private $related;
 
-    public function __construct(Row $row, Related $related)
+    public function __construct(AbstractRow $row, Related $related)
     {
         $this->row = $row;
         $this->related = $related;

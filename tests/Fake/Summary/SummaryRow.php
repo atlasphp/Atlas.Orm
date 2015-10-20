@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Fake\Summary;
 
-use Atlas\Table\Row;
+use Atlas\Table\AbstractRow;
 
-class SummaryRow extends Row
+class SummaryRow extends AbstractRow
 {
 }

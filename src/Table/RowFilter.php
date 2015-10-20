@@ -3,12 +3,12 @@ namespace Atlas\Table;
 
 class RowFilter
 {
-    public function forInsert(Row $row)
+    public function forInsert(AbstractRow $row)
     {
         // do nothing
     }
 
-    public function forUpdate(Row $row)
+    public function forUpdate(AbstractRow $row)
     {
         // do nothing
     }

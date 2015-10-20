@@ -9,7 +9,7 @@ use Atlas\Mapper\MapperRelations;
 use Atlas\Mapper\RecordFactory;
 use Atlas\SqliteFixture;
 use Atlas\Table\IdentityMap;
-use Atlas\Table\Row;
+use Atlas\Table\FakeRow;
 use Atlas\Table\RowFilter;
 use Atlas\Table\RowIdentity;
 use Aura\Sql\ConnectionLocator;
@@ -311,7 +311,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->mapper->insert($record));
 
         // try to insert a record of the wrong type
-        $row = new Row(new RowIdentity(['id' => null]), []);
+        $row = new FakeRow(new RowIdentity(['id' => null]), []);
         $related = new Related([]);
         $record = new Record($row, $related);
         $this->setExpectedException(
@@ -351,7 +351,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->mapper->update($record));
 
         // try to update a record of the wrong type
-        $row = new Row(new RowIdentity(['id' => null]), []);
+        $row = new FakeRow(new RowIdentity(['id' => null]), []);
         $related = new Related([]);
         $record = new Record($row, $related);
         $this->setExpectedException(
@@ -378,7 +378,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expect, count($actual));
 
         // try to update a record of the wrong type
-        $row = new Row(new RowIdentity(['id' => null]), []);
+        $row = new FakeRow(new RowIdentity(['id' => null]), []);
         $related = new Related([]);
         $record = new Record($row, $related);
         $this->setExpectedException(

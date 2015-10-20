@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Fake\Thread;
 
-use Atlas\Table\Row;
+use Atlas\Table\AbstractRow;
 
-class ThreadRow extends Row
+class ThreadRow extends AbstractRow
 {
 }

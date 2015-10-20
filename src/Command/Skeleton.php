@@ -238,9 +238,9 @@ TABLE;
 <?php
 namespace {NAMESPACE};
 
-use Atlas\Table\Row;
+use Atlas\Table\AbstractRow;
 
-class {TYPE}Row extends Row
+class {TYPE}Row extends AbstractRow
 {
 }
 

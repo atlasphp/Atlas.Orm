@@ -52,11 +52,11 @@ class TableTest extends \PHPUnit_Framework_TestCase
             'floor' => '1',
         ];
         $actual = $this->table->fetchRow(1);
-        $this->assertInstanceOf(Row::CLASS, $actual);
+        $this->assertInstanceOf(AbstractRow::CLASS, $actual);
         $this->assertSame($expect, $actual->getArrayCopy());
 
         $again = $this->table->fetchRow(1);
-        $this->assertInstanceOf(Row::CLASS, $again);
+        $this->assertInstanceOf(AbstractRow::CLASS, $again);
         $this->assertSame($again, $actual);
 
         $actual = $this->table->fetchRow(-1);
@@ -72,11 +72,11 @@ class TableTest extends \PHPUnit_Framework_TestCase
             'floor' => '1',
         ];
         $actual = $this->table->fetchRowBy(['id' => 1]);
-        $this->assertInstanceOf(Row::CLASS, $actual);
+        $this->assertInstanceOf(AbstractRow::CLASS, $actual);
         $this->assertSame($expect, $actual->getArrayCopy());
 
         $again = $this->table->fetchRowBy(['id' => 1]);
-        $this->assertInstanceOf(Row::CLASS, $again);
+        $this->assertInstanceOf(AbstractRow::CLASS, $again);
         $this->assertSame($again, $actual);
 
         $actual = $this->table->fetchRowBy(['id' => -1]);
@@ -204,10 +204,10 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->table->insert($row));
 
         // try to insert a row of the wrong type
-        $row = new Row(new RowIdentity(['id' => null]), []);
+        $row = new FakeRow(new RowIdentity(['id' => null]), []);
         $this->setExpectedException(
             InvalidArgumentException::CLASS,
-            "Expected Atlas\Fake\Employee\EmployeeRow, got Atlas\Table\Row instead"
+            "Expected Atlas\Fake\Employee\EmployeeRow, got Atlas\Table\FakeRow instead"
         );
         $this->table->insert($row);
     }
@@ -242,10 +242,10 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->table->update($row));
 
         // try to update a row of the wrong type
-        $row = new Row(new RowIdentity(['id' => null]), []);
+        $row = new FakeRow(new RowIdentity(['id' => null]), []);
         $this->setExpectedException(
             InvalidArgumentException::CLASS,
-            "Expected Atlas\Fake\Employee\EmployeeRow, got Atlas\Table\Row instead"
+            "Expected Atlas\Fake\Employee\EmployeeRow, got Atlas\Table\FakeRow instead"
         );
         $this->table->update($row);
     }
@@ -266,10 +266,10 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expect, count($actual));
 
         // try to delete a row of the wrong type
-        $row = new Row(new RowIdentity(['id' => null]), []);
+        $row = new FakeRow(new RowIdentity(['id' => null]), []);
         $this->setExpectedException(
             InvalidArgumentException::CLASS,
-            "Expected Atlas\Fake\Employee\EmployeeRow, got Atlas\Table\Row instead"
+            "Expected Atlas\Fake\Employee\EmployeeRow, got Atlas\Table\FakeRow instead"
         );
         $this->table->delete($row);
     }

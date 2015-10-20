@@ -6,7 +6,7 @@ use Atlas\Relation\BelongsTo;
 use Atlas\Relation\HasMany;
 use Atlas\Relation\HasManyThrough;
 use Atlas\Relation\HasOne;
-use Atlas\Table\Row;
+use Atlas\Table\AbstractRow;
 use Atlas\Table\RowSet;
 use Atlas\Table\AbstractTable;
 use Atlas\Table\TableSelect;

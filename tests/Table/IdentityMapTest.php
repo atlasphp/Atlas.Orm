@@ -12,7 +12,7 @@ class IdentityMapTest extends \PHPUnit_Framework_TestCase
 
     public function testSetRow()
     {
-        $row = new Row(new RowIdentity(['id' => '1']), []);
+        $row = new FakeRow(new RowIdentity(['id' => '1']), []);
         $this->identityMap->setRow($row);
         $this->setExpectedException('Atlas\Exception');
         $this->identityMap->setRow($row);
@@ -20,14 +20,14 @@ class IdentityMapTest extends \PHPUnit_Framework_TestCase
 
     public function testSetInitial_missingRow()
     {
-        $row = new Row(new RowIdentity(['id' => '1']), []);
+        $row = new FakeRow(new RowIdentity(['id' => '1']), []);
         $this->setExpectedException('Atlas\Exception');
         $this->identityMap->setInitial($row);
     }
 
     public function testGetInitial_missingRow()
     {
-        $row = new Row(new RowIdentity(['id' => '1']), []);
+        $row = new FakeRow(new RowIdentity(['id' => '1']), []);
         $this->setExpectedException('Atlas\Exception');
         $this->identityMap->getInitial($row);
     }

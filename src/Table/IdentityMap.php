@@ -30,7 +30,7 @@ class IdentityMap
     /**
      * @param Row $row
      */
-    public function setRow(Row $row)
+    public function setRow(AbstractRow $row)
     {
         if ($this->hasRow($row)) {
             throw new Exception('Row already exists in IdentityMap');
@@ -112,7 +112,7 @@ class IdentityMap
         return $serial;
     }
 
-    public function setInitial(Row $row)
+    public function setInitial(AbstractRow $row)
     {
         if (! $this->hasRow($row)) {
             throw new Exception('Row does not exist in IdentityMap');
@@ -121,7 +121,7 @@ class IdentityMap
         $this->initial[$row] = $row->getArrayCopy();
     }
 
-    public function getInitial(Row $row)
+    public function getInitial(AbstractRow $row)
     {
         if (! $this->hasRow($row)) {
             throw new Exception('Row does not exist in IdentityMap');

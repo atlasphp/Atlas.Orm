@@ -2,7 +2,7 @@
 namespace Atlas\Mapper;
 
 use Atlas\Exception;
-use Atlas\Table\Row;
+use Atlas\Table\FakeRow;
 use Atlas\Table\RowIdentity;
 
 class RelatedTest extends \PHPUnit_Framework_TestCase

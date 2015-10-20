@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Fake\Reply;
 
-use Atlas\Table\Row;
+use Atlas\Table\AbstractRow;
 
-class ReplyRow extends Row
+class ReplyRow extends AbstractRow
 {
 }

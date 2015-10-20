@@ -333,7 +333,7 @@ abstract class AbstractTable
      * @return bool
      *
      */
-    public function insert(Row $row)
+    public function insert(AbstractRow $row)
     {
         $this->assertRowClass($row);
         $this->rowFilter->forInsert($row);
@@ -361,7 +361,7 @@ abstract class AbstractTable
         return true;
     }
 
-    protected function newInsert(Row $row)
+    protected function newInsert(AbstractRow $row)
     {
         $cols = $this->getArrayCopyForInsert($row);
 
@@ -386,7 +386,7 @@ abstract class AbstractTable
      * determined by checking the number of rows affected by the query.)
      *
      */
-    public function update(Row $row)
+    public function update(AbstractRow $row)
     {
         $this->assertRowClass($row);
         $this->rowFilter->forUpdate($row);
@@ -412,7 +412,7 @@ abstract class AbstractTable
         return true;
     }
 
-    protected function newUpdate(Row $row)
+    protected function newUpdate(AbstractRow $row)
     {
         // get the columns to update, and unset primary column
         $cols = $this->getArrayCopyForUpdate($row);
@@ -442,7 +442,7 @@ abstract class AbstractTable
      * determined by checking the number of rows affected by the query.)
      *
      */
-    public function delete(Row $row)
+    public function delete(AbstractRow $row)
     {
         $this->assertRowClass($row);
         $delete = $this->newDelete($row);
@@ -454,7 +454,7 @@ abstract class AbstractTable
         return (bool) $pdoStatement->rowCount();
     }
 
-    protected function newDelete(Row $row)
+    protected function newDelete(AbstractRow $row)
     {
         $primaryCol = $this->getPrimary();
 
@@ -464,7 +464,7 @@ abstract class AbstractTable
         return $delete;
     }
 
-    protected function assertRowClass(Row $row)
+    protected function assertRowClass(AbstractRow $row)
     {
         $rowClass = $this->getRowClass();
         if (! $row instanceof $rowClass) {
@@ -473,12 +473,12 @@ abstract class AbstractTable
         }
     }
 
-    protected function getArrayCopyForInsert(Row $row)
+    protected function getArrayCopyForInsert(AbstractRow $row)
     {
         return $row->getArrayCopy();
     }
 
-    public function getArrayCopyForUpdate(Row $row)
+    public function getArrayCopyForUpdate(AbstractRow $row)
     {
         $copy = $row->getArrayCopy();
         $init = $this->identityMap->getInitial($row);
