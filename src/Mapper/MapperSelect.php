@@ -1,7 +1,6 @@
 <?php
 namespace Atlas\Mapper;
 
-use Atlas\Mapper\Mapper;
 use Atlas\Table\TableSelect;
 
 class MapperSelect
@@ -10,7 +9,7 @@ class MapperSelect
 
     protected $tableSelect;
 
-    public function __construct(Mapper $mapper, TableSelect $tableSelect)
+    public function __construct(AbstractMapper $mapper, TableSelect $tableSelect)
     {
         $this->mapper = $mapper;
         $this->tableSelect = $tableSelect;

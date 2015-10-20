@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Fake\Employee;
 
-use Atlas\Mapper\Mapper;
+use Atlas\Mapper\AbstractMapper;
 
-class EmployeeMapper extends Mapper
+class EmployeeMapper extends AbstractMapper
 {
 }

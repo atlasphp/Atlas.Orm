@@ -2,9 +2,9 @@
 namespace Atlas\Fake\Summary;
 
 use Atlas\Fake\Thread\ThreadMapper;
-use Atlas\Mapper\Mapper;
+use Atlas\Mapper\AbstractMapper;
 
-class SummaryMapper extends Mapper
+class SummaryMapper extends AbstractMapper
 {
     protected function setMapperRelations()
     {

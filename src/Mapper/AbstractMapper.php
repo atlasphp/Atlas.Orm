@@ -19,7 +19,7 @@ use InvalidArgumentException;
  * @package Atlas.Atlas
  *
  */
-class Mapper
+abstract class AbstractMapper
 {
     protected $table;
 

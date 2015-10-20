@@ -1,14 +1,14 @@
 <?php
 namespace Atlas\Fake\Thread;
 
-use Atlas\Mapper\Mapper;
+use Atlas\Mapper\AbstractMapper;
 use Atlas\Fake\Author\AuthorMapper;
 use Atlas\Fake\Summary\SummaryMapper;
 use Atlas\Fake\Reply\ReplyMapper;
 use Atlas\Fake\Tagging\TaggingMapper;
 use Atlas\Fake\Tag\TagMapper;
 
-class ThreadMapper extends Mapper
+class ThreadMapper extends AbstractMapper
 {
     protected function setMapperRelations()
     {

@@ -1,7 +1,7 @@
 <?php
 namespace Atlas\Relation;
 
-use Atlas\Mapper\Mapper;
+use Atlas\Mapper\AbstractMapper;
 use Atlas\Mapper\MapperLocator;
 use Atlas\Mapper\Record;
 use Atlas\Mapper\RecordSet;

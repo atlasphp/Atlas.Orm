@@ -286,9 +286,9 @@ ROW_FILTER;
 <?php
 namespace {NAMESPACE};
 
-use Atlas\Mapper\Mapper;
+use Atlas\Mapper\AbstractMapper;
 
-class {TYPE}Mapper extends Mapper
+class {TYPE}Mapper extends AbstractMapper
 {
 }
 

@@ -3,9 +3,9 @@ namespace Atlas\Fake\Author;
 
 use Atlas\Fake\Reply\ReplyMapper;
 use Atlas\Fake\Thread\ThreadMapper;
-use Atlas\Mapper\Mapper;
+use Atlas\Mapper\AbstractMapper;
 
-class AuthorMapper extends Mapper
+class AuthorMapper extends AbstractMapper
 {
     protected function setMapperRelations()
     {

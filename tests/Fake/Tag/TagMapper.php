@@ -3,9 +3,9 @@ namespace Atlas\Fake\Tag;
 
 use Atlas\Fake\Tagging\TaggingMapper;
 use Atlas\Fake\Thread\ThreadMapper;
-use Atlas\Mapper\Mapper;
+use Atlas\Mapper\AbstractMapper;
 
-class TagMapper extends Mapper
+class TagMapper extends AbstractMapper
 {
     protected function setMapperRelations()
     {

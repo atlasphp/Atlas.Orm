@@ -1,7 +1,6 @@
 <?php
 namespace Atlas;
 
-use Atlas\Mapper\Mapper;
 use Atlas\Mapper\MapperLocator;
 use Atlas\Mapper\Record;
 use Atlas\Table\TableSelect;

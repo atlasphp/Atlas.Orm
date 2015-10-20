@@ -2,9 +2,9 @@
 namespace Atlas\Fake\Reply;
 
 use Atlas\Fake\Author\AuthorMapper;
-use Atlas\Mapper\Mapper;
+use Atlas\Mapper\AbstractMapper;
 
-class ReplyMapper extends Mapper
+class ReplyMapper extends AbstractMapper
 {
     protected function setMapperRelations()
     {
