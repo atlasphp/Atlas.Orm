@@ -7,7 +7,7 @@ use Countable;
 use IteratorAggregate;
 use InvalidArgumentException;
 
-class RecordSet implements ArrayAccess, Countable, IteratorAggregate
+abstract class AbstractRecordSet implements ArrayAccess, Countable, IteratorAggregate
 {
     private $recordClass;
 

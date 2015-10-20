@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Fake\Tagging;
 
-use Atlas\Mapper\RecordSet;
+use Atlas\Mapper\AbstractRecordSet;
 
-class TaggingRecordSet extends RecordSet
+class TaggingRecordSet extends AbstractRecordSet
 {
 }

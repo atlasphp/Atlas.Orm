@@ -3,7 +3,7 @@ namespace Atlas\Relation;
 
 use Atlas\Mapper\Related;
 use Atlas\Mapper\AbstractRecord;
-use Atlas\Mapper\RecordSet;
+use Atlas\Mapper\AbstractRecordSet;
 
 class HasOne extends AbstractRelation
 {
@@ -18,7 +18,7 @@ class HasOne extends AbstractRelation
     }
 
     public function stitchIntoRecordSet(
-        RecordSet $nativeRecordSet,
+        AbstractRecordSet $nativeRecordSet,
         callable $custom = null
     ) {
         $this->fix();

@@ -29,7 +29,7 @@ class RecordSetTest extends \PHPUnit_Framework_TestCase
 
         $this->record = new FakeRecord($this->row, $this->related);
 
-        $this->recordSet = new RecordSet([], FakeRecord::CLASS);
+        $this->recordSet = new FakeRecordSet([], FakeRecord::CLASS);
         $this->recordSet[] = $this->record;
     }
 

@@ -310,9 +310,9 @@ RECORD;
 <?php
 namespace {NAMESPACE};
 
-use Atlas\Mapper\RecordSet;
+use Atlas\Mapper\AbstractRecordSet;
 
-class {TYPE}RecordSet extends RecordSet
+class {TYPE}RecordSet extends AbstractRecordSet
 {
 }
 

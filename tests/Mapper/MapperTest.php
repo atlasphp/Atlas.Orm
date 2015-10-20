@@ -163,7 +163,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         ];
 
         $actual = $this->mapper->fetchRecordSet([1, 2, 3]);
-        $this->assertInstanceOf(RecordSet::CLASS, $actual);
+        $this->assertInstanceOf(AbstractRecordSet::CLASS, $actual);
         $this->assertCount(3, $actual);
         $this->assertInstanceOf(AbstractRecord::CLASS, $actual[0]);
         $this->assertInstanceOf(AbstractRecord::CLASS, $actual[1]);
@@ -173,7 +173,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expect[2], $actual[2]->getRow()->getArrayCopy());
 
         $again = $this->mapper->fetchRecordSet([1, 2, 3]);
-        $this->assertInstanceOf(RecordSet::CLASS, $again);
+        $this->assertInstanceOf(AbstractRecordSet::CLASS, $again);
         $this->assertCount(3, $again);
         $this->assertInstanceOf(AbstractRecord::CLASS, $again[0]);
         $this->assertInstanceOf(AbstractRecord::CLASS, $again[1]);
@@ -210,7 +210,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         ];
 
         $actual = $this->mapper->fetchRecordSetBy(['id' => [1, 2, 3]]);
-        $this->assertInstanceOf(RecordSet::CLASS, $actual);
+        $this->assertInstanceOf(AbstractRecordSet::CLASS, $actual);
         $this->assertCount(3, $actual);
         $this->assertInstanceOf(AbstractRecord::CLASS, $actual[0]);
         $this->assertInstanceOf(AbstractRecord::CLASS, $actual[1]);
@@ -220,7 +220,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expect[2], $actual[2]->getRow()->getArrayCopy());
 
         $again = $this->mapper->fetchRecordSetBy(['id' => [1, 2, 3]]);
-        $this->assertInstanceOf(RecordSet::CLASS, $again);
+        $this->assertInstanceOf(AbstractRecordSet::CLASS, $again);
         $this->assertCount(3, $again);
         $this->assertInstanceOf(AbstractRecord::CLASS, $again[0]);
         $this->assertInstanceOf(AbstractRecord::CLASS, $again[1]);

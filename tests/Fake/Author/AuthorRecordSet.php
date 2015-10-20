@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Fake\Author;
 
-use Atlas\Mapper\RecordSet;
+use Atlas\Mapper\AbstractRecordSet;
 
-class AuthorRecordSet extends RecordSet
+class AuthorRecordSet extends AbstractRecordSet
 {
 }

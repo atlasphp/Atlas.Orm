@@ -63,7 +63,7 @@ class MapperRelations
         }
     }
 
-    public function stitchIntoRecordSet(RecordSet $recordSet, array $with = [])
+    public function stitchIntoRecordSet(AbstractRecordSet $recordSet, array $with = [])
     {
         foreach ($this->fixWith($with) as $name => $custom) {
             $this->relations[$name]->stitchIntoRecordSet(
