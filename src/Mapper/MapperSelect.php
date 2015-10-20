@@ -17,10 +17,7 @@ class MapperSelect
 
     public function __call($method, $params)
     {
-        $result = call_user_func_array(
-            [$this->tableSelect, $method],
-            $params
-        );
+        $result = call_user_func_array([$this->tableSelect, $method], $params);
         return ($result === $this->tableSelect) ? $this : $result;
     }
 
