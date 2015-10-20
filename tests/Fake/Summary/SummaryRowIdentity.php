@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Fake\Summary;
 
-use Atlas\Table\RowIdentity;
+use Atlas\Table\AbstractRowIdentity;
 
-class SummaryRowIdentity extends RowIdentity
+class SummaryRowIdentity extends AbstractRowIdentity
 {
 }

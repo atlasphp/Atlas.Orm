@@ -250,9 +250,9 @@ ROW;
 <?php
 namespace {NAMESPACE};
 
-use Atlas\Table\RowIdentity;
+use Atlas\Table\AbstractRowIdentity;
 
-class {TYPE}RowIdentity extends RowIdentity
+class {TYPE}RowIdentity extends AbstractRowIdentity
 {
 }
 

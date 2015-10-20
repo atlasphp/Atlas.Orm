@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Fake\Reply;
 
-use Atlas\Table\RowIdentity;
+use Atlas\Table\AbstractRowIdentity;
 
-class ReplyRowIdentity extends RowIdentity
+class ReplyRowIdentity extends AbstractRowIdentity
 {
 }

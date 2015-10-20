@@ -9,7 +9,7 @@ abstract class AbstractRow
 
     private $data = [];
 
-    public function __construct(RowIdentity $identity, array $data)
+    public function __construct(AbstractRowIdentity $identity, array $data)
     {
         $this->identity = $identity;
         $this->data = $data;

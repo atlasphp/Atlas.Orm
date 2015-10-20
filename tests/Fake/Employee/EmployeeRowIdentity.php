@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Fake\Employee;
 
-use Atlas\Table\RowIdentity;
+use Atlas\Table\AbstractRowIdentity;
 
-class EmployeeRowIdentity extends RowIdentity
+class EmployeeRowIdentity extends AbstractRowIdentity
 {
 }

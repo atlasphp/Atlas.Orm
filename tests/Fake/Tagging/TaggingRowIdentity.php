@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Fake\Tagging;
 
-use Atlas\Table\RowIdentity;
+use Atlas\Table\AbstractRowIdentity;
 
-class TaggingRowIdentity extends RowIdentity
+class TaggingRowIdentity extends AbstractRowIdentity
 {
 }

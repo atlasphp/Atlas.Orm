@@ -2,7 +2,7 @@
 namespace Atlas\Mapper;
 
 use Atlas\Table\FakeRow;
-use Atlas\Table\RowIdentity;
+use Atlas\Table\FakeRowIdentity;
 use InvalidArgumentException;
 
 class RecordSetTest extends \PHPUnit_Framework_TestCase
@@ -15,7 +15,7 @@ class RecordSetTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->row = new FakeRow(
-            new RowIdentity(['id' => '1']),
+            new FakeRowIdentity(['id' => '1']),
             [
                 'foo' => 'bar',
                 'baz' => 'dib',

@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Fake\Thread;
 
-use Atlas\Table\RowIdentity;
+use Atlas\Table\AbstractRowIdentity;
 
-class ThreadRowIdentity extends RowIdentity
+class ThreadRowIdentity extends AbstractRowIdentity
 {
 }
