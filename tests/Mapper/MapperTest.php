@@ -10,7 +10,7 @@ use Atlas\Mapper\RecordFactory;
 use Atlas\SqliteFixture;
 use Atlas\Table\IdentityMap;
 use Atlas\Table\FakeRow;
-use Atlas\Table\RowFilter;
+use Atlas\Fake\Employee\EmployeeRowFilter;
 use Atlas\Table\FakeRowIdentity;
 use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
@@ -34,7 +34,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
             $connectionLocator,
             new QueryFactory('sqlite'),
             new IdentityMap(),
-            new RowFilter()
+            new EmployeeRowFilter()
         );
 
         $fixture = new SqliteFixture($this->table->getWriteConnection());

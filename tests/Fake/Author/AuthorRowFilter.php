@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Fake\Author;
 
-use Atlas\Table\RowFilter;
+use Atlas\Table\AbstractRowFilter;
 
-class AuthorRowFilter extends RowFilter
+class AuthorRowFilter extends AbstractRowFilter
 {
 }

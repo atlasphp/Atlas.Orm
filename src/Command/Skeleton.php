@@ -274,9 +274,9 @@ ROW_SET;
 <?php
 namespace {NAMESPACE};
 
-use Atlas\Table\RowFilter;
+use Atlas\Table\AbstractRowFilter;
 
-class {TYPE}RowFilter extends RowFilter
+class {TYPE}RowFilter extends AbstractRowFilter
 {
 }
 

@@ -4,7 +4,7 @@ namespace Atlas\Table;
 use Atlas\Exception;
 
 // using arrays to plan ahead for composite keys
-class AbstractRowIdentity
+abstract class AbstractRowIdentity
 {
     private $primary;
 

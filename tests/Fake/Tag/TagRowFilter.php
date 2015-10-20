@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Fake\Tag;
 
-use Atlas\Table\RowFilter;
+use Atlas\Table\AbstractRowFilter;
 
-class TagRowFilter extends RowFilter
+class TagRowFilter extends AbstractRowFilter
 {
 }

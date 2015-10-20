@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Fake\Thread;
 
-use Atlas\Table\RowFilter;
+use Atlas\Table\AbstractRowFilter;
 
-class ThreadRowFilter extends RowFilter
+class ThreadRowFilter extends AbstractRowFilter
 {
 }

@@ -73,7 +73,7 @@ abstract class AbstractTable
         ConnectionLocator $connectionLocator,
         QueryFactory $queryFactory,
         IdentityMap $identityMap,
-        RowFilter $rowFilter
+        AbstractRowFilter $rowFilter
     ) {
         $this->connectionLocator = $connectionLocator;
         $this->queryFactory = $queryFactory;

@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Fake\Reply;
 
-use Atlas\Table\RowFilter;
+use Atlas\Table\AbstractRowFilter;
 
-class ReplyRowFilter extends RowFilter
+class ReplyRowFilter extends AbstractRowFilter
 {
 }

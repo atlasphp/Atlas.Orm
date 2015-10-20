@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Fake\Employee;
 
-use Atlas\Table\RowFilter;
+use Atlas\Table\AbstractRowFilter;
 
-class EmployeeRowFilter extends RowFilter
+class EmployeeRowFilter extends AbstractRowFilter
 {
 }
