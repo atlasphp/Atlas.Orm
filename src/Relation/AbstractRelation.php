@@ -3,7 +3,7 @@ namespace Atlas\Relation;
 
 use Atlas\Mapper\AbstractMapper;
 use Atlas\Mapper\MapperLocator;
-use Atlas\Mapper\Record;
+use Atlas\Mapper\AbstractRecord;
 use Atlas\Mapper\RecordSet;
 use Atlas\Mapper\Related;
 
@@ -140,7 +140,7 @@ abstract class AbstractRelation
     }
 
     abstract public function stitchIntoRecord(
-        Record $nativeRecord,
+        AbstractRecord $nativeRecord,
         callable $custom = null
     );
 

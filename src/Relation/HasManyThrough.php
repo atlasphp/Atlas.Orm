@@ -3,7 +3,7 @@ namespace Atlas\Relation;
 
 use Atlas\Exception;
 use Atlas\Mapper\Related;
-use Atlas\Mapper\Record;
+use Atlas\Mapper\AbstractRecord;
 use Atlas\Mapper\RecordSet;
 
 class HasManyThrough extends AbstractRelation
@@ -48,7 +48,7 @@ class HasManyThrough extends AbstractRelation
     }
 
     public function stitchIntoRecord(
-        Record $nativeRecord,
+        AbstractRecord $nativeRecord,
         callable $custom = null
     ) {
         $this->fix();

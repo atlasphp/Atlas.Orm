@@ -2,7 +2,7 @@
 namespace Atlas;
 
 use Atlas\Mapper\MapperLocator;
-use Atlas\Mapper\Record;
+use Atlas\Mapper\AbstractRecord;
 use Atlas\Table\TableSelect;
 
 class Atlas
@@ -44,17 +44,17 @@ class Atlas
         return $this->mapper($class)->select($colsVals);
     }
 
-    public function insert(Record $record)
+    public function insert(AbstractRecord $record)
     {
         return $this->mapper($record)->insert($record);
     }
 
-    public function update(Record $record)
+    public function update(AbstractRecord $record)
     {
         return $this->mapper($record)->update($record);
     }
 
-    public function delete(Record $record)
+    public function delete(AbstractRecord $record)
     {
         return $this->mapper($record)->delete($record);
     }

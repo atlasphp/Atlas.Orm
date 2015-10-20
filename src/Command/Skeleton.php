@@ -298,9 +298,9 @@ MAPPER;
 <?php
 namespace {NAMESPACE};
 
-use Atlas\Mapper\Record;
+use Atlas\Mapper\AbstractRecord;
 
-class {TYPE}Record extends Record
+class {TYPE}Record extends AbstractRecord
 {
 }
 

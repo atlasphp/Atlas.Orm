@@ -27,9 +27,9 @@ class RecordSetTest extends \PHPUnit_Framework_TestCase
             'irk' => 'doom',
         ]);
 
-        $this->record = new Record($this->row, $this->related);
+        $this->record = new FakeRecord($this->row, $this->related);
 
-        $this->recordSet = new RecordSet([], Record::CLASS);
+        $this->recordSet = new RecordSet([], FakeRecord::CLASS);
         $this->recordSet[] = $this->record;
     }
 

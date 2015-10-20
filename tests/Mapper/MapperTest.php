@@ -67,13 +67,13 @@ class MapperTest extends \PHPUnit_Framework_TestCase
 
         // fetch success
         $record1 = $this->mapper->fetchRecord(1);
-        $this->assertInstanceOf(Record::CLASS, $record1);
+        $this->assertInstanceOf(AbstractRecord::CLASS, $record1);
         $row1 = $record1->getRow();
         $this->assertSame($expect, $row1->getArrayCopy());
 
         // fetch again
         $record2 = $this->mapper->fetchRecord(1);
-        $this->assertInstanceOf(Record::CLASS, $record2);
+        $this->assertInstanceOf(AbstractRecord::CLASS, $record2);
         $this->assertNotSame($record1, $record2);
         $row2 = $record2->getRow();
         $this->assertSame($row1, $row2);
@@ -94,13 +94,13 @@ class MapperTest extends \PHPUnit_Framework_TestCase
 
         // fetch success
         $record1 = $this->mapper->fetchRecordBy(['id' => '1']);
-        $this->assertInstanceOf(Record::CLASS, $record1);
+        $this->assertInstanceOf(AbstractRecord::CLASS, $record1);
         $row1 = $record1->getRow();
         $this->assertSame($expect, $row1->getArrayCopy());
 
         // fetch again
         $record2 = $this->mapper->fetchRecordBy(['id' => '1']);
-        $this->assertInstanceOf(Record::CLASS, $record2);
+        $this->assertInstanceOf(AbstractRecord::CLASS, $record2);
         $this->assertNotSame($record1, $record2);
         $row2 = $record2->getRow();
         $this->assertSame($row1, $row2);
@@ -122,13 +122,13 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         // fetch success
         $select = $this->mapper->select(['id' => '1']);
         $record1 = $select->fetchRecord();
-        $this->assertInstanceOf(Record::CLASS, $record1);
+        $this->assertInstanceOf(AbstractRecord::CLASS, $record1);
         $row1 = $record1->getRow();
         $this->assertSame($expect, $row1->getArrayCopy());
 
         // fetch again
         $record2 = $select->fetchRecord();
-        $this->assertInstanceOf(Record::CLASS, $record2);
+        $this->assertInstanceOf(AbstractRecord::CLASS, $record2);
         $this->assertNotSame($record1, $record2);
         $row2 = $record2->getRow();
         $this->assertSame($row1, $row2);
@@ -165,9 +165,9 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $actual = $this->mapper->fetchRecordSet([1, 2, 3]);
         $this->assertInstanceOf(RecordSet::CLASS, $actual);
         $this->assertCount(3, $actual);
-        $this->assertInstanceOf(Record::CLASS, $actual[0]);
-        $this->assertInstanceOf(Record::CLASS, $actual[1]);
-        $this->assertInstanceOf(Record::CLASS, $actual[2]);
+        $this->assertInstanceOf(AbstractRecord::CLASS, $actual[0]);
+        $this->assertInstanceOf(AbstractRecord::CLASS, $actual[1]);
+        $this->assertInstanceOf(AbstractRecord::CLASS, $actual[2]);
         $this->assertSame($expect[0], $actual[0]->getRow()->getArrayCopy());
         $this->assertSame($expect[1], $actual[1]->getRow()->getArrayCopy());
         $this->assertSame($expect[2], $actual[2]->getRow()->getArrayCopy());
@@ -175,9 +175,9 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $again = $this->mapper->fetchRecordSet([1, 2, 3]);
         $this->assertInstanceOf(RecordSet::CLASS, $again);
         $this->assertCount(3, $again);
-        $this->assertInstanceOf(Record::CLASS, $again[0]);
-        $this->assertInstanceOf(Record::CLASS, $again[1]);
-        $this->assertInstanceOf(Record::CLASS, $again[2]);
+        $this->assertInstanceOf(AbstractRecord::CLASS, $again[0]);
+        $this->assertInstanceOf(AbstractRecord::CLASS, $again[1]);
+        $this->assertInstanceOf(AbstractRecord::CLASS, $again[2]);
         $this->assertSame($actual[0]->getRow(), $again[0]->getRow());
         $this->assertSame($actual[1]->getRow(), $again[1]->getRow());
         $this->assertSame($actual[2]->getRow(), $again[2]->getRow());
@@ -212,9 +212,9 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $actual = $this->mapper->fetchRecordSetBy(['id' => [1, 2, 3]]);
         $this->assertInstanceOf(RecordSet::CLASS, $actual);
         $this->assertCount(3, $actual);
-        $this->assertInstanceOf(Record::CLASS, $actual[0]);
-        $this->assertInstanceOf(Record::CLASS, $actual[1]);
-        $this->assertInstanceOf(Record::CLASS, $actual[2]);
+        $this->assertInstanceOf(AbstractRecord::CLASS, $actual[0]);
+        $this->assertInstanceOf(AbstractRecord::CLASS, $actual[1]);
+        $this->assertInstanceOf(AbstractRecord::CLASS, $actual[2]);
         $this->assertSame($expect[0], $actual[0]->getRow()->getArrayCopy());
         $this->assertSame($expect[1], $actual[1]->getRow()->getArrayCopy());
         $this->assertSame($expect[2], $actual[2]->getRow()->getArrayCopy());
@@ -222,9 +222,9 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $again = $this->mapper->fetchRecordSetBy(['id' => [1, 2, 3]]);
         $this->assertInstanceOf(RecordSet::CLASS, $again);
         $this->assertCount(3, $again);
-        $this->assertInstanceOf(Record::CLASS, $again[0]);
-        $this->assertInstanceOf(Record::CLASS, $again[1]);
-        $this->assertInstanceOf(Record::CLASS, $again[2]);
+        $this->assertInstanceOf(AbstractRecord::CLASS, $again[0]);
+        $this->assertInstanceOf(AbstractRecord::CLASS, $again[1]);
+        $this->assertInstanceOf(AbstractRecord::CLASS, $again[2]);
         $this->assertSame($actual[0]->getRow(), $again[0]->getRow());
         $this->assertSame($actual[1]->getRow(), $again[1]->getRow());
         $this->assertSame($actual[2]->getRow(), $again[2]->getRow());
@@ -313,10 +313,10 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         // try to insert a record of the wrong type
         $row = new FakeRow(new FakeRowIdentity(['id' => null]), []);
         $related = new Related([]);
-        $record = new Record($row, $related);
+        $record = new FakeRecord($row, $related);
         $this->setExpectedException(
             InvalidArgumentException::CLASS,
-            "Expected Atlas\Fake\Employee\EmployeeRecord, got Atlas\Mapper\Record instead"
+            "Expected Atlas\Fake\Employee\EmployeeRecord, got Atlas\Mapper\FakeRecord instead"
         );
         $this->mapper->insert($record);
     }
@@ -353,10 +353,10 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         // try to update a record of the wrong type
         $row = new FakeRow(new FakeRowIdentity(['id' => null]), []);
         $related = new Related([]);
-        $record = new Record($row, $related);
+        $record = new FakeRecord($row, $related);
         $this->setExpectedException(
             InvalidArgumentException::CLASS,
-            "Expected Atlas\Fake\Employee\EmployeeRecord, got Atlas\Mapper\Record instead"
+            "Expected Atlas\Fake\Employee\EmployeeRecord, got Atlas\Mapper\FakeRecord instead"
         );
         $this->mapper->update($record);
     }
@@ -380,10 +380,10 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         // try to update a record of the wrong type
         $row = new FakeRow(new FakeRowIdentity(['id' => null]), []);
         $related = new Related([]);
-        $record = new Record($row, $related);
+        $record = new FakeRecord($row, $related);
         $this->setExpectedException(
             InvalidArgumentException::CLASS,
-            "Expected Atlas\Fake\Employee\EmployeeRecord, got Atlas\Mapper\Record instead"
+            "Expected Atlas\Fake\Employee\EmployeeRecord, got Atlas\Mapper\FakeRecord instead"
         );
         $this->mapper->delete($record);
     }

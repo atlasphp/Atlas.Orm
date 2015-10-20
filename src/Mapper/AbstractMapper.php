@@ -151,25 +151,25 @@ abstract class AbstractMapper
         return $this->newMapperSelect($tableSelect);
     }
 
-    public function insert(Record $record)
+    public function insert(AbstractRecord $record)
     {
         $this->assertRecordClass($record);
         return $this->getTable()->insert($record->getRow());
     }
 
-    public function update(Record $record)
+    public function update(AbstractRecord $record)
     {
         $this->assertRecordClass($record);
         return $this->getTable()->update($record->getRow());
     }
 
-    public function delete(Record $record)
+    public function delete(AbstractRecord $record)
     {
         $this->assertRecordClass($record);
         return $this->getTable()->delete($record->getRow());
     }
 
-    protected function assertRecordClass(Record $record)
+    protected function assertRecordClass(AbstractRecord $record)
     {
         if (! $record instanceof $this->recordClass) {
             $actual = get_class($record);

@@ -10,7 +10,7 @@ use Atlas\Table\AbstractRow;
  * row *and its related rows* regarding persistence.
  *
  */
-class Record
+abstract class AbstractRecord
 {
     private $row;
     private $related;

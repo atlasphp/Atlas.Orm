@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Fake\Thread;
 
-use Atlas\Mapper\Record;
+use Atlas\Mapper\AbstractRecord;
 
-class ThreadRecord extends Record
+class ThreadRecord extends AbstractRecord
 {
 }

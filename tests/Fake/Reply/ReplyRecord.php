@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Fake\Reply;
 
-use Atlas\Mapper\Record;
+use Atlas\Mapper\AbstractRecord;
 
-class ReplyRecord extends Record
+class ReplyRecord extends AbstractRecord
 {
 }

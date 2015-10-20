@@ -2,13 +2,13 @@
 namespace Atlas\Relation;
 
 use Atlas\Mapper\Related;
-use Atlas\Mapper\Record;
+use Atlas\Mapper\AbstractRecord;
 use Atlas\Mapper\RecordSet;
 
 class HasOne extends AbstractRelation
 {
     public function stitchIntoRecord(
-        Record $nativeRecord,
+        AbstractRecord $nativeRecord,
         callable $custom = null
     ) {
         $this->fix();

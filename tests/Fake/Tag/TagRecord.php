@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Fake\Tag;
 
-use Atlas\Mapper\Record;
+use Atlas\Mapper\AbstractRecord;
 
-class TagRecord extends Record
+class TagRecord extends AbstractRecord
 {
 }

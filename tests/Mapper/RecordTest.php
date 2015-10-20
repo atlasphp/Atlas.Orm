@@ -26,7 +26,7 @@ class RecordTest extends \PHPUnit_Framework_TestCase
             'irk' => 'doom',
         ]);
 
-        $this->record = new Record($this->row, $this->related);
+        $this->record = new FakeRecord($this->row, $this->related);
     }
 
     public function testGetRow()
@@ -50,7 +50,7 @@ class RecordTest extends \PHPUnit_Framework_TestCase
         // missing
         $this->setExpectedException(
             'Atlas\Exception',
-            'Atlas\Mapper\Record::$noSuchField does not exist'
+            'Atlas\Mapper\FakeRecord::$noSuchField does not exist'
         );
         $this->record->noSuchField;
     }
@@ -69,7 +69,7 @@ class RecordTest extends \PHPUnit_Framework_TestCase
         // missing
         $this->setExpectedException(
             'Atlas\Exception',
-            'Atlas\Mapper\Record::$noSuchField does not exist'
+            'Atlas\Mapper\FakeRecord::$noSuchField does not exist'
         );
         $this->record->noSuchField = 'missing';
     }
@@ -85,7 +85,7 @@ class RecordTest extends \PHPUnit_Framework_TestCase
         // missing
         $this->setExpectedException(
             'Atlas\Exception',
-            'Atlas\Mapper\Record::$noSuchField does not exist'
+            'Atlas\Mapper\FakeRecord::$noSuchField does not exist'
         );
         isset($this->record->noSuchField);
     }
@@ -104,7 +104,7 @@ class RecordTest extends \PHPUnit_Framework_TestCase
         // missing
         $this->setExpectedException(
             'Atlas\Exception',
-            'Atlas\Mapper\Record::$noSuchField does not exist'
+            'Atlas\Mapper\FakeRecord::$noSuchField does not exist'
         );
         unset($this->record->noSuchField);
     }
