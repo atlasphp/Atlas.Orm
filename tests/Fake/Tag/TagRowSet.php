@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Fake\Tag;
 
-use Atlas\Table\RowSet;
+use Atlas\Table\AbstractRowSet;
 
-class TagRowSet extends RowSet
+class TagRowSet extends AbstractRowSet
 {
 }

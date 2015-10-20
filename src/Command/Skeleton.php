@@ -262,9 +262,9 @@ ROW_IDENTITY;
 <?php
 namespace {NAMESPACE};
 
-use Atlas\Table\RowSet;
+use Atlas\Table\AbstractRowSet;
 
-class {TYPE}RowSet extends RowSet
+class {TYPE}RowSet extends AbstractRowSet
 {
 }
 

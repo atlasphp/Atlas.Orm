@@ -7,7 +7,7 @@ use Atlas\Relation\HasMany;
 use Atlas\Relation\HasManyThrough;
 use Atlas\Relation\HasOne;
 use Atlas\Table\AbstractRow;
-use Atlas\Table\RowSet;
+use Atlas\Table\AbstractRowSet;
 use Atlas\Table\AbstractTable;
 use Atlas\Table\TableSelect;
 use InvalidArgumentException;

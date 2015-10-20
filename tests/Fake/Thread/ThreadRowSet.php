@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Fake\Thread;
 
-use Atlas\Table\RowSet;
+use Atlas\Table\AbstractRowSet;
 
-class ThreadRowSet extends RowSet
+class ThreadRowSet extends AbstractRowSet
 {
 }

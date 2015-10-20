@@ -7,7 +7,7 @@ use Countable;
 use IteratorAggregate;
 use InvalidArgumentException;
 
-class RowSet implements ArrayAccess, Countable, IteratorAggregate
+abstract class AbstractRowSet implements ArrayAccess, Countable, IteratorAggregate
 {
     private $rows = [];
 

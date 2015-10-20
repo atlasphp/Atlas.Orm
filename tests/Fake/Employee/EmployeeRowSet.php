@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Fake\Employee;
 
-use Atlas\Table\RowSet;
+use Atlas\Table\AbstractRowSet;
 
-class EmployeeRowSet extends RowSet
+class EmployeeRowSet extends AbstractRowSet
 {
 }

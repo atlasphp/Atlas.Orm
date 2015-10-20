@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Fake\Summary;
 
-use Atlas\Table\RowSet;
+use Atlas\Table\AbstractRowSet;
 
-class SummaryRowSet extends RowSet
+class SummaryRowSet extends AbstractRowSet
 {
 }
