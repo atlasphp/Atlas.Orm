@@ -1,16 +1,16 @@
 <?php
 namespace Atlas\Mapper;
 
-use Atlas\Fake\Auto\AutoMapper;
-use Atlas\Fake\Auto\AutoTable;
-use Atlas\Fake\Employee\EmployeeMapper;
-use Atlas\Fake\Employee\EmployeeTable;
+use Atlas\DataSource\Auto\AutoMapper;
+use Atlas\DataSource\Auto\AutoTable;
+use Atlas\DataSource\Employee\EmployeeMapper;
+use Atlas\DataSource\Employee\EmployeeTable;
 use Atlas\Mapper\MapperRelations;
 use Atlas\Mapper\RecordFactory;
 use Atlas\SqliteFixture;
 use Atlas\Table\IdentityMap;
 use Atlas\Table\FakeRow;
-use Atlas\Fake\Employee\EmployeeRowFilter;
+use Atlas\DataSource\Employee\EmployeeRowFilter;
 use Atlas\Table\FakeRowIdentity;
 use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
@@ -316,7 +316,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $record = new FakeRecord($row, $related);
         $this->setExpectedException(
             InvalidArgumentException::CLASS,
-            "Expected Atlas\Fake\Employee\EmployeeRecord, got Atlas\Mapper\FakeRecord instead"
+            "Expected Atlas\DataSource\Employee\EmployeeRecord, got Atlas\Mapper\FakeRecord instead"
         );
         $this->mapper->insert($record);
     }
@@ -356,7 +356,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $record = new FakeRecord($row, $related);
         $this->setExpectedException(
             InvalidArgumentException::CLASS,
-            "Expected Atlas\Fake\Employee\EmployeeRecord, got Atlas\Mapper\FakeRecord instead"
+            "Expected Atlas\DataSource\Employee\EmployeeRecord, got Atlas\Mapper\FakeRecord instead"
         );
         $this->mapper->update($record);
     }
@@ -383,7 +383,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $record = new FakeRecord($row, $related);
         $this->setExpectedException(
             InvalidArgumentException::CLASS,
-            "Expected Atlas\Fake\Employee\EmployeeRecord, got Atlas\Mapper\FakeRecord instead"
+            "Expected Atlas\DataSource\Employee\EmployeeRecord, got Atlas\Mapper\FakeRecord instead"
         );
         $this->mapper->delete($record);
     }

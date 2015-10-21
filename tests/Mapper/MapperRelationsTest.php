@@ -2,10 +2,10 @@
 namespace Atlas\Mapper;
 
 use Atlas\Exception;
-use Atlas\Fake\Employee\EmployeeMapper;
-use Atlas\Fake\Employee\EmployeeRecord;
-use Atlas\Fake\Employee\EmployeeRecordSet;
-use Atlas\Fake\Employee\EmployeeRow;
+use Atlas\DataSource\Employee\EmployeeMapper;
+use Atlas\DataSource\Employee\EmployeeRecord;
+use Atlas\DataSource\Employee\EmployeeRecordSet;
+use Atlas\DataSource\Employee\EmployeeRow;
 use Atlas\Relation\HasManyThrough;
 
 class MapperRelationsTest extends \PHPUnit_Framework_TestCase

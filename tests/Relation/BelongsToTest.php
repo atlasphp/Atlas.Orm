@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Relation;
 
-use Atlas\Fake\Author\AuthorMapper;
-use Atlas\Fake\Thread\ThreadMapper;
+use Atlas\DataSource\Author\AuthorMapper;
+use Atlas\DataSource\Thread\ThreadMapper;
 
 class BelongsToTest extends AbstractRelationTest
 {
@@ -20,8 +20,8 @@ class BelongsToTest extends AbstractRelationTest
 
         $expect = [
             'name' => 'author',
-            'nativeMapperClass' => 'Atlas\\Fake\\Thread\\ThreadMapper',
-            'foreignMapperClass' => 'Atlas\\Fake\\Author\\AuthorMapper',
+            'nativeMapperClass' => 'Atlas\\DataSource\\Thread\\ThreadMapper',
+            'foreignMapperClass' => 'Atlas\\DataSource\\Author\\AuthorMapper',
             'nativeCol' => 'native',
             'throughName' => null,
             'throughNativeCol' => null,

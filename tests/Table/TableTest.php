@@ -2,8 +2,8 @@
 namespace Atlas\Table;
 
 use Atlas\Assertions;
-use Atlas\Fake\Employee\EmployeeTable;
-use Atlas\Fake\Employee\EmployeeRowFilter;
+use Atlas\DataSource\Employee\EmployeeTable;
+use Atlas\DataSource\Employee\EmployeeRowFilter;
 use Atlas\SqliteFixture;
 use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
@@ -207,7 +207,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $row = new FakeRow(new FakeRowIdentity(['id' => null]), []);
         $this->setExpectedException(
             InvalidArgumentException::CLASS,
-            "Expected Atlas\Fake\Employee\EmployeeRow, got Atlas\Table\FakeRow instead"
+            "Expected Atlas\DataSource\Employee\EmployeeRow, got Atlas\Table\FakeRow instead"
         );
         $this->table->insert($row);
     }
@@ -245,7 +245,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $row = new FakeRow(new FakeRowIdentity(['id' => null]), []);
         $this->setExpectedException(
             InvalidArgumentException::CLASS,
-            "Expected Atlas\Fake\Employee\EmployeeRow, got Atlas\Table\FakeRow instead"
+            "Expected Atlas\DataSource\Employee\EmployeeRow, got Atlas\Table\FakeRow instead"
         );
         $this->table->update($row);
     }
@@ -269,7 +269,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $row = new FakeRow(new FakeRowIdentity(['id' => null]), []);
         $this->setExpectedException(
             InvalidArgumentException::CLASS,
-            "Expected Atlas\Fake\Employee\EmployeeRow, got Atlas\Table\FakeRow instead"
+            "Expected Atlas\DataSource\Employee\EmployeeRow, got Atlas\Table\FakeRow instead"
         );
         $this->table->delete($row);
     }

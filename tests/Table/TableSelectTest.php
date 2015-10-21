@@ -2,8 +2,8 @@
 namespace Atlas\Table;
 
 use Atlas\Assertions;
-use Atlas\Fake\Employee\EmployeeTable;
-use Atlas\Fake\Employee\EmployeeRowFilter;
+use Atlas\DataSource\Employee\EmployeeTable;
+use Atlas\DataSource\Employee\EmployeeRowFilter;
 use Atlas\SqliteFixture;
 use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;

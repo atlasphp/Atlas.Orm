@@ -2,11 +2,11 @@
 namespace Atlas\Mapper;
 
 use Atlas\Exception;
-use Atlas\Fake\Employee\EmployeeMapper;
-use Atlas\Fake\Employee\EmployeeRecord;
-use Atlas\Fake\Employee\EmployeeRecordSet;
-use Atlas\Fake\Employee\EmployeeRow;
-use Atlas\Fake\Employee\EmployeeRowIdentity;
+use Atlas\DataSource\Employee\EmployeeMapper;
+use Atlas\DataSource\Employee\EmployeeRecord;
+use Atlas\DataSource\Employee\EmployeeRecordSet;
+use Atlas\DataSource\Employee\EmployeeRow;
+use Atlas\DataSource\Employee\EmployeeRowIdentity;
 use Atlas\Mapper\Related;
 
 class MapperLocatorTest extends \PHPUnit_Framework_TestCase
@@ -23,7 +23,7 @@ class MapperLocatorTest extends \PHPUnit_Framework_TestCase
 
     public function testHas()
     {
-        $this->assertFalse($this->mapperLocator->has('Atlas\Fake\Employee'));
+        $this->assertFalse($this->mapperLocator->has('Atlas\DataSource\Employee'));
         $this->assertTrue($this->mapperLocator->has(EmployeeMapper::CLASS));
         $this->assertTrue($this->mapperLocator->has(EmployeeRecord::CLASS));
         $this->assertTrue($this->mapperLocator->has(EmployeeRecordSet::CLASS));
@@ -42,7 +42,7 @@ class MapperLocatorTest extends \PHPUnit_Framework_TestCase
         $record = new EmployeeRecord($row, $related);
         $this->assertSame($expect, $this->mapperLocator->get($record));
 
-        $this->setExpectedException(Exception::CLASS, "Atlas\Fake\Employee not found in locator");
-        $this->mapperLocator->get('Atlas\Fake\Employee');
+        $this->setExpectedException(Exception::CLASS, "Atlas\DataSource\Employee not found in locator");
+        $this->mapperLocator->get('Atlas\DataSource\Employee');
     }
 }

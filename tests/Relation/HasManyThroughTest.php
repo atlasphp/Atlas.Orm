@@ -2,9 +2,9 @@
 namespace Atlas\Relation;
 
 use Atlas\Exception;
-use Atlas\Fake\Tag\TagMapper;
-use Atlas\Fake\Tagging\TaggingMapper;
-use Atlas\Fake\Thread\ThreadMapper;
+use Atlas\DataSource\Tag\TagMapper;
+use Atlas\DataSource\Tagging\TaggingMapper;
+use Atlas\DataSource\Thread\ThreadMapper;
 
 class HasManyThroughTest extends AbstractRelationTest
 {
@@ -25,8 +25,8 @@ class HasManyThroughTest extends AbstractRelationTest
 
         $expect = [
             'name' => 'threads',
-            'nativeMapperClass' => 'Atlas\\Fake\\Thread\\ThreadMapper',
-            'foreignMapperClass' => 'Atlas\\Fake\\Tag\\TagMapper',
+            'nativeMapperClass' => 'Atlas\\DataSource\\Thread\\ThreadMapper',
+            'foreignMapperClass' => 'Atlas\\DataSource\\Tag\\TagMapper',
             'nativeCol' => 'native',
             'throughName' => 'taggings',
             'throughNativeCol' => 'through_native',

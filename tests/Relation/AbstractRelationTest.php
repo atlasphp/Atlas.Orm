@@ -2,13 +2,13 @@
 namespace Atlas\Relation;
 
 use Atlas\AtlasContainer;
-use Atlas\Fake\Author\AuthorMapper;
-use Atlas\Fake\Reply\ReplyMapper;
-use Atlas\Fake\Summary\SummaryMapper;
-use Atlas\Fake\Summary\SummaryTable;
-use Atlas\Fake\Tag\TagMapper;
-use Atlas\Fake\Tagging\TaggingMapper;
-use Atlas\Fake\Thread\ThreadMapper;
+use Atlas\DataSource\Author\AuthorMapper;
+use Atlas\DataSource\Reply\ReplyMapper;
+use Atlas\DataSource\Summary\SummaryMapper;
+use Atlas\DataSource\Summary\SummaryTable;
+use Atlas\DataSource\Tag\TagMapper;
+use Atlas\DataSource\Tagging\TaggingMapper;
+use Atlas\DataSource\Thread\ThreadMapper;
 use Atlas\Mapper\MapperLocator;
 use Aura\Sql\ExtendedPdo;
 use Atlas\SqliteFixture;
