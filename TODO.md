@@ -33,17 +33,6 @@
     - Single-record strategy to save a record and all of its relateds; probably
     uses a Unit Of Work under the hood.
 
-- Skeleton generator
-
-    Allow for ...
-
-        --table={tablename}
-        --primary={primarycol}
-        --autoinc={bool}
-        --cols="foo,bar,baz"
-
-    ... to specify pertinent values. It also means different templates for different classes.
-
 - Docs
 
     - Finish them. :-/
