@@ -10,6 +10,11 @@
 
     - Add `append()` or `addNew()` to RowSet and RecordSet to append a new Row/Record of the proper type. Probably need to keep a reference back to the original Table/Mapper for the "new" logic.
 
+- Row
+
+    - Is there any way to use a property-per-column instead of a data array? Problem will be the Identity object. Also, want to use it to figure out what columns to bring back. Hell, do we
+    even need $cols at the table level when we have $default?
+
 - Interfaces
 
     - Add a RecordInterface (and a RecordSet interface?) so that Domain objects can typehint against the interface, and not necessarily an actual record. Maybe also add a <Type>RecordInterface class that extends RecordInterface, and have <Type>Record implement it.
