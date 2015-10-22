@@ -15,14 +15,15 @@ class Skeleton
     protected $subdir;
     protected $type;
     protected $classes = [
-        'Table',
-        'Row',
-        'RowIdentity',
-        'RowSet',
-        'RowFilter',
         'Mapper',
         'Record',
         'RecordSet',
+        'Row',
+        'RowFactory',
+        'RowFilter',
+        'RowIdentity',
+        'RowSet',
+        'Table',
     ];
 
     public function __construct(Context $context, Stdio $stdio)
@@ -196,11 +197,6 @@ class {TYPE}Table extends AbstractTable
         return '{TABLE}';
     }
 
-    public function getPrimary()
-    {
-        return '{PRIMARY}';
-    }
-
     public function getAutoinc()
     {
         return {AUTOINC};
@@ -209,26 +205,6 @@ class {TYPE}Table extends AbstractTable
     public function getCols()
     {
         return {COLS};
-    }
-
-    public function getDefault()
-    {
-        return {DEFAULT};
-    }
-
-    public function getRowClass()
-    {
-        return '{NAMESPACE}\\{TYPE}Row';
-    }
-
-    public function getRowSetClass()
-    {
-        return '{NAMESPACE}\\{TYPE}RowSet';
-    }
-
-    public function getRowIdentityClass()
-    {
-        return '{NAMESPACE}\\{TYPE}RowIdentity';
     }
 }
 
@@ -269,6 +245,42 @@ class {TYPE}RowSet extends AbstractRowSet
 }
 
 ROW_SET;
+
+    protected $rowFactory = <<<ROW_FACTORY
+<?php
+namespace {NAMESPACE};
+
+use Atlas\Table\AbstractRowFactory;
+
+class {TYPE}RowFactory extends AbstractRowFactory
+{
+    public function getPrimary()
+    {
+        return '{PRIMARY}';
+    }
+
+    public function getDefault()
+    {
+        return {DEFAULT};
+    }
+
+    public function getRowClass()
+    {
+        return '{NAMESPACE}\\{TYPE}Row';
+    }
+
+    public function getRowSetClass()
+    {
+        return '{NAMESPACE}\\{TYPE}RowSet';
+    }
+
+    public function getRowIdentityClass()
+    {
+        return '{NAMESPACE}\\{TYPE}RowIdentity';
+    }
+}
+
+ROW_FACTORY;
 
     protected $rowFilter = <<<ROW_FILTER
 <?php

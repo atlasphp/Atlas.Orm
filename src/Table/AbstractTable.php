@@ -67,30 +67,25 @@ abstract class AbstractTable
 
     protected $rowFilter;
 
-    protected $identityMap = [];
+    protected $rowFactory;
+
+    protected $identityMap;
 
     public function __construct(
         ConnectionLocator $connectionLocator,
         QueryFactory $queryFactory,
         IdentityMap $identityMap,
+        AbstractRowFactory $rowFactory,
         AbstractRowFilter $rowFilter
     ) {
         $this->connectionLocator = $connectionLocator;
         $this->queryFactory = $queryFactory;
         $this->identityMap = $identityMap;
+        $this->rowFactory = $rowFactory;
         $this->rowFilter = $rowFilter;
     }
 
     abstract public function getTable();
-
-    /**
-     *
-     * Returns the primary column name on the table.
-     *
-     * @return string The primary column name.
-     *
-     */
-    abstract public function getPrimary();
 
     /**
      *
@@ -101,12 +96,6 @@ abstract class AbstractTable
      */
     abstract public function getAutoinc();
 
-    abstract public function getRowClass();
-
-    abstract public function getRowIdentityClass();
-
-    abstract public function getRowSetClass();
-
     /**
      *
      * Select these columns.
@@ -115,16 +104,6 @@ abstract class AbstractTable
      *
      */
     abstract public function getCols();
-
-
-    /**
-     *
-     * Default values for a new row.
-     *
-     * @return array
-     *
-     */
-    abstract public function getDefault();
 
     /**
      *
@@ -159,6 +138,11 @@ abstract class AbstractTable
     public function getIdentityMap()
     {
         return $this->identityMap;
+    }
+
+    public function getRowFactory()
+    {
+        return $this->rowFactory;
     }
 
     /**
@@ -204,15 +188,14 @@ abstract class AbstractTable
         $primaryIdentity = $this->getPrimaryIdentity($primaryVal);
         $row = $this->identityMap->getRowByPrimary($primaryIdentity);
         if (! $row) {
-            $colsVals = [$this->getPrimary() => $primaryVal];
-            $row = $this->select($colsVals)->fetchRow();
+            $row = $this->select($primaryIdentity)->fetchRow();
         }
         return $row;
     }
 
     public function getPrimaryIdentity($primaryVal)
     {
-        return [$this->getPrimary() => $primaryVal];
+        return [$this->rowFactory->getPrimary() => $primaryVal];
     }
 
     public function fetchRowBy(array $colsVals)
@@ -258,7 +241,7 @@ abstract class AbstractTable
             return array();
         }
 
-        return $this->newRowSet(array_values($rows));
+        return $this->rowFactory->newRowSet(array_values($rows));
     }
 
     // get existing rows from identity map
@@ -282,11 +265,11 @@ abstract class AbstractTable
             return;
         }
         // fetch and retain remaining rows
-        $colsVals = [$this->getPrimary() => $primaryVals];
+        $colsVals = [$this->rowFactory->getPrimary() => $primaryVals];
         $select = $this->select($colsVals);
         $data = $select->cols($this->getCols())->fetchAll();
         foreach ($data as $cols) {
-            $row = $this->newRow($cols);
+            $row = $this->rowFactory->newRow($cols);
             $this->identityMap->setRow($row);
             $rows[$row->getIdentity()->getVal()] = $row;
         }
@@ -299,29 +282,12 @@ abstract class AbstractTable
 
     public function newRow(array $cols)
     {
-        $cols = array_merge($this->getDefault(), $cols);
-        $rowIdentity = $this->newRowIdentity($cols);
-        $rowClass = $this->getRowClass();
-        return new $rowClass($rowIdentity, $cols);
-    }
-
-    protected function newRowIdentity(array &$cols)
-    {
-        $primaryCol = $this->getPrimary();
-        $primaryVal = null;
-        if (array_key_exists($primaryCol, $cols)) {
-            $primaryVal = $cols[$primaryCol];
-            unset($cols[$primaryCol]);
-        }
-
-        $rowIdentityClass = $this->getRowIdentityClass();
-        return new $rowIdentityClass([$primaryCol => $primaryVal]);
+        return $this->rowFactory->newRow($cols);
     }
 
     public function newRowSet(array $rows)
     {
-        $rowSetClass = $this->getRowSetClass();
-        return new $rowSetClass($rows, $this->getRowClass());
+        return $this->rowFactory->newRowSet($rows);
     }
 
     /**
@@ -349,7 +315,7 @@ abstract class AbstractTable
             return false;
         }
 
-        $primary = $this->getPrimary();
+        $primary = $this->rowFactory->getPrimary();
         if ($this->getAutoinc()) {
             $row->$primary = $writeConnection->lastInsertId($primary);
         }
@@ -366,7 +332,7 @@ abstract class AbstractTable
         $cols = $this->getArrayCopyForInsert($row);
 
         if ($this->getAutoinc()) {
-            unset($cols[$this->getPrimary()]);
+            unset($cols[$this->rowFactory->getPrimary()]);
         }
 
         $insert = $this->queryFactory->newInsert();
@@ -416,7 +382,7 @@ abstract class AbstractTable
     {
         // get the columns to update, and unset primary column
         $cols = $this->getArrayCopyForUpdate($row);
-        $primaryCol = $this->getPrimary();
+        $primaryCol = $this->rowFactory->getPrimary();
         unset($cols[$primaryCol]);
 
         // are there any columns to update?
@@ -456,7 +422,7 @@ abstract class AbstractTable
 
     protected function newDelete(AbstractRow $row)
     {
-        $primaryCol = $this->getPrimary();
+        $primaryCol = $this->rowFactory->getPrimary();
 
         $delete = $this->queryFactory->newDelete();
         $delete->from($this->getTable());
@@ -466,7 +432,7 @@ abstract class AbstractTable
 
     protected function assertRowClass(AbstractRow $row)
     {
-        $rowClass = $this->getRowClass();
+        $rowClass = $this->rowFactory->getRowClass();
         if (! $row instanceof $rowClass) {
             $actual = get_class($row);
             throw new InvalidArgumentException("Expected {$rowClass}, got {$actual} instead");

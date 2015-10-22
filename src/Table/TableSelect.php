@@ -36,7 +36,7 @@ class TableSelect implements SubselectInterface
 
     protected $identityMap;
 
-    protected $primaryCol;
+    protected $rowFactory;
 
     /**
      *
@@ -50,7 +50,8 @@ class TableSelect implements SubselectInterface
         $this->table = $table;
         $this->select = $select;
         $this->identityMap = $this->table->getIdentityMap();
-        $this->primaryCol = $this->table->getPrimary();
+        $this->rowFactory = $this->table->getRowFactory();
+        $this->primaryCol = $this->rowFactory->getPrimary();
     }
 
     /**

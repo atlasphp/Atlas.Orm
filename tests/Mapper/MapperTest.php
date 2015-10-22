@@ -11,6 +11,7 @@ use Atlas\SqliteFixture;
 use Atlas\Table\IdentityMap;
 use Atlas\Table\FakeRow;
 use Atlas\DataSource\Employee\EmployeeRowFilter;
+use Atlas\DataSource\Employee\EmployeeRowFactory;
 use Atlas\Table\FakeRowIdentity;
 use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
@@ -34,6 +35,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
             $connectionLocator,
             new QueryFactory('sqlite'),
             new IdentityMap(),
+            new EmployeeRowFactory(),
             new EmployeeRowFilter()
         );
 

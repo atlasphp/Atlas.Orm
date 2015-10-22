@@ -10,11 +10,6 @@ class SummaryTable extends AbstractTable
         return 'summaries';
     }
 
-    public function getPrimary()
-    {
-        return 'thread_id';
-    }
-
     public function getAutoinc()
     {
         return true;
@@ -25,27 +20,5 @@ class SummaryTable extends AbstractTable
         return [
             '*',
         ];
-    }
-
-    public function getDefault()
-    {
-        return [
-            'thread_id' => null,
-        ];
-    }
-
-    public function getRowClass()
-    {
-        return 'Atlas\DataSource\Summary\SummaryRow';
-    }
-
-    public function getRowSetClass()
-    {
-        return 'Atlas\DataSource\Summary\SummaryRowSet';
-    }
-
-    public function getRowIdentityClass()
-    {
-        return 'Atlas\DataSource\Summary\SummaryRowIdentity';
     }
 }

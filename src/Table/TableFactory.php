@@ -17,12 +17,13 @@ class TableFactory
     public function __invoke()
     {
         $tableClass = $this->tableClass;
-        $rowFilterClass = substr($tableClass, 0, -5) . 'RowFilter';
+        $type = substr($tableClass, 0, -5);
         return new $tableClass(
             $this->atlasContainer->getConnectionLocator(),
             $this->atlasContainer->getQueryFactory(),
             $this->atlasContainer->newInstance(IdentityMap::CLASS),
-            $this->atlasContainer->newInstance($rowFilterClass)
+            $this->atlasContainer->newInstance("{$type}RowFactory"),
+            $this->atlasContainer->newInstance("{$type}RowFilter")
         );
     }
 }
