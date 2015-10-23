@@ -71,6 +71,8 @@ abstract class AbstractTable
 
     protected $identityMap;
 
+    protected $primary;
+
     public function __construct(
         ConnectionLocator $connectionLocator,
         QueryFactory $queryFactory,
@@ -83,6 +85,7 @@ abstract class AbstractTable
         $this->identityMap = $identityMap;
         $this->rowFactory = $rowFactory;
         $this->rowFilter = $rowFilter;
+        $this->primary = $this->primary;
     }
 
     abstract public function getTable();
@@ -195,7 +198,7 @@ abstract class AbstractTable
 
     public function getPrimaryIdentity($primaryVal)
     {
-        return [$this->rowFactory->getPrimary() => $primaryVal];
+        return [$this->primary => $primaryVal];
     }
 
     public function fetchRowBy(array $colsVals)
@@ -265,7 +268,7 @@ abstract class AbstractTable
             return;
         }
         // fetch and retain remaining rows
-        $colsVals = [$this->rowFactory->getPrimary() => $primaryVals];
+        $colsVals = [$this->primary => $primaryVals];
         $select = $this->select($colsVals);
         $data = $select->cols($this->getCols())->fetchAll();
         foreach ($data as $cols) {
@@ -315,7 +318,7 @@ abstract class AbstractTable
             return false;
         }
 
-        $primary = $this->rowFactory->getPrimary();
+        $primary = $this->primary;
         if ($this->getAutoinc()) {
             $row->$primary = $writeConnection->lastInsertId($primary);
         }
@@ -332,7 +335,7 @@ abstract class AbstractTable
         $cols = $this->getArrayCopyForInsert($row);
 
         if ($this->getAutoinc()) {
-            unset($cols[$this->rowFactory->getPrimary()]);
+            unset($cols[$this->primary]);
         }
 
         $insert = $this->queryFactory->newInsert();
@@ -382,7 +385,7 @@ abstract class AbstractTable
     {
         // get the columns to update, and unset primary column
         $cols = $this->getArrayCopyForUpdate($row);
-        $primaryCol = $this->rowFactory->getPrimary();
+        $primaryCol = $this->primary;
         unset($cols[$primaryCol]);
 
         // are there any columns to update?
@@ -422,7 +425,7 @@ abstract class AbstractTable
 
     protected function newDelete(AbstractRow $row)
     {
-        $primaryCol = $this->rowFactory->getPrimary();
+        $primaryCol = $this->primary;
 
         $delete = $this->queryFactory->newDelete();
         $delete->from($this->getTable());
@@ -461,7 +464,7 @@ abstract class AbstractTable
 
     public function getMappedOrNewRow(array $cols)
     {
-        $primaryVal = $cols[$this->rowFactory->getPrimary()];
+        $primaryVal = $cols[$this->primary];
         $primaryIdentity = $this->getPrimaryIdentity($primaryVal);
         $row = $this->identityMap->getRowByPrimary($primaryIdentity);
         if (! $row) {
