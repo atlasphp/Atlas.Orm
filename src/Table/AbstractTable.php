@@ -85,7 +85,7 @@ abstract class AbstractTable
         $this->identityMap = $identityMap;
         $this->rowFactory = $rowFactory;
         $this->rowFilter = $rowFilter;
-        $this->primary = $this->primary;
+        $this->primary = $this->rowFactory->getPrimary();
     }
 
     abstract public function getTable();
@@ -107,6 +107,11 @@ abstract class AbstractTable
      *
      */
     abstract public function getCols();
+
+    public function getPrimary()
+    {
+        return $this->primary;
+    }
 
     /**
      *

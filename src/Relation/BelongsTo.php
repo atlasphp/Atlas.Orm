@@ -11,7 +11,7 @@ class BelongsTo extends HasOne
             return;
         }
 
-        $this->nativeCol($this->foreignMapper->getTable()->getRowFactory()->getPrimary());
+        $this->nativeCol($this->foreignMapper->getTable()->getPrimary());
     }
 
     protected function fixForeignCol()
@@ -20,6 +20,6 @@ class BelongsTo extends HasOne
             return;
         }
 
-        $this->foreignCol($this->foreignMapper->getTable()->getRowFactory()->getPrimary());
+        $this->foreignCol($this->foreignMapper->getTable()->getPrimary());
     }
 }
