@@ -461,7 +461,7 @@ abstract class AbstractTable
 
     public function getMappedOrNewRow(array $cols)
     {
-        $primaryVal = $cols[$this->getRowFactory()->getPrimary()];
+        $primaryVal = $cols[$this->rowFactory->getPrimary()];
         $primaryIdentity = $this->getPrimaryIdentity($primaryVal);
         $row = $this->identityMap->getRowByPrimary($primaryIdentity);
         if (! $row) {
