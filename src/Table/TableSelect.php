@@ -34,10 +34,6 @@ class TableSelect implements SubselectInterface
 
     protected $table;
 
-    protected $identityMap;
-
-    protected $rowFactory;
-
     /**
      *
      * @param SelectInterface $select
@@ -47,11 +43,8 @@ class TableSelect implements SubselectInterface
         AbstractTable $table,
         SelectInterface $select
     ) {
-        $this->table = $table;
+        $this->table = $table; // getReadConnection(), getCols(), newRow(), newRowSet(), getPrimaryIdentity()
         $this->select = $select;
-        $this->identityMap = $this->table->getIdentityMap();
-        $this->rowFactory = $this->table->getRowFactory();
-        $this->primaryCol = $this->rowFactory->getPrimary();
     }
 
     /**
@@ -206,7 +199,7 @@ class TableSelect implements SubselectInterface
             return false;
         }
 
-        return $this->getMappedOrNewRow($cols);
+        return $this->table->getMappedOrNewRow($cols);
     }
 
     public function fetchRowSet()
@@ -218,23 +211,6 @@ class TableSelect implements SubselectInterface
             return array();
         }
 
-        $rows = [];
-        foreach ($data as $cols) {
-            $rows[] = $this->getMappedOrNewRow($cols);
-        }
-
-        return $this->table->newRowSet($rows);
-    }
-
-    protected function getMappedOrNewRow(array $cols)
-    {
-        $primaryVal = $cols[$this->primaryCol];
-        $primaryIdentity = $this->table->getPrimaryIdentity($primaryVal);
-        $row = $this->identityMap->getRowByPrimary($primaryIdentity);
-        if (! $row) {
-            $row = $this->table->newRow($cols);
-            $this->identityMap->setRow($row);
-        }
-        return $row;
+        return $this->table->getMappedOrNewRowSet($data);
     }
 }

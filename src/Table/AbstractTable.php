@@ -459,4 +459,25 @@ abstract class AbstractTable
         return $copy;
     }
 
+    public function getMappedOrNewRow(array $cols)
+    {
+        $primaryVal = $cols[$this->getRowFactory()->getPrimary()];
+        $primaryIdentity = $this->getPrimaryIdentity($primaryVal);
+        $row = $this->identityMap->getRowByPrimary($primaryIdentity);
+        if (! $row) {
+            $row = $this->newRow($cols);
+            $this->identityMap->setRow($row);
+        }
+        return $row;
+    }
+
+    public function getMappedOrNewRowSet(array $data)
+    {
+        $rows = [];
+        foreach ($data as $cols) {
+            $rows[] = $this->getMappedOrNewRow($cols);
+        }
+
+        return $this->newRowSet($rows);
+    }
 }
