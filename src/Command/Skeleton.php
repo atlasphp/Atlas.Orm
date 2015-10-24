@@ -265,21 +265,6 @@ class {TYPE}RowFactory extends AbstractRowFactory
     {
         return {DEFAULT};
     }
-
-    public function getRowClass()
-    {
-        return {TYPE}Row::CLASS;
-    }
-
-    public function getRowSetClass()
-    {
-        return {TYPE}RowSet::CLASS;
-    }
-
-    public function getRowIdentityClass()
-    {
-        return {TYPE}RowIdentity::CLASS;
-    }
 }
 
 ROW_FACTORY;
@@ -340,15 +325,6 @@ use Atlas\Mapper\AbstractRecordFactory;
 
 class {TYPE}RecordFactory extends AbstractRecordFactory
 {
-    public function getRecordClass()
-    {
-        return {TYPE}Record::CLASS;
-    }
-
-    public function getRecordSetClass()
-    {
-        return {TYPE}RecordSet::CLASS;
-    }
 }
 
 RECORD_FACTORY;
@@ -361,11 +337,6 @@ use Atlas\Mapper\AbstractRelations;
 
 class {TYPE}Relations extends AbstractRelations
 {
-    protected function getNativeMapperClass()
-    {
-        return {TYPE}Mapper::CLASS;
-    }
-
     protected function setRelations()
     {
         // no relations

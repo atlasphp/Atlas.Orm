@@ -17,19 +17,4 @@ class AuthorRowFactory extends AbstractRowFactory
             'name' => null,
         ];
     }
-
-    public function getRowClass()
-    {
-        return AuthorRow::CLASS;
-    }
-
-    public function getRowSetClass()
-    {
-        return AuthorRowSet::CLASS;
-    }
-
-    public function getRowIdentityClass()
-    {
-        return AuthorRowIdentity::CLASS;
-    }
 }

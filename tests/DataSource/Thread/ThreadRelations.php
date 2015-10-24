@@ -10,11 +10,6 @@ use Atlas\Mapper\AbstractRelations;
 
 class ThreadRelations extends AbstractRelations
 {
-    protected function getNativeMapperClass()
-    {
-        return ThreadMapper::CLASS;
-    }
-
     protected function setRelations()
     {
         $this->belongsTo('author', AuthorMapper::CLASS);

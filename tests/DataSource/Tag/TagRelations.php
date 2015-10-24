@@ -7,11 +7,6 @@ use Atlas\Mapper\AbstractRelations;
 
 class TagRelations extends AbstractRelations
 {
-    protected function getNativeMapperClass()
-    {
-        return TagMapper::CLASS;
-    }
-
     protected function setRelations()
     {
         $this->hasMany('taggings', TaggingMapper::CLASS);

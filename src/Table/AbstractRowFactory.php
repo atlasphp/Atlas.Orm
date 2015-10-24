@@ -59,9 +59,30 @@ abstract class AbstractRowFactory
      */
     abstract public function getPrimary();
 
-    abstract public function getRowClass();
+    public function getRowClass()
+    {
+        static $rowClass;
+        if (! $rowClass) {
+            $rowClass = substr(get_class($this), 0, -7);
+        }
+        return $rowClass;
+    }
 
-    abstract public function getRowIdentityClass();
+    public function getRowIdentityClass()
+    {
+        static $rowIdentityClass;
+        if (! $rowIdentityClass) {
+            $rowIdentityClass = $this->getRowClass() . 'Identity';
+        }
+        return $rowIdentityClass;
+    }
 
-    abstract public function getRowSetClass();
+    public function getRowSetClass()
+    {
+        static $rowSetClass;
+        if (! $rowSetClass) {
+            $rowSetClass = $this->getRowClass() . 'Set';
+        }
+        return $rowSetClass;
+    }
 }

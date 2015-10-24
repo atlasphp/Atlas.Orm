@@ -16,19 +16,4 @@ class SummaryRowFactory extends AbstractRowFactory
             'thread_id' => null,
         ];
     }
-
-    public function getRowClass()
-    {
-        return SummaryRow::CLASS;
-    }
-
-    public function getRowSetClass()
-    {
-        return SummaryRowSet::CLASS;
-    }
-
-    public function getRowIdentityClass()
-    {
-        return SummaryRowIdentity::CLASS;
-    }
 }

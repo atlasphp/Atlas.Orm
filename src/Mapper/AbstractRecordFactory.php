@@ -6,9 +6,23 @@ use InvalidArgumentException;
 
 abstract class AbstractRecordFactory
 {
-    abstract public function getRecordClass();
+    public function getRecordClass()
+    {
+        static $recordClass;
+        if (! $recordClass) {
+            $recordClass = substr(get_class($this), 0, -7);
+        }
+        return $recordClass;
+    }
 
-    abstract public function getRecordSetClass();
+    public function getRecordSetClass()
+    {
+        static $recordSetClass;
+        if (! $recordSetClass) {
+            $recordSetClass = $this->getRecordClass() . 'Set';
+        }
+        return $recordSetClass;
+    }
 
     // row can be array or Row object
     public function newRecord(AbstractRow $row, array $relatedFields)

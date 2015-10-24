@@ -16,19 +16,4 @@ class ReplyRowFactory extends AbstractRowFactory
             'reply_id' => null,
         ];
     }
-
-    public function getRowClass()
-    {
-        return ReplyRow::CLASS;
-    }
-
-    public function getRowSetClass()
-    {
-        return ReplyRowSet::CLASS;
-    }
-
-    public function getRowIdentityClass()
-    {
-        return ReplyRowIdentity::CLASS;
-    }
 }

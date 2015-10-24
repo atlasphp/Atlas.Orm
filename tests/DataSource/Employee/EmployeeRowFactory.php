@@ -16,19 +16,4 @@ class EmployeeRowFactory extends AbstractRowFactory
             'id' => null,
         ];
     }
-
-    public function getRowClass()
-    {
-        return EmployeeRow::CLASS;
-    }
-
-    public function getRowSetClass()
-    {
-        return EmployeeRowSet::CLASS;
-    }
-
-    public function getRowIdentityClass()
-    {
-        return EmployeeRowIdentity::CLASS;
-    }
 }

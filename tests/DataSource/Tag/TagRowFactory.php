@@ -16,19 +16,4 @@ class TagRowFactory extends AbstractRowFactory
             'tag_id' => null,
         ];
     }
-
-    public function getRowClass()
-    {
-        return TagRow::CLASS;
-    }
-
-    public function getRowSetClass()
-    {
-        return TagRowSet::CLASS;
-    }
-
-    public function getRowIdentityClass()
-    {
-        return TagRowIdentity::CLASS;
-    }
 }

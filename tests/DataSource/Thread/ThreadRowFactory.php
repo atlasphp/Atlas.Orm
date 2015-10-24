@@ -16,19 +16,4 @@ class ThreadRowFactory extends AbstractRowFactory
             'thread_id' => null,
         ];
     }
-
-    public function getRowClass()
-    {
-        return ThreadRow::CLASS;
-    }
-
-    public function getRowSetClass()
-    {
-        return ThreadRowSet::CLASS;
-    }
-
-    public function getRowIdentityClass()
-    {
-        return ThreadRowIdentity::CLASS;
-    }
 }

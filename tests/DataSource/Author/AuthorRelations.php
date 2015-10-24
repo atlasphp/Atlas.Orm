@@ -7,11 +7,6 @@ use Atlas\Mapper\AbstractRelations;
 
 class AuthorRelations extends AbstractRelations
 {
-    protected function getNativeMapperClass()
-    {
-        return AuthorMapper::CLASS;
-    }
-
     protected function setRelations()
     {
         $this->hasMany('replies', ReplyMapper::CLASS);

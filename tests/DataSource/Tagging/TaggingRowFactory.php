@@ -16,19 +16,4 @@ class TaggingRowFactory extends AbstractRowFactory
             'tagging_id' => null,
         ];
     }
-
-    public function getRowClass()
-    {
-        return TaggingRow::CLASS;
-    }
-
-    public function getRowSetClass()
-    {
-        return TaggingRowSet::CLASS;
-    }
-
-    public function getRowIdentityClass()
-    {
-        return TaggingRowIdentity::CLASS;
-    }
 }

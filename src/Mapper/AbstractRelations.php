@@ -13,15 +13,16 @@ abstract class AbstractRelations
 
     protected $mapperLocator;
 
+    protected $nativeMapperClass;
+
     protected $fields = [];
 
     public function __construct(MapperLocator $mapperLocator)
     {
         $this->mapperLocator = $mapperLocator;
+        $this->nativeMapperClass = substr(get_class($this), 0, -9) . 'Mapper';
         $this->setRelations();
     }
-
-    abstract protected function getNativeMapperClass();
 
     abstract protected function setRelations();
 
@@ -50,7 +51,7 @@ abstract class AbstractRelations
     {
         return new $relationClass(
             $this->mapperLocator,
-            $this->getNativeMapperClass(),
+            $this->nativeMapperClass,
             $name,
             $foreignMapperClass,
             $throughName
