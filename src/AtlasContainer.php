@@ -4,6 +4,7 @@ namespace Atlas;
 use Atlas\Mapper\MapperFactory;
 use Atlas\Mapper\MapperLocator;
 use Atlas\Mapper\MapperRelations;
+use Atlas\Table\IdentityMap;
 use Atlas\Table\TableFactory;
 use Atlas\Table\TableLocator;
 use Aura\Sql\ConnectionLocator;
@@ -14,6 +15,7 @@ class AtlasContainer
     protected $atlas;
     protected $connectionLocator;
     protected $factories;
+    protected $identityMap;
     protected $mapperLocator;
     protected $queryFactory;
     protected $tableLocator;
@@ -24,6 +26,7 @@ class AtlasContainer
         $this->connectionLocator = new ConnectionLocator();
         $this->tableLocator = new TableLocator();
         $this->mapperLocator = new MapperLocator();
+        $this->identityMap = new IdentityMap();
         $this->atlas = new Atlas($this->mapperLocator);
     }
 
@@ -45,6 +48,11 @@ class AtlasContainer
     public function getMapperLocator()
     {
         return $this->mapperLocator;
+    }
+
+    public function getIdentityMap()
+    {
+        return $this->identityMap;
     }
 
     public function getTable($tableClass)

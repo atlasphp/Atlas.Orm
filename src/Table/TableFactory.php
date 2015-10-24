@@ -21,7 +21,7 @@ class TableFactory
         return new $tableClass(
             $this->atlasContainer->getConnectionLocator(),
             $this->atlasContainer->getQueryFactory(),
-            $this->atlasContainer->newInstance(IdentityMap::CLASS),
+            $this->atlasContainer->getIdentityMap(),
             $this->atlasContainer->newInstance("{$type}RowFactory"),
             $this->atlasContainer->newInstance("{$type}RowFilter")
         );

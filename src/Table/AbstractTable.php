@@ -72,6 +72,8 @@ abstract class AbstractTable
 
     protected $primary;
 
+    protected $rowClass;
+
     public function __construct(
         ConnectionLocator $connectionLocator,
         QueryFactory $queryFactory,
@@ -85,6 +87,7 @@ abstract class AbstractTable
         $this->rowFactory = $rowFactory;
         $this->rowFilter = $rowFilter;
         $this->primary = $this->rowFactory->getPrimary();
+        $this->rowClass = $this->rowFactory->getRowClass();
     }
 
     abstract public function getTable();
@@ -188,7 +191,7 @@ abstract class AbstractTable
     public function fetchRow($primaryVal)
     {
         $primaryIdentity = $this->getPrimaryIdentity($primaryVal);
-        $row = $this->identityMap->getRowByPrimary($primaryIdentity);
+        $row = $this->identityMap->getRowByPrimary($this->rowClass, $primaryIdentity);
         if (! $row) {
             $row = $this->select($primaryIdentity)->fetchRow();
         }
@@ -252,8 +255,8 @@ abstract class AbstractTable
         foreach ($primaryVals as $i => $primaryVal) {
             $rows[$primaryVal] = null;
             $primaryIdentity = $this->getPrimaryIdentity($primaryVal);
-            if ($this->identityMap->hasPrimary($primaryIdentity)) {
-                $rows[$primaryVal] = $this->identityMap->getRowByPrimary($primaryIdentity);
+            if ($this->identityMap->hasPrimary($this->rowClass, $primaryIdentity)) {
+                $rows[$primaryVal] = $this->identityMap->getRowByPrimary($this->rowClass, $primaryIdentity);
                 unset($primaryVals[$i]);
             }
         }
@@ -456,7 +459,7 @@ abstract class AbstractTable
     {
         $primaryVal = $cols[$this->primary];
         $primaryIdentity = $this->getPrimaryIdentity($primaryVal);
-        $row = $this->identityMap->getRowByPrimary($primaryIdentity);
+        $row = $this->identityMap->getRowByPrimary($this->rowClass, $primaryIdentity);
         if (! $row) {
             $row = $this->newRow($cols);
             $this->identityMap->setRow($row);

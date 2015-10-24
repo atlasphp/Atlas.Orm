@@ -1,6 +1,6 @@
 - Identity Map
 
-    - Consider a single Atlas-wide Identity Map, instead of one per table. Also consider setting in the array values directly instead of getting a copy from the row.
+    - Consider setting in the array values directly instead of getting a copy from the row.
 
 - RowSet/RecordSet
 
