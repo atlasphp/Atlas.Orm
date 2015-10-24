@@ -10,11 +10,6 @@ class EmployeeTable extends AbstractTable
         return 'employee';
     }
 
-    public function getPrimary()
-    {
-        return 'id';
-    }
-
     public function getAutoinc()
     {
         return true;
@@ -25,27 +20,5 @@ class EmployeeTable extends AbstractTable
         return [
             '*',
         ];
-    }
-
-    public function getDefault()
-    {
-        return [
-            'id' => null,
-        ];
-    }
-
-    public function getRowClass()
-    {
-        return 'Atlas\DataSource\Employee\EmployeeRow';
-    }
-
-    public function getRowSetClass()
-    {
-        return 'Atlas\DataSource\Employee\EmployeeRowSet';
-    }
-
-    public function getRowIdentityClass()
-    {
-        return 'Atlas\DataSource\Employee\EmployeeRowIdentity';
     }
 }

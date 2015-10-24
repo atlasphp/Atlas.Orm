@@ -3,6 +3,7 @@ namespace Atlas\Table;
 
 use Atlas\Assertions;
 use Atlas\DataSource\Employee\EmployeeTable;
+use Atlas\DataSource\Employee\EmployeeRowFactory;
 use Atlas\DataSource\Employee\EmployeeRowFilter;
 use Atlas\SqliteFixture;
 use Aura\Sql\ConnectionLocator;
@@ -28,6 +29,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
             $connectionLocator,
             new QueryFactory('sqlite'),
             new IdentityMap(),
+            new EmployeeRowFactory(),
             new EmployeeRowFilter()
         );
 

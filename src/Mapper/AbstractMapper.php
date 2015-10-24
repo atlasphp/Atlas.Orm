@@ -10,7 +10,6 @@ use Atlas\Table\AbstractRow;
 use Atlas\Table\AbstractRowSet;
 use Atlas\Table\AbstractTable;
 use Atlas\Table\TableSelect;
-use InvalidArgumentException;
 
 /**
  *
@@ -25,26 +24,27 @@ abstract class AbstractMapper
 
     protected $mapperRelations;
 
-    protected $recordClass;
+    protected $recordFactory;
 
-    protected $recordSetClass;
-
-    public function __construct(AbstractTable $table, MapperRelations $mapperRelations)
-    {
+    public function __construct(
+        AbstractTable $table,
+        AbstractRecordFactory $recordFactory,
+        MapperRelations $mapperRelations
+    ) {
         $this->table = $table;
+        $this->recordFactory = $recordFactory;
         $this->mapperRelations = $mapperRelations;
-
-        // Foo\Bar\BazMapper -> Foo\Bar\Baz
-        $type = substr(get_class($this), 0, -6);
-        $this->recordClass = "{$type}Record";
-        $this->recordSetClass = "{$type}RecordSet";
-
         $this->setMapperRelations();
     }
 
     public function getTable()
     {
         return $this->table;
+    }
+
+    public function getRecordFactory()
+    {
+        return $this->recordFactory;
     }
 
     public function getMapperRelations()
@@ -56,16 +56,6 @@ abstract class AbstractMapper
     {
     }
 
-    public function getRecordClass()
-    {
-        return $this->recordClass;
-    }
-
-    public function getRecordSetClass()
-    {
-        return $this->recordSetClass;
-    }
-
     // row can be array or Row object
     public function newRecord($row = [])
     {
@@ -73,25 +63,18 @@ abstract class AbstractMapper
             $row = $this->getTable()->newRow($row);
         }
 
-        $related = new Related($this->mapperRelations->getFields());
-        $recordClass = $this->getRecordClass();
-        return new $recordClass($row, $related);
+        return $this->recordFactory->newRecord($row, $this->mapperRelations->getFields());
     }
 
     // rowSet can be array of Rows, or RowSet object
     public function newRecordSetFromRows($rows)
     {
-        $records = [];
-        foreach ($rows as $row) {
-            $records[] = $this->newRecord($row);
-        }
-        return $this->newRecordSet($records);
+        return $this->recordFactory->newRecordSetFromRows($rows, $this->mapperRelations->getFields());
     }
 
     public function newRecordSet(array $records = [])
     {
-        $recordSetClass = $this->getRecordSetClass();
-        return new $recordSetClass($records, $this->recordClass);
+        return $this->recordFactory->newRecordSet($records);
     }
 
     public function fetchRecord($primaryVal, array $with = [])
@@ -112,7 +95,7 @@ abstract class AbstractMapper
             return false;
         }
 
-        $record = $this->newRecord($row);
+        $record = $this->recordFactory->newRecord($row, $this->mapperRelations->getFields());
         $this->mapperRelations->stitchIntoRecord($record, $with);
         return $record;
     }
@@ -153,28 +136,20 @@ abstract class AbstractMapper
 
     public function insert(AbstractRecord $record)
     {
-        $this->assertRecordClass($record);
+        $this->recordFactory->assertRecordClass($record);
         return $this->getTable()->insert($record->getRow());
     }
 
     public function update(AbstractRecord $record)
     {
-        $this->assertRecordClass($record);
+        $this->recordFactory->assertRecordClass($record);
         return $this->getTable()->update($record->getRow());
     }
 
     public function delete(AbstractRecord $record)
     {
-        $this->assertRecordClass($record);
+        $this->recordFactory->assertRecordClass($record);
         return $this->getTable()->delete($record->getRow());
-    }
-
-    protected function assertRecordClass(AbstractRecord $record)
-    {
-        if (! $record instanceof $this->recordClass) {
-            $actual = get_class($record);
-            throw new InvalidArgumentException("Expected {$this->recordClass}, got {$actual} instead");
-        }
     }
 
     protected function hasOne($name, $foreignMapperClass)

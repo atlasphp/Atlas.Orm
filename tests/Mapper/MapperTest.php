@@ -4,14 +4,16 @@ namespace Atlas\Mapper;
 use Atlas\DataSource\Auto\AutoMapper;
 use Atlas\DataSource\Auto\AutoTable;
 use Atlas\DataSource\Employee\EmployeeMapper;
+use Atlas\DataSource\Employee\EmployeeRecordFactory;
+use Atlas\DataSource\Employee\EmployeeRowFactory;
+use Atlas\DataSource\Employee\EmployeeRowFilter;
 use Atlas\DataSource\Employee\EmployeeTable;
 use Atlas\Mapper\MapperRelations;
 use Atlas\Mapper\RecordFactory;
 use Atlas\SqliteFixture;
-use Atlas\Table\IdentityMap;
 use Atlas\Table\FakeRow;
-use Atlas\DataSource\Employee\EmployeeRowFilter;
 use Atlas\Table\FakeRowIdentity;
+use Atlas\Table\IdentityMap;
 use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\QueryFactory;
@@ -34,6 +36,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
             $connectionLocator,
             new QueryFactory('sqlite'),
             new IdentityMap(),
+            new EmployeeRowFactory(),
             new EmployeeRowFilter()
         );
 
@@ -42,6 +45,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
 
         $this->mapper = new EmployeeMapper(
             $this->table,
+            new EmployeeRecordFactory(),
             new MapperRelations(EmployeeMapper::CLASS, new MapperLocator())
         );
     }

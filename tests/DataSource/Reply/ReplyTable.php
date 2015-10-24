@@ -10,11 +10,6 @@ class ReplyTable extends AbstractTable
         return 'replies';
     }
 
-    public function getPrimary()
-    {
-        return 'reply_id';
-    }
-
     public function getAutoinc()
     {
         return true;
@@ -25,27 +20,5 @@ class ReplyTable extends AbstractTable
         return [
             '*',
         ];
-    }
-
-    public function getDefault()
-    {
-        return [
-            'reply_id' => null,
-        ];
-    }
-
-    public function getRowClass()
-    {
-        return 'Atlas\DataSource\Reply\ReplyRow';
-    }
-
-    public function getRowSetClass()
-    {
-        return 'Atlas\DataSource\Reply\ReplyRowSet';
-    }
-
-    public function getRowIdentityClass()
-    {
-        return 'Atlas\DataSource\Reply\ReplyRowIdentity';
     }
 }

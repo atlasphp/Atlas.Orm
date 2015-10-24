@@ -42,7 +42,7 @@ class MapperLocatorTest extends \PHPUnit_Framework_TestCase
         $record = new EmployeeRecord($row, $related);
         $this->assertSame($expect, $this->mapperLocator->get($record));
 
-        $this->setExpectedException(Exception::CLASS, "Atlas\DataSource\Employee not found in locator");
+        $this->setExpectedException(Exception::CLASS, "Atlas\DataSource\Employee not found in mapper locator");
         $this->mapperLocator->get('Atlas\DataSource\Employee');
     }
 }

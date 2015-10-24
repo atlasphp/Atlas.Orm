@@ -64,7 +64,7 @@ class TableLocator
     public function get($class)
     {
         if (! isset($this->factories[$class])) {
-            throw new Exception("{$class} not found in locator");
+            throw new Exception("{$class} not found in table locator");
         }
 
         if (! isset($this->instances[$class])) {

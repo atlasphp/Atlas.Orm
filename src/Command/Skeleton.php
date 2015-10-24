@@ -19,10 +19,12 @@ class Skeleton
         'Row',
         'RowIdentity',
         'RowSet',
+        'RowFactory',
         'RowFilter',
         'Mapper',
         'Record',
         'RecordSet',
+        'RecordFactory',
     ];
 
     public function __construct(Context $context, Stdio $stdio)
@@ -196,11 +198,6 @@ class {TYPE}Table extends AbstractTable
         return '{TABLE}';
     }
 
-    public function getPrimary()
-    {
-        return '{PRIMARY}';
-    }
-
     public function getAutoinc()
     {
         return {AUTOINC};
@@ -209,26 +206,6 @@ class {TYPE}Table extends AbstractTable
     public function getCols()
     {
         return {COLS};
-    }
-
-    public function getDefault()
-    {
-        return {DEFAULT};
-    }
-
-    public function getRowClass()
-    {
-        return '{NAMESPACE}\\{TYPE}Row';
-    }
-
-    public function getRowSetClass()
-    {
-        return '{NAMESPACE}\\{TYPE}RowSet';
-    }
-
-    public function getRowIdentityClass()
-    {
-        return '{NAMESPACE}\\{TYPE}RowIdentity';
     }
 }
 
@@ -269,6 +246,42 @@ class {TYPE}RowSet extends AbstractRowSet
 }
 
 ROW_SET;
+
+    protected $rowFactory = <<<ROW_FACTORY
+<?php
+namespace {NAMESPACE};
+
+use Atlas\Table\AbstractRowFactory;
+
+class {TYPE}RowFactory extends AbstractRowFactory
+{
+    public function getPrimary()
+    {
+        return '{PRIMARY}';
+    }
+
+    public function getDefault()
+    {
+        return {DEFAULT};
+    }
+
+    public function getRowClass()
+    {
+        return '{NAMESPACE}\\{TYPE}Row';
+    }
+
+    public function getRowSetClass()
+    {
+        return '{NAMESPACE}\\{TYPE}RowSet';
+    }
+
+    public function getRowIdentityClass()
+    {
+        return '{NAMESPACE}\\{TYPE}RowIdentity';
+    }
+}
+
+ROW_FACTORY;
 
     protected $rowFilter = <<<ROW_FILTER
 <?php
@@ -318,4 +331,24 @@ class {TYPE}RecordSet extends AbstractRecordSet
 
 RECORD_SET;
 
+    protected $recordFactory = <<<RECORD_FACTORY
+<?php
+namespace {NAMESPACE};
+
+use Atlas\Mapper\AbstractRecordFactory;
+
+class {TYPE}RecordFactory extends AbstractRecordFactory
+{
+    public function getRecordClass()
+    {
+        return '{NAMESPACE}\\{TYPE}Record';
+    }
+
+    public function getRecordSetClass()
+    {
+        return '{NAMESPACE}\\{TYPE}RecordSet';
+    }
+}
+
+RECORD_FACTORY;
 }
