@@ -303,6 +303,10 @@ use Atlas\Mapper\AbstractMapper;
 
 class {TYPE}Mapper extends AbstractMapper
 {
+    protected function setMapperRelations()
+    {
+        // no relations
+    }
 }
 
 MAPPER;
