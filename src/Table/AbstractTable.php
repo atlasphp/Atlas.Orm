@@ -147,11 +147,6 @@ abstract class AbstractTable
         return $this->identityMap;
     }
 
-    public function getRowFactory()
-    {
-        return $this->rowFactory;
-    }
-
     /**
      *
      * Returns a new Select object.
