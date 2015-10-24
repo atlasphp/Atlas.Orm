@@ -22,6 +22,10 @@
 
     - Then in Record and RecordSet relations, automatically set "belongs to" foriegn key value on `appendNew()`.
 
+- MapperRelations
+
+    - Extract to its own type-specific class, and inject into mapper? Reduces the mapper signature as well.
+
 - Composite primary keys
 
     - Build strategies for fetching by composite keys
