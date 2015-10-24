@@ -19,16 +19,16 @@ class EmployeeRowFactory extends AbstractRowFactory
 
     public function getRowClass()
     {
-        return 'Atlas\DataSource\Employee\EmployeeRow';
+        return EmployeeRow::CLASS;
     }
 
     public function getRowSetClass()
     {
-        return 'Atlas\DataSource\Employee\EmployeeRowSet';
+        return EmployeeRowSet::CLASS;
     }
 
     public function getRowIdentityClass()
     {
-        return 'Atlas\DataSource\Employee\EmployeeRowIdentity';
+        return EmployeeRowIdentity::CLASS;
     }
 }

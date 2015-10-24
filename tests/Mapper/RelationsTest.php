@@ -11,7 +11,7 @@ use Atlas\Relation\HasManyThrough;
 class MapperRelationsTest extends \PHPUnit_Framework_TestCase
 {
     protected $mapperLocator;
-    protected $mapperRelations;
+    protected $relations;
 
     protected function setUp()
     {
@@ -20,10 +20,7 @@ class MapperRelationsTest extends \PHPUnit_Framework_TestCase
             return EmployeeMapper::CLASS;
         });
 
-        $this->mapperRelations = new MapperRelations(
-            EmployeeMapper::CLASS,
-            $mapperLocator
-        );
+        $this->relations = new FakeRelations($mapperLocator);
     }
 
     public function testSet_hasManyThrough_noThroughName()
@@ -33,7 +30,7 @@ class MapperRelationsTest extends \PHPUnit_Framework_TestCase
             "Relation 'foo' does not exist"
         );
 
-        $this->mapperRelations->set(
+        $this->relations->set(
             'bar',
             HasManyThrough::CLASS,
             EmployeeMapper::CLASS,

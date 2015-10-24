@@ -7,11 +7,11 @@ class EmployeeRecordFactory extends AbstractRecordFactory
 {
     public function getRecordClass()
     {
-        return 'Atlas\DataSource\Employee\EmployeeRecord';
+        return EmployeeRecord::CLASS;
     }
 
     public function getRecordSetClass()
     {
-        return 'Atlas\DataSource\Employee\EmployeeRecordSet';
+        return EmployeeRecordSet::CLASS;
     }
 }

@@ -19,16 +19,16 @@ class SummaryRowFactory extends AbstractRowFactory
 
     public function getRowClass()
     {
-        return 'Atlas\DataSource\Summary\SummaryRow';
+        return SummaryRow::CLASS;
     }
 
     public function getRowSetClass()
     {
-        return 'Atlas\DataSource\Summary\SummaryRowSet';
+        return SummaryRowSet::CLASS;
     }
 
     public function getRowIdentityClass()
     {
-        return 'Atlas\DataSource\Summary\SummaryRowIdentity';
+        return SummaryRowIdentity::CLASS;
     }
 }

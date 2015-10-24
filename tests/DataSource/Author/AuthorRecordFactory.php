@@ -7,11 +7,11 @@ class AuthorRecordFactory extends AbstractRecordFactory
 {
     public function getRecordClass()
     {
-        return 'Atlas\DataSource\Author\AuthorRecord';
+        return AuthorRecord::CLASS;
     }
 
     public function getRecordSetClass()
     {
-        return 'Atlas\DataSource\Author\AuthorRecordSet';
+        return AuthorRecordSet::CLASS;
     }
 }

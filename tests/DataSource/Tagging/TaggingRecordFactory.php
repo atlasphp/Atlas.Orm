@@ -7,11 +7,11 @@ class TaggingRecordFactory extends AbstractRecordFactory
 {
     public function getRecordClass()
     {
-        return 'Atlas\DataSource\Tagging\TaggingRecord';
+        return TaggingRecord::CLASS;
     }
 
     public function getRecordSetClass()
     {
-        return 'Atlas\DataSource\Tagging\TaggingRecordSet';
+        return TaggingRecordSet::CLASS;
     }
 }

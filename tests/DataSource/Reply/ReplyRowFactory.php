@@ -19,16 +19,16 @@ class ReplyRowFactory extends AbstractRowFactory
 
     public function getRowClass()
     {
-        return 'Atlas\DataSource\Reply\ReplyRow';
+        return ReplyRow::CLASS;
     }
 
     public function getRowSetClass()
     {
-        return 'Atlas\DataSource\Reply\ReplyRowSet';
+        return ReplyRowSet::CLASS;
     }
 
     public function getRowIdentityClass()
     {
-        return 'Atlas\DataSource\Reply\ReplyRowIdentity';
+        return ReplyRowIdentity::CLASS;
     }
 }

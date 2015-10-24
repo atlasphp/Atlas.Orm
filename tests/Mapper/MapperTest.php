@@ -5,6 +5,7 @@ use Atlas\DataSource\Auto\AutoMapper;
 use Atlas\DataSource\Auto\AutoTable;
 use Atlas\DataSource\Employee\EmployeeMapper;
 use Atlas\DataSource\Employee\EmployeeRecordFactory;
+use Atlas\DataSource\Employee\EmployeeRelations;
 use Atlas\DataSource\Employee\EmployeeRowFactory;
 use Atlas\DataSource\Employee\EmployeeRowFilter;
 use Atlas\DataSource\Employee\EmployeeTable;
@@ -46,7 +47,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $this->mapper = new EmployeeMapper(
             $this->table,
             new EmployeeRecordFactory(),
-            new MapperRelations(EmployeeMapper::CLASS, new MapperLocator())
+            new EmployeeRelations(new MapperLocator())
         );
     }
 
@@ -55,9 +56,9 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($this->table, $this->mapper->getTable());
     }
 
-    public function testGetMapperRelations()
+    public function testGetRelations()
     {
-        $this->assertInstanceOf(MapperRelations::CLASS, $this->mapper->getMapperRelations());
+        $this->assertInstanceOf(EmployeeRelations::CLASS, $this->mapper->getRelations());
     }
 
     public function testFetchRecord()

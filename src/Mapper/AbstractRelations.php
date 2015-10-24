@@ -2,24 +2,28 @@
 namespace Atlas\Mapper;
 
 use Atlas\Exception;
+use Atlas\Relation\BelongsTo;
+use Atlas\Relation\HasMany;
+use Atlas\Relation\HasManyThrough;
+use Atlas\Relation\HasOne;
 
-class MapperRelations
+abstract class AbstractRelations
 {
     protected $relations = [];
-
-    protected $nativeMapperClass;
 
     protected $mapperLocator;
 
     protected $fields = [];
 
-    public function __construct(
-        $nativeMapperClass,
-        MapperLocator $mapperLocator
-    ) {
-        $this->nativeMapperClass = $nativeMapperClass;
+    public function __construct(MapperLocator $mapperLocator)
+    {
         $this->mapperLocator = $mapperLocator;
+        $this->setRelations();
     }
+
+    abstract protected function getNativeMapperClass();
+
+    abstract protected function setRelations();
 
     public function getFields()
     {
@@ -46,7 +50,7 @@ class MapperRelations
     {
         return new $relationClass(
             $this->mapperLocator,
-            $this->nativeMapperClass,
+            $this->getNativeMapperClass(),
             $name,
             $foreignMapperClass,
             $throughName
@@ -84,5 +88,42 @@ class MapperRelations
             }
         }
         return $with;
+    }
+
+    protected function hasOne($name, $foreignMapperClass)
+    {
+        return $this->set(
+            $name,
+            HasOne::CLASS,
+            $foreignMapperClass
+        );
+    }
+
+    protected function hasMany($name, $foreignMapperClass)
+    {
+        return $this->set(
+            $name,
+            HasMany::CLASS,
+            $foreignMapperClass
+        );
+    }
+
+    protected function belongsTo($name, $foreignMapperClass)
+    {
+        $this->set(
+            $name,
+            BelongsTo::CLASS,
+            $foreignMapperClass
+        );
+    }
+
+    protected function hasManyThrough($name, $foreignMapperClass, $throughName)
+    {
+        return $this->set(
+            $name,
+            HasManyThrough::CLASS,
+            $foreignMapperClass,
+            $throughName
+        );
     }
 }
