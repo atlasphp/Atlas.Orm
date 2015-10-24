@@ -16,7 +16,6 @@ use Aura\SqlQuery\QueryFactory;
 use Aura\SqlQuery\Common\Delete;
 use Aura\SqlQuery\Common\Insert;
 use Aura\SqlQuery\Common\Update;
-use InvalidArgumentException;
 
 /**
  *
@@ -309,7 +308,7 @@ abstract class AbstractTable
      */
     public function insert(AbstractRow $row)
     {
-        $this->assertRowClass($row);
+        $this->rowFactory->assertRowClass($row);
         $this->rowFilter->forInsert($row);
 
         $insert = $this->newInsert($row);
@@ -362,7 +361,7 @@ abstract class AbstractTable
      */
     public function update(AbstractRow $row)
     {
-        $this->assertRowClass($row);
+        $this->rowFactory->assertRowClass($row);
         $this->rowFilter->forUpdate($row);
 
         $update = $this->newUpdate($row);
@@ -418,7 +417,7 @@ abstract class AbstractTable
      */
     public function delete(AbstractRow $row)
     {
-        $this->assertRowClass($row);
+        $this->rowFactory->assertRowClass($row);
         $delete = $this->newDelete($row);
         $pdoStatement = $this->getWriteConnection()->perform(
             $delete->getStatement(),
@@ -436,15 +435,6 @@ abstract class AbstractTable
         $delete->from($this->getTable());
         $delete->where("{$primaryCol} = ?", $row->getIdentity()->getVal());
         return $delete;
-    }
-
-    protected function assertRowClass(AbstractRow $row)
-    {
-        $rowClass = $this->rowFactory->getRowClass();
-        if (! $row instanceof $rowClass) {
-            $actual = get_class($row);
-            throw new InvalidArgumentException("Expected {$rowClass}, got {$actual} instead");
-        }
     }
 
     protected function getArrayCopyForInsert(AbstractRow $row)

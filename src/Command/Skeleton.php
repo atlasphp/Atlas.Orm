@@ -15,15 +15,16 @@ class Skeleton
     protected $subdir;
     protected $type;
     protected $classes = [
+        'Table',
+        'Row',
+        'RowIdentity',
+        'RowSet',
+        'RowFactory',
+        'RowFilter',
         'Mapper',
         'Record',
         'RecordSet',
-        'Row',
-        'RowFactory',
-        'RowFilter',
-        'RowIdentity',
-        'RowSet',
-        'Table',
+        'RecordFactory',
     ];
 
     public function __construct(Context $context, Stdio $stdio)
@@ -330,4 +331,24 @@ class {TYPE}RecordSet extends AbstractRecordSet
 
 RECORD_SET;
 
+    protected $recordFactory = <<<RECORD_FACTORY
+<?php
+namespace {NAMESPACE};
+
+use Atlas\Mapper\AbstractRecordFactory;
+
+class {TYPE}RecordFactory extends AbstractRecordFactory
+{
+    public function getRecordClass()
+    {
+        return '{NAMESPACE}\\{TYPE}Record';
+    }
+
+    public function getRecordSetClass()
+    {
+        return '{NAMESPACE}\\{TYPE}RecordSet';
+    }
+}
+
+RECORD_FACTORY;
 }

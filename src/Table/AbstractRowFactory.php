@@ -1,6 +1,8 @@
 <?php
 namespace Atlas\Table;
 
+use InvalidArgumentException;
+
 abstract class AbstractRowFactory
 {
     public function newRow(array $cols)
@@ -28,6 +30,15 @@ abstract class AbstractRowFactory
     {
         $rowSetClass = $this->getRowSetClass();
         return new $rowSetClass($rows, $this->getRowClass());
+    }
+
+    public function assertRowClass(AbstractRow $row)
+    {
+        $rowClass = $this->getRowClass();
+        if (! $row instanceof $rowClass) {
+            $actual = get_class($row);
+            throw new InvalidArgumentException("Expected {$rowClass}, got {$actual} instead");
+        }
     }
 
     /**
