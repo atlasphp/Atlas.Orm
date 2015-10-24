@@ -13,9 +13,9 @@ class IdentityMapTest extends \PHPUnit_Framework_TestCase
     public function testSetRow()
     {
         $row = new FakeRow(new FakeRowIdentity(['id' => '1']), []);
-        $this->identityMap->setRow($row);
+        $this->identityMap->setRow($row, ['id' => '1']);
         $this->setExpectedException('Atlas\Exception');
-        $this->identityMap->setRow($row);
+        $this->identityMap->setRow($row, ['id' => '1']);
     }
 
     public function testSetInitial_missingRow()

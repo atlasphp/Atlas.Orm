@@ -1,7 +1,3 @@
-- Identity Map
-
-    - Consider setting in the array values directly instead of getting a copy from the row.
-
 - RowSet/RecordSet
 
     - Add `append()` or `addNew()` to RowSet and RecordSet to append a new Row/Record of the proper type. Probably need to keep a reference back to the original Table/Mapper for the "new" logic.

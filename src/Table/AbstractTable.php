@@ -275,7 +275,7 @@ abstract class AbstractTable
         $data = $select->cols($this->getCols())->fetchAll();
         foreach ($data as $cols) {
             $row = $this->rowFactory->newRow($cols);
-            $this->identityMap->setRow($row);
+            $this->identityMap->setRow($row, $cols);
             $rows[$row->getIdentity()->getVal()] = $row;
         }
     }
@@ -325,10 +325,11 @@ abstract class AbstractTable
             $row->$primary = $writeConnection->lastInsertId($primary);
         }
 
-        // set into the identity map
-        $this->identityMap->setRow($row);
-
         // @todo add support for "returning" into the row
+
+        // set into the identity map
+        $this->identityMap->setRow($row, $row->getArrayCopy());
+
         return true;
     }
 
@@ -462,7 +463,7 @@ abstract class AbstractTable
         $row = $this->identityMap->getRowByPrimary($this->rowClass, $primaryIdentity);
         if (! $row) {
             $row = $this->newRow($cols);
-            $this->identityMap->setRow($row);
+            $this->identityMap->setRow($row, $cols);
         }
         return $row;
     }
