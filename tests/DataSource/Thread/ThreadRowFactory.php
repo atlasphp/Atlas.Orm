@@ -19,16 +19,16 @@ class ThreadRowFactory extends AbstractRowFactory
 
     public function getRowClass()
     {
-        return 'Atlas\DataSource\Thread\ThreadRow';
+        return ThreadRow::CLASS;
     }
 
     public function getRowSetClass()
     {
-        return 'Atlas\DataSource\Thread\ThreadRowSet';
+        return ThreadRowSet::CLASS;
     }
 
     public function getRowIdentityClass()
     {
-        return 'Atlas\DataSource\Thread\ThreadRowIdentity';
+        return ThreadRowIdentity::CLASS;
     }
 }

@@ -7,11 +7,11 @@ class SummaryRecordFactory extends AbstractRecordFactory
 {
     public function getRecordClass()
     {
-        return 'Atlas\DataSource\Summary\SummaryRecord';
+        return SummaryRecord::CLASS;
     }
 
     public function getRecordSetClass()
     {
-        return 'Atlas\DataSource\Summary\SummaryRecordSet';
+        return SummaryRecordSet::CLASS;
     }
 }

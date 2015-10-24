@@ -7,11 +7,11 @@ class ReplyRecordFactory extends AbstractRecordFactory
 {
     public function getRecordClass()
     {
-        return 'Atlas\DataSource\Reply\ReplyRecord';
+        return ReplyRecord::CLASS;
     }
 
     public function getRecordSetClass()
     {
-        return 'Atlas\DataSource\Reply\ReplyRecordSet';
+        return ReplyRecordSet::CLASS;
     }
 }

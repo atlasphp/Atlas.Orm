@@ -20,16 +20,16 @@ class AuthorRowFactory extends AbstractRowFactory
 
     public function getRowClass()
     {
-        return 'Atlas\DataSource\Author\AuthorRow';
+        return AuthorRow::CLASS;
     }
 
     public function getRowSetClass()
     {
-        return 'Atlas\DataSource\Author\AuthorRowSet';
+        return AuthorRowSet::CLASS;
     }
 
     public function getRowIdentityClass()
     {
-        return 'Atlas\DataSource\Author\AuthorRowIdentity';
+        return AuthorRowIdentity::CLASS;
     }
 }

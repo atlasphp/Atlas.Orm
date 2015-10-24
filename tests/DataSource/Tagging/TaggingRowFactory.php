@@ -19,16 +19,16 @@ class TaggingRowFactory extends AbstractRowFactory
 
     public function getRowClass()
     {
-        return 'Atlas\DataSource\Tagging\TaggingRow';
+        return TaggingRow::CLASS;
     }
 
     public function getRowSetClass()
     {
-        return 'Atlas\DataSource\Tagging\TaggingRowSet';
+        return TaggingRowSet::CLASS;
     }
 
     public function getRowIdentityClass()
     {
-        return 'Atlas\DataSource\Tagging\TaggingRowIdentity';
+        return TaggingRowIdentity::CLASS;
     }
 }

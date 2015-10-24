@@ -125,9 +125,4 @@ class AtlasContainer
     {
         return new TableFactory($this, $tableClass);
     }
-
-    public function newMapperRelations($mapperClass)
-    {
-        return new MapperRelations($mapperClass, $this->mapperLocator);
-    }
 }

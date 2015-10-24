@@ -25,6 +25,7 @@ class Skeleton
         'Record',
         'RecordSet',
         'RecordFactory',
+        'Relations',
     ];
 
     public function __construct(Context $context, Stdio $stdio)
@@ -267,17 +268,17 @@ class {TYPE}RowFactory extends AbstractRowFactory
 
     public function getRowClass()
     {
-        return '{NAMESPACE}\\{TYPE}Row';
+        return {TYPE}Row::CLASS;
     }
 
     public function getRowSetClass()
     {
-        return '{NAMESPACE}\\{TYPE}RowSet';
+        return {TYPE}RowSet::CLASS;
     }
 
     public function getRowIdentityClass()
     {
-        return '{NAMESPACE}\\{TYPE}RowIdentity';
+        return {TYPE}RowIdentity::CLASS;
     }
 }
 
@@ -303,10 +304,6 @@ use Atlas\Mapper\AbstractMapper;
 
 class {TYPE}Mapper extends AbstractMapper
 {
-    protected function setMapperRelations()
-    {
-        // no relations
-    }
 }
 
 MAPPER;
@@ -345,14 +342,35 @@ class {TYPE}RecordFactory extends AbstractRecordFactory
 {
     public function getRecordClass()
     {
-        return '{NAMESPACE}\\{TYPE}Record';
+        return {TYPE}Record::CLASS;
     }
 
     public function getRecordSetClass()
     {
-        return '{NAMESPACE}\\{TYPE}RecordSet';
+        return {TYPE}RecordSet::CLASS;
     }
 }
 
 RECORD_FACTORY;
+
+    protected $relations = <<<RELATIONS
+<?php
+namespace {NAMESPACE};
+
+use Atlas\Mapper\AbstractRelations;
+
+class {TYPE}Relations extends AbstractRelations
+{
+    protected function getNativeMapperClass()
+    {
+        return {TYPE}Mapper::CLASS;
+    }
+
+    protected function setRelations()
+    {
+        // no relations
+    }
+}
+
+RELATIONS;
 }

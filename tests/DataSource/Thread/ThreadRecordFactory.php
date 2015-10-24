@@ -7,11 +7,11 @@ class ThreadRecordFactory extends AbstractRecordFactory
 {
     public function getRecordClass()
     {
-        return 'Atlas\DataSource\Thread\ThreadRecord';
+        return ThreadRecord::CLASS;
     }
 
     public function getRecordSetClass()
     {
-        return 'Atlas\DataSource\Thread\ThreadRecordSet';
+        return ThreadRecordSet::CLASS;
     }
 }

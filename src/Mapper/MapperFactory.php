@@ -18,11 +18,17 @@ class MapperFactory
     public function __invoke()
     {
         $mapperClass = $this->mapperClass;
-        $recordFactoryClass = substr($mapperClass, 0, -6) . 'RecordFactory';
+        $type = substr($mapperClass, 0, -6);
+
+        $relationsClass = "{$type}Relations";
+        $relations = new $relationsClass(
+            $this->atlasContainer->getMapperLocator()
+        );
+
         return new $mapperClass(
             $this->atlasContainer->getTable($this->tableClass),
-            $this->atlasContainer->newInstance($recordFactoryClass),
-            $this->atlasContainer->newMapperRelations($mapperClass)
+            $this->atlasContainer->newInstance("{$type}RecordFactory"),
+            $relations
         );
     }
 }
