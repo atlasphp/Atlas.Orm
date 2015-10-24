@@ -1,10 +1,6 @@
-- Row/Record Factories
-
-    - Extract newRow(), newRowSet(), newRecord(), newRecordSet() to factory objects? Would allow for finer user control over how they get created, and might be future-proofing. Does that mean passing the IdentityMap into it?
-
 - Identity Map
 
-    - Consider a single Atlas-wide Identity Map, instead of one per table.
+    - Consider a single Atlas-wide Identity Map, instead of one per table. Also consider setting in the array values directly instead of getting a copy from the row.
 
 - RowSet/RecordSet
 
@@ -12,8 +8,9 @@
 
 - Row
 
-    - Is there any way to use a property-per-column instead of a data array? Problem will be the Identity object. Also, want to use it to figure out what columns to bring back. Hell, do we
-    even need $cols at the table level when we have $default?
+    - Is there any way to use a property-per-column instead of a data array? Make the Identity object private in that case.
+
+    - Also, can we use it to figure out what columns to bring back? Hell, do we even need $cols at the table level when we have $default?
 
 - Interfaces
 
@@ -35,8 +32,17 @@
 
     - Unit Of Work that allows you to attach Record objects
 
-    - Single-record strategy to save a record and all of its relateds; probably
-    uses a Unit Of Work under the hood.
+    - Single-record strategy to save a record and all of its relateds; probably uses a Unit Of Work under the hood.
+
+- Skeleton
+
+    - Might be convenient to read schema from the database when generating. It's a getting-started tool, not a maintenance tool.
+
+        atlas-skeleton --connection=path/to/connection.php Foo\\DataSource\\Author
+
+- "Meta" or "Schema"
+
+    - Might be convenient to put all data originating from schema into its own file, then extend/use/inject that when needed. Having that might make maintenance based on table changes a lot easier; the skeleton generator could overwrite that file, leaving all others in place.
 
 - Docs
 
