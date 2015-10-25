@@ -9,6 +9,7 @@ use Atlas\Table\TableFactory;
 use Atlas\Table\TableLocator;
 use Aura\Sql\ConnectionLocator;
 use Aura\SqlQuery\QueryFactory;
+use ReflectionMethod;
 
 class AtlasContainer
 {
@@ -75,17 +76,13 @@ class AtlasContainer
         $this->connectionLocator->setWrite($name, $callable);
     }
 
-    public function setMapper($mapperClass, $tableClass = null)
+    public function setMapper($mapperClass)
     {
         if (! class_exists($mapperClass)) {
             throw new Exception("$mapperClass does not exist");
         }
 
-        if (! $tableClass) {
-            // Foo\Bar\BazMapper => Foo\Bar\BazTable
-            $tableClass = substr($mapperClass, 0, -6) . 'Table';
-        }
-
+        $tableClass = $this->getTableForMapper($mapperClass);
         if (! class_exists($tableClass)) {
             throw new Exception("$tableClass does not exist");
         }
@@ -132,5 +129,12 @@ class AtlasContainer
     public function newTableFactory($tableClass)
     {
         return new TableFactory($this, $tableClass);
+    }
+
+    public function getTableForMapper($mapperClass)
+    {
+        $method = new ReflectionMethod($mapperClass, '__construct');
+        $params = $method->getParameters();
+        return $params[0]->getClass()->getName();
     }
 }
