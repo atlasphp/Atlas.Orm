@@ -4,6 +4,9 @@ namespace Atlas\Command;
 use Aura\Cli\Context;
 use Aura\Cli\Status;
 use Aura\Cli\Stdio;
+use Aura\SqlSchema\ColumnFactory;
+use Exception;
+use PDO;
 
 class Skeleton
 {
@@ -14,38 +17,61 @@ class Skeleton
     protected $dir;
     protected $subdir;
     protected $type;
-    protected $classes = [
-        'Table',
-        'Row',
-        'RowIdentity',
-        'RowSet',
-        'RowFactory',
-        'RowFilter',
-        'Mapper',
-        'Record',
-        'RecordSet',
-        'RecordFactory',
-        'Relations',
-    ];
+    protected $conn;
+    protected $pdo;
+    protected $vars;
+    protected $templates;
 
-    public function __construct(Context $context, Stdio $stdio)
+    public function __construct(Context $context, Stdio $stdio, $dir)
     {
         $this->context= $context;
         $this->stdio = $stdio;
-        $this->dir = getcwd();
+        $this->dir = $dir;
+    }
+
+    public function __invoke()
+    {
+        $methods = [
+            'setGetopt',
+            'setConn',
+            'setNamespace',
+            'setDir',
+            'setTemplates',
+            'setVars',
+            'createClasses',
+        ];
+
+        foreach ($methods as $method) {
+            $exit = $this->$method();
+            if ($exit) {
+                return $exit;
+            }
+        }
+
+        $this->stdio->outln('Done!');
+        return Status::SUCCESS;
     }
 
     protected function setGetopt()
     {
-        // define options and named arguments through getopt
         $options = [
-            'noautoinc',
+            'conn:',
+            'cols:',
             'dir:',
+            'noautoinc',
             'primary:',
             'table:',
-            'cols:',
         ];
         $this->getopt = $this->context->getopt($options);
+
+        $conn = $this->getopt->get('--conn', false);
+        $others = $this->getopt->get('--cols', false)
+               || $this->getopt->get('--noautoinc', false)
+               || $this->getopt->get('--primary', false);
+        if ($conn && $others) {
+            $this->stdio->errln('Cannot specify --conn at the same time as --cols, --noautoinc, or --primary.');
+            return Status::USAGE;
+        }
 
         if (! $this->getopt->hasErrors()) {
             return;
@@ -56,6 +82,44 @@ class Skeleton
             $this->stdio->errln($error->getMessage());
         }
         return STATUS::USAGE;
+    }
+
+    protected function setConn()
+    {
+        $file = $this->getopt->get('--conn', false);
+        if (! $file) {
+            return;
+        }
+
+        if (! file_exists($file) || ! is_readable($file)) {
+            $this->stdio->errln("Connection config file '$file' does not exist or is not readable.");
+            return Status::NOINPUT;
+        }
+
+        $this->conn = $this->requireFile($file);
+        if (! $this->conn || ! is_array($this->conn)) {
+            $this->stdio->errln("Connection config file '$file' did not return an array of PDO parameters.");
+            return Status::CONFIG;
+        }
+
+        try {
+            $this->pdo = $this->newPdo();
+        } catch (Exception $e) {
+            $this->stdio->errln($e->getMessage());
+            return Status::UNAVAILABLE;
+        }
+    }
+
+    // require the file in an isolated scope
+    protected function requireFile($file)
+    {
+        $require = function () use ($file) { return require $file; };
+        return $require();
+    }
+
+    protected function newPdo()
+    {
+        return new PDO(...$this->conn);
     }
 
     protected function setNamespace()
@@ -101,10 +165,67 @@ class Skeleton
         $this->stdio->outln("Created: {$this->subdir}");
     }
 
-    protected function getVars()
+    protected function setVars()
+    {
+        if ($this->pdo) {
+            return $this->setVarsFromConn();
+        }
+
+        return $this->setVarsFromGetopt();
+    }
+
+    protected function setVarsFromConn()
+    {
+        $dsn = $this->conn[0];
+        $pos = strpos($dsn, ':');
+        $type = ucfirst(strtolower(substr($dsn, 0, $pos)));
+        $class = "Aura\\SqlSchema\\{$type}Schema";
+        $schema = new $class($this->pdo, new ColumnFactory());
+
+        $table = trim($this->getopt->get('--table', strtolower($this->type)));
+        $tables = $schema->fetchTableList();
+        if (! in_array($table, $tables)) {
+            $this->stdio->errln("Table '{$table}' not found.");
+            return Status::FAILURE;
+        }
+
+        $primary = null;
+        $autoinc = 'false';
+        $list = [];
+        foreach ($schema->fetchTableCols($table) as $col) {
+            $list[$col->name] = $col->default;
+            if ($col->primary) {
+                $primary = $col->name;
+            }
+            if ($col->autoinc) {
+                $autoinc = 'true';
+            }
+        }
+
+        $cols = "[" . PHP_EOL;
+        $default = "[" . PHP_EOL;
+        foreach ($list as $col => $val) {
+            $val = ($val === null) ? 'null' : var_export($val, true);
+            $cols .= "            '$col'," . PHP_EOL;
+            $default .= "            '$col' => $val," . PHP_EOL;
+        }
+        $cols .= "        ]";
+        $default .= "        ]";
+
+        $this->vars = [
+            '{NAMESPACE}' => $this->namespace,
+            '{TYPE}' => $this->type,
+            '{TABLE}' => $table,
+            '{COLS}' => $cols,
+            '{DEFAULT}' => $default,
+            '{AUTOINC}' => $autoinc,
+            '{PRIMARY}' => $primary,
+        ];
+    }
+
+    protected function setVarsFromGetopt()
     {
         $name = strtolower($this->type);
-
         $primary = trim($this->getopt->get('--primary', "{$name}_id"));
 
         $default = "[" . PHP_EOL
@@ -113,7 +234,6 @@ class Skeleton
 
         $cols = $this->getopt->get('--cols', '*');
         if ($cols != '*') {
-
             $cols = explode(',', $cols);
 
             if (! in_array($primary, $cols)) {
@@ -129,64 +249,41 @@ class Skeleton
               . implode("'," . PHP_EOL . "            '" , (array) $cols)
               . "'," . PHP_EOL . "        ]";
 
-        return [
+        $this->vars = [
             '{NAMESPACE}' => $this->namespace,
             '{TYPE}' => $this->type,
-            '{TABLE}' => trim($this->getopt->get(
-                '--table',
-                $name
-            )),
+            '{TABLE}' => trim($this->getopt->get('--table', $name)),
             '{COLS}' => $cols,
             '{DEFAULT}' => $default,
-            '{AUTOINC}' => $this->getopt->get('--noautoinc')
-                ? 'false'
-                : 'true',
-            '{PRIMARY}' => trim($this->getopt->get(
-                '--primary',
-                "{$name}_id"
-            )),
+            '{AUTOINC}' => $this->getopt->get('--noautoinc') ? 'false' : 'true',
+            '{PRIMARY}' => trim($this->getopt->get('--primary', "{$name}_id")),
         ];
 
     }
 
-    public function __invoke()
+    protected function createClasses()
     {
-        $exit = $this->setGetopt();
-        if ($exit) {
-            return $exit;
+        foreach ($this->templates as $class => $template) {
+            $this->createClass($class, $template);
         }
-
-        $exit = $this->setNamespace();
-        if ($exit) {
-            return $exit;
-        }
-
-        $exit = $this->setDir();
-        if ($exit) {
-            return $exit;
-        }
-
-
-        // create the classes
-        $vars = $this->getVars();
-        foreach ($this->classes as $class) {
-            $file = $this->subdir . $this->type . $class . '.php';
-            if (file_exists($file)) {
-                $this->stdio->outln("SKIPPED: $file (already exists)");
-                continue;
-            }
-
-            $prop = lcfirst($class); // RowFilter => rowFilter
-            $code = strtr($this->$prop, $vars);
-            file_put_contents($file, $code);
-            $this->stdio->outln("Created: $file");
-        }
-
-        $this->stdio->outln('Done!');
-        return Status::SUCCESS;
     }
 
-    protected $table = <<<TABLE
+    protected function createClass($class, $template)
+    {
+        $file = $this->subdir . $this->type . $class . '.php';
+        if (file_exists($file)) {
+            $this->stdio->outln("SKIPPED: $file (already exists)");
+            return;
+        }
+
+        $code = strtr($template, $this->vars);
+        file_put_contents($file, $code);
+        $this->stdio->outln("Created: $file");
+    }
+
+    protected function setTemplates()
+    {
+        $this->templates['Table'] = <<<TPL
 <?php
 namespace {NAMESPACE};
 
@@ -229,9 +326,9 @@ class {TYPE}Table extends AbstractTable
     }
 }
 
-TABLE;
+TPL;
 
-    protected $row = <<<ROW
+        $this->templates['Row'] = <<<TPL
 <?php
 namespace {NAMESPACE};
 
@@ -241,9 +338,9 @@ class {TYPE}Row extends AbstractRow
 {
 }
 
-ROW;
+TPL;
 
-    protected $rowIdentity = <<<ROW_IDENTITY
+        $this->templates['RowIdentity'] = <<<TPL
 <?php
 namespace {NAMESPACE};
 
@@ -253,9 +350,9 @@ class {TYPE}RowIdentity extends AbstractRowIdentity
 {
 }
 
-ROW_IDENTITY;
+TPL;
 
-    protected $rowSet = <<<ROW_SET
+        $this->templates['RowSet'] = <<<TPL
 <?php
 namespace {NAMESPACE};
 
@@ -265,9 +362,9 @@ class {TYPE}RowSet extends AbstractRowSet
 {
 }
 
-ROW_SET;
+TPL;
 
-    protected $rowFactory = <<<ROW_FACTORY
+        $this->templates['RowFactory'] = <<<TPL
 <?php
 namespace {NAMESPACE};
 
@@ -286,9 +383,9 @@ class {TYPE}RowFactory extends AbstractRowFactory
     }
 }
 
-ROW_FACTORY;
+TPL;
 
-    protected $rowFilter = <<<ROW_FILTER
+        $this->templates['RowFilter'] = <<<TPL
 <?php
 namespace {NAMESPACE};
 
@@ -298,9 +395,9 @@ class {TYPE}RowFilter extends AbstractRowFilter
 {
 }
 
-ROW_FILTER;
+TPL;
 
-    protected $mapper = <<<MAPPER
+        $this->templates['Mapper'] = <<<TPL
 <?php
 namespace {NAMESPACE};
 
@@ -317,9 +414,9 @@ class {TYPE}Mapper extends AbstractMapper
     }
 }
 
-MAPPER;
+TPL;
 
-    protected $record = <<<RECORD
+        $this->templates['Record'] = <<<TPL
 <?php
 namespace {NAMESPACE};
 
@@ -329,9 +426,9 @@ class {TYPE}Record extends AbstractRecord
 {
 }
 
-RECORD;
+TPL;
 
-    protected $recordSet = <<<RECORD_SET
+        $this->templates['RecordSet'] = <<<TPL
 <?php
 namespace {NAMESPACE};
 
@@ -341,9 +438,9 @@ class {TYPE}RecordSet extends AbstractRecordSet
 {
 }
 
-RECORD_SET;
+TPL;
 
-    protected $recordFactory = <<<RECORD_FACTORY
+        $this->templates['RecordFactory'] = <<<TPL
 <?php
 namespace {NAMESPACE};
 
@@ -353,9 +450,9 @@ class {TYPE}RecordFactory extends AbstractRecordFactory
 {
 }
 
-RECORD_FACTORY;
+TPL;
 
-    protected $relations = <<<RELATIONS
+        $this->templates['Relations'] = <<<TPL
 <?php
 namespace {NAMESPACE};
 
@@ -369,5 +466,7 @@ class {TYPE}Relations extends AbstractRelations
     }
 }
 
-RELATIONS;
+TPL;
+
+    }
 }

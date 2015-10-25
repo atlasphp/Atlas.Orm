@@ -9,7 +9,8 @@ require dirname(__DIR__) . "/vendor/autoload.php";
 $cliFactory = new CliFactory();
 $command = new Skeleton(
     $cliFactory->newContext($GLOBALS),
-    $cliFactory->newStdio()
+    $cliFactory->newStdio(),
+    getcwd()
 );
 
 // run the command and get its exit code
