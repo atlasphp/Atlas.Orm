@@ -8,10 +8,6 @@
 
     - Also, can we use it to figure out what columns to bring back? Hell, do we even need $cols at the table level when we have $default?
 
-- Interfaces
-
-    - Add a RecordInterface (and a RecordSet interface?) so that Domain objects can typehint against the interface, and not necessarily an actual record. Maybe also add a <Type>RecordInterface class that extends RecordInterface, and have <Type>Record implement it.
-
 - Relationships
 
     - Have each Record and RecordSet note the record it "belongs to" and the foreign key mapping?
@@ -26,7 +22,7 @@
 
 - Writing back to the database
 
-    - Unit Of Work that allows you to attach Record objects
+    - Unit Of Work that allows you to attach Record objects; should also allow you to attach Query objects for set-related updates/deletes/etc.
 
     - Single-record strategy to save a record and all of its relateds; probably uses a Unit Of Work under the hood.
 
@@ -36,9 +32,17 @@
 
         atlas-skeleton --connection=path/to/connection.php Foo\\DataSource\\Author
 
-- "Meta" or "Schema"
+    - The connection file just has to `<?php return [dsn, username, passwd]; ?>`; you can build it up any way you like.
 
-    - Might be convenient to put all data originating from schema into its own file, then extend/use/inject that when needed. Having that might make maintenance based on table changes a lot easier; the skeleton generator could overwrite that file, leaving all others in place.
+    - Also want something that will generate only a Mapper bundle, since one Table can support many Mappers
+
+- Dependencies
+
+    - Use constructors that depend on the specific class types, not the abstract ones. This means the skeleton generator needs to write the constructors and hand off to the parent abstract one. It also means the MapperFactory should reflect on the Mapper constructor to inject the right table instance. And that's one we can solve later, since mappers and tables *right now* are the same.
+
+- Table(Schema|Info)
+
+    - Might be convenient to put all data originating from schema into its own class or trait, then extend/inject/use it when needed. Having that might make maintenance based on table changes a lot easier; the skeleton generator could always safely overwrite that file. This means only $primary, $autoinc, $cols, and possibly $default. The class
 
 - Docs
 
