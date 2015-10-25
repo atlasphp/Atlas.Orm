@@ -83,13 +83,7 @@ class AtlasContainer
         }
 
         $tableClass = $this->getTableForMapper($mapperClass);
-        if (! class_exists($tableClass)) {
-            throw new Exception("$tableClass does not exist");
-        }
-
-        if (! $this->tableLocator->has($tableClass)) {
-            $this->tableLocator->set($tableClass, $this->newTableFactory($tableClass));
-        }
+        $this->setTable($tableClass);
 
         $mapperFactory = $this->newMapperFactory($mapperClass, $tableClass);
         $this->mapperLocator->set($mapperClass, $mapperFactory);
@@ -103,6 +97,17 @@ class AtlasContainer
             } else {
                 $this->setMapper($key, $val);
             }
+        }
+    }
+
+    public function setTable($tableClass)
+    {
+        if (! class_exists($tableClass)) {
+            throw new Exception("$tableClass does not exist");
+        }
+
+        if (! $this->tableLocator->has($tableClass)) {
+            $this->tableLocator->set($tableClass, $this->newTableFactory($tableClass));
         }
     }
 
