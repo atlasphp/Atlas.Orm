@@ -191,9 +191,28 @@ class Skeleton
 namespace {NAMESPACE};
 
 use Atlas\Table\AbstractTable;
+use Atlas\Table\IdentityMap;
+use Aura\Sql\ConnectionLocator;
+use Aura\SqlQuery\QueryFactory;
 
 class {TYPE}Table extends AbstractTable
 {
+    public function __construct(
+        ConnectionLocator \$connectionLocator,
+        QueryFactory \$queryFactory,
+        IdentityMap \$identityMap,
+        {TYPE}RowFactory \$rowFactory,
+        {TYPE}RowFilter \$rowFilter
+    ) {
+        parent::__construct(
+            \$connectionLocator,
+            \$queryFactory,
+            \$identityMap,
+            \$rowFactory,
+            \$rowFilter
+        );
+    }
+
     public function getTable()
     {
         return '{TABLE}';
@@ -289,6 +308,13 @@ use Atlas\Mapper\AbstractMapper;
 
 class {TYPE}Mapper extends AbstractMapper
 {
+    public function __construct(
+        {TYPE}Table \$table,
+        {TYPE}RecordFactory \$recordFactory,
+        {TYPE}Relations \$relations
+    ) {
+        parent::__construct(\$table, \$recordFactory, \$relations);
+    }
 }
 
 MAPPER;
