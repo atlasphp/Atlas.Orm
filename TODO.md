@@ -28,13 +28,7 @@
 
 - Skeleton
 
-    - Might be convenient to read schema from the database when generating. It's a getting-started tool, not a maintenance tool.
-
-        atlas-skeleton --connection=path/to/connection.php Foo\\DataSource\\Author
-
-    - The connection file just has to `<?php return [dsn, username, passwd]; ?>`; you can build it up any way you like.
-
-    - Also want something that will generate only a Mapper bundle, since one Table can support many Mappers
+    - Allow generating only Mapper-related classes, since one Table can support many Mappers.
 
 - Table(Schema|Info)
 
@@ -42,6 +36,6 @@
 
 - Docs
 
-    - Finish them. :-/
+    - Finish them. Hell, *start* them. :-/
 
     - Add examples on how to properly wrap a Record in the Domain. If you have two instances of a particular domain Entity, and you change values on the data Row, it's now reflected across all instances of that particular Entity, because the Row is identity-mapped. Is that a problem?
