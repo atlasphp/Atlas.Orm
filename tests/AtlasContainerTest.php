@@ -70,13 +70,4 @@ class AtlasContainerTest extends \PHPUnit_Framework_TestCase
         );
         $this->atlasContainer->setMapper('FooMapper');
     }
-
-    public function testSetMapper_noSuchTable()
-    {
-        $this->setExpectedException(
-            Exception::CLASS,
-            'FooTable does not exist'
-        );
-        $this->atlasContainer->setMapper(AuthorMapper::CLASS, 'FooTable');
-    }
 }
