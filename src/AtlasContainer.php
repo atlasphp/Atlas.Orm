@@ -28,7 +28,10 @@ class AtlasContainer
         $this->tableLocator = new TableLocator();
         $this->mapperLocator = new MapperLocator();
         $this->identityMap = new IdentityMap();
-        $this->atlas = new Atlas($this->mapperLocator);
+        $this->atlas = new Atlas(
+            $this->mapperLocator,
+            new Transaction($this->mapperLocator)
+        );
     }
 
     public function getAtlas()

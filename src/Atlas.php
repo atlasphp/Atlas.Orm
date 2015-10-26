@@ -8,10 +8,14 @@ use Atlas\Table\TableSelect;
 class Atlas
 {
     protected $mapperLocator;
+    protected $transaction;
 
-    public function __construct(MapperLocator $mapperLocator)
-    {
+    public function __construct(
+        MapperLocator $mapperLocator,
+        Transaction $prototypeTransaction
+    ) {
         $this->mapperLocator = $mapperLocator;
+        $this->prototypeTransaction = $prototypeTransaction;
     }
 
     public function mapper($class)
@@ -57,5 +61,10 @@ class Atlas
     public function delete(AbstractRecord $record)
     {
         return $this->mapper($record)->delete($record);
+    }
+
+    public function newTransaction()
+    {
+        return clone $this->prototypeTransaction;
     }
 }
