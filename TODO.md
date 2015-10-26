@@ -4,7 +4,17 @@
 
     - Have each Record and RecordSet note the record it "belongs to" and the foreign key mapping?
 
-    - Then in Record and RecordSet relations, automatically set "belongs to" foriegn key value on `appendNew()`.
+    - Then in Record and RecordSet relations, automatically set "belongs to" foriegn key value on `appendNew()` ?
+
+- Related/Relations
+
+    - Add the relationship definitions to the Related object, to support wiring-up of foreign keys?
+
+- RecordFilter
+
+    - Add a RecordFilter object to be invoke at the mapper level.
+
+    - This might be a place to wire up foreign keys?
 
 - Queries
 
