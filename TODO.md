@@ -1,22 +1,14 @@
-- RowSet/RecordSet
+- RowSet/RecordSet/Relations
 
     - Add `append()` or `addNew()` to RowSet and RecordSet to append a new Row/Record of the proper type. Probably need to keep a reference back to the original Table/Mapper for the "new" logic.
-
-- Queries
-
-    - Create Table-level insert/update/delete objects, like with select?
-
-- Row
-
-    - Is there any way to use a property-per-column instead of a data array? Make the Identity object private in that case.
-
-    - Also, can we use it to figure out what columns to bring back? Hell, do we even need $cols at the table level when we have $default?
-
-- Relationships
 
     - Have each Record and RecordSet note the record it "belongs to" and the foreign key mapping?
 
     - Then in Record and RecordSet relations, automatically set "belongs to" foriegn key value on `appendNew()`.
+
+- Queries
+
+    - Create Table-level insert/update/delete objects, like with select?
 
 - Composite primary keys
 
@@ -33,6 +25,8 @@
 - Skeleton
 
     - Allow generating only Mapper-related classes, since one Table can support many Mappers.
+
+    - Add @property dcoblock elements for code-completion in Row and Record.
 
 - Table(Schema|Info)
 
