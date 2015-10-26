@@ -42,7 +42,7 @@ Create your data source classes by hand, or use a skeleton generator in the dire
 
 ```bash
 cd src/App/DataSource
-php ../../bin/atlas-skeleton App\\DataSource\\Author
+php ../../bin/atlas-skeleton.php App\\DataSource\\Author
 ```
 
 > N.b.: No database connection is needed. You can hand-edit the files afterwards as necessary; some sensible defaults are applied.
@@ -52,9 +52,13 @@ That creates this directory and these empty extended classes in `src/App/DataSou
     └── Author
         ├── AuthorMapper.php
         ├── AuthorRecord.php
+        ├── AuthorRecordFactory.php
         ├── AuthorRecordSet.php
+        ├── AuthorRelations.php
         ├── AuthorRow.php
+        ├── AuthorRowFactory.php
         ├── AuthorRowFilter.php
+        ├── AuthorRowIdentity.php
         ├── AuthorRowSet.php
         └── AuthorTable.php
 
@@ -90,26 +94,24 @@ Then you can use Atlas to select a _Record_ or a _RecordSet_:
 
 ```php
 <?php
-// fetch thread_id 1, with the top 10 replies in descending order,
-// including each reply author
+// fetch thread_id 1; with related replies, including each reply author
 $threadRecord = $atlas->fetchRecord(ThreadMapper::CLASS, '1', [
     'author',
     'summary',
     'replies' => function ($select) {
-        $select->limit(10)->with(['author']);
+        $select->with(['author']);
     },
     'threads2tags',
     'tags',
 ]);
 
 
-// fetch thread_id 1, 2, and 3, with the top 10 replies in descending order,
-// including each reply author
+// fetch thread_id 1, 2, and 3; with related replies, including each reply author
 $threadRecordSet = $atlas->fetchRecordSet(ThreadMapper::CLASS, [1, 2, 3], [
     'author',
     'summary',
     'replies' => function ($select) {
-        $select->limit(10)->with(['author']);
+        $select->with(['author']);
     },
     'threads2tags',
     'tags',
