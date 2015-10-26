@@ -163,7 +163,7 @@ class Transaction
      */
     public function insert(AbstractRecord $record)
     {
-        $this->planMapperWork('insert', $record);
+        $this->planRecordWork('insert', $record);
         return $this;
     }
 
@@ -178,7 +178,7 @@ class Transaction
      */
     public function update(AbstractRecord $record)
     {
-        $this->planMapperWork('update', $record);
+        $this->planRecordWork('update', $record);
         return $this;
     }
 
@@ -193,31 +193,30 @@ class Transaction
      */
     public function delete(AbstractRecord $record)
     {
-        $this->planMapperWork('delete', $record);
+        $this->planRecordWork('delete', $record);
         return $this;
     }
 
     /**
      *
-     * Adds mapper-specific work to the transaction plan.
+     * Adds record-specific work to the transaction plan, and attaches the
+     * relevant mapper connection.
      *
-     * @param string $method The mapper method to call.
+     * @param string $method The relevant mapper method to call.
      *
-     * @param AbstractRecord $record Use this record to locate the mapper,
-     * and call the mapper using this record.
+     * @param AbstractRecord $record The record to work with.
      *
      * @return null
      *
      */
-    protected function planMapperWork($method, AbstractRecord $record)
+    protected function planRecordWork($method, AbstractRecord $record)
     {
         $mapper = $this->mapperLocator->get($record);
         $this->connections->attach($mapper->getTable()->getWriteConnection());
-        $this->plan(
-            "$method " . get_class($record),
-            [$mapper, $method],
-            $record
-        );
+
+        $label = "$method " . get_class($record);
+        $callable = [$mapper, $method];
+        $this->plan($label, $callable, $record);
     }
 
     /**
