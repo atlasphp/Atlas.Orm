@@ -1,6 +1,6 @@
 # Atlas
 
-> No schema discovery. No migrations. No annotations. No lazy loading. No domain models. No data-type abstractions. No behaviors. No opinions. Just data mapping.
+> No migrations. No annotations. No lazy loading. No domain models. No data-type abstractions. No behaviors. No opinions. Just data mapping.
 
 Atlas is an ORM for your **persistence** (or **data source**) model, not for your domain model. Use Atlas data source objects to populate your domain model objects.
 

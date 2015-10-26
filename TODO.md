@@ -2,6 +2,10 @@
 
     - Add `append()` or `addNew()` to RowSet and RecordSet to append a new Row/Record of the proper type. Probably need to keep a reference back to the original Table/Mapper for the "new" logic.
 
+- Queries
+
+    - Create Table-level insert/update/delete objects, like with select?
+
 - Row
 
     - Is there any way to use a property-per-column instead of a data array? Make the Identity object private in that case.
@@ -38,4 +42,6 @@
 
     - Finish them. Hell, *start* them. :-/
 
-    - Add examples on how to properly wrap a Record in the Domain. If you have two instances of a particular domain Entity, and you change values on the data Row, it's now reflected across all instances of that particular Entity, because the Row is identity-mapped. Is that a problem?
+    - Add examples on how to properly wrap a Record in the Domain.
+
+    - If you have two instances of a particular domain Entity, and you change values on the data Row, it's now reflected across all instances of that particular Entity, because the Row is identity-mapped. Is that a problem?
