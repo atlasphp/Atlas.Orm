@@ -213,10 +213,10 @@ class Transaction
     {
         $mapper = $this->mapperLocator->get($record);
         $this->connections->attach($mapper->getTable()->getWriteConnection());
-        $this->plan[] = $this->newWork(
+        $this->plan(
             "$method " . get_class($record),
             [$mapper, $method],
-            [$record]
+            $record
         );
     }
 
