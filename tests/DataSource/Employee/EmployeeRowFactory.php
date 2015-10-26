@@ -14,6 +14,9 @@ class EmployeeRowFactory extends AbstractRowFactory
     {
         return [
             'id' => null,
+            'name' => null,
+            'building' => null,
+            'floor' => null,
         ];
     }
 }

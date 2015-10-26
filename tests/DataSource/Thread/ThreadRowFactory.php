@@ -14,6 +14,9 @@ class ThreadRowFactory extends AbstractRowFactory
     {
         return [
             'thread_id' => null,
+            'author_id' => null,
+            'subject' => null,
+            'body' => null,
         ];
     }
 }

@@ -14,6 +14,8 @@ class TaggingRowFactory extends AbstractRowFactory
     {
         return [
             'tagging_id' => null,
+            'thread_id' => null,
+            'tag_id' => null,
         ];
     }
 }

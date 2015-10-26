@@ -14,6 +14,8 @@ class SummaryRowFactory extends AbstractRowFactory
     {
         return [
             'thread_id' => null,
+            'reply_count' => null,
+            'view_count' => null,
         ];
     }
 }

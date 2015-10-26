@@ -14,6 +14,9 @@ class ReplyRowFactory extends AbstractRowFactory
     {
         return [
             'reply_id' => null,
+            'thread_id' => null,
+            'author_id' => null,
+            'body' => null,
         ];
     }
 }
