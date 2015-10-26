@@ -60,7 +60,7 @@ class Transaction
      * @var Work
      *
      */
-    protected $failed;
+    protected $failure;
 
     /**
      *
@@ -130,14 +130,14 @@ class Transaction
      * @return Work
      *
      */
-    public function getFailed()
+    public function getFailure()
     {
-        return $this->failed;
+        return $this->failure;
     }
 
     /**
      *
-     * Adds a callable to invoke as part of the transaction plan.
+     * Adds a callable as part of the transaction plan.
      *
      * @param string $label A label for the planned work.
      *
@@ -252,7 +252,7 @@ class Transaction
      */
     public function exec()
     {
-        $prior = $this->completed || $this->failed || $this->exception;
+        $prior = $this->completed || $this->failure || $this->exception;
         if ($prior) {
             throw new Exception('Cannot re-execute a prior transaction.');
         }
@@ -279,10 +279,10 @@ class Transaction
     protected function execPlan()
     {
         foreach ($this->plan as $work) {
-            $this->failed = $work;
+            $this->failure = $work;
             $work();
             $this->completed[] = $work;
-            $this->failed = null;
+            $this->failure = null;
         }
     }
 
