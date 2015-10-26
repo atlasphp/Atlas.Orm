@@ -1,7 +1,7 @@
 {
     "name": "atlas/atlas",
     "type": "library",
-    "description": "ORM: No schema discovery. No migrations. No annotations. No lazy loading. No domain models. No opinions. Just data mapping.",
+    "description": "ORM: No migrations. No annotations. No lazy loading. No domain models. No data-type abstractions. No behaviors. No opinions. Just data mapping.",
     "keywords": [ "sql", "data", "mapper", "mapping", "orm" ],
     "homepage": "http://github.com/atlasphp/Atlas.Atlas",
     "license": "MIT",
