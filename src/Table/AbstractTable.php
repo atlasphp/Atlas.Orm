@@ -417,6 +417,8 @@ abstract class AbstractTable
     public function delete(AbstractRow $row)
     {
         $this->rowFactory->assertRowClass($row);
+        $this->rowFilter->forDelete($row);
+
         $delete = $this->newDelete($row);
         $pdoStatement = $this->getWriteConnection()->perform(
             $delete->getStatement(),

@@ -8,8 +8,14 @@ class SummaryMapper extends AbstractMapper
     public function __construct(
         SummaryTable $table,
         SummaryRecordFactory $recordFactory,
+        SummaryRecordFilter $recordFilter,
         SummaryRelations $relations
     ) {
-        parent::__construct($table, $recordFactory, $relations);
+        parent::__construct(
+            $table,
+            $recordFactory,
+            $recordFilter,
+            $relations
+        );
     }
 }

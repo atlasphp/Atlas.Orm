@@ -10,12 +10,6 @@
 
     - Add the relationship definitions to the Related object, to support wiring-up of foreign keys?
 
-- RecordFilter
-
-    - Add a RecordFilter object to be invoke at the mapper level.
-
-    - This might be a place to wire up foreign keys?
-
 - Queries
 
     - Create Table-level insert/update/delete objects, like with select?

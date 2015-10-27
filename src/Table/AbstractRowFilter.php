@@ -12,4 +12,9 @@ abstract class AbstractRowFilter
     {
         // do nothing
     }
+
+    public function forDelete(AbstractRow $row)
+    {
+        // do nothing
+    }
 }

@@ -22,13 +22,17 @@ abstract class AbstractMapper
 
     protected $recordFactory;
 
+    protected $recordFilter;
+
     public function __construct(
         AbstractTable $table,
         AbstractRecordFactory $recordFactory,
+        AbstractRecordFilter $recordFilter,
         AbstractRelations $relations
     ) {
         $this->table = $table;
         $this->recordFactory = $recordFactory;
+        $this->recordFilter = $recordFilter;
         $this->relations = $relations;
     }
 
@@ -123,12 +127,14 @@ abstract class AbstractMapper
     public function insert(AbstractRecord $record)
     {
         $this->recordFactory->assertRecordClass($record);
+        $this->recordFilter->forInsert($record);
         return $this->getTable()->insert($record->getRow());
     }
 
     public function update(AbstractRecord $record)
     {
         $this->recordFactory->assertRecordClass($record);
+        $this->recordFilter->forUpdate($record);
         return $this->getTable()->update($record->getRow());
     }
 

@@ -389,10 +389,25 @@ TPL;
 <?php
 namespace {NAMESPACE};
 
+use Atlas\Table\AbstractRow;
 use Atlas\Table\AbstractRowFilter;
 
 class {TYPE}RowFilter extends AbstractRowFilter
 {
+    public function forInsert(AbstractRow \$row)
+    {
+        // do nothing
+    }
+
+    public function forUpdate(AbstractRow \$row)
+    {
+        // do nothing
+    }
+
+    public function forDelete(AbstractRow \$row)
+    {
+        // do nothing
+    }
 }
 
 TPL;
@@ -408,9 +423,15 @@ class {TYPE}Mapper extends AbstractMapper
     public function __construct(
         {TYPE}Table \$table,
         {TYPE}RecordFactory \$recordFactory,
+        {TYPE}RecordFilter \$recordFilter,
         {TYPE}Relations \$relations
     ) {
-        parent::__construct(\$table, \$recordFactory, \$relations);
+        parent::__construct(
+            \$table,
+            \$recordFactory,
+            \$recordFilter,
+            \$relations
+        );
     }
 }
 
@@ -452,6 +473,32 @@ class {TYPE}RecordFactory extends AbstractRecordFactory
 
 TPL;
 
+        $this->templates['RecordFilter'] = <<<TPL
+<?php
+namespace {NAMESPACE};
+
+use Atlas\Mapper\AbstractRecord;
+use Atlas\Mapper\AbstractRecordFilter;
+
+class {TYPE}RecordFilter extends AbstractRecordFilter
+{
+    public function forInsert(AbstractRecord \$record)
+    {
+        // do nothing
+    }
+
+    public function forUpdate(AbstractRecord \$record)
+    {
+        // do nothing
+    }
+
+    public function forDelete(AbstractRecord \$record)
+    {
+        // do nothing
+    }
+}
+
+TPL;
         $this->templates['Relations'] = <<<TPL
 <?php
 namespace {NAMESPACE};

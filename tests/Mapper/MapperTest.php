@@ -5,6 +5,7 @@ use Atlas\DataSource\Auto\AutoMapper;
 use Atlas\DataSource\Auto\AutoTable;
 use Atlas\DataSource\Employee\EmployeeMapper;
 use Atlas\DataSource\Employee\EmployeeRecordFactory;
+use Atlas\DataSource\Employee\EmployeeRecordFilter;
 use Atlas\DataSource\Employee\EmployeeRelations;
 use Atlas\DataSource\Employee\EmployeeRowFactory;
 use Atlas\DataSource\Employee\EmployeeRowFilter;
@@ -47,6 +48,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $this->mapper = new EmployeeMapper(
             $this->table,
             new EmployeeRecordFactory(),
+            new EmployeeRecordFilter(),
             new EmployeeRelations(new MapperLocator())
         );
     }

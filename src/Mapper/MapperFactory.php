@@ -28,6 +28,7 @@ class MapperFactory
         return new $mapperClass(
             $this->atlasContainer->getTable($this->tableClass),
             $this->atlasContainer->newInstance("{$type}RecordFactory"),
+            $this->atlasContainer->newInstance("{$type}RecordFilter"),
             $relations
         );
     }

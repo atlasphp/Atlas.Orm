@@ -8,8 +8,14 @@ class EmployeeMapper extends AbstractMapper
     public function __construct(
         EmployeeTable $table,
         EmployeeRecordFactory $recordFactory,
+        EmployeeRecordFilter $recordFilter,
         EmployeeRelations $relations
     ) {
-        parent::__construct($table, $recordFactory, $relations);
+        parent::__construct(
+            $table,
+            $recordFactory,
+            $recordFilter,
+            $relations
+        );
     }
 }
