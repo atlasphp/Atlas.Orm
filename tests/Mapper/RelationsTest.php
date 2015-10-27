@@ -37,4 +37,18 @@ class MapperRelationsTest extends \PHPUnit_Framework_TestCase
             'foo'
         );
     }
+
+    public function testSet_noForeignMapper()
+    {
+        $this->setExpectedException(
+            Exception::CLASS,
+            "NoSuchMapper does not exist"
+        );
+
+        $this->relations->set(
+            'bar',
+            HasOne::CLASS,
+            NoSuchMapper::CLASS
+        );
+    }
 }
