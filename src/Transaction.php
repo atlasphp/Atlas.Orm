@@ -77,18 +77,6 @@ class Transaction
 
     /**
      *
-     * Gets the connections.
-     *
-     * @return array
-     *
-     */
-    public function getConnections()
-    {
-        return $this->connections;
-    }
-
-    /**
-     *
      * Gets the planned work.
      *
      * @return array

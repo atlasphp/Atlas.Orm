@@ -37,11 +37,6 @@ abstract class AbstractMapper
         return $this->table;
     }
 
-    public function getRecordFactory()
-    {
-        return $this->recordFactory;
-    }
-
     public function getRelations()
     {
         return $this->relations;

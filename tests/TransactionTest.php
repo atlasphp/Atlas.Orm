@@ -31,10 +31,11 @@ class TransactionTest extends \PHPUnit_Framework_TestCase
     {
         // create the record to insert
         $mapper = $this->atlas->mapper(EmployeeMapper::CLASS);
-        $employee = $mapper->newRecord();
-        $employee->name = 'Mona';
-        $employee->building = 10;
-        $employee->floor = 99;
+        $employee = $mapper->newRecord([
+            'name' => 'Mona',
+            'building' => 10,
+            'floor' => 99,
+        ]);
 
         // insert as part of the transaction plan
         $transaction = $this->atlas->newTransaction();
@@ -63,6 +64,11 @@ class TransactionTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($work->getInvoked());
         $this->assertTrue($work->getResult());
         $this->assertSame('13', $employee->id);
+
+        // completed work should be the same as the planned work, with no failures
+        $this->assertSame($transaction->getPlan(), $transaction->getCompleted());
+        $this->assertNull($transaction->getFailure());
+        $this->assertNull($transaction->getException());
 
         // did the insert actually occur?
         $expect = ['id' => '13', 'name' => 'Mona', 'building' => '10', 'floor' => '99'];
@@ -103,6 +109,11 @@ class TransactionTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($work->getInvoked());
         $this->assertTrue($work->getResult());
 
+        // completed work should be the same as the planned work, with no failures
+        $this->assertSame($transaction->getPlan(), $transaction->getCompleted());
+        $this->assertNull($transaction->getFailure());
+        $this->assertNull($transaction->getException());
+
         // did the update actually occur?
         $expect = ['id' => '1', 'name' => 'Annabelle', 'building' => '1', 'floor' => '1'];
         $actual = $mapper->select()->cols(['*'])->where('id = 1')->fetchOne();
@@ -141,8 +152,55 @@ class TransactionTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($work->getInvoked());
         $this->assertTrue($work->getResult());
 
+        // completed work should be the same as the planned work, with no failures
+        $this->assertSame($transaction->getPlan(), $transaction->getCompleted());
+        $this->assertNull($transaction->getFailure());
+        $this->assertNull($transaction->getException());
+
         // did the delete actually occur?
         $actual = $mapper->select(['name' => 'Anna'])->cols(['*'])->fetchOne();
         $this->assertFalse($actual);
+    }
+
+    public function testExec_reExec()
+    {
+        $transaction = $this->atlas->newTransaction();
+        $transaction->plan('no-op', function () { });
+        $result = $transaction->exec();
+        $this->assertTrue($result);
+
+        $this->setExpectedException(
+            'Atlas\Exception',
+            'Cannot re-execute a prior transaction.'
+        );
+        $transaction->exec();
+    }
+
+    public function testExec_rollBack()
+    {
+        $transaction = $this->atlas->newTransaction();
+
+        // throw an exception
+        $transaction->plan('throw', function () {
+            throw new Exception();
+        });
+
+        // should never get this far
+        $mapper = $this->atlas->mapper(EmployeeMapper::CLASS);
+        $employee = $mapper->newRecord([
+            'name' => 'Mona',
+            'building' => 10,
+            'floor' => 99,
+        ]);
+        $transaction->insert($employee);
+
+        // transaction should fail
+        $result = $transaction->exec();
+        $this->assertFalse($result);
+
+        $this->assertInstanceOf(Exception::CLASS, $transaction->getException());
+        $actual = $transaction->getFailure();
+        $expect = $transaction->getPlan()[0];
+        $this->assertSame($expect, $actual);
     }
 }
