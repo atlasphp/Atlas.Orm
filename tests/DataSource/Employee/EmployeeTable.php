@@ -8,6 +8,8 @@ use Aura\SqlQuery\QueryFactory;
 
 class EmployeeTable extends AbstractTable
 {
+    use EmployeeTableTrait;
+
     public function __construct(
         ConnectionLocator $connectionLocator,
         QueryFactory $queryFactory,
@@ -22,22 +24,5 @@ class EmployeeTable extends AbstractTable
             $rowFactory,
             $rowFilter
         );
-    }
-
-    public function getTable()
-    {
-        return 'employee';
-    }
-
-    public function getAutoinc()
-    {
-        return true;
-    }
-
-    public function getCols()
-    {
-        return [
-            '*',
-        ];
     }
 }

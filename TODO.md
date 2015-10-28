@@ -14,6 +14,8 @@
 
     - Create Table-level insert/update/delete objects, like with select?
 
+    - In MapperSelect, add support for relation-specific joins?
+
 - Composite primary keys
 
     - Build strategies for fetching by composite keys
@@ -30,11 +32,7 @@
 
     - Allow generating only Mapper-related classes, since one Table can support many Mappers.
 
-    - Add @property dcoblock elements for code-completion in Row and Record.
-
-- Table(Schema|Info)
-
-    - Might be convenient to put all data originating from schema into its own class or trait, then extend/inject/use it when needed. Having that might make maintenance based on table changes a lot easier; the skeleton generator could always safely overwrite that file. This means only $primary, $autoinc, $cols, and possibly $default. The class
+    - Add @property dcoblock elements for code-completion in Row and Record. Can't really add them for relateds in the record, though; those have to be hand-maintained.
 
 - Docs
 

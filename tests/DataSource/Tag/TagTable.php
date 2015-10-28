@@ -8,6 +8,8 @@ use Aura\SqlQuery\QueryFactory;
 
 class TagTable extends AbstractTable
 {
+    use TagTableTrait;
+
     public function __construct(
         ConnectionLocator $connectionLocator,
         QueryFactory $queryFactory,
@@ -22,22 +24,5 @@ class TagTable extends AbstractTable
             $rowFactory,
             $rowFilter
         );
-    }
-
-    public function getTable()
-    {
-        return 'tags';
-    }
-
-    public function getAutoinc()
-    {
-        return true;
-    }
-
-    public function getCols()
-    {
-        return [
-            '*',
-        ];
     }
 }

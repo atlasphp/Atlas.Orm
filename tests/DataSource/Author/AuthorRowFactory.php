@@ -5,16 +5,5 @@ use Atlas\Table\AbstractRowFactory;
 
 class AuthorRowFactory extends AbstractRowFactory
 {
-    public function getPrimary()
-    {
-        return 'author_id';
-    }
-
-    public function getDefault()
-    {
-        return [
-            'author_id' => null,
-            'name' => null,
-        ];
-    }
+    use AuthorTableTrait;
 }

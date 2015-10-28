@@ -43,7 +43,7 @@ class TableSelect implements SubselectInterface
         AbstractTable $table,
         SelectInterface $select
     ) {
-        $this->table = $table; // getReadConnection(), getCols(), newRow(), newRowSet(), getPrimaryIdentity()
+        $this->table = $table; // getReadConnection(), tableCols(), mappedOrNewRow(), mappedOrNewRowSet()
         $this->select = $select;
     }
 
@@ -192,7 +192,7 @@ class TableSelect implements SubselectInterface
 
     public function fetchRow()
     {
-        $this->select->cols($this->table->getCols());
+        $this->select->cols($this->table->tableCols());
 
         $cols = $this->fetchOne();
         if (! $cols) {
@@ -204,7 +204,7 @@ class TableSelect implements SubselectInterface
 
     public function fetchRowSet()
     {
-        $this->select->cols($this->table->getCols());
+        $this->select->cols($this->table->tableCols());
 
         $data = $this->fetchAll();
         if (! $data) {

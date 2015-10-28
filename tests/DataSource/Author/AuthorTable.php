@@ -8,6 +8,8 @@ use Aura\SqlQuery\QueryFactory;
 
 class AuthorTable extends AbstractTable
 {
+    use AuthorTableTrait;
+
     public function __construct(
         ConnectionLocator $connectionLocator,
         QueryFactory $queryFactory,
@@ -22,22 +24,5 @@ class AuthorTable extends AbstractTable
             $rowFactory,
             $rowFilter
         );
-    }
-
-    public function getTable()
-    {
-        return 'authors';
-    }
-
-    public function getAutoinc()
-    {
-        return true;
-    }
-
-    public function getCols()
-    {
-        return [
-            '*',
-        ];
     }
 }

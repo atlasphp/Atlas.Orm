@@ -8,6 +8,8 @@ use Aura\SqlQuery\QueryFactory;
 
 class ThreadTable extends AbstractTable
 {
+    use ThreadTableTrait;
+
     public function __construct(
         ConnectionLocator $connectionLocator,
         QueryFactory $queryFactory,
@@ -22,22 +24,5 @@ class ThreadTable extends AbstractTable
             $rowFactory,
             $rowFilter
         );
-    }
-
-    public function getTable()
-    {
-        return 'threads';
-    }
-
-    public function getAutoinc()
-    {
-        return true;
-    }
-
-    public function getCols()
-    {
-        return [
-            '*',
-        ];
     }
 }

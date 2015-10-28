@@ -5,18 +5,5 @@ use Atlas\Table\AbstractRowFactory;
 
 class ReplyRowFactory extends AbstractRowFactory
 {
-    public function getPrimary()
-    {
-        return 'reply_id';
-    }
-
-    public function getDefault()
-    {
-        return [
-            'reply_id' => null,
-            'thread_id' => null,
-            'author_id' => null,
-            'body' => null,
-        ];
-    }
+    use ReplyTableTrait;
 }

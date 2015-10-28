@@ -26,7 +26,7 @@ class HasManyThrough extends AbstractRelation
             return;
         }
 
-        $this->throughNativeCol($this->nativeMapper->getTable()->getPrimary());
+        $this->throughNativeCol($this->nativeMapper->getTable()->tablePrimary());
     }
 
     protected function fixThroughForeignCol()
@@ -35,7 +35,7 @@ class HasManyThrough extends AbstractRelation
             return;
         }
 
-        $this->throughForeignCol($this->foreignMapper->getTable()->getPrimary());
+        $this->throughForeignCol($this->foreignMapper->getTable()->tablePrimary());
     }
 
     protected function fixForeignCol()
@@ -44,7 +44,7 @@ class HasManyThrough extends AbstractRelation
             return;
         }
 
-        $this->foreignCol($this->foreignMapper->getTable()->getPrimary());
+        $this->foreignCol($this->foreignMapper->getTable()->tablePrimary());
     }
 
     public function stitchIntoRecord(

@@ -294,6 +294,8 @@ use Aura\SqlQuery\QueryFactory;
 
 class {TYPE}Table extends AbstractTable
 {
+    use {TYPE}TableTrait;
+
     public function __construct(
         ConnectionLocator \$connectionLocator,
         QueryFactory \$queryFactory,
@@ -309,20 +311,54 @@ class {TYPE}Table extends AbstractTable
             \$rowFilter
         );
     }
+}
 
-    public function getTable()
+TPL;
+
+        $this->templates['TableTrait'] = <<<TPL
+<?php
+namespace {NAMESPACE};
+
+trait {TYPE}TableTrait
+{
+    /**
+     * @inheritdoc
+     */
+    public function tableName()
     {
         return '{TABLE}';
     }
 
-    public function getAutoinc()
+    /**
+     * @inheritdoc
+     */
+    public function tableCols()
+    {
+        return {COLS};
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function tablePrimary()
+    {
+        return '{PRIMARY}';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function tableAutoinc()
     {
         return {AUTOINC};
     }
 
-    public function getCols()
+    /**
+     * @inheritdoc
+     */
+    public function tableDefault()
     {
-        return {COLS};
+        return {DEFAULT};
     }
 }
 
@@ -372,15 +408,7 @@ use Atlas\Table\AbstractRowFactory;
 
 class {TYPE}RowFactory extends AbstractRowFactory
 {
-    public function getPrimary()
-    {
-        return '{PRIMARY}';
-    }
-
-    public function getDefault()
-    {
-        return {DEFAULT};
-    }
+    use {TYPE}TableTrait;
 }
 
 TPL;
@@ -394,20 +422,6 @@ use Atlas\Table\AbstractRowFilter;
 
 class {TYPE}RowFilter extends AbstractRowFilter
 {
-    public function forInsert(AbstractRow \$row)
-    {
-        // do nothing
-    }
-
-    public function forUpdate(AbstractRow \$row)
-    {
-        // do nothing
-    }
-
-    public function forDelete(AbstractRow \$row)
-    {
-        // do nothing
-    }
 }
 
 TPL;
@@ -482,20 +496,6 @@ use Atlas\Mapper\AbstractRecordFilter;
 
 class {TYPE}RecordFilter extends AbstractRecordFilter
 {
-    public function forInsert(AbstractRecord \$record)
-    {
-        // do nothing
-    }
-
-    public function forUpdate(AbstractRecord \$record)
-    {
-        // do nothing
-    }
-
-    public function forDelete(AbstractRecord \$record)
-    {
-        // do nothing
-    }
 }
 
 TPL;
