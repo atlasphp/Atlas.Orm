@@ -38,31 +38,67 @@ Finally, an _Atlas_ object acts as a collection point for all _Mapper_ objects, 
 
 > This section is sorely incomplete.
 
-Create your data source classes by hand, or use a skeleton generator in the directory where you want the classes to be created:
+You can create your data source classes by hand, but it's going to be tedious to do so. Instead, use the skeleton generator command. While you don't need a database connection, it will be convenient to connect to the database and let the generator read from it.
 
-```bash
-./bin/atlas-skeleton.php --dir=src/App/DataSource App\\DataSource\\Author
+Create a PHP file to return an array of connection parameters suitable for PDO:
+
+```
+<?php
+// ./conn.php
+return ['mysql:dbname=testdb;host=127.0.0.1', 'username', 'password'];
+?>
 ```
 
-> N.b.: No database connection is needed. You can hand-edit the files afterwards as necessary; some sensible defaults are applied.
+You can then invoke the skeleton generator using that connection. Specify a target directory for the skeleton files if you like, and pass the namespace name for the data source classes; pass a table name as well.
 
-That creates this directory and these empty extended classes in `src/App/DataSource/`:
+```bash
+./bin/atlas-skeleton.php --conn=./conn.php --dir=src/App/DataSource App\\DataSource\\Thread --table=threads
+```
 
-    └── Author
-        ├── AuthorMapper.php
-        ├── AuthorRecord.php
-        ├── AuthorRecordFactory.php
-        ├── AuthorRecordSet.php
-        ├── AuthorRelations.php
-        ├── AuthorRow.php
-        ├── AuthorRowFactory.php
-        ├── AuthorRowFilter.php
-        ├── AuthorRowIdentity.php
-        ├── AuthorRowSet.php
-        ├── AuthorTable.php
-        └── AuthorTableTrait.php
+That will create this directory and these empty extended classes in `src/App/DataSource/`:
+
+    └── Thread
+        ├── ThreadMapper.php
+        ├── ThreadRecord.php
+        ├── ThreadRecordFactory.php
+        ├── ThreadRecordSet.php
+        ├── ThreadRelations.php
+        ├── ThreadRow.php
+        ├── ThreadRowFactory.php
+        ├── ThreadRowFilter.php
+        ├── ThreadRowIdentity.php
+        ├── ThreadRowSet.php
+        ├── ThreadTable.php
+        └── ThreadTableTrait.php
 
 Do that once for each SQL table in your database.
+
+You can add relationships on a _Record_ by editing its _Relations_ class:
+
+```php
+<?php
+namespace Atlas\DataSource\Thread;
+
+use App\DataSource\Author\AuthorMapper;
+use App\DataSource\Summary\SummaryMapper;
+use App\DataSource\Reply\ReplyMapper;
+use App\DataSource\Tagging\TaggingMapper;
+use App\DataSource\Tag\TagMapper;
+use Atlas\Mapper\AbstractRelations;
+
+class ThreadRelations extends AbstractRelations
+{
+    protected function setRelations()
+    {
+        $this->belongsTo('author', AuthorMapper::CLASS);
+        $this->hasOne('summary', SummaryMapper::CLASS);
+        $this->hasMany('replies', ReplyMapper::CLASS);
+        $this->hasMany('taggings', TaggingMapper::CLASS);
+        $this->hasManyThrough('tags', TagMapper::CLASS, 'taggings');
+    }
+}
+?>
+```
 
 Then create an _Atlas_ instance using the _AtlasContainer_:
 
