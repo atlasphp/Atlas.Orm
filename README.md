@@ -204,7 +204,7 @@ $thread->body = "Body text for the thread";
 ?>
 ```
 
-Note that the _Row_s supporting each _Record_ are all identity-mapped, so a change to one _Row_ used by multiple _Record_s will be reflected immediately in all those _Record_s.
+Note that each _Row_ supporting each _Record_ is identity-mapped, so a change to a _Row_ used by more than one _Record_ will be reflected immediately in each _Record_ using that _Row_.
 
  ```php
 <?php
