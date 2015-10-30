@@ -42,14 +42,14 @@ You can create your data source classes by hand, but it's going to be tedious to
 
 Create a PHP file to return an array of connection parameters suitable for PDO:
 
-```
+```php
 <?php
 // ./conn.php
 return ['mysql:dbname=testdb;host=127.0.0.1', 'username', 'password'];
 ?>
 ```
 
-You can then invoke the skeleton generator using that connection. Specify a target directory for the skeleton files if you like, and pass the namespace name for the data source classes; pass a table name as well.
+You can then invoke the skeleton generator using that connection. Specify a target directory for the skeleton files if you like, and pass the namespace name for the data source classes. Pass an explicit table name to keep the generator from trying to guess the name.
 
 ```bash
 ./bin/atlas-skeleton.php --conn=./conn.php --dir=src/App/DataSource App\\DataSource\\Thread --table=threads
