@@ -45,7 +45,7 @@ Create a PHP file to return an array of connection parameters suitable for PDO:
 ```php
 <?php
 // ./conn.php
-return ['mysql:dbname=testdb;host=127.0.0.1', 'username', 'password'];
+return ['mysql:dbname=testdb;host=localhost', 'username', 'password'];
 ?>
 ```
 
