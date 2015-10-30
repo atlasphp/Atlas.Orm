@@ -141,6 +141,7 @@ abstract class AbstractMapper
     public function delete(AbstractRecord $record)
     {
         $this->recordFactory->assertRecordClass($record);
+        $this->recordFilter->forDelete($record);
         return $this->getTable()->delete($record->getRow());
     }
 }
