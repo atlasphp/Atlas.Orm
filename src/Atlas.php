@@ -23,6 +23,16 @@ class Atlas
         return $this->mapperLocator->get($class);
     }
 
+    public function newRecord($class, array $data = [])
+    {
+        return $this->mapper($class)->newRecord($data);
+    }
+
+    public function newRecordSet($class)
+    {
+        return $this->mapper($class)->newRecordSet();
+    }
+
     public function fetchRecord($class, $primaryVal, array $with = [])
     {
         return $this->mapper($class)->fetchRecord($primaryVal, $with);

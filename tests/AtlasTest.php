@@ -8,6 +8,8 @@ use Atlas\DataSource\Summary\SummaryTable;
 use Atlas\DataSource\Tag\TagMapper;
 use Atlas\DataSource\Tagging\TaggingMapper;
 use Atlas\DataSource\Thread\ThreadMapper;
+use Atlas\DataSource\Thread\ThreadRecord;
+use Atlas\DataSource\Thread\ThreadRecordSet;
 use Aura\Sql\ExtendedPdo;
 
 class AtlasTest extends \PHPUnit_Framework_TestCase
@@ -36,6 +38,18 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
         $fixture->exec();
 
         $this->atlas = $atlasContainer->getAtlas();
+    }
+
+    public function testNewRecord()
+    {
+        $actual = $this->atlas->newRecord(ThreadMapper::CLASS);
+        $this->assertInstanceOf(ThreadRecord::CLASS, $actual);
+    }
+
+    public function testNewRecordSet()
+    {
+        $actual = $this->atlas->newRecordSet(ThreadMapper::CLASS);
+        $this->assertInstanceOf(ThreadRecordSet::CLASS, $actual);
     }
 
     public function testFetchRecord()
