@@ -192,9 +192,31 @@ foreach ($thread->reples as $reply) {
 ?>
 ```
 
+### Changing
+
+Make changes to the _Record_ by setting new property values.
+
+```php
+<?php
+$thread = $atlas->newRecord(ThreadMapper::CLASS);
+$thread->title = "Thread title";
+$thread->body = "Body text for the thread";
+?>
+```
+
+Note that the _Row_s supporting each _Record_ are all identity-mapped, so a change to one _Row_ used by multiple _Record_s will be reflected immediately in all those _Record_s.
+
+ ```php
+<?php
+// $reply1 and $reply2 are two different replies by the same author. the reply
+// rows are different, but the underlying author row is the same.
+$reply1->author->name = "New name"; // $reply2->author->name is now also "New name"
+?>
+```
+
 ### Writing
 
-After you make changes to the _Record_, you can write it back to the database using a unit-of-work _Transaction_. You can plan for records to be inserted, updated, and deleted, in whatever order you like, and then execute the entire transaction plan at once. Exceptions will cause a rollback.
+After you make changes to a _Record_, you can write it back to the database using a unit-of-work _Transaction_. You can plan for _Record_s to be inserted, updated, and deleted, in whatever order you like, and then execute the entire transaction plan at once. Exceptions will cause a rollback.
 
 ```php
 <?php

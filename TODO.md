@@ -2,7 +2,15 @@
 
     - Build strategies for fetching by composite keys
 
-    - Build strategies for stitching in foregin record with composite keys; consider allowing custom Relation classes for this
+    - Build strategies for stitching in foregin record with composite keys; consider allowing custom Relation classes for this.
+
+- Generic
+
+    - Consider renaming "Abstract" to "Generic" to indicate what *ought* to be happening, if/when PHP gets generics.
+
+- Insert/update/delete
+
+    - Consider throwing exceptions in the Table and Mapper, and capturing those in Atlas object. That way a returns-false update or delete does not get lost in a Transaction.
 
 - Command
 
