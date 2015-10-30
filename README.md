@@ -41,8 +41,7 @@ Finally, an _Atlas_ object acts as a collection point for all _Mapper_ objects, 
 Create your data source classes by hand, or use a skeleton generator in the directory where you want the classes to be created:
 
 ```bash
-cd src/App/DataSource
-php ../../bin/atlas-skeleton.php App\\DataSource\\Author
+./bin/atlas-skeleton.php --dir=src/App/DataSource App\\DataSource\\Author
 ```
 
 > N.b.: No database connection is needed. You can hand-edit the files afterwards as necessary; some sensible defaults are applied.
@@ -60,7 +59,8 @@ That creates this directory and these empty extended classes in `src/App/DataSou
         ├── AuthorRowFilter.php
         ├── AuthorRowIdentity.php
         ├── AuthorRowSet.php
-        └── AuthorTable.php
+        ├── AuthorTable.php
+        └── AuthorTableTrait.php
 
 Do that once for each SQL table in your database.
 
