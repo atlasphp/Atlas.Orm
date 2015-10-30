@@ -220,10 +220,15 @@ After you make changes to a _Record_, you can write it back to the database usin
 
 ```php
 <?php
+// create a transaction
 $transaction = $atlas->newTransaction();
+
+// plan work for the transaction
 $transaction->insert($record1);
 $transaction->update($record2);
 $transaction->delete($record3);
+
+// execute the transaction plan
 $ok = $transaction->exec();
 if ($ok) {
     echo "Transaction success.";
