@@ -12,6 +12,14 @@ Per [this article from Mehdi Khalili](http://www.mehdi-khalili.com/orm-anti-patt
 
 Alternatively, we can do "DDD on top of ORM" where Repositories map the data source Records to domain Entities, Value Objects, and Aggregates.
 
+
+## Installation
+
+This package is installable and autoloadable via [Composer](https://getcomposer.org/) as [atlas/atlas](https://
+packagist.org/packages/atlas/atlas).
+Make sure that you’ve set up your project to [autoload Composer-installed packages](https://getcomposer.org/doc/00-intro.md#autoloading).
+
+
 ## Operation
 
 Atlas works in 2 layers. The lower _Table_ layer is a [table data gateway](http://martinfowler.com/eaaCatalog/tableDataGateway.html) implementation:
@@ -37,6 +45,8 @@ Finally, an _Atlas_ object acts as a collection point for all _Mapper_ objects, 
 ## Basic Usage
 
 > This section is sorely incomplete.
+
+### Creating Classes
 
 You can create your data source classes by hand, but it's going to be tedious to do so. Instead, use the skeleton generator command. While you don't need a database connection, it will be convenient to connect to the database and let the generator read from it.
 
@@ -100,7 +110,9 @@ class ThreadRelations extends AbstractRelations
 ?>
 ```
 
-Then create an _Atlas_ instance using the _AtlasContainer_:
+### Reading
+
+Create an _Atlas_ instance using the _AtlasContainer_:
 
 ```php
 <?php
@@ -126,7 +138,7 @@ $atlas = $atlasContainer->getAtlas();
 ?>
 ```
 
-Then you can use Atlas to select a _Record_ or a _RecordSet_:
+You can then use Atlas to select a _Record_ or a _RecordSet_:
 
 ```php
 <?php
@@ -180,6 +192,27 @@ foreach ($thread->reples as $reply) {
 ?>
 ```
 
-### Installation
-It is installable and autoloadable via [Composer](https://getcomposer.org/) as [atlas/atlas](https://packagist.org/packages/atlas/atlas).
-Make sure that you’ve set up your project to [autoload Composer-installed packages](https://getcomposer.org/doc/00-intro.md#autoloading).
+### Writing
+
+After you make changes to the _Record_, you can write it back to the database using a unit-of-work _Transaction_. You can plan for records to be inserted, updated, and deleted, in whatever order you like, and then execute the entire transaction plan at once. Exceptions will cause a rollback.
+
+```php
+<?php
+$transaction = $atlas->newTransaction();
+$transaction->insert($record1);
+$transaction->update($record2);
+$transaction->delete($record3);
+$ok = $transaction->exec();
+if ($ok) {
+    echo "Transaction success.";
+} else {
+    // an exception was thrown in the transaction; get it
+    $exception = $transaction->getException();
+    // get the specific transaction work element that caused the exception
+    $work = $transaction->getFailure();
+    // some output
+    echo "Transaction failure. ";
+    echo $work->getLabel() . ' threw ' . $exception->getMessage();
+}
+?>
+```
