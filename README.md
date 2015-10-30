@@ -206,9 +206,9 @@ $ok = $transaction->exec();
 if ($ok) {
     echo "Transaction success.";
 } else {
-    // an exception was thrown in the transaction; get it
+    // get the exception that was thrown in the transaction
     $exception = $transaction->getException();
-    // get the specific transaction work element that caused the exception
+    // get the work element that threw the exception
     $work = $transaction->getFailure();
     // some output
     echo "Transaction failure. ";
