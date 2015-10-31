@@ -4,13 +4,21 @@
 
     - Build strategies for stitching in foregin record with composite keys; consider allowing custom Relation classes for this.
 
+- TableTrait
+
+    - retain more column data than just the names: size, scope, etc. This may help users to build basic automated filters at the Row level.
+
 - Generic
 
     - Consider renaming "Abstract" to "Generic" to indicate what *ought* to be happening, if/when PHP gets generics.
 
-- Insert/update/delete
+- Mapper-level insert/update/delete
 
     - Consider throwing exceptions in the Table and Mapper, and capturing those in Atlas object. That way a returns-false update or delete does not get lost in a Transaction.
+
+- Atlas-level insert/update/delete
+
+    - Wrap each in a transaction, and retain the transaction exception/failure values.
 
 - Command
 
