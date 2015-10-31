@@ -276,7 +276,7 @@ abstract class AbstractTable
     public function insert(AbstractRow $row)
     {
         $this->rowFactory->assertRowClass($row);
-        $this->rowFilter->forInsert($row);
+        $this->rowFilter->forInsert($this, $row);
 
         $insert = $this->newInsert($row);
         $writeConnection = $this->getWriteConnection();
@@ -330,7 +330,7 @@ abstract class AbstractTable
     public function update(AbstractRow $row)
     {
         $this->rowFactory->assertRowClass($row);
-        $this->rowFilter->forUpdate($row);
+        $this->rowFilter->forUpdate($this, $row);
 
         $update = $this->newUpdate($row);
         if (! $update) {
@@ -386,7 +386,7 @@ abstract class AbstractTable
     public function delete(AbstractRow $row)
     {
         $this->rowFactory->assertRowClass($row);
-        $this->rowFilter->forDelete($row);
+        $this->rowFilter->forDelete($this, $row);
 
         $delete = $this->newDelete($row);
         $pdoStatement = $this->getWriteConnection()->perform(

@@ -3,17 +3,17 @@ namespace Atlas\Table;
 
 abstract class AbstractRowFilter
 {
-    public function forInsert(AbstractRow $row)
+    public function forInsert(AbstractTable $table, AbstractRow $row)
     {
         // do nothing
     }
 
-    public function forUpdate(AbstractRow $row)
+    public function forUpdate(AbstractTable $table, AbstractRow $row)
     {
         // do nothing
     }
 
-    public function forDelete(AbstractRow $row)
+    public function forDelete(AbstractTable $table, AbstractRow $row)
     {
         // do nothing
     }

@@ -417,7 +417,6 @@ TPL;
 <?php
 namespace {NAMESPACE};
 
-use Atlas\Table\AbstractRow;
 use Atlas\Table\AbstractRowFilter;
 
 class {TYPE}RowFilter extends AbstractRowFilter
@@ -491,7 +490,6 @@ TPL;
 <?php
 namespace {NAMESPACE};
 
-use Atlas\Mapper\AbstractRecord;
 use Atlas\Mapper\AbstractRecordFilter;
 
 class {TYPE}RecordFilter extends AbstractRecordFilter
