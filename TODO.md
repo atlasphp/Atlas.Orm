@@ -4,6 +4,12 @@
 
     - Build strategies for stitching in foregin record with composite keys; consider allowing custom Relation classes for this.
 
+- Row
+
+    - Consider isNew(), isDirty(), isClean(), isDeleted() methods.
+
+    - Consider moving getArrayCopy*() methods back to Row from Table.
+
 - TableTrait
 
     - retain more column data than just the names: size, scope, etc. This may help users to build basic automated filters at the Row level.
