@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Mapper;
 
+use Atlas\Exception;
 use Atlas\Table\AbstractRow;
-use InvalidArgumentException;
 
 abstract class AbstractRecordFactory
 {
@@ -51,8 +51,7 @@ abstract class AbstractRecordFactory
     {
         $recordClass = $this->getRecordClass();
         if (! $record instanceof $recordClass) {
-            $actual = get_class($record);
-            throw new InvalidArgumentException("Expected {$recordClass}, got {$actual} instead");
+            throw Exception::invalidType($recordClass, $record);
         }
     }
 }

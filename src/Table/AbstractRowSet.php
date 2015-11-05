@@ -3,9 +3,9 @@ namespace Atlas\Table;
 
 use ArrayAccess;
 use ArrayIterator;
+use Atlas\Exception;
 use Countable;
 use IteratorAggregate;
-use InvalidArgumentException;
 
 abstract class AbstractRowSet implements ArrayAccess, Countable, IteratorAggregate
 {
@@ -34,7 +34,7 @@ abstract class AbstractRowSet implements ArrayAccess, Countable, IteratorAggrega
     public function offsetSet($offset, $value)
     {
         if (! $value instanceof $this->rowClass) {
-            throw new InvalidArgumentException("Expected {$this->rowClass}");
+            throw Exception::invalidType($this->rowClass, $value);
         }
 
         if ($offset === null) {

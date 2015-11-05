@@ -82,7 +82,7 @@ class AtlasContainer
     public function setMapper($mapperClass)
     {
         if (! class_exists($mapperClass)) {
-            throw new Exception("$mapperClass does not exist");
+            throw Exception::classDoesNotExist($mapperClass);
         }
 
         $tableClass = $this->getTableForMapper($mapperClass);
@@ -106,7 +106,7 @@ class AtlasContainer
     public function setTable($tableClass)
     {
         if (! class_exists($tableClass)) {
-            throw new Exception("$tableClass does not exist");
+            throw Exception::classDoesNotExist($tableClass);
         }
 
         if (! $this->tableLocator->has($tableClass)) {

@@ -3,9 +3,9 @@ namespace Atlas\Mapper;
 
 use ArrayAccess;
 use ArrayIterator;
+use Atlas\Exception;
 use Countable;
 use IteratorAggregate;
-use InvalidArgumentException;
 
 abstract class AbstractRecordSet implements ArrayAccess, Countable, IteratorAggregate
 {
@@ -34,7 +34,7 @@ abstract class AbstractRecordSet implements ArrayAccess, Countable, IteratorAggr
     public function offsetSet($offset, $value)
     {
         if (! $value instanceof $this->recordClass) {
-            throw new InvalidArgumentException("Expected object of type {$this->recordClass}");
+            throw Exception::invalidType($this->recordClass, $value);
         }
 
         if ($offset === null) {

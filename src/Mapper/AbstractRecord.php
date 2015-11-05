@@ -26,7 +26,7 @@ abstract class AbstractRecord
         }
 
         $class = get_class($this);
-        throw new Exception("{$class}::\${$field} does not exist");
+        throw Exception::propertyDoesNotExist($class, $field);
     }
 
     public function __set($field, $value)
@@ -42,7 +42,7 @@ abstract class AbstractRecord
         }
 
         $class = get_class($this);
-        throw new Exception("{$class}::\${$field} does not exist");
+        throw Exception::propertyDoesNotExist($class, $field);
     }
 
     public function __isset($field)
@@ -56,7 +56,7 @@ abstract class AbstractRecord
         }
 
         $class = get_class($this);
-        throw new Exception("{$class}::\${$field} does not exist");
+        throw Exception::propertyDoesNotExist($class, $field);
     }
 
     public function __unset($field)
@@ -72,7 +72,7 @@ abstract class AbstractRecord
         }
 
         $class = get_class($this);
-        throw new Exception("{$class}::\${$field} does not exist");
+        throw Exception::propertyDoesNotExist($class, $field);
     }
 
     public function has($field)

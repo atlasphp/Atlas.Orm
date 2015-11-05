@@ -323,7 +323,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $record = new FakeRecord($row, $related);
         $this->setExpectedException(
             InvalidArgumentException::CLASS,
-            "Expected Atlas\DataSource\Employee\EmployeeRecord, got Atlas\Mapper\FakeRecord instead"
+            "Expected object of type 'Atlas\DataSource\Employee\EmployeeRecord', got 'Atlas\Mapper\FakeRecord' instead."
         );
         $this->mapper->insert($record);
     }
@@ -363,7 +363,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $record = new FakeRecord($row, $related);
         $this->setExpectedException(
             InvalidArgumentException::CLASS,
-            "Expected Atlas\DataSource\Employee\EmployeeRecord, got Atlas\Mapper\FakeRecord instead"
+            "Expected object of type 'Atlas\DataSource\Employee\EmployeeRecord', got 'Atlas\Mapper\FakeRecord' instead."
         );
         $this->mapper->update($record);
     }
@@ -390,7 +390,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $record = new FakeRecord($row, $related);
         $this->setExpectedException(
             InvalidArgumentException::CLASS,
-            "Expected Atlas\DataSource\Employee\EmployeeRecord, got Atlas\Mapper\FakeRecord instead"
+            "Expected object of type 'Atlas\DataSource\Employee\EmployeeRecord', got 'Atlas\Mapper\FakeRecord' instead."
         );
         $this->mapper->delete($record);
     }

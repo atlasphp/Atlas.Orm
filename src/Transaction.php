@@ -242,7 +242,7 @@ class Transaction
     {
         $prior = $this->completed || $this->failure || $this->exception;
         if ($prior) {
-            throw new Exception('Cannot re-execute a prior transaction.');
+            throw Exception::priorTransaction();
         }
 
         try {

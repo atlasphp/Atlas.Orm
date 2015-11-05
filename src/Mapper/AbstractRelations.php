@@ -34,11 +34,11 @@ abstract class AbstractRelations
     public function set($name, $relationClass, $foreignMapperClass, $throughName = null)
     {
         if (! class_exists($foreignMapperClass)) {
-            throw new Exception("$foreignMapperClass does not exist");
+            throw Exception::classDoesNotExist($foreignMapperClass);
         }
 
         if ($throughName && ! isset($this->relations[$throughName])) {
-            throw new Exception("Relation '$throughName' does not exist");
+            throw Exception::relationDoesNotExist($throughName);
         }
 
         $relation = $this->newRelation($name, $relationClass, $foreignMapperClass, $throughName);

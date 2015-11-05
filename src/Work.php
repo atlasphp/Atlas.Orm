@@ -20,7 +20,7 @@ class Work
     public function __invoke()
     {
         if ($this->invoked) {
-            throw new Exception('Cannot re-invoke prior work.');
+            throw Exception::priorWork();
         }
 
         $this->invoked = true;

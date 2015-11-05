@@ -1,7 +1,7 @@
 <?php
 namespace Atlas\Table;
 
-use InvalidArgumentException;
+use Atlas\Exception;
 
 abstract class AbstractRowFactory
 {
@@ -41,8 +41,7 @@ abstract class AbstractRowFactory
             $rowClass = $this->getRowClass();
         }
         if (! $row instanceof $rowClass) {
-            $actual = get_class($row);
-            throw new InvalidArgumentException("Expected {$rowClass}, got {$actual} instead");
+            throw Exception::invalidType($rowClass, $row);
         }
     }
 

@@ -65,7 +65,7 @@ abstract class AbstractRow
     {
         if (! $this->has($col)) {
             $class = get_class($this);
-            throw new Exception("{$class}::\${$col} does not exist");
+            throw Exception::propertyDoesNotExist($class, $col);
         }
     }
 

@@ -25,7 +25,7 @@ abstract class AbstractRowIdentity
 
         if (isset($this->primary[$col])) {
             $class = get_class($this);
-            throw new Exception("{$class}::\${$col} is immutable once set");
+            throw Exception::immutableOnceSet($class, $col);
         }
 
         $this->primary[$col] = $val;
@@ -43,7 +43,7 @@ abstract class AbstractRowIdentity
 
         if (isset($this->primary[$col])) {
             $class = get_class($this);
-            throw new Exception("{$class}::\${$col} is immutable once set");
+            throw Exception::immutableOnceSet($class, $col);
         }
 
         $this->primary[$col] = null;
@@ -53,7 +53,7 @@ abstract class AbstractRowIdentity
     {
         if (! $this->has($col)) {
             $class = get_class($this);
-            throw new Exception("{$class}::\${$col} does not exist");
+            throw Exception::immutableOnceSet($class, $col);
         }
     }
 

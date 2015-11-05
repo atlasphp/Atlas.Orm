@@ -40,7 +40,7 @@ class Related
     {
         if (! $this->has($name)) {
             $class = get_class($this);
-            throw new Exception("{$class}::\${$name} does not exist");
+            throw Exception::propertyDoesNotExist($class, $name);
         }
     }
 

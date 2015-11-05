@@ -209,7 +209,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $row = new FakeRow(new FakeRowIdentity(['id' => null]), []);
         $this->setExpectedException(
             InvalidArgumentException::CLASS,
-            "Expected Atlas\DataSource\Employee\EmployeeRow, got Atlas\Table\FakeRow instead"
+            "Expected object of type 'Atlas\DataSource\Employee\EmployeeRow', got 'Atlas\Table\FakeRow' instead."
         );
         $this->table->insert($row);
     }
@@ -247,7 +247,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $row = new FakeRow(new FakeRowIdentity(['id' => null]), []);
         $this->setExpectedException(
             InvalidArgumentException::CLASS,
-            "Expected Atlas\DataSource\Employee\EmployeeRow, got Atlas\Table\FakeRow instead"
+            "Expected object of type 'Atlas\DataSource\Employee\EmployeeRow', got 'Atlas\Table\FakeRow' instead."
         );
         $this->table->update($row);
     }
@@ -271,7 +271,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $row = new FakeRow(new FakeRowIdentity(['id' => null]), []);
         $this->setExpectedException(
             InvalidArgumentException::CLASS,
-            "Expected Atlas\DataSource\Employee\EmployeeRow, got Atlas\Table\FakeRow instead"
+            "Expected object of type 'Atlas\DataSource\Employee\EmployeeRow', got 'Atlas\Table\FakeRow' instead."
         );
         $this->table->delete($row);
     }

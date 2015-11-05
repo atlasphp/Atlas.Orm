@@ -55,7 +55,7 @@ class HasManyThrough extends AbstractRelation
 
         // make sure the "through" relation is loaded already
         if (! isset($nativeRecord->{$this->throughName})) {
-            throw new Exception("Cannot fetch '{$this->name}' relation without '{$this->throughName}' relation");
+            throw Exception::throughRelationNotFetched($this->name, $this->throughName);
         }
 
         $throughRecordSet = $nativeRecord->{$this->throughName};
@@ -78,7 +78,7 @@ class HasManyThrough extends AbstractRelation
         // so if even one is loaded, all the others ought to have been too.
         $firstNative = $nativeRecordSet[0];
         if (! isset($firstNative->{$this->throughName})) {
-            throw new Exception("Cannot fetch '{$this->name}' relation without '{$this->throughName}' relation");
+            throw Exception::throughRelationNotFetched($this->name, $this->throughName);
         }
 
         $foreignVals = [];

@@ -67,7 +67,7 @@ class MapperLocator
         $class = $this->getMapperClass($class);
 
         if (! isset($this->factories[$class])) {
-            throw new Exception("{$class} not found in mapper locator");
+            throw Exception::mapperNotFound($class);
         }
 
         if (! isset($this->instances[$class])) {
