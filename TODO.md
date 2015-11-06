@@ -48,10 +48,7 @@
 
 - Writing back to the database
 
-    - Single-record strategy to save a record and all of its relateds; probably uses a Unit Of Work under the hood.
-
-- Skeleton
-
+    - Single-record strategy to save a record and all of its relateds recursively; probably uses a Transaction under the hood. Maybe make that the Atlas insert/update/delete methods.
 
 - Docs
 
