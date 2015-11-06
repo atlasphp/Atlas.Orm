@@ -11,6 +11,7 @@
 namespace Atlas;
 
 use InvalidArgumentException;
+use UnexpectedValueException;
 
 /**
  *
@@ -85,5 +86,10 @@ class Exception extends \Exception
     public static function throughRelationNotFetched($name, $throughName)
     {
         return new Exception("Cannot fetch '{$name}' relation without '{$throughName}' relation.");
+    }
+
+    public static function unexpectedRowCountAffected($count)
+    {
+        return new UnexpectedValueException("Expected 1 row affected, actual {$count}");
     }
 }

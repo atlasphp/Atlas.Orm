@@ -10,6 +10,7 @@ use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\QueryFactory;
 use InvalidArgumentException;
+use UnexpectedValueException;
 
 class TableTest extends \PHPUnit_Framework_TestCase
 {
@@ -203,7 +204,11 @@ class TableTest extends \PHPUnit_Framework_TestCase
 
         // try to insert again, should fail on unique name
         $this->silenceErrors();
-        $this->assertFalse($this->table->insert($row));
+        $this->setExpectedException(
+            UnexpectedValueException::CLASS,
+            "Expected 1 row affected, actual 0"
+        );
+        $this->table->insert($row);
 
         // try to insert a row of the wrong type
         $row = new FakeRow(new FakeRowIdentity(['id' => null]), []);
@@ -241,7 +246,11 @@ class TableTest extends \PHPUnit_Framework_TestCase
         // delete the row and try to update it, should fail
         $this->assertTrue($this->table->delete($row));
         $row->name = 'Foo';
-        $this->assertFalse($this->table->update($row));
+        $this->setExpectedException(
+            UnexpectedValueException::CLASS,
+            "Expected 1 row affected, actual 0"
+        );
+        $this->table->update($row);
 
         // try to update a row of the wrong type
         $row = new FakeRow(new FakeRowIdentity(['id' => null]), []);
@@ -256,7 +265,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
     {
         // fetch a row, then delete it
         $row = $this->table->fetchRowBy(['name' => 'Anna']);
-        $this->table->delete($row);
+        $this->assertTrue($this->table->delete($row));
 
         // did it delete?
         $actual = $this->table->fetchRowBy(['name' => 'Anna']);

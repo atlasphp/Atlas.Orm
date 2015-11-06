@@ -4,9 +4,11 @@ namespace Atlas;
 use Atlas\Mapper\MapperLocator;
 use Atlas\Mapper\AbstractRecord;
 use Atlas\Table\TableSelect;
+use Exception;
 
 class Atlas
 {
+    protected $exception;
     protected $mapperLocator;
     protected $transaction;
 
@@ -60,21 +62,42 @@ class Atlas
 
     public function insert(AbstractRecord $record)
     {
-        return $this->mapper($record)->insert($record);
+        return $this->transact('insert', $record);
     }
 
     public function update(AbstractRecord $record)
     {
-        return $this->mapper($record)->update($record);
+        return $this->transact('update', $record);
     }
 
     public function delete(AbstractRecord $record)
     {
-        return $this->mapper($record)->delete($record);
+        return $this->transact('delete', $record);
     }
 
     public function newTransaction()
     {
         return clone $this->prototypeTransaction;
+    }
+
+    public function getException()
+    {
+        return $this->exception;
+    }
+
+    protected function transact($method, $record)
+    {
+        $this->exception = null;
+        $transaction = $this->newTransaction();
+        $transaction->$method($record);
+
+        if (! $transaction->exec()) {
+            $this->exception = $transaction->getException();
+            return false;
+        }
+
+        $completed = $transaction->getCompleted();
+        $work = $completed[0];
+        return $work->getResult();
     }
 }

@@ -286,7 +286,7 @@ abstract class AbstractTable
         );
 
         if (! $pdoStatement->rowCount()) {
-            return false;
+            throw Exception::unexpectedRowCountAffected(0);
         }
 
         $primary = $this->tablePrimary();
@@ -323,8 +323,7 @@ abstract class AbstractTable
      *
      * @param Row $row The row to update.
      *
-     * @return bool True if the update succeeded, false if not.  (This is
-     * determined by checking the number of rows affected by the query.)
+     * @return bool
      *
      */
     public function update(AbstractRow $row)
@@ -342,8 +341,9 @@ abstract class AbstractTable
             $update->getBindValues()
         );
 
-        if (! $pdoStatement->rowCount()) {
-            return false;
+        $rowCount = $pdoStatement->rowCount();
+        if ($rowCount != 1) {
+            throw Exception::unexpectedRowCountAffected($rowCount);
         }
 
         // reinitialize the initial data for later updates
@@ -379,8 +379,7 @@ abstract class AbstractTable
      *
      * @param object $row The row to delete.
      *
-     * @return bool True if the delete succeeded, false if not.  (This is
-     * determined by checking the number of rows affected by the query.)
+     * @return bool
      *
      */
     public function delete(AbstractRow $row)
@@ -394,7 +393,16 @@ abstract class AbstractTable
             $delete->getBindValues()
         );
 
-        return (bool) $pdoStatement->rowCount();
+        $rowCount = $pdoStatement->rowCount();
+        if (! $rowCount) {
+            return null;
+        }
+
+        if ($rowCount != 1) {
+            throw Exception::unexpectedRowCountAffected($rowCount);
+        }
+
+        return true;
     }
 
     protected function newDelete(AbstractRow $row)

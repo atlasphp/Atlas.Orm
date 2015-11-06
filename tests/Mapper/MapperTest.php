@@ -20,6 +20,7 @@ use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\QueryFactory;
 use InvalidArgumentException;
+use UnexpectedValueException;
 
 class MapperTest extends \PHPUnit_Framework_TestCase
 {
@@ -315,7 +316,11 @@ class MapperTest extends \PHPUnit_Framework_TestCase
 
         // try to insert again, should fail on unique name
         $this->silenceErrors();
-        $this->assertFalse($this->mapper->insert($record));
+        $this->setExpectedException(
+            UnexpectedValueException::CLASS,
+            "Expected 1 row affected, actual 0"
+        );
+        $this->mapper->insert($record);
 
         // try to insert a record of the wrong type
         $row = new FakeRow(new FakeRowIdentity(['id' => null]), []);
@@ -355,7 +360,11 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         // delete the record and try to update it, should fail
         $this->assertTrue($this->mapper->delete($record));
         $record->name = 'Foo';
-        $this->assertFalse($this->mapper->update($record));
+        $this->setExpectedException(
+            UnexpectedValueException::CLASS,
+            "Expected 1 row affected, actual 0"
+        );
+        $this->mapper->update($record);
 
         // try to update a record of the wrong type
         $row = new FakeRow(new FakeRowIdentity(['id' => null]), []);
