@@ -25,6 +25,35 @@ trait AuthorTableTrait
     /**
      * @inheritdoc
      */
+    public function tableInfo()
+    {
+        return [
+            'author_id' => (object) [
+                'name' => 'author_id',
+                'type' => 'integer',
+                'size' => null,
+                'scale' => null,
+                'notnull' => false,
+                'default' => null,
+                'autoinc' => true,
+                'primary' => true,
+            ],
+            'name' => (object) [
+                'name' => 'name',
+                'type' => 'varchar',
+                'size' => 50,
+                'scale' => null,
+                'notnull' => true,
+                'default' => null,
+                'autoinc' => false,
+                'primary' => false,
+            ],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function tablePrimary()
     {
         return 'author_id';

@@ -27,6 +27,55 @@ trait ReplyTableTrait
     /**
      * @inheritdoc
      */
+    public function tableInfo()
+    {
+        return [
+            'reply_id' => (object) [
+                'name' => 'reply_id',
+                'type' => 'integer',
+                'size' => null,
+                'scale' => null,
+                'notnull' => false,
+                'default' => null,
+                'autoinc' => true,
+                'primary' => true,
+            ],
+            'thread_id' => (object) [
+                'name' => 'thread_id',
+                'type' => 'integer',
+                'size' => null,
+                'scale' => null,
+                'notnull' => true,
+                'default' => null,
+                'autoinc' => false,
+                'primary' => false,
+            ],
+            'author_id' => (object) [
+                'name' => 'author_id',
+                'type' => 'integer',
+                'size' => null,
+                'scale' => null,
+                'notnull' => true,
+                'default' => null,
+                'autoinc' => false,
+                'primary' => false,
+            ],
+            'body' => (object) [
+                'name' => 'body',
+                'type' => 'text',
+                'size' => null,
+                'scale' => null,
+                'notnull' => false,
+                'default' => null,
+                'autoinc' => false,
+                'primary' => false,
+            ],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function tablePrimary()
     {
         return 'reply_id';

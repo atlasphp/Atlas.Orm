@@ -26,6 +26,45 @@ trait TaggingTableTrait
     /**
      * @inheritdoc
      */
+    public function tableInfo()
+    {
+        return [
+            'tagging_id' => (object) [
+                'name' => 'tagging_id',
+                'type' => 'integer',
+                'size' => null,
+                'scale' => null,
+                'notnull' => false,
+                'default' => null,
+                'autoinc' => true,
+                'primary' => true,
+            ],
+            'thread_id' => (object) [
+                'name' => 'thread_id',
+                'type' => 'integer',
+                'size' => null,
+                'scale' => null,
+                'notnull' => true,
+                'default' => null,
+                'autoinc' => false,
+                'primary' => false,
+            ],
+            'tag_id' => (object) [
+                'name' => 'tag_id',
+                'type' => 'integer',
+                'size' => null,
+                'scale' => null,
+                'notnull' => true,
+                'default' => null,
+                'autoinc' => false,
+                'primary' => false,
+            ],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function tablePrimary()
     {
         return 'tagging_id';

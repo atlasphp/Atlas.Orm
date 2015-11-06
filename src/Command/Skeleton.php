@@ -192,6 +192,7 @@ class Skeleton
         $primary = null;
         $autoinc = 'false';
         $list = [];
+        $info = '';
         foreach ($schema->fetchTableCols($table) as $col) {
             $list[$col->name] = $col->default;
             if ($col->primary) {
@@ -200,7 +201,26 @@ class Skeleton
             if ($col->autoinc) {
                 $autoinc = 'true';
             }
+            $info .= "            '{$col->name}' => (object) " . var_export([
+                'name' => $col->name,
+                'type' => $col->type,
+                'size' => $col->size,
+                'scale' => $col->scale,
+                'notnull' => $col->notnull,
+                'default' => $col->default,
+                'autoinc' => $col->autoinc,
+                'primary' => $col->primary,
+            ], true) . ',' . PHP_EOL;
         }
+
+        $repl = [
+            ' => (object) array (' . PHP_EOL => ' => (object) [' . PHP_EOL,
+            PHP_EOL . "  '" => PHP_EOL . "                '",
+            PHP_EOL . ")" => PHP_EOL . "            ]",
+            " => NULL," . PHP_EOL => " => null," . PHP_EOL,
+        ];
+        $info = str_replace(array_keys($repl), array_values($repl), $info);
+        $info = '[' . PHP_EOL . $info . '        ]';
 
         $cols = "[" . PHP_EOL;
         $default = "[" . PHP_EOL;
@@ -220,6 +240,7 @@ class Skeleton
             '{DEFAULT}' => $default,
             '{AUTOINC}' => $autoinc,
             '{PRIMARY}' => $primary,
+            '{INFO}' => $info,
         ];
     }
 
@@ -254,6 +275,7 @@ class Skeleton
             '{TYPE}' => $this->type,
             '{TABLE}' => trim($this->getopt->get('--table', $name)),
             '{COLS}' => $cols,
+            '{INFO}' => $info,
             '{DEFAULT}' => $default,
             '{AUTOINC}' => $this->getopt->get('--noautoinc') ? 'false' : 'true',
             '{PRIMARY}' => trim($this->getopt->get('--primary', "{$name}_id")),
@@ -335,6 +357,14 @@ trait {TYPE}TableTrait
     public function tableCols()
     {
         return {COLS};
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function tableInfo()
+    {
+        return {INFO};
     }
 
     /**

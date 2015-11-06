@@ -25,6 +25,35 @@ trait TagTableTrait
     /**
      * @inheritdoc
      */
+    public function tableInfo()
+    {
+        return [
+            'tag_id' => (object) [
+                'name' => 'tag_id',
+                'type' => 'integer',
+                'size' => null,
+                'scale' => null,
+                'notnull' => false,
+                'default' => null,
+                'autoinc' => true,
+                'primary' => true,
+            ],
+            'name' => (object) [
+                'name' => 'name',
+                'type' => 'varchar',
+                'size' => 50,
+                'scale' => null,
+                'notnull' => true,
+                'default' => null,
+                'autoinc' => false,
+                'primary' => false,
+            ],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function tablePrimary()
     {
         return 'tag_id';
