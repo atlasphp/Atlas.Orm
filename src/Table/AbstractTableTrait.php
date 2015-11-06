@@ -23,6 +23,15 @@ trait AbstractTableTrait
 
     /**
      *
+     * Returns the table column information.
+     *
+     * @return array
+     *
+     */
+    public function tableInfo() { }
+
+    /**
+     *
      * Returns the primary column name on the table.
      *
      * @return string The primary column name.
