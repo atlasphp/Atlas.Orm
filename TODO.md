@@ -18,14 +18,6 @@
 
     - Consider renaming "Abstract" to "Generic" to indicate what *ought* to be happening, if/when PHP gets generics.
 
-- Mapper-level insert/update/delete
-
-    - Consider throwing exceptions in the Table and Mapper, and capturing those in Atlas object. That way a returns-false update or delete does not get lost in a Transaction.
-
-- Atlas-level insert/update/delete
-
-    - Wrap each in a transaction, and retain the transaction exception/failure values.
-
 - Command
 
     - Allow generating only Mapper-related classes, since one Table can support many Mappers. Will need to specify which table class it wraps.
@@ -39,6 +31,8 @@
     - Have each Record and RecordSet note the record it "belongs to" and the foreign key mapping?
 
     - Then in Record and RecordSet relations, automatically set "belongs to" foriegn key value on `appendNew()` ?
+
+    - Alternatively, add a RecordFilter logic to look through relateds and set the foreign key values at insert/update time.
 
 - Related/Relations
 
