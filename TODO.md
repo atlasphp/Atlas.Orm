@@ -8,12 +8,6 @@
 
     - Consider isNew(), isDirty(), isClean(), isDeleted() methods.
 
-    - Consider moving getArrayCopy*() methods back to Row from Table.
-
-- TableTrait
-
-    - retain more column data than just the names: size, scope, etc. This may help users to build basic automated filters at the Row level.
-
 - Generic
 
     - Consider renaming "Abstract" to "Generic" to indicate what *ought* to be happening, if/when PHP gets generics.
