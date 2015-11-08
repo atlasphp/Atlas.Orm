@@ -6,7 +6,7 @@
 
 - Row
 
-    - Consider isNew(), isDirty(), isClean(), isDeleted() methods.
+    - Consider isNew(), isDirty(), isClean(), isDeleted() methods. Will need setStatus()/getStatus() as well. The idea is that it will help with auto-saving strategy on Record objects.
 
 - Generic
 
