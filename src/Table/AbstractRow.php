@@ -83,6 +83,20 @@ abstract class AbstractRow
         );
     }
 
+    public function getArrayDiff(array $init)
+    {
+        $diff = $this->getArrayCopy();
+        foreach ($diff as $col => $val) {
+            $same = (is_numeric($diff[$col]) && is_numeric($init[$col]))
+                 ? $diff[$col] == $init[$col] // numeric, compare loosely
+                 : $diff[$col] === $init[$col]; // not numeric, compare strictly
+            if ($same) {
+                unset($diff[$col]);
+            }
+        }
+        return $diff;
+    }
+
     public function getIdentity()
     {
         return $this->identity;

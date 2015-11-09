@@ -304,17 +304,19 @@ abstract class AbstractTable
 
     protected function newInsert(AbstractRow $row)
     {
-        $cols = $this->getArrayCopyForInsert($row);
+        $insert = $this->queryFactory->newInsert();
+        $insert->into($this->tableName());
+        $this->newInsertCols($insert, $row);
+        return $insert;
+    }
 
+    protected function newInsertCols(Insert $insert, AbstractRow $row)
+    {
+        $cols = $row->getArrayCopy();
         if ($this->tableAutoinc()) {
             unset($cols[$this->tablePrimary()]);
         }
-
-        $insert = $this->queryFactory->newInsert();
-        $insert->into($this->tableName());
         $insert->cols($cols);
-
-        return $insert;
     }
 
     /**
@@ -332,7 +334,7 @@ abstract class AbstractTable
         $this->rowFilter->forUpdate($this, $row);
 
         $update = $this->newUpdate($row);
-        if (! $update) {
+        if (! $update->hasCols()) {
             return null;
         }
 
@@ -355,22 +357,24 @@ abstract class AbstractTable
 
     protected function newUpdate(AbstractRow $row)
     {
-        // get the columns to update, and unset primary column
-        $cols = $this->getArrayCopyForUpdate($row);
-        $primaryCol = $this->tablePrimary();
-        unset($cols[$primaryCol]);
-
-        // are there any columns to update?
-        if (! $cols) {
-            return;
-        }
-
-        // build the update
         $update = $this->queryFactory->newUpdate();
         $update->table($this->tableName());
-        $update->cols($cols);
-        $update->where("{$primaryCol} = ?", $row->getIdentity()->getVal());
+        $this->newUpdateCols($update, $row);
+        $this->newUpdateWhere($update, $row);
         return $update;
+    }
+
+    protected function newUpdateCols(Update $update, AbstractRow $row)
+    {
+        $cols = $row->getArrayDiff($this->identityMap->getInitial($row));
+        unset($cols[$this->tablePrimary()]);
+        $update->cols($cols);
+    }
+
+    protected function newUpdateWhere(Update $update, AbstractRow $row)
+    {
+        $primaryCol = $this->tablePrimary();
+        $update->where("{$primaryCol} = ?", $row->getIdentity()->getVal());
     }
 
     /**
@@ -407,32 +411,16 @@ abstract class AbstractTable
 
     protected function newDelete(AbstractRow $row)
     {
-        $primaryCol = $this->tablePrimary();
-
         $delete = $this->queryFactory->newDelete();
         $delete->from($this->tableName());
-        $delete->where("{$primaryCol} = ?", $row->getIdentity()->getVal());
+        $this->newDeleteWhere($delete, $row);
         return $delete;
     }
 
-    protected function getArrayCopyForInsert(AbstractRow $row)
+    protected function newDeleteWhere(Delete $delete, AbstractRow $row)
     {
-        return $row->getArrayCopy();
-    }
-
-    public function getArrayCopyForUpdate(AbstractRow $row)
-    {
-        $copy = $row->getArrayCopy();
-        $init = $this->identityMap->getInitial($row);
-        foreach ($copy as $col => $val) {
-            $same = (is_numeric($copy[$col]) && is_numeric($init[$col]))
-                 ? $copy[$col] == $init[$col] // numeric, compare loosely
-                 : $copy[$col] === $init[$col]; // not numeric, compare strictly
-            if ($same) {
-                unset($copy[$col]);
-            }
-        }
-        return $copy;
+        $primaryCol = $this->tablePrimary();
+        $delete->where("{$primaryCol} = ?", $row->getIdentity()->getVal());
     }
 
     public function getMappedOrNewRow(array $cols)
