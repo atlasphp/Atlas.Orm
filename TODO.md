@@ -4,13 +4,11 @@
 
 - Consider renaming "Abstract" to "Generic" to indicate what *ought* to be happening, if/when PHP gets generics.
 
-- Consider moving away from association terms ('belongs to') back to SQL relationship terms ('many to one').
-
 - Extract to its own Atlas.Cli package, and require-dev it in Atlas.Atlas.
 
 - Documentation.
 
-- Scrutinizer and Packagist.
+- Scrutinizer.
 
 ## Other Priority
 
