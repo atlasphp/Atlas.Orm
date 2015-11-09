@@ -6,7 +6,7 @@ use Atlas\DataSource\Employee\EmployeeMapper;
 use Atlas\DataSource\Employee\EmployeeRecord;
 use Atlas\DataSource\Employee\EmployeeRecordSet;
 use Atlas\DataSource\Employee\EmployeeRow;
-use Atlas\Relation\HasManyThrough;
+use Atlas\Relation\ManyToMany;
 
 class MapperRelationsTest extends \PHPUnit_Framework_TestCase
 {
@@ -23,7 +23,7 @@ class MapperRelationsTest extends \PHPUnit_Framework_TestCase
         $this->relations = new FakeRelations($mapperLocator);
     }
 
-    public function testSet_hasManyThrough_noThroughName()
+    public function testSet_manyToMany_noThroughName()
     {
         $this->setExpectedException(
             Exception::CLASS,
@@ -32,7 +32,7 @@ class MapperRelationsTest extends \PHPUnit_Framework_TestCase
 
         $this->relations->set(
             'bar',
-            HasManyThrough::CLASS,
+            ManyToMany::CLASS,
             EmployeeMapper::CLASS,
             'foo'
         );
@@ -47,7 +47,7 @@ class MapperRelationsTest extends \PHPUnit_Framework_TestCase
 
         $this->relations->set(
             'bar',
-            HasOne::CLASS,
+            OneToOne::CLASS,
             NoSuchMapper::CLASS
         );
     }

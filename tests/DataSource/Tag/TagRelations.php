@@ -9,7 +9,7 @@ class TagRelations extends AbstractRelations
 {
     protected function setRelations()
     {
-        $this->hasMany('taggings', TaggingMapper::CLASS);
-        $this->hasManyThrough('threads', ThreadMapper::CLASS, 'taggings');
+        $this->oneToMany('taggings', TaggingMapper::CLASS);
+        $this->manyToMany('threads', ThreadMapper::CLASS, 'taggings');
     }
 }

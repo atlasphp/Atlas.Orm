@@ -12,10 +12,10 @@ class ThreadRelations extends AbstractRelations
 {
     protected function setRelations()
     {
-        $this->belongsTo('author', AuthorMapper::CLASS);
-        $this->hasOne('summary', SummaryMapper::CLASS);
-        $this->hasMany('replies', ReplyMapper::CLASS);
-        $this->hasMany('taggings', TaggingMapper::CLASS);
-        $this->hasManyThrough('tags', TagMapper::CLASS, 'taggings');
+        $this->manyToOne('author', AuthorMapper::CLASS);
+        $this->oneToOne('summary', SummaryMapper::CLASS);
+        $this->oneToMany('replies', ReplyMapper::CLASS);
+        $this->oneToMany('taggings', TaggingMapper::CLASS);
+        $this->manyToMany('tags', TagMapper::CLASS, 'taggings');
     }
 }

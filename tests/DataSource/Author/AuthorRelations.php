@@ -9,7 +9,7 @@ class AuthorRelations extends AbstractRelations
 {
     protected function setRelations()
     {
-        $this->hasMany('replies', ReplyMapper::CLASS);
-        $this->hasMany('threads', ThreadMapper::CLASS);
+        $this->oneToMany('replies', ReplyMapper::CLASS);
+        $this->oneToMany('threads', ThreadMapper::CLASS);
     }
 }

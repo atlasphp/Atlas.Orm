@@ -6,7 +6,7 @@ use Atlas\Mapper\Related;
 use Atlas\Mapper\AbstractRecord;
 use Atlas\Mapper\AbstractRecordSet;
 
-class HasManyThrough extends AbstractRelation
+class ManyToMany extends AbstractRelation
 {
     public function throughNativeCol($throughNativeCol)
     {
