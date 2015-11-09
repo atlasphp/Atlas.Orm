@@ -6,6 +6,7 @@ Atlas is an ORM for your **persistence** (or **data source**) model, not for you
 
 **ATLAS IS A WORK IN PROGRESS. FOR ENTERTAINMENT PURPOSES ONLY. DO NOT USE IN PRODUCTION OR EVEN IN SIDE PROJECTS. BREAKING CHANGES ARE GUARANTEED.**
 
+
 ## Rationale
 
 Per [this article from Mehdi Khalili](http://www.mehdi-khalili.com/orm-anti-patterns-part-4-persistence-domain-model/), we're targeting "Domain Model composed of Persistence Model". That is, the domain Entities and Aggregates use data source Records and RecordSets internally, but never expose them. They can manipulate the persistence model internally as much as they wish. E.g., an Entity might have "getAddress()" and read from the internal Record (which in turn reads from its internal Row).
