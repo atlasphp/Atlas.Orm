@@ -5,7 +5,7 @@ use Atlas\Mapper\Related;
 use Atlas\Mapper\AbstractRecord;
 use Atlas\Mapper\AbstractRecordSet;
 
-class HasMany extends AbstractRelation
+class OneToMany extends AbstractRelation
 {
     public function stitchIntoRecord(
         AbstractRecord $nativeRecord,

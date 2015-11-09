@@ -4,11 +4,11 @@ namespace Atlas\Relation;
 use Atlas\DataSource\Author\AuthorMapper;
 use Atlas\DataSource\Thread\ThreadMapper;
 
-class BelongsToTest extends AbstractRelationTest
+class ManyToOneTest extends AbstractRelationTest
 {
     public function testCustomSettings()
     {
-        $rel = new BelongsTo(
+        $rel = new ManyToOne(
             $this->mapperLocator,
             ThreadMapper::CLASS,
             'author',

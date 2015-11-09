@@ -6,11 +6,11 @@ use Atlas\DataSource\Tag\TagMapper;
 use Atlas\DataSource\Tagging\TaggingMapper;
 use Atlas\DataSource\Thread\ThreadMapper;
 
-class HasManyThroughTest extends AbstractRelationTest
+class ManyToManyTest extends AbstractRelationTest
 {
     public function testCustomSettings()
     {
-        $rel = new HasManyThrough(
+        $rel = new ManyToMany(
             $this->mapperLocator,
             ThreadMapper::CLASS,
             'threads',
@@ -44,7 +44,7 @@ class HasManyThroughTest extends AbstractRelationTest
 
     public function testStitchIntoRecord_missingThrough()
     {
-        $rel = new HasManyThrough(
+        $rel = new ManyToMany(
             $this->mapperLocator,
             TagMapper::CLASS,
             'tags',
@@ -63,7 +63,7 @@ class HasManyThroughTest extends AbstractRelationTest
 
     public function testStitchIntoRecordSet_emptyNativeRecordSet()
     {
-        $rel = new HasManyThrough(
+        $rel = new ManyToMany(
             $this->mapperLocator,
             TagMapper::CLASS,
             'tags',
@@ -79,7 +79,7 @@ class HasManyThroughTest extends AbstractRelationTest
 
     public function testStitchIntoRecordSet_missingThrough()
     {
-        $rel = new HasManyThrough(
+        $rel = new ManyToMany(
             $this->mapperLocator,
             TagMapper::CLASS,
             'tags',
@@ -100,7 +100,7 @@ class HasManyThroughTest extends AbstractRelationTest
 
     public function testStitchIntoRecordSet_emptyThrough()
     {
-        $rel = new HasManyThrough(
+        $rel = new ManyToMany(
             $this->mapperLocator,
             TagMapper::CLASS,
             'tags',

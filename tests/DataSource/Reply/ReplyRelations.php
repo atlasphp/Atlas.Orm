@@ -8,6 +8,6 @@ class ReplyRelations extends AbstractRelations
 {
     protected function setRelations()
     {
-        $this->belongsTo('author', AuthorMapper::CLASS);
+        $this->manyToOne('author', AuthorMapper::CLASS);
     }
 }

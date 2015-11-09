@@ -58,13 +58,13 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
             ThreadMapper::CLASS,
             1,
             [
-                'author', // belongsTo
-                'summary', // hasOne
+                'author', // manyToOne
+                'summary', // oneToOne
                 'replies' => function ($select) {
                     $select->with(['author']);
-                }, // hasMany
-                'taggings', // hasMany,
-                'tags', // hasManyThrough
+                }, // oneToMany
+                'taggings', // oneToMany,
+                'tags', // manyToMany
             ]
         );
 
@@ -77,13 +77,13 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
             ThreadMapper::CLASS,
             ['thread_id' => 1],
             [
-                'author', // belongsTo
-                'summary', // hasOne
+                'author', // manyToOne
+                'summary', // oneToOne
                 'replies' => function ($select) {
                     $select->with(['author']);
-                }, // hasMany
-                'taggings', // hasMany,
-                'tags', // hasManyThrough
+                }, // oneToMany
+                'taggings', // oneToMany,
+                'tags', // manyToMany
             ]
         );
 
@@ -96,13 +96,13 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
             ThreadMapper::CLASS,
             [1, 2, 3],
             [
-                'author', // belongsTo
-                'summary', // hasOne
+                'author', // manyToOne
+                'summary', // oneToOne
                 'replies' => function ($select) {
                     $select->with(['author']);
-                }, // hasMany
-                'taggings', // hasMany,
-                'tags', // hasManyThrough
+                }, // oneToMany
+                'taggings', // oneToMany,
+                'tags', // manyToMany
             ]
         );
 
@@ -116,13 +116,13 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
             ThreadMapper::CLASS,
             ['thread_id' => [1, 2, 3]],
             [
-                'author', // belongsTo
-                'summary', // hasOne
+                'author', // manyToOne
+                'summary', // oneToOne
                 'replies' => function ($select) {
                     $select->with(['author']);
-                }, // hasMany
-                'taggings', // hasMany,
-                'tags', // hasManyThrough
+                }, // oneToMany
+                'taggings', // oneToMany,
+                'tags', // manyToMany
             ]
         );
 
@@ -136,13 +136,13 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
             ->select(ThreadMapper::CLASS)
             ->where('thread_id < ?', 2)
             ->with([
-                'author', // belongsTo
-                'summary', // hasOne
+                'author', // manyToOne
+                'summary', // oneToOne
                 'replies' => function ($select) {
                     $select->with(['author']);
-                }, // hasMany
-                'taggings', // hasMany,
-                'tags', // hasManyThrough
+                }, // oneToMany
+                'taggings', // oneToMany,
+                'tags', // manyToMany
             ])
             ->fetchRecord();
 
@@ -155,13 +155,13 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
             ->select(ThreadMapper::CLASS)
             ->where('thread_id < ?', 4)
             ->with([
-                'author', // belongsTo
-                'summary', // hasOne
+                'author', // manyToOne
+                'summary', // oneToOne
                 'replies' => function ($select) {
                     $select->with(['author']);
-                }, // hasMany
-                'taggings', // hasMany,
-                'tags', // hasManyThrough
+                }, // oneToMany
+                'taggings', // oneToMany,
+                'tags', // manyToMany
             ])
             ->fetchRecordSet();
 

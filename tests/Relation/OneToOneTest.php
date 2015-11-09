@@ -4,11 +4,11 @@ namespace Atlas\Relation;
 use Atlas\DataSource\Summary\SummaryMapper;
 use Atlas\DataSource\Thread\ThreadMapper;
 
-class HasOneTest extends AbstractRelationTest
+class OneToOneTest extends AbstractRelationTest
 {
     public function testCustomSettings()
     {
-        $rel = new HasOne(
+        $rel = new OneToOne(
             $this->mapperLocator,
             ThreadMapper::CLASS,
             'summary',

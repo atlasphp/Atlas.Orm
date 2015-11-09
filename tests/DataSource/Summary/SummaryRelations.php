@@ -8,6 +8,6 @@ class SummaryRelations extends AbstractRelations
 {
     protected function setRelations()
     {
-        $this->hasOne('thread', ThreadMapper::CLASS);
+        $this->oneToOne('thread', ThreadMapper::CLASS);
     }
 }

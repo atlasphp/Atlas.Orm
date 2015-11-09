@@ -2,10 +2,10 @@
 namespace Atlas\Mapper;
 
 use Atlas\Exception;
-use Atlas\Relation\BelongsTo;
-use Atlas\Relation\HasMany;
-use Atlas\Relation\HasManyThrough;
-use Atlas\Relation\HasOne;
+use Atlas\Relation\ManyToOne;
+use Atlas\Relation\OneToMany;
+use Atlas\Relation\ManyToMany;
+use Atlas\Relation\OneToOne;
 
 abstract class AbstractRelations
 {
@@ -91,38 +91,38 @@ abstract class AbstractRelations
         return $with;
     }
 
-    protected function hasOne($name, $foreignMapperClass)
+    protected function oneToOne($name, $foreignMapperClass)
     {
         return $this->set(
             $name,
-            HasOne::CLASS,
+            OneToOne::CLASS,
             $foreignMapperClass
         );
     }
 
-    protected function hasMany($name, $foreignMapperClass)
+    protected function oneToMany($name, $foreignMapperClass)
     {
         return $this->set(
             $name,
-            HasMany::CLASS,
+            OneToMany::CLASS,
             $foreignMapperClass
         );
     }
 
-    protected function belongsTo($name, $foreignMapperClass)
+    protected function manyToOne($name, $foreignMapperClass)
     {
         $this->set(
             $name,
-            BelongsTo::CLASS,
+            ManyToOne::CLASS,
             $foreignMapperClass
         );
     }
 
-    protected function hasManyThrough($name, $foreignMapperClass, $throughName)
+    protected function manyToMany($name, $foreignMapperClass, $throughName)
     {
         return $this->set(
             $name,
-            HasManyThrough::CLASS,
+            ManyToMany::CLASS,
             $foreignMapperClass,
             $throughName
         );
