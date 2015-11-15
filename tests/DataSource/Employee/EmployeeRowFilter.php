@@ -1,8 +1,8 @@
 <?php
-namespace Atlas\DataSource\Employee;
+namespace Atlas\Orm\DataSource\Employee;
 
-use Atlas\Table\AbstractRow;
-use Atlas\Table\AbstractRowFilter;
+use Atlas\Orm\Table\AbstractRow;
+use Atlas\Orm\Table\AbstractRowFilter;
 
 class EmployeeRowFilter extends AbstractRowFilter
 {

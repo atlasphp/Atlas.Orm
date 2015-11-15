@@ -1,11 +1,11 @@
 <?php
-namespace Atlas\Table;
+namespace Atlas\Orm\Table;
 
-use Atlas\Assertions;
-use Atlas\DataSource\Employee\EmployeeTable;
-use Atlas\DataSource\Employee\EmployeeRowFactory;
-use Atlas\DataSource\Employee\EmployeeRowFilter;
-use Atlas\SqliteFixture;
+use Atlas\Orm\Assertions;
+use Atlas\Orm\DataSource\Employee\EmployeeTable;
+use Atlas\Orm\DataSource\Employee\EmployeeRowFactory;
+use Atlas\Orm\DataSource\Employee\EmployeeRowFilter;
+use Atlas\Orm\SqliteFixture;
 use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\QueryFactory;

@@ -1,7 +1,7 @@
 <?php
-namespace Atlas\DataSource\Thread;
+namespace Atlas\Orm\DataSource\Thread;
 
-use Atlas\Table\AbstractRow;
+use Atlas\Orm\Table\AbstractRow;
 
 class ThreadRow extends AbstractRow
 {

@@ -1,7 +1,7 @@
 <?php
-namespace Atlas\DataSource\Reply;
+namespace Atlas\Orm\DataSource\Reply;
 
-use Atlas\Mapper\AbstractRecord;
+use Atlas\Orm\Mapper\AbstractRecord;
 
 class ReplyRecord extends AbstractRecord
 {

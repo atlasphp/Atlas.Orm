@@ -1,5 +1,5 @@
 <?php
-namespace Atlas\Table;
+namespace Atlas\Orm\Table;
 
 class IdentityMapTest extends \PHPUnit_Framework_TestCase
 {
@@ -14,21 +14,21 @@ class IdentityMapTest extends \PHPUnit_Framework_TestCase
     {
         $row = new FakeRow(new FakeRowIdentity(['id' => '1']), []);
         $this->identityMap->setRow($row, ['id' => '1']);
-        $this->setExpectedException('Atlas\Exception');
+        $this->setExpectedException('Atlas\Orm\Exception');
         $this->identityMap->setRow($row, ['id' => '1']);
     }
 
     public function testSetInitial_missingRow()
     {
         $row = new FakeRow(new FakeRowIdentity(['id' => '1']), []);
-        $this->setExpectedException('Atlas\Exception');
+        $this->setExpectedException('Atlas\Orm\Exception');
         $this->identityMap->setInitial($row);
     }
 
     public function testGetInitial_missingRow()
     {
         $row = new FakeRow(new FakeRowIdentity(['id' => '1']), []);
-        $this->setExpectedException('Atlas\Exception');
+        $this->setExpectedException('Atlas\Orm\Exception');
         $this->identityMap->getInitial($row);
     }
 }

@@ -1,8 +1,8 @@
 <?php
-namespace Atlas\DataSource\Tagging;
+namespace Atlas\Orm\DataSource\Tagging;
 
-use Atlas\Mapper\AbstractRecord;
-use Atlas\Mapper\AbstractRecordFilter;
+use Atlas\Orm\Mapper\AbstractRecord;
+use Atlas\Orm\Mapper\AbstractRecordFilter;
 
 class TaggingRecordFilter extends AbstractRecordFilter
 {

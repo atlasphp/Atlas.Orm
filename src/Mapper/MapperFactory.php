@@ -1,7 +1,7 @@
 <?php
-namespace Atlas\Mapper;
+namespace Atlas\Orm\Mapper;
 
-use Atlas\AtlasContainer;
+use Atlas\Orm\AtlasContainer;
 
 class MapperFactory
 {

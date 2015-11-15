@@ -1,7 +1,7 @@
 <?php
-namespace Atlas\DataSource\Tagging;
+namespace Atlas\Orm\DataSource\Tagging;
 
-use Atlas\Table\AbstractRowSet;
+use Atlas\Orm\Table\AbstractRowSet;
 
 class TaggingRowSet extends AbstractRowSet
 {

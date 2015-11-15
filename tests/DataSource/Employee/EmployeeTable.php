@@ -1,7 +1,7 @@
 <?php
-namespace Atlas\DataSource\Employee;
+namespace Atlas\Orm\DataSource\Employee;
 
-use Atlas\Table\AbstractTable;
+use Atlas\Orm\Table\AbstractTable;
 
 class EmployeeTable extends AbstractTable
 {

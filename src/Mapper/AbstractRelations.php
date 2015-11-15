@@ -1,11 +1,11 @@
 <?php
-namespace Atlas\Mapper;
+namespace Atlas\Orm\Mapper;
 
-use Atlas\Exception;
-use Atlas\Relation\ManyToOne;
-use Atlas\Relation\OneToMany;
-use Atlas\Relation\ManyToMany;
-use Atlas\Relation\OneToOne;
+use Atlas\Orm\Exception;
+use Atlas\Orm\Relation\ManyToOne;
+use Atlas\Orm\Relation\OneToMany;
+use Atlas\Orm\Relation\ManyToMany;
+use Atlas\Orm\Relation\OneToOne;
 
 abstract class AbstractRelations
 {

@@ -1,11 +1,11 @@
 <?php
-namespace Atlas\Mapper;
+namespace Atlas\Orm\Mapper;
 
 class FakeRelations extends AbstractRelations
 {
     protected function getNativeMapperClass()
     {
-        return 'Atlas\DataSource\EmployeeMapper';
+        return 'Atlas\Orm\DataSource\EmployeeMapper';
     }
 
     protected function setRelations()

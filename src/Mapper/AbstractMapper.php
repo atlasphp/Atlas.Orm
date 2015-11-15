@@ -1,11 +1,11 @@
 <?php
-namespace Atlas\Mapper;
+namespace Atlas\Orm\Mapper;
 
-use Atlas\Exception;
-use Atlas\Table\AbstractRow;
-use Atlas\Table\AbstractRowSet;
-use Atlas\Table\AbstractTable;
-use Atlas\Table\TableSelect;
+use Atlas\Orm\Exception;
+use Atlas\Orm\Table\AbstractRow;
+use Atlas\Orm\Table\AbstractRowSet;
+use Atlas\Orm\Table\AbstractTable;
+use Atlas\Orm\Table\TableSelect;
 
 /**
  *

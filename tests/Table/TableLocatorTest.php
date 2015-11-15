@@ -1,8 +1,8 @@
 <?php
-namespace Atlas\Table;
+namespace Atlas\Orm\Table;
 
-use Atlas\Exception;
-use Atlas\DataSource\Employee\EmployeeTable;
+use Atlas\Orm\Exception;
+use Atlas\Orm\DataSource\Employee\EmployeeTable;
 
 class TableLocatorTest extends \PHPUnit_Framework_TestCase
 {
@@ -18,7 +18,7 @@ class TableLocatorTest extends \PHPUnit_Framework_TestCase
 
     public function testHas()
     {
-        $this->assertFalse($this->tableLocator->has('Atlas\DataSource\Employee'));
+        $this->assertFalse($this->tableLocator->has('Atlas\Orm\DataSource\Employee'));
         $this->assertTrue($this->tableLocator->has(EmployeeTable::CLASS));
     }
 
@@ -27,7 +27,7 @@ class TableLocatorTest extends \PHPUnit_Framework_TestCase
         $expect = EmployeeTable::CLASS;
         $this->assertSame($expect, $this->tableLocator->get(EmployeeTable::CLASS));
 
-        $this->setExpectedException(Exception::CLASS, "Atlas\DataSource\Employee not found in table locator");
-        $this->tableLocator->get('Atlas\DataSource\Employee');
+        $this->setExpectedException(Exception::CLASS, "Atlas\Orm\DataSource\Employee not found in table locator");
+        $this->tableLocator->get('Atlas\Orm\DataSource\Employee');
     }
 }

@@ -1,7 +1,7 @@
 <?php
-namespace Atlas\DataSource\Author;
+namespace Atlas\Orm\DataSource\Author;
 
-use Atlas\Table\AbstractRowSet;
+use Atlas\Orm\Table\AbstractRowSet;
 
 class AuthorRowSet extends AbstractRowSet
 {

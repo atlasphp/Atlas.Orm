@@ -1,9 +1,9 @@
 <?php
-namespace Atlas\DataSource\Tag;
+namespace Atlas\Orm\DataSource\Tag;
 
-use Atlas\DataSource\Tagging\TaggingMapper;
-use Atlas\DataSource\Thread\ThreadMapper;
-use Atlas\Mapper\AbstractRelations;
+use Atlas\Orm\DataSource\Tagging\TaggingMapper;
+use Atlas\Orm\DataSource\Thread\ThreadMapper;
+use Atlas\Orm\Mapper\AbstractRelations;
 
 class TagRelations extends AbstractRelations
 {

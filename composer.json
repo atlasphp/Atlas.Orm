@@ -1,5 +1,5 @@
 {
-    "name": "atlas/atlas",
+    "name": "atlas/orm",
     "type": "library",
     "description": "ORM: No migrations. No annotations. No lazy loading. No domain models. No data-type abstractions. No behaviors. No opinions. Just data mapping.",
     "keywords": [ "sql", "data", "mapper", "mapping", "orm" ],
@@ -13,19 +13,20 @@
     ],
     "require": {
         "php": ">=5.6.0",
-        "aura/cli": "~2.0",
         "aura/sql": "~2.0",
-        "aura/sqlquery": "~2.0",
-        "aura/sqlschema": "~2.0"
+        "aura/sqlquery": "~2.0"
     },
     "autoload": {
         "psr-4": {
-            "Atlas\\": "src/"
+            "Atlas\\Orm\\": "src/"
         }
+    },
+    "require-dev": {
+        "atlas/cli": "dev-0.x"
     },
     "autoload-dev": {
         "psr-4": {
-            "Atlas\\": "tests/"
+            "Atlas\\Orm\\": "tests/"
         }
     }
 }

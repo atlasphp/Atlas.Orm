@@ -1,7 +1,7 @@
 <?php
-namespace Atlas\DataSource\Thread;
+namespace Atlas\Orm\DataSource\Thread;
 
-use Atlas\Table\AbstractRowFactory;
+use Atlas\Orm\Table\AbstractRowFactory;
 
 class ThreadRowFactory extends AbstractRowFactory
 {

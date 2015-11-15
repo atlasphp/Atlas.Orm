@@ -1,8 +1,8 @@
 <?php
-namespace Atlas\Relation;
+namespace Atlas\Orm\Relation;
 
-use Atlas\DataSource\Summary\SummaryMapper;
-use Atlas\DataSource\Thread\ThreadMapper;
+use Atlas\Orm\DataSource\Summary\SummaryMapper;
+use Atlas\Orm\DataSource\Thread\ThreadMapper;
 
 class OneToOneTest extends AbstractRelationTest
 {
@@ -20,8 +20,8 @@ class OneToOneTest extends AbstractRelationTest
 
         $expect = [
             'name' => 'summary',
-            'nativeMapperClass' => 'Atlas\\DataSource\\Thread\\ThreadMapper',
-            'foreignMapperClass' => 'Atlas\\DataSource\\Summary\\SummaryMapper',
+            'nativeMapperClass' => 'Atlas\\Orm\\DataSource\\Thread\\ThreadMapper',
+            'foreignMapperClass' => 'Atlas\\Orm\\DataSource\\Summary\\SummaryMapper',
             'nativeCol' => 'native',
             'throughName' => null,
             'throughNativeCol' => null,

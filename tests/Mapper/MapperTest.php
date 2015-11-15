@@ -1,21 +1,21 @@
 <?php
-namespace Atlas\Mapper;
+namespace Atlas\Orm\Mapper;
 
-use Atlas\DataSource\Auto\AutoMapper;
-use Atlas\DataSource\Auto\AutoTable;
-use Atlas\DataSource\Employee\EmployeeMapper;
-use Atlas\DataSource\Employee\EmployeeRecordFactory;
-use Atlas\DataSource\Employee\EmployeeRecordFilter;
-use Atlas\DataSource\Employee\EmployeeRelations;
-use Atlas\DataSource\Employee\EmployeeRowFactory;
-use Atlas\DataSource\Employee\EmployeeRowFilter;
-use Atlas\DataSource\Employee\EmployeeTable;
-use Atlas\Mapper\MapperRelations;
-use Atlas\Mapper\RecordFactory;
-use Atlas\SqliteFixture;
-use Atlas\Table\FakeRow;
-use Atlas\Table\FakeRowIdentity;
-use Atlas\Table\IdentityMap;
+use Atlas\Orm\DataSource\Auto\AutoMapper;
+use Atlas\Orm\DataSource\Auto\AutoTable;
+use Atlas\Orm\DataSource\Employee\EmployeeMapper;
+use Atlas\Orm\DataSource\Employee\EmployeeRecordFactory;
+use Atlas\Orm\DataSource\Employee\EmployeeRecordFilter;
+use Atlas\Orm\DataSource\Employee\EmployeeRelations;
+use Atlas\Orm\DataSource\Employee\EmployeeRowFactory;
+use Atlas\Orm\DataSource\Employee\EmployeeRowFilter;
+use Atlas\Orm\DataSource\Employee\EmployeeTable;
+use Atlas\Orm\Mapper\MapperRelations;
+use Atlas\Orm\Mapper\RecordFactory;
+use Atlas\Orm\SqliteFixture;
+use Atlas\Orm\Table\FakeRow;
+use Atlas\Orm\Table\FakeRowIdentity;
+use Atlas\Orm\Table\IdentityMap;
 use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\QueryFactory;
@@ -328,7 +328,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $record = new FakeRecord($row, $related);
         $this->setExpectedException(
             InvalidArgumentException::CLASS,
-            "Expected object of type 'Atlas\DataSource\Employee\EmployeeRecord', got 'Atlas\Mapper\FakeRecord' instead."
+            "Expected object of type 'Atlas\Orm\DataSource\Employee\EmployeeRecord', got 'Atlas\Orm\Mapper\FakeRecord' instead."
         );
         $this->mapper->insert($record);
     }
@@ -372,7 +372,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $record = new FakeRecord($row, $related);
         $this->setExpectedException(
             InvalidArgumentException::CLASS,
-            "Expected object of type 'Atlas\DataSource\Employee\EmployeeRecord', got 'Atlas\Mapper\FakeRecord' instead."
+            "Expected object of type 'Atlas\Orm\DataSource\Employee\EmployeeRecord', got 'Atlas\Orm\Mapper\FakeRecord' instead."
         );
         $this->mapper->update($record);
     }
@@ -399,7 +399,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $record = new FakeRecord($row, $related);
         $this->setExpectedException(
             InvalidArgumentException::CLASS,
-            "Expected object of type 'Atlas\DataSource\Employee\EmployeeRecord', got 'Atlas\Mapper\FakeRecord' instead."
+            "Expected object of type 'Atlas\Orm\DataSource\Employee\EmployeeRecord', got 'Atlas\Orm\Mapper\FakeRecord' instead."
         );
         $this->mapper->delete($record);
     }

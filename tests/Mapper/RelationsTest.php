@@ -1,12 +1,12 @@
 <?php
-namespace Atlas\Mapper;
+namespace Atlas\Orm\Mapper;
 
-use Atlas\Exception;
-use Atlas\DataSource\Employee\EmployeeMapper;
-use Atlas\DataSource\Employee\EmployeeRecord;
-use Atlas\DataSource\Employee\EmployeeRecordSet;
-use Atlas\DataSource\Employee\EmployeeRow;
-use Atlas\Relation\ManyToMany;
+use Atlas\Orm\Exception;
+use Atlas\Orm\DataSource\Employee\EmployeeMapper;
+use Atlas\Orm\DataSource\Employee\EmployeeRecord;
+use Atlas\Orm\DataSource\Employee\EmployeeRecordSet;
+use Atlas\Orm\DataSource\Employee\EmployeeRow;
+use Atlas\Orm\Relation\ManyToMany;
 
 class MapperRelationsTest extends \PHPUnit_Framework_TestCase
 {

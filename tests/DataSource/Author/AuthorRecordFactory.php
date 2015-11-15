@@ -1,7 +1,7 @@
 <?php
-namespace Atlas\DataSource\Author;
+namespace Atlas\Orm\DataSource\Author;
 
-use Atlas\Mapper\AbstractRecordFactory;
+use Atlas\Orm\Mapper\AbstractRecordFactory;
 
 class AuthorRecordFactory extends AbstractRecordFactory
 {

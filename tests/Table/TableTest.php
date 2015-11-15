@@ -1,11 +1,11 @@
 <?php
-namespace Atlas\Table;
+namespace Atlas\Orm\Table;
 
-use Atlas\Assertions;
-use Atlas\DataSource\Employee\EmployeeTable;
-use Atlas\DataSource\Employee\EmployeeRowFactory;
-use Atlas\DataSource\Employee\EmployeeRowFilter;
-use Atlas\SqliteFixture;
+use Atlas\Orm\Assertions;
+use Atlas\Orm\DataSource\Employee\EmployeeTable;
+use Atlas\Orm\DataSource\Employee\EmployeeRowFactory;
+use Atlas\Orm\DataSource\Employee\EmployeeRowFilter;
+use Atlas\Orm\SqliteFixture;
 use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\QueryFactory;
@@ -41,7 +41,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
     public function testGetIdentityMap()
     {
         $this->assertInstanceOf(
-            'Atlas\Table\IdentityMap',
+            'Atlas\Orm\Table\IdentityMap',
             $this->table->getIdentityMap()
         );
     }
@@ -214,7 +214,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $row = new FakeRow(new FakeRowIdentity(['id' => null]), []);
         $this->setExpectedException(
             InvalidArgumentException::CLASS,
-            "Expected object of type 'Atlas\DataSource\Employee\EmployeeRow', got 'Atlas\Table\FakeRow' instead."
+            "Expected object of type 'Atlas\Orm\DataSource\Employee\EmployeeRow', got 'Atlas\Orm\Table\FakeRow' instead."
         );
         $this->table->insert($row);
     }
@@ -256,7 +256,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $row = new FakeRow(new FakeRowIdentity(['id' => null]), []);
         $this->setExpectedException(
             InvalidArgumentException::CLASS,
-            "Expected object of type 'Atlas\DataSource\Employee\EmployeeRow', got 'Atlas\Table\FakeRow' instead."
+            "Expected object of type 'Atlas\Orm\DataSource\Employee\EmployeeRow', got 'Atlas\Orm\Table\FakeRow' instead."
         );
         $this->table->update($row);
     }
@@ -280,7 +280,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $row = new FakeRow(new FakeRowIdentity(['id' => null]), []);
         $this->setExpectedException(
             InvalidArgumentException::CLASS,
-            "Expected object of type 'Atlas\DataSource\Employee\EmployeeRow', got 'Atlas\Table\FakeRow' instead."
+            "Expected object of type 'Atlas\Orm\DataSource\Employee\EmployeeRow', got 'Atlas\Orm\Table\FakeRow' instead."
         );
         $this->table->delete($row);
     }

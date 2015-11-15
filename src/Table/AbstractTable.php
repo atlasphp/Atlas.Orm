@@ -8,9 +8,9 @@
  * @license http://opensource.org/licenses/MIT MIT
  *
  */
-namespace Atlas\Table;
+namespace Atlas\Orm\Table;
 
-use Atlas\Exception;
+use Atlas\Orm\Exception;
 use Aura\Sql\ConnectionLocator;
 use Aura\SqlQuery\QueryFactory;
 use Aura\SqlQuery\Common\Delete;

@@ -1,12 +1,12 @@
 <?php
-namespace Atlas;
+namespace Atlas\Orm;
 
-use Atlas\Mapper\MapperFactory;
-use Atlas\Mapper\MapperLocator;
-use Atlas\Mapper\MapperRelations;
-use Atlas\Table\IdentityMap;
-use Atlas\Table\TableFactory;
-use Atlas\Table\TableLocator;
+use Atlas\Orm\Mapper\MapperFactory;
+use Atlas\Orm\Mapper\MapperLocator;
+use Atlas\Orm\Mapper\MapperRelations;
+use Atlas\Orm\Table\IdentityMap;
+use Atlas\Orm\Table\TableFactory;
+use Atlas\Orm\Table\TableLocator;
 use Aura\Sql\ConnectionLocator;
 use Aura\SqlQuery\QueryFactory;
 use ReflectionMethod;

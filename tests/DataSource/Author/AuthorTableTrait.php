@@ -1,5 +1,5 @@
 <?php
-namespace Atlas\DataSource\Author;
+namespace Atlas\Orm\DataSource\Author;
 
 trait AuthorTableTrait
 {

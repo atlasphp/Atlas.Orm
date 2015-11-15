@@ -1,8 +1,8 @@
 <?php
-namespace Atlas\DataSource\Summary;
+namespace Atlas\Orm\DataSource\Summary;
 
-use Atlas\Table\AbstractRow;
-use Atlas\Table\AbstractRowFilter;
+use Atlas\Orm\Table\AbstractRow;
+use Atlas\Orm\Table\AbstractRowFilter;
 
 class SummaryRowFilter extends AbstractRowFilter
 {

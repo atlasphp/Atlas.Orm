@@ -1,7 +1,7 @@
 <?php
-namespace Atlas\DataSource\Tagging;
+namespace Atlas\Orm\DataSource\Tagging;
 
-use Atlas\Table\AbstractRowFactory;
+use Atlas\Orm\Table\AbstractRowFactory;
 
 class TaggingRowFactory extends AbstractRowFactory
 {

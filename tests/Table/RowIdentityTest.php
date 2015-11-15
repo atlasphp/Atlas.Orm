@@ -1,5 +1,5 @@
 <?php
-namespace Atlas\Table;
+namespace Atlas\Orm\Table;
 
 class RowIdentityTest extends \PHPUnit_Framework_TestCase
 {
@@ -12,14 +12,14 @@ class RowIdentityTest extends \PHPUnit_Framework_TestCase
     public function testGetMissingCol()
     {
         $row = new FakeRowIdentity(['id' => null]);
-        $this->setExpectedException('Atlas\Exception');
+        $this->setExpectedException('Atlas\Orm\Exception');
         $row->no_such_col;
     }
 
     public function testSetMissingCol()
     {
         $row = new FakeRowIdentity(['id' => null]);
-        $this->setExpectedException('Atlas\Exception');
+        $this->setExpectedException('Atlas\Orm\Exception');
         $row->no_such_col = 'foo';
     }
 
@@ -28,7 +28,7 @@ class RowIdentityTest extends \PHPUnit_Framework_TestCase
         $row = new FakeRowIdentity(['id' => null]);
         $row->id = '1';
 
-        $this->setExpectedException('Atlas\Exception');
+        $this->setExpectedException('Atlas\Orm\Exception');
         $row->id = '2';
     }
 
@@ -51,14 +51,14 @@ class RowIdentityTest extends \PHPUnit_Framework_TestCase
     public function testUnsetMissingCol()
     {
         $row = new FakeRowIdentity(['id' => null]);
-        $this->setExpectedException('Atlas\Exception');
+        $this->setExpectedException('Atlas\Orm\Exception');
         unset($row->no_such_col);
     }
 
     public function testUnsetImmutable()
     {
         $row = new FakeRowIdentity(['id' => '1']);
-        $this->setExpectedException('Atlas\Exception');
+        $this->setExpectedException('Atlas\Orm\Exception');
         unset($row->id);
     }
 }

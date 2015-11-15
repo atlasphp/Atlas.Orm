@@ -1,5 +1,5 @@
 <?php
-namespace Atlas\DataSource\Employee;
+namespace Atlas\Orm\DataSource\Employee;
 
 trait EmployeeTableTrait
 {

@@ -1,11 +1,11 @@
 <?php
-namespace Atlas\Relation;
+namespace Atlas\Orm\Relation;
 
-use Atlas\Mapper\AbstractMapper;
-use Atlas\Mapper\MapperLocator;
-use Atlas\Mapper\AbstractRecord;
-use Atlas\Mapper\AbstractRecordSet;
-use Atlas\Mapper\Related;
+use Atlas\Orm\Mapper\AbstractMapper;
+use Atlas\Orm\Mapper\MapperLocator;
+use Atlas\Orm\Mapper\AbstractRecord;
+use Atlas\Orm\Mapper\AbstractRecordSet;
+use Atlas\Orm\Mapper\Related;
 
 abstract class AbstractRelation
 {

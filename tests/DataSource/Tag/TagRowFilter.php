@@ -1,8 +1,8 @@
 <?php
-namespace Atlas\DataSource\Tag;
+namespace Atlas\Orm\DataSource\Tag;
 
-use Atlas\Table\AbstractRow;
-use Atlas\Table\AbstractRowFilter;
+use Atlas\Orm\Table\AbstractRow;
+use Atlas\Orm\Table\AbstractRowFilter;
 
 class TagRowFilter extends AbstractRowFilter
 {

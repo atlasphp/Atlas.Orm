@@ -1,7 +1,7 @@
 <?php
-namespace Atlas\Table;
+namespace Atlas\Orm\Table;
 
-use Atlas\Exception;
+use Atlas\Orm\Exception;
 
 // using arrays to plan ahead for composite keys
 abstract class AbstractRowIdentity

@@ -1,9 +1,9 @@
 <?php
-namespace Atlas\Table;
+namespace Atlas\Orm\Table;
 
 use ArrayAccess;
 use ArrayIterator;
-use Atlas\Exception;
+use Atlas\Orm\Exception;
 use Countable;
 use IteratorAggregate;
 

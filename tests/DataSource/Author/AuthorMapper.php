@@ -1,7 +1,7 @@
 <?php
-namespace Atlas\DataSource\Author;
+namespace Atlas\Orm\DataSource\Author;
 
-use Atlas\Mapper\AbstractMapper;
+use Atlas\Orm\Mapper\AbstractMapper;
 
 class AuthorMapper extends AbstractMapper
 {

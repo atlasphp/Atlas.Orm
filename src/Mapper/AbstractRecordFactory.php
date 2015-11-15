@@ -1,8 +1,8 @@
 <?php
-namespace Atlas\Mapper;
+namespace Atlas\Orm\Mapper;
 
-use Atlas\Exception;
-use Atlas\Table\AbstractRow;
+use Atlas\Orm\Exception;
+use Atlas\Orm\Table\AbstractRow;
 
 abstract class AbstractRecordFactory
 {

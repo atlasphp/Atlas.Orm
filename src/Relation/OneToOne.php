@@ -1,9 +1,9 @@
 <?php
-namespace Atlas\Relation;
+namespace Atlas\Orm\Relation;
 
-use Atlas\Mapper\Related;
-use Atlas\Mapper\AbstractRecord;
-use Atlas\Mapper\AbstractRecordSet;
+use Atlas\Orm\Mapper\Related;
+use Atlas\Orm\Mapper\AbstractRecord;
+use Atlas\Orm\Mapper\AbstractRecordSet;
 
 class OneToOne extends AbstractRelation
 {

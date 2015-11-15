@@ -1,5 +1,5 @@
 <?php
-namespace Atlas\DataSource\Tag;
+namespace Atlas\Orm\DataSource\Tag;
 
 trait TagTableTrait
 {

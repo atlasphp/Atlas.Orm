@@ -1,9 +1,9 @@
 <?php
-namespace Atlas;
+namespace Atlas\Orm;
 
-use Atlas\Exception;
-use Atlas\Mapper\AbstractRecord;
-use Atlas\Mapper\MapperLocator;
+use Atlas\Orm\Exception;
+use Atlas\Orm\Mapper\AbstractRecord;
+use Atlas\Orm\Mapper\MapperLocator;
 use SplObjectStorage;
 
 class Transaction

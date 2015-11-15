@@ -1,12 +1,12 @@
 <?php
-namespace Atlas\DataSource\Thread;
+namespace Atlas\Orm\DataSource\Thread;
 
-use Atlas\DataSource\Author\AuthorMapper;
-use Atlas\DataSource\Summary\SummaryMapper;
-use Atlas\DataSource\Reply\ReplyMapper;
-use Atlas\DataSource\Tagging\TaggingMapper;
-use Atlas\DataSource\Tag\TagMapper;
-use Atlas\Mapper\AbstractRelations;
+use Atlas\Orm\DataSource\Author\AuthorMapper;
+use Atlas\Orm\DataSource\Summary\SummaryMapper;
+use Atlas\Orm\DataSource\Reply\ReplyMapper;
+use Atlas\Orm\DataSource\Tagging\TaggingMapper;
+use Atlas\Orm\DataSource\Tag\TagMapper;
+use Atlas\Orm\Mapper\AbstractRelations;
 
 class ThreadRelations extends AbstractRelations
 {

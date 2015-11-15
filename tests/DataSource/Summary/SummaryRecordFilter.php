@@ -1,8 +1,8 @@
 <?php
-namespace Atlas\DataSource\Summary;
+namespace Atlas\Orm\DataSource\Summary;
 
-use Atlas\Mapper\AbstractRecord;
-use Atlas\Mapper\AbstractRecordFilter;
+use Atlas\Orm\Mapper\AbstractRecord;
+use Atlas\Orm\Mapper\AbstractRecordFilter;
 
 class SummaryRecordFilter extends AbstractRecordFilter
 {

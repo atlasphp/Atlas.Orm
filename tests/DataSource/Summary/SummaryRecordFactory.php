@@ -1,7 +1,7 @@
 <?php
-namespace Atlas\DataSource\Summary;
+namespace Atlas\Orm\DataSource\Summary;
 
-use Atlas\Mapper\AbstractRecordFactory;
+use Atlas\Orm\Mapper\AbstractRecordFactory;
 
 class SummaryRecordFactory extends AbstractRecordFactory
 {

@@ -8,9 +8,9 @@
  * @license http://opensource.org/licenses/MIT MIT
  *
  */
-namespace Atlas\Mapper;
+namespace Atlas\Orm\Mapper;
 
-use Atlas\Exception;
+use Atlas\Orm\Exception;
 
 /**
  *

@@ -1,7 +1,7 @@
 <?php
-namespace Atlas\Mapper;
+namespace Atlas\Orm\Mapper;
 
-use Atlas\Exception;
+use Atlas\Orm\Exception;
 
 class Related
 {

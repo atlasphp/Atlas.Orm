@@ -1,7 +1,7 @@
 <?php
-namespace Atlas\DataSource\Reply;
+namespace Atlas\Orm\DataSource\Reply;
 
-use Atlas\Table\AbstractRowIdentity;
+use Atlas\Orm\Table\AbstractRowIdentity;
 
 class ReplyRowIdentity extends AbstractRowIdentity
 {

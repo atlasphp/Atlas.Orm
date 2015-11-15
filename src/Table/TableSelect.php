@@ -8,7 +8,7 @@
  * @license http://opensource.org/licenses/MIT MIT
  *
  */
-namespace Atlas\Table;
+namespace Atlas\Orm\Table;
 
 use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\Common\SelectInterface;

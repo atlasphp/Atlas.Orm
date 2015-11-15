@@ -1,7 +1,7 @@
 <?php
-namespace Atlas\Mapper;
+namespace Atlas\Orm\Mapper;
 
-use Atlas\Table\TableSelect;
+use Atlas\Orm\Table\TableSelect;
 
 class MapperSelect
 {

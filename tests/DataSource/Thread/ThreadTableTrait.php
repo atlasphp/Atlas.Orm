@@ -1,5 +1,5 @@
 <?php
-namespace Atlas\DataSource\Thread;
+namespace Atlas\Orm\DataSource\Thread;
 
 trait ThreadTableTrait
 {

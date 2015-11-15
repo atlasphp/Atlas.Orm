@@ -1,5 +1,5 @@
 <?php
-namespace Atlas\Table;
+namespace Atlas\Orm\Table;
 
 use InvalidArgumentException;
 

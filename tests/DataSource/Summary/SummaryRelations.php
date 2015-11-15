@@ -1,8 +1,8 @@
 <?php
-namespace Atlas\DataSource\Summary;
+namespace Atlas\Orm\DataSource\Summary;
 
-use Atlas\DataSource\Thread\ThreadMapper;
-use Atlas\Mapper\AbstractRelations;
+use Atlas\Orm\DataSource\Thread\ThreadMapper;
+use Atlas\Orm\Mapper\AbstractRelations;
 
 class SummaryRelations extends AbstractRelations
 {

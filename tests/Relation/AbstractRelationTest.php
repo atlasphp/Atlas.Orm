@@ -1,17 +1,17 @@
 <?php
-namespace Atlas\Relation;
+namespace Atlas\Orm\Relation;
 
-use Atlas\AtlasContainer;
-use Atlas\DataSource\Author\AuthorMapper;
-use Atlas\DataSource\Reply\ReplyMapper;
-use Atlas\DataSource\Summary\SummaryMapper;
-use Atlas\DataSource\Summary\SummaryTable;
-use Atlas\DataSource\Tag\TagMapper;
-use Atlas\DataSource\Tagging\TaggingMapper;
-use Atlas\DataSource\Thread\ThreadMapper;
-use Atlas\Mapper\MapperLocator;
+use Atlas\Orm\AtlasContainer;
+use Atlas\Orm\DataSource\Author\AuthorMapper;
+use Atlas\Orm\DataSource\Reply\ReplyMapper;
+use Atlas\Orm\DataSource\Summary\SummaryMapper;
+use Atlas\Orm\DataSource\Summary\SummaryTable;
+use Atlas\Orm\DataSource\Tag\TagMapper;
+use Atlas\Orm\DataSource\Tagging\TaggingMapper;
+use Atlas\Orm\DataSource\Thread\ThreadMapper;
+use Atlas\Orm\Mapper\MapperLocator;
 use Aura\Sql\ExtendedPdo;
-use Atlas\SqliteFixture;
+use Atlas\Orm\SqliteFixture;
 
 abstract class AbstractRelationTest extends \PHPUnit_Framework_TestCase
 {

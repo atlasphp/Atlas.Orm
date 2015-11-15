@@ -1,9 +1,9 @@
 <?php
-namespace Atlas\Mapper;
+namespace Atlas\Orm\Mapper;
 
 use ArrayAccess;
 use ArrayIterator;
-use Atlas\Exception;
+use Atlas\Orm\Exception;
 use Countable;
 use IteratorAggregate;
 

@@ -1,5 +1,5 @@
 <?php
-namespace Atlas\DataSource\Reply;
+namespace Atlas\Orm\DataSource\Reply;
 
 trait ReplyTableTrait
 {

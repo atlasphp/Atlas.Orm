@@ -1,9 +1,9 @@
 <?php
-namespace Atlas;
+namespace Atlas\Orm;
 
-use Atlas\Mapper\MapperLocator;
-use Atlas\Mapper\AbstractRecord;
-use Atlas\Table\TableSelect;
+use Atlas\Orm\Mapper\MapperLocator;
+use Atlas\Orm\Mapper\AbstractRecord;
+use Atlas\Orm\Table\TableSelect;
 use Exception;
 
 class Atlas

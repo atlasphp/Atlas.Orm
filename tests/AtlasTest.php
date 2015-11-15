@@ -1,15 +1,15 @@
 <?php
-namespace Atlas;
+namespace Atlas\Orm;
 
-use Atlas\DataSource\Author\AuthorMapper;
-use Atlas\DataSource\Reply\ReplyMapper;
-use Atlas\DataSource\Summary\SummaryMapper;
-use Atlas\DataSource\Summary\SummaryTable;
-use Atlas\DataSource\Tag\TagMapper;
-use Atlas\DataSource\Tagging\TaggingMapper;
-use Atlas\DataSource\Thread\ThreadMapper;
-use Atlas\DataSource\Thread\ThreadRecord;
-use Atlas\DataSource\Thread\ThreadRecordSet;
+use Atlas\Orm\DataSource\Author\AuthorMapper;
+use Atlas\Orm\DataSource\Reply\ReplyMapper;
+use Atlas\Orm\DataSource\Summary\SummaryMapper;
+use Atlas\Orm\DataSource\Summary\SummaryTable;
+use Atlas\Orm\DataSource\Tag\TagMapper;
+use Atlas\Orm\DataSource\Tagging\TaggingMapper;
+use Atlas\Orm\DataSource\Thread\ThreadMapper;
+use Atlas\Orm\DataSource\Thread\ThreadRecord;
+use Atlas\Orm\DataSource\Thread\ThreadRecordSet;
 use Aura\Sql\ExtendedPdo;
 
 class AtlasTest extends \PHPUnit_Framework_TestCase

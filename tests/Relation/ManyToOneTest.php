@@ -1,8 +1,8 @@
 <?php
-namespace Atlas\Relation;
+namespace Atlas\Orm\Relation;
 
-use Atlas\DataSource\Author\AuthorMapper;
-use Atlas\DataSource\Thread\ThreadMapper;
+use Atlas\Orm\DataSource\Author\AuthorMapper;
+use Atlas\Orm\DataSource\Thread\ThreadMapper;
 
 class ManyToOneTest extends AbstractRelationTest
 {
@@ -20,8 +20,8 @@ class ManyToOneTest extends AbstractRelationTest
 
         $expect = [
             'name' => 'author',
-            'nativeMapperClass' => 'Atlas\\DataSource\\Thread\\ThreadMapper',
-            'foreignMapperClass' => 'Atlas\\DataSource\\Author\\AuthorMapper',
+            'nativeMapperClass' => 'Atlas\\Orm\\DataSource\\Thread\\ThreadMapper',
+            'foreignMapperClass' => 'Atlas\\Orm\\DataSource\\Author\\AuthorMapper',
             'nativeCol' => 'native',
             'throughName' => null,
             'throughNativeCol' => null,

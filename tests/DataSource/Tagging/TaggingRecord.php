@@ -1,7 +1,7 @@
 <?php
-namespace Atlas\DataSource\Tagging;
+namespace Atlas\Orm\DataSource\Tagging;
 
-use Atlas\Mapper\AbstractRecord;
+use Atlas\Orm\Mapper\AbstractRecord;
 
 class TaggingRecord extends AbstractRecord
 {

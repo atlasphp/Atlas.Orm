@@ -1,7 +1,7 @@
 <?php
-namespace Atlas\DataSource\Tagging;
+namespace Atlas\Orm\DataSource\Tagging;
 
-use Atlas\Table\AbstractTable;
+use Atlas\Orm\Table\AbstractTable;
 
 class TaggingTable extends AbstractTable
 {

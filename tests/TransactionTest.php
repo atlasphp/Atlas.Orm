@@ -1,8 +1,8 @@
 <?php
-namespace Atlas;
+namespace Atlas\Orm;
 
-use Atlas\DataSource\Employee\EmployeeMapper;
-use Atlas\DataSource\Employee\EmployeeRecord;
+use Atlas\Orm\DataSource\Employee\EmployeeMapper;
+use Atlas\Orm\DataSource\Employee\EmployeeRecord;
 use Aura\Sql\ExtendedPdo;
 
 class TransactionTest extends \PHPUnit_Framework_TestCase
@@ -170,7 +170,7 @@ class TransactionTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($result);
 
         $this->setExpectedException(
-            'Atlas\Exception',
+            'Atlas\Orm\Exception',
             'Cannot re-execute a prior transaction.'
         );
         $transaction->exec();

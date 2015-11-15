@@ -1,7 +1,7 @@
 <?php
-namespace Atlas\Table;
+namespace Atlas\Orm\Table;
 
-use Atlas\AtlasContainer;
+use Atlas\Orm\AtlasContainer;
 
 class TableFactory
 {

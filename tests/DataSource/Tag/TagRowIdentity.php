@@ -1,7 +1,7 @@
 <?php
-namespace Atlas\DataSource\Tag;
+namespace Atlas\Orm\DataSource\Tag;
 
-use Atlas\Table\AbstractRowIdentity;
+use Atlas\Orm\Table\AbstractRowIdentity;
 
 class TagRowIdentity extends AbstractRowIdentity
 {

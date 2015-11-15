@@ -1,5 +1,5 @@
 <?php
-namespace Atlas;
+namespace Atlas\Orm;
 
 // work to be performed inside a transaction
 class Work

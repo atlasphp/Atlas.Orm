@@ -1,5 +1,5 @@
 <?php
-namespace Atlas;
+namespace Atlas\Orm;
 
 class WorkTest extends \PHPUnit_Framework_TestCase
 {

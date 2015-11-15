@@ -1,8 +1,8 @@
 <?php
-namespace Atlas\DataSource\Employee;
+namespace Atlas\Orm\DataSource\Employee;
 
-use Atlas\Mapper\AbstractRecord;
-use Atlas\Mapper\AbstractRecordFilter;
+use Atlas\Orm\Mapper\AbstractRecord;
+use Atlas\Orm\Mapper\AbstractRecordFilter;
 
 class EmployeeRecordFilter extends AbstractRecordFilter
 {

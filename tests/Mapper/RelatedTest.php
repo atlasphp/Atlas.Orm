@@ -1,9 +1,9 @@
 <?php
-namespace Atlas\Mapper;
+namespace Atlas\Orm\Mapper;
 
-use Atlas\Exception;
-use Atlas\Table\FakeRow;
-use Atlas\Table\AbstractRowIdentity;
+use Atlas\Orm\Exception;
+use Atlas\Orm\Table\FakeRow;
+use Atlas\Orm\Table\AbstractRowIdentity;
 
 class RelatedTest extends \PHPUnit_Framework_TestCase
 {
@@ -24,8 +24,8 @@ class RelatedTest extends \PHPUnit_Framework_TestCase
 
         // missing
         $this->setExpectedException(
-            'Atlas\Exception',
-            'Atlas\Mapper\Related::$noSuchForeign does not exist'
+            'Atlas\Orm\Exception',
+            'Atlas\Orm\Mapper\Related::$noSuchForeign does not exist'
         );
         $this->related->noSuchForeign;
     }
@@ -38,8 +38,8 @@ class RelatedTest extends \PHPUnit_Framework_TestCase
 
         // missing
         $this->setExpectedException(
-            'Atlas\Exception',
-            'Atlas\Mapper\Related::$noSuchForeign does not exist'
+            'Atlas\Orm\Exception',
+            'Atlas\Orm\Mapper\Related::$noSuchForeign does not exist'
         );
         $this->related->noSuchForeign = 'missing';
     }
@@ -51,8 +51,8 @@ class RelatedTest extends \PHPUnit_Framework_TestCase
 
         // missing
         $this->setExpectedException(
-            'Atlas\Exception',
-            'Atlas\Mapper\Related::$noSuchForeign does not exist'
+            'Atlas\Orm\Exception',
+            'Atlas\Orm\Mapper\Related::$noSuchForeign does not exist'
         );
         isset($this->related->noSuchForeign);
     }
@@ -65,8 +65,8 @@ class RelatedTest extends \PHPUnit_Framework_TestCase
 
         // missing
         $this->setExpectedException(
-            'Atlas\Exception',
-            'Atlas\Mapper\Related::$noSuchForeign does not exist'
+            'Atlas\Orm\Exception',
+            'Atlas\Orm\Mapper\Related::$noSuchForeign does not exist'
         );
         unset($this->related->noSuchForeign);
     }

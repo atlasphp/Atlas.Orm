@@ -1,9 +1,9 @@
 <?php
-namespace Atlas\DataSource\Author;
+namespace Atlas\Orm\DataSource\Author;
 
-use Atlas\DataSource\Reply\ReplyMapper;
-use Atlas\DataSource\Thread\ThreadMapper;
-use Atlas\Mapper\AbstractRelations;
+use Atlas\Orm\DataSource\Reply\ReplyMapper;
+use Atlas\Orm\DataSource\Thread\ThreadMapper;
+use Atlas\Orm\Mapper\AbstractRelations;
 
 class AuthorRelations extends AbstractRelations
 {

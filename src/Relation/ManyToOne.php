@@ -1,7 +1,7 @@
 <?php
-namespace Atlas\Relation;
+namespace Atlas\Orm\Relation;
 
-use Atlas\Mapper\MapperLocator;
+use Atlas\Orm\Mapper\MapperLocator;
 
 class ManyToOne extends OneToOne
 {

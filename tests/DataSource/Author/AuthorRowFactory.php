@@ -1,7 +1,7 @@
 <?php
-namespace Atlas\DataSource\Author;
+namespace Atlas\Orm\DataSource\Author;
 
-use Atlas\Table\AbstractRowFactory;
+use Atlas\Orm\Table\AbstractRowFactory;
 
 class AuthorRowFactory extends AbstractRowFactory
 {

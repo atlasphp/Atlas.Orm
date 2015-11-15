@@ -8,7 +8,7 @@
  * @license http://opensource.org/licenses/MIT MIT
  *
  */
-namespace Atlas;
+namespace Atlas\Orm;
 
 use InvalidArgumentException;
 use UnexpectedValueException;

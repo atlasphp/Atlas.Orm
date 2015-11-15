@@ -1,8 +1,8 @@
 <?php
-namespace Atlas\Mapper;
+namespace Atlas\Orm\Mapper;
 
-use Atlas\Table\FakeRow;
-use Atlas\Table\FakeRowIdentity;
+use Atlas\Orm\Table\FakeRow;
+use Atlas\Orm\Table\FakeRowIdentity;
 use InvalidArgumentException;
 
 class RecordSetTest extends \PHPUnit_Framework_TestCase

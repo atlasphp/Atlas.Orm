@@ -1,5 +1,5 @@
 <?php
-namespace Atlas\DataSource\Summary;
+namespace Atlas\Orm\DataSource\Summary;
 
 trait SummaryTableTrait
 {
