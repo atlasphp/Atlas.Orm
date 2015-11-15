@@ -2,11 +2,7 @@
 
 ## Initial Release Priority
 
-- Consider renaming "Abstract" to "Generic" to indicate what *ought* to be happening, if/when PHP gets generics.
-
 - Extract to its own Atlas.Cli package, and require-dev it in Atlas.Atlas.
-
-- Is there any way at all to remove the constructor code from skeleton generation?
 
 - Documentation.
 
