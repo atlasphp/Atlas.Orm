@@ -1,4 +1,4 @@
-# Atlas
+# Atlas.Orm
 
 > No migrations. No annotations. No lazy loading. No domain models. No data-type abstractions. No behaviors. No opinions. Just data mapping.
 
