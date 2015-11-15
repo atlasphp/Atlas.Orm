@@ -85,7 +85,7 @@ class AtlasContainer
             throw Exception::classDoesNotExist($mapperClass);
         }
 
-        $tableClass = $this->getTableForMapper($mapperClass);
+        $tableClass = $mapperClass::getTableClass();
         $this->setTable($tableClass);
 
         $mapperFactory = $this->newMapperFactory($mapperClass, $tableClass);
@@ -137,12 +137,5 @@ class AtlasContainer
     public function newTableFactory($tableClass)
     {
         return new TableFactory($this, $tableClass);
-    }
-
-    public function getTableForMapper($mapperClass)
-    {
-        $method = new ReflectionMethod($mapperClass, '__construct');
-        $params = $method->getParameters();
-        return $params[0]->getClass()->getName();
     }
 }

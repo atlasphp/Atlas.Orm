@@ -36,6 +36,15 @@ abstract class AbstractMapper
         $this->relations = $relations;
     }
 
+    static public function getTableClass()
+    {
+        static $tableClass;
+        if (! $tableClass) {
+            $tableClass = substr(get_called_class(), 0, -6) . 'Table';
+        }
+        return $tableClass;
+    }
+
     public function getTable()
     {
         return $this->table;
