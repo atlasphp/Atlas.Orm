@@ -2,6 +2,10 @@
 
 ## Initial Release Priority
 
+- Deal with abstracts.
+
+- Add `append()` or `addNew()` to RowSet and RecordSet to append a new Row/Record of the proper type.
+
 - Documentation.
 
 ## Near-Term
@@ -25,8 +29,6 @@
 - Auto-Managing Related Records
 
     - Add the relationship definitions to the Related object, to support wiring-up of foreign keys?
-
-    - Add `append()` or `addNew()` to RowSet and RecordSet to append a new Row/Record of the proper type. Probably need to keep a reference back to the original Table/Mapper for the "new" logic.
 
     - Add a RecordFilter logic to look through relateds and set the foreign key values at insert/update time? This should probably be as methods on each Relation type.
 
