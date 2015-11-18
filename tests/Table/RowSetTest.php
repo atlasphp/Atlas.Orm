@@ -18,7 +18,7 @@ class RowSetTest extends \PHPUnit_Framework_TestCase
             ]
         );
 
-        $this->rowSet = new FakeRowSet([], FakeRow::CLASS);
+        $this->rowSet = new FakeRowSet(new FakeRowFactory());
         $this->rowSet[] = $this->row;
     }
 

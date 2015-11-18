@@ -28,7 +28,7 @@ trait AbstractTableTrait
      * @return array
      *
      */
-    public function tableInfo() { }
+    abstract public function tableInfo();
 
     /**
      *

@@ -44,12 +44,20 @@ abstract class AbstractRecordFactory
     public function newRecordSet(array $records = [])
     {
         $recordSetClass = $this->getRecordSetClass();
-        return new $recordSetClass($records, $this->getRecordClass());
+        return new $recordSetClass($this, $records);
     }
 
-    public function assertRecordClass(AbstractRecord $record)
+    public function assertRecordClass($record)
     {
-        $recordClass = $this->getRecordClass();
+        static $recordClass;
+        if (! $recordClass) {
+            $recordClass = $this->getRecordClass();
+        }
+
+        if (! is_object($record)) {
+            throw Exception::invalidType($recordClass, gettype($record));
+        }
+
         if (! $record instanceof $recordClass) {
             throw Exception::invalidType($recordClass, $record);
         }

@@ -2,8 +2,6 @@
 
 ## Initial Release Priority
 
-- Extract to its own Atlas.Cli package, and require-dev it in Atlas.Atlas.
-
 - Documentation.
 
 ## Near-Term

@@ -9,13 +9,13 @@ use IteratorAggregate;
 
 abstract class AbstractRowSet implements ArrayAccess, Countable, IteratorAggregate
 {
+    private $rowFactory;
+
     private $rows = [];
 
-    private $rowClass;
-
-    public function __construct(array $rows, $rowClass)
+    public function __construct(AbstractRowFactory $rowFactory, array $rows = [])
     {
-        $this->rowClass = $rowClass;
+        $this->rowFactory = $rowFactory;
         foreach ($rows as $key => $row) {
             $this->offsetSet($key, $row);
         }
@@ -33,9 +33,7 @@ abstract class AbstractRowSet implements ArrayAccess, Countable, IteratorAggrega
 
     public function offsetSet($offset, $value)
     {
-        if (! $value instanceof $this->rowClass) {
-            throw Exception::invalidType($this->rowClass, $value);
-        }
+        $this->rowFactory->assertRowClass($value);
 
         if ($offset === null) {
             $this->rows[] = $value;

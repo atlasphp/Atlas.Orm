@@ -30,16 +30,25 @@ abstract class AbstractRowFactory
 
     public function newRowSet(array $rows)
     {
-        $rowSetClass = $this->getRowSetClass();
-        return new $rowSetClass($rows, $this->getRowClass());
+        static $rowSetClass;
+        if (! $rowSetClass) {
+            $rowSetClass = $this->getRowSetClass();
+        }
+
+        return new $rowSetClass($this, $rows);
     }
 
-    public function assertRowClass(AbstractRow $row)
+    public function assertRowClass($row)
     {
         static $rowClass;
         if (! $rowClass) {
             $rowClass = $this->getRowClass();
         }
+
+        if (! is_object($row)) {
+            throw Exception::invalidType($rowClass, gettype($row));
+        }
+
         if (! $row instanceof $rowClass) {
             throw Exception::invalidType($rowClass, $row);
         }
