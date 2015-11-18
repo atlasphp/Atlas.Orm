@@ -39,11 +39,17 @@ class Exception extends \Exception
 
     public static function propertyDoesNotExist($class, $property)
     {
+        if (is_object($class)) {
+            $class = get_class($class);
+        }
         return new Exception("{$class}::\${$property} does not exist.");
     }
 
     public static function immutableOnceSet($class, $property)
     {
+        if (is_object($class)) {
+            $class = get_class($class);
+        }
         return new Exception("{$class}::\${$property} is immutable once set.");
     }
 

@@ -24,8 +24,7 @@ abstract class AbstractRowIdentity
         $this->assertHas($col);
 
         if (isset($this->primary[$col])) {
-            $class = get_class($this);
-            throw Exception::immutableOnceSet($class, $col);
+            throw Exception::immutableOnceSet($this, $col);
         }
 
         $this->primary[$col] = $val;
@@ -42,8 +41,7 @@ abstract class AbstractRowIdentity
         $this->assertHas($col);
 
         if (isset($this->primary[$col])) {
-            $class = get_class($this);
-            throw Exception::immutableOnceSet($class, $col);
+            throw Exception::immutableOnceSet($this, $col);
         }
 
         $this->primary[$col] = null;
@@ -52,8 +50,7 @@ abstract class AbstractRowIdentity
     protected function assertHas($col)
     {
         if (! $this->has($col)) {
-            $class = get_class($this);
-            throw Exception::immutableOnceSet($class, $col);
+            throw Exception::immutableOnceSet($this, $col);
         }
     }
 
