@@ -12,10 +12,8 @@ class TransactionTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $atlasContainer = new AtlasContainer('sqlite');
-        $atlasContainer->setDefaultConnection(function () {
-            return new ExtendedPdo('sqlite::memory:');
-        });
+        $atlasContainer = new AtlasContainer('sqlite::memory:');
+
         $atlasContainer->setMappers([
             EmployeeMapper::CLASS,
         ]);

@@ -18,23 +18,11 @@ class AtlasContainerTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->atlasContainer = new AtlasContainer('sqlite');
+        $this->atlasContainer = new AtlasContainer('sqlite::memory:');
     }
 
     public function test()
     {
-        // set all connections for coverage
-        $connection = new ExtendedPdo('sqlite::memory:');
-        $this->atlasContainer->setDefaultConnection(function () use ($connection) {
-            return $connection;
-        });
-        $this->atlasContainer->setReadConnection('default', function () use ($connection) {
-            return $connection;
-        });
-        $this->atlasContainer->setWriteConnection('default', function () use ($connection) {
-            return $connection;
-        });
-
         // mappers
         $this->atlasContainer->setMappers([
             AuthorMapper::CLASS,

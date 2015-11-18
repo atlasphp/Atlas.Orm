@@ -19,18 +19,12 @@ abstract class AbstractRelationTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $connection = new ExtendedPdo('sqlite::memory:');
-
-        $atlasContainer = new AtlasContainer('sqlite');
-
-        $atlasContainer->setDefaultConnection(function () use ($connection) {
-            return $connection;
-        });
+        $atlasContainer = new AtlasContainer('sqlite::memory:');
 
         $atlasContainer->setMappers([
             AuthorMapper::CLASS,
             ReplyMapper::CLASS,
-            SummaryMapper::CLASS => SummaryTable::CLASS,
+            SummaryMapper::CLASS,
             TagMapper::CLASS,
             ThreadMapper::CLASS,
             TaggingMapper::CLASS,
@@ -38,6 +32,7 @@ abstract class AbstractRelationTest extends \PHPUnit_Framework_TestCase
 
         $this->mapperLocator = $atlasContainer->getMapperLocator();
 
+        $connection = $atlasContainer->getConnectionLocator()->getDefault();
         $fixture = new SqliteFixture($connection);
         $fixture->exec();
     }

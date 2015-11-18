@@ -8,6 +8,7 @@ use Atlas\Orm\Table\IdentityMap;
 use Atlas\Orm\Table\TableFactory;
 use Atlas\Orm\Table\TableLocator;
 use Aura\Sql\ConnectionLocator;
+use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\QueryFactory;
 use ReflectionMethod;
 
@@ -21,17 +22,39 @@ class AtlasContainer
     protected $queryFactory;
     protected $tableLocator;
 
-    public function __construct($db, $common = null)
-    {
-        $this->queryFactory = new QueryFactory($db, $common);
-        $this->connectionLocator = new ConnectionLocator();
+    public function __construct(
+        $dsn,
+        $username = null,
+        $password = null,
+        array $options = [],
+        array $attributes = []
+    ) {
+        $this->setConnectionLocator(func_get_args());
+        $this->setQueryFactory($dsn);
+
         $this->tableLocator = new TableLocator();
         $this->mapperLocator = new MapperLocator();
         $this->identityMap = new IdentityMap();
+
         $this->atlas = new Atlas(
             $this->mapperLocator,
             new Transaction($this->mapperLocator)
         );
+    }
+
+    protected function setConnectionLocator(array $args)
+    {
+        $this->connectionLocator = new ConnectionLocator();
+        $this->connectionLocator->setDefault(function () use ($args) {
+            return new ExtendedPdo(...$args);
+        });
+    }
+
+    protected function setQueryFactory($dsn)
+    {
+        $parts = explode(':', $dsn);
+        $db = array_shift($parts);
+        $this->queryFactory = new QueryFactory($db);
     }
 
     public function getAtlas()
@@ -62,11 +85,6 @@ class AtlasContainer
     public function getTable($tableClass)
     {
         return $this->tableLocator->get($tableClass);
-    }
-
-    public function setDefaultConnection(callable $callable)
-    {
-        $this->connectionLocator->setDefault($callable);
     }
 
     public function setReadConnection($name, callable $callable)
