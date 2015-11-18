@@ -22,11 +22,12 @@
         }
     },
     "require-dev": {
-        "atlas/cli": "dev-0.x"
+        "atlas/cli": "0.x-dev"
     },
     "autoload-dev": {
         "psr-4": {
             "Atlas\\Orm\\": "tests/"
         }
-    }
+    },
+    "minimum-stability": "dev"
 }
