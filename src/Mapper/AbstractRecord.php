@@ -25,8 +25,7 @@ abstract class AbstractRecord
             return $this->related->$field;
         }
 
-        $class = get_class($this);
-        throw Exception::propertyDoesNotExist($class, $field);
+        throw Exception::propertyDoesNotExist($this, $field);
     }
 
     public function __set($field, $value)
@@ -41,8 +40,7 @@ abstract class AbstractRecord
             return;
         }
 
-        $class = get_class($this);
-        throw Exception::propertyDoesNotExist($class, $field);
+        throw Exception::propertyDoesNotExist($this, $field);
     }
 
     public function __isset($field)
@@ -55,8 +53,7 @@ abstract class AbstractRecord
             return isset($this->related->$field);
         }
 
-        $class = get_class($this);
-        throw Exception::propertyDoesNotExist($class, $field);
+        throw Exception::propertyDoesNotExist($this, $field);
     }
 
     public function __unset($field)
@@ -71,8 +68,7 @@ abstract class AbstractRecord
             return;
         }
 
-        $class = get_class($this);
-        throw Exception::propertyDoesNotExist($class, $field);
+        throw Exception::propertyDoesNotExist($this, $field);
     }
 
     public function has($field)

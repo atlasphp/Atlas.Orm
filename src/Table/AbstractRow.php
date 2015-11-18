@@ -64,8 +64,7 @@ abstract class AbstractRow
     protected function assertHas($col)
     {
         if (! $this->has($col)) {
-            $class = get_class($this);
-            throw Exception::propertyDoesNotExist($class, $col);
+            throw Exception::propertyDoesNotExist($this, $col);
         }
     }
 

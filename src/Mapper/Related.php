@@ -39,8 +39,7 @@ class Related
     protected function assertHas($name)
     {
         if (! $this->has($name)) {
-            $class = get_class($this);
-            throw Exception::propertyDoesNotExist($class, $name);
+            throw Exception::propertyDoesNotExist($this, $name);
         }
     }
 
