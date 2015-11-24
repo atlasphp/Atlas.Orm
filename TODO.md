@@ -2,9 +2,7 @@
 
 ## Initial Release Priority
 
-- Deal with abstracts.
-
-- Add `append()` or `addNew()` to RowSet and RecordSet to append a new Row/Record of the proper type.
+- Deal with abstracts: remove prefix entirely? Rename to Generic?
 
 - Documentation.
 
@@ -12,9 +10,11 @@
 
 - In MapperSelect, add support for relation-specific joins
 
-- Add Row::isNew(), isDirty(), isClean(), isDeleted() methods. Will need setStatus()/getStatus() as well. The idea is that it will help with auto-saving strategies on Record objects.
+- Add Row::isNew(), isDirty(), isClean(), isTrash() methods. Will need setStatus()/getStatus() as well. The idea is that it will help with auto-saving strategies on Record objects.
 
 ## Unknown Priority
+
+- Add `addNew()` to RowSet and RecordSet to append a new Row/Record of the proper type. This is not hard for RowSet, but is touchy for RecordSet, since it needs a RowFactory to create the Row for the Record.
 
 - Composite primary keys
 
