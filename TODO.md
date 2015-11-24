@@ -4,11 +4,18 @@
 
 - Deal with abstracts: remove prefix entirely? Rename to Generic?
 
+- Clean up newRecord/RecordSet/RecordSetFromRows() to be more explicit.
+
 - Documentation.
 
 ## Near-Term
 
-- In MapperSelect, add support for relation-specific joins
+- In MapperSelect, add support for relation-specific joins. E.g.:
+
+        $select = $mapper->select()
+            ->leftJoinWith('foo')
+            ->innerJoinWith('bar')
+            ->joinWith('OUTER', 'baz');
 
 - Add Row::isNew(), isDirty(), isClean(), isTrash() methods. Will need setStatus()/getStatus() as well. The idea is that it will help with auto-saving strategies on Record objects.
 
