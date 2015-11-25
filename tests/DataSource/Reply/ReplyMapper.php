@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Orm\DataSource\Reply;
 
-use Atlas\Orm\Mapper\AbstractMapper;
+use Atlas\Orm\Mapper\Mapper;
 
-class ReplyMapper extends AbstractMapper
+class ReplyMapper extends Mapper
 {
 }

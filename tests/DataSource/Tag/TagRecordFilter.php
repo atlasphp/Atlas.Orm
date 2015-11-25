@@ -1,9 +1,9 @@
 <?php
 namespace Atlas\Orm\DataSource\Tag;
 
-use Atlas\Orm\Mapper\AbstractRecord;
-use Atlas\Orm\Mapper\AbstractRecordFilter;
+use Atlas\Orm\Mapper\Record;
+use Atlas\Orm\Mapper\RecordFilter;
 
-class TagRecordFilter extends AbstractRecordFilter
+class TagRecordFilter extends RecordFilter
 {
 }

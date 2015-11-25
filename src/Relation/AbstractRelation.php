@@ -1,10 +1,10 @@
 <?php
 namespace Atlas\Orm\Relation;
 
-use Atlas\Orm\Mapper\AbstractMapper;
+use Atlas\Orm\Mapper\Mapper;
 use Atlas\Orm\Mapper\MapperLocator;
-use Atlas\Orm\Mapper\AbstractRecord;
-use Atlas\Orm\Mapper\AbstractRecordSet;
+use Atlas\Orm\Mapper\Record;
+use Atlas\Orm\Mapper\RecordSet;
 use Atlas\Orm\Mapper\Related;
 
 abstract class AbstractRelation
@@ -117,7 +117,7 @@ abstract class AbstractRelation
         return $select;
     }
 
-    protected function getUniqueVals(AbstractRecordSet $recordSet, $col)
+    protected function getUniqueVals(RecordSet $recordSet, $col)
     {
         $vals = [];
         foreach ($recordSet as $record) {
@@ -140,12 +140,12 @@ abstract class AbstractRelation
     }
 
     abstract public function stitchIntoRecord(
-        AbstractRecord $nativeRecord,
+        Record $nativeRecord,
         callable $custom = null
     );
 
     abstract public function stitchIntoRecordSet(
-        AbstractRecordSet $nativeRecordSet,
+        RecordSet $nativeRecordSet,
         callable $custom = null
     );
 }

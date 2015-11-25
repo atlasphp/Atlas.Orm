@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Orm\DataSource\Reply;
 
-use Atlas\Orm\Mapper\AbstractRecordFactory;
+use Atlas\Orm\Mapper\RecordFactory;
 
-class ReplyRecordFactory extends AbstractRecordFactory
+class ReplyRecordFactory extends RecordFactory
 {
 }

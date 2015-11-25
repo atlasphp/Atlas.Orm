@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Orm\DataSource\Tagging;
 
-use Atlas\Orm\Mapper\AbstractRecordFactory;
+use Atlas\Orm\Mapper\RecordFactory;
 
-class TaggingRecordFactory extends AbstractRecordFactory
+class TaggingRecordFactory extends RecordFactory
 {
 }

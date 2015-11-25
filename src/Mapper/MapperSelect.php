@@ -9,7 +9,7 @@ class MapperSelect
 
     protected $tableSelect;
 
-    public function __construct(AbstractMapper $mapper, TableSelect $tableSelect)
+    public function __construct(Mapper $mapper, TableSelect $tableSelect)
     {
         $this->mapper = $mapper;
         $this->tableSelect = $tableSelect;

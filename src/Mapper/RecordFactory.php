@@ -4,7 +4,7 @@ namespace Atlas\Orm\Mapper;
 use Atlas\Orm\Exception;
 use Atlas\Orm\Table\AbstractRow;
 
-abstract class AbstractRecordFactory
+class RecordFactory
 {
     public function getRecordClass()
     {

@@ -14,7 +14,7 @@ use Atlas\Orm\Table\TableSelect;
  * @package Atlas.Atlas
  *
  */
-abstract class AbstractMapper
+class Mapper
 {
     protected $table;
 
@@ -26,9 +26,9 @@ abstract class AbstractMapper
 
     public function __construct(
         AbstractTable $table,
-        AbstractRecordFactory $recordFactory,
-        AbstractRecordFilter $recordFilter,
-        AbstractRelations $relations
+        RecordFactory $recordFactory,
+        RecordFilter $recordFilter,
+        MapperRelations $relations
     ) {
         $this->table = $table;
         $this->recordFactory = $recordFactory;
@@ -133,21 +133,21 @@ abstract class AbstractMapper
         return $this->newMapperSelect($tableSelect);
     }
 
-    public function insert(AbstractRecord $record)
+    public function insert(Record $record)
     {
         $this->recordFactory->assertRecordClass($record);
         $this->recordFilter->forInsert($record);
         return $this->getTable()->insert($record->getRow());
     }
 
-    public function update(AbstractRecord $record)
+    public function update(Record $record)
     {
         $this->recordFactory->assertRecordClass($record);
         $this->recordFilter->forUpdate($record);
         return $this->getTable()->update($record->getRow());
     }
 
-    public function delete(AbstractRecord $record)
+    public function delete(Record $record)
     {
         $this->recordFactory->assertRecordClass($record);
         $this->recordFilter->forDelete($record);

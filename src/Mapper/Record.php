@@ -4,7 +4,7 @@ namespace Atlas\Orm\Mapper;
 use Atlas\Orm\Exception;
 use Atlas\Orm\Table\AbstractRow;
 
-abstract class AbstractRecord
+class Record
 {
     private $row;
     private $related;

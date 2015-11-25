@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Orm\DataSource\Thread;
 
-use Atlas\Orm\Mapper\AbstractRecordFactory;
+use Atlas\Orm\Mapper\RecordFactory;
 
-class ThreadRecordFactory extends AbstractRecordFactory
+class ThreadRecordFactory extends RecordFactory
 {
 }

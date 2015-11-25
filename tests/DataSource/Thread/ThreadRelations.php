@@ -6,9 +6,9 @@ use Atlas\Orm\DataSource\Summary\SummaryMapper;
 use Atlas\Orm\DataSource\Reply\ReplyMapper;
 use Atlas\Orm\DataSource\Tagging\TaggingMapper;
 use Atlas\Orm\DataSource\Tag\TagMapper;
-use Atlas\Orm\Mapper\AbstractRelations;
+use Atlas\Orm\Mapper\MapperRelations;
 
-class ThreadRelations extends AbstractRelations
+class ThreadRelations extends MapperRelations
 {
     protected function setRelations()
     {

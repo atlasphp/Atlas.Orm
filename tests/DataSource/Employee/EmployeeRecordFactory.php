@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Orm\DataSource\Employee;
 
-use Atlas\Orm\Mapper\AbstractRecordFactory;
+use Atlas\Orm\Mapper\RecordFactory;
 
-class EmployeeRecordFactory extends AbstractRecordFactory
+class EmployeeRecordFactory extends RecordFactory
 {
 }

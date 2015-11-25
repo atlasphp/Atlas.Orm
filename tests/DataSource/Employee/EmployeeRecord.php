@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Orm\DataSource\Employee;
 
-use Atlas\Orm\Mapper\AbstractRecord;
+use Atlas\Orm\Mapper\Record;
 
-class EmployeeRecord extends AbstractRecord
+class EmployeeRecord extends Record
 {
 }
