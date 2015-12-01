@@ -1,6 +1,6 @@
 <?php
 namespace Atlas\Orm\Table;
 
-class FakeRowSet extends AbstractRowSet
+class FakeRowSet extends RowSet
 {
 }

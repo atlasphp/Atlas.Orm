@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Orm\DataSource\Author;
 
-use Atlas\Orm\Mapper\AbstractRecordFilter;
+use Atlas\Orm\Mapper\RecordFilter;
 
-class AuthorRecordFilter extends AbstractRecordFilter
+class AuthorRecordFilter extends RecordFilter
 {
 }

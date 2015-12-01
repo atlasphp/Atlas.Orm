@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Orm\DataSource\Summary;
 
-use Atlas\Orm\Mapper\AbstractMapper;
+use Atlas\Orm\Mapper\Mapper;
 
-class SummaryMapper extends AbstractMapper
+class SummaryMapper extends Mapper
 {
 }

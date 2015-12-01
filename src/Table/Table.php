@@ -24,9 +24,9 @@ use Aura\SqlQuery\Common\Update;
  * @package Atlas.Atlas
  *
  */
-abstract class AbstractTable
+class Table
 {
-    use AbstractTableTrait;
+    use TableTrait;
 
     /**
      *
@@ -74,8 +74,8 @@ abstract class AbstractTable
         ConnectionLocator $connectionLocator,
         QueryFactory $queryFactory,
         IdentityMap $identityMap,
-        AbstractRowFactory $rowFactory,
-        AbstractRowFilter $rowFilter
+        RowFactory $rowFactory,
+        RowFilter $rowFilter
     ) {
         $this->connectionLocator = $connectionLocator;
         $this->queryFactory = $queryFactory;
@@ -273,7 +273,7 @@ abstract class AbstractTable
      * @return bool
      *
      */
-    public function insert(AbstractRow $row)
+    public function insert(Row $row)
     {
         $this->rowFactory->assertRowClass($row);
         $this->rowFilter->forInsert($row);
@@ -302,7 +302,7 @@ abstract class AbstractTable
         return true;
     }
 
-    protected function newInsert(AbstractRow $row)
+    protected function newInsert(Row $row)
     {
         $insert = $this->queryFactory->newInsert();
         $insert->into($this->tableName());
@@ -310,7 +310,7 @@ abstract class AbstractTable
         return $insert;
     }
 
-    protected function newInsertCols(Insert $insert, AbstractRow $row)
+    protected function newInsertCols(Insert $insert, Row $row)
     {
         $cols = $row->getArrayCopy();
         if ($this->tableAutoinc()) {
@@ -328,7 +328,7 @@ abstract class AbstractTable
      * @return bool
      *
      */
-    public function update(AbstractRow $row)
+    public function update(Row $row)
     {
         $this->rowFactory->assertRowClass($row);
         $this->rowFilter->forUpdate($row);
@@ -355,7 +355,7 @@ abstract class AbstractTable
         return true;
     }
 
-    protected function newUpdate(AbstractRow $row)
+    protected function newUpdate(Row $row)
     {
         $update = $this->queryFactory->newUpdate();
         $update->table($this->tableName());
@@ -364,14 +364,14 @@ abstract class AbstractTable
         return $update;
     }
 
-    protected function newUpdateCols(Update $update, AbstractRow $row)
+    protected function newUpdateCols(Update $update, Row $row)
     {
         $cols = $row->getArrayDiff($this->identityMap->getInitial($row));
         unset($cols[$this->tablePrimary()]);
         $update->cols($cols);
     }
 
-    protected function newUpdateWhere(Update $update, AbstractRow $row)
+    protected function newUpdateWhere(Update $update, Row $row)
     {
         $primaryCol = $this->tablePrimary();
         $update->where("{$primaryCol} = ?", $row->getIdentity()->getVal());
@@ -386,7 +386,7 @@ abstract class AbstractTable
      * @return bool
      *
      */
-    public function delete(AbstractRow $row)
+    public function delete(Row $row)
     {
         $this->rowFactory->assertRowClass($row);
         $this->rowFilter->forDelete($row);
@@ -409,7 +409,7 @@ abstract class AbstractTable
         return true;
     }
 
-    protected function newDelete(AbstractRow $row)
+    protected function newDelete(Row $row)
     {
         $delete = $this->queryFactory->newDelete();
         $delete->from($this->tableName());
@@ -417,7 +417,7 @@ abstract class AbstractTable
         return $delete;
     }
 
-    protected function newDeleteWhere(Delete $delete, AbstractRow $row)
+    protected function newDeleteWhere(Delete $delete, Row $row)
     {
         $primaryCol = $this->tablePrimary();
         $delete->where("{$primaryCol} = ?", $row->getIdentity()->getVal());

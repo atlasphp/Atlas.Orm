@@ -1,9 +1,9 @@
 <?php
 namespace Atlas\Orm\DataSource\Thread;
 
-use Atlas\Orm\Table\AbstractRowFactory;
+use Atlas\Orm\Table\RowFactory;
 
-class ThreadRowFactory extends AbstractRowFactory
+class ThreadRowFactory extends RowFactory
 {
     use ThreadTableTrait;
 }

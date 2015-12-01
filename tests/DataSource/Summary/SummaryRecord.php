@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Orm\DataSource\Summary;
 
-use Atlas\Orm\Mapper\AbstractRecord;
+use Atlas\Orm\Mapper\Record;
 
-class SummaryRecord extends AbstractRecord
+class SummaryRecord extends Record
 {
 }

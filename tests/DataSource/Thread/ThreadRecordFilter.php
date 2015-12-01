@@ -1,9 +1,9 @@
 <?php
 namespace Atlas\Orm\DataSource\Thread;
 
-use Atlas\Orm\Mapper\AbstractRecord;
-use Atlas\Orm\Mapper\AbstractRecordFilter;
+use Atlas\Orm\Mapper\Record;
+use Atlas\Orm\Mapper\RecordFilter;
 
-class ThreadRecordFilter extends AbstractRecordFilter
+class ThreadRecordFilter extends RecordFilter
 {
 }

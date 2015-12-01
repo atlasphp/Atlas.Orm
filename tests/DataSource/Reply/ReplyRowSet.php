@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Orm\DataSource\Reply;
 
-use Atlas\Orm\Table\AbstractRowSet;
+use Atlas\Orm\Table\RowSet;
 
-class ReplyRowSet extends AbstractRowSet
+class ReplyRowSet extends RowSet
 {
 }

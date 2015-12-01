@@ -2,13 +2,13 @@
 namespace Atlas\Orm\Relation;
 
 use Atlas\Orm\Mapper\Related;
-use Atlas\Orm\Mapper\AbstractRecord;
-use Atlas\Orm\Mapper\AbstractRecordSet;
+use Atlas\Orm\Mapper\Record;
+use Atlas\Orm\Mapper\RecordSet;
 
 class OneToMany extends AbstractRelation
 {
     public function stitchIntoRecord(
-        AbstractRecord $nativeRecord,
+        Record $nativeRecord,
         callable $custom = null
     ) {
         $this->fix();
@@ -18,7 +18,7 @@ class OneToMany extends AbstractRelation
     }
 
     public function stitchIntoRecordSet(
-        AbstractRecordSet $nativeRecordSet,
+        RecordSet $nativeRecordSet,
         callable $custom = null
     ) {
         $this->fix();

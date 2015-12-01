@@ -2,9 +2,9 @@
 namespace Atlas\Orm\Mapper;
 
 use Atlas\Orm\Exception;
-use Atlas\Orm\Table\AbstractRow;
+use Atlas\Orm\Table\Row;
 
-abstract class AbstractRecordFactory
+class RecordFactory
 {
     public function getRecordClass()
     {
@@ -25,7 +25,7 @@ abstract class AbstractRecordFactory
     }
 
     // row can be array or Row object
-    public function newRecord(AbstractRow $row, array $relatedFields)
+    public function newRecord(Row $row, array $relatedFields)
     {
         $recordClass = $this->getRecordClass();
         return new $recordClass($row, new Related($relatedFields));

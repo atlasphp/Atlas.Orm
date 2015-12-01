@@ -3,8 +3,8 @@ namespace Atlas\Orm\Relation;
 
 use Atlas\Orm\Exception;
 use Atlas\Orm\Mapper\Related;
-use Atlas\Orm\Mapper\AbstractRecord;
-use Atlas\Orm\Mapper\AbstractRecordSet;
+use Atlas\Orm\Mapper\Record;
+use Atlas\Orm\Mapper\RecordSet;
 
 class ManyToMany extends AbstractRelation
 {
@@ -48,7 +48,7 @@ class ManyToMany extends AbstractRelation
     }
 
     public function stitchIntoRecord(
-        AbstractRecord $nativeRecord,
+        Record $nativeRecord,
         callable $custom = null
     ) {
         $this->fix();
@@ -65,7 +65,7 @@ class ManyToMany extends AbstractRelation
     }
 
     public function stitchIntoRecordSet(
-        AbstractRecordSet $nativeRecordSet,
+        RecordSet $nativeRecordSet,
         callable $custom = null
     ) {
         $this->fix();

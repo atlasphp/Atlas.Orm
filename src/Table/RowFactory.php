@@ -3,9 +3,9 @@ namespace Atlas\Orm\Table;
 
 use Atlas\Orm\Exception;
 
-abstract class AbstractRowFactory
+class RowFactory
 {
-    use AbstractTableTrait;
+    use TableTrait;
 
     public function newRow(array $cols)
     {

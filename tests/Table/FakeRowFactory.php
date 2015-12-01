@@ -1,7 +1,7 @@
 <?php
 namespace Atlas\Orm\Table;
 
-class FakeRowFactory extends AbstractRowFactory
+class FakeRowFactory extends RowFactory
 {
     use FakeTableTrait;
 }

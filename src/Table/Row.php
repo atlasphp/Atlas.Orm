@@ -3,13 +3,13 @@ namespace Atlas\Orm\Table;
 
 use Atlas\Orm\Exception;
 
-abstract class AbstractRow
+class Row
 {
     private $identity;
 
     private $data = [];
 
-    public function __construct(AbstractRowIdentity $identity, array $data)
+    public function __construct(RowIdentity $identity, array $data)
     {
         $this->identity = $identity;
         $this->data = $data;

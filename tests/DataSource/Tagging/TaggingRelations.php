@@ -1,9 +1,9 @@
 <?php
 namespace Atlas\Orm\DataSource\Tagging;
 
-use Atlas\Orm\Mapper\AbstractRelations;
+use Atlas\Orm\Mapper\MapperRelations;
 
-class TaggingRelations extends AbstractRelations
+class TaggingRelations extends MapperRelations
 {
     protected function setRelations()
     {

@@ -2,14 +2,14 @@
 namespace Atlas\Orm\Mapper;
 
 use Atlas\Orm\Exception;
-use Atlas\Orm\Table\AbstractRow;
+use Atlas\Orm\Table\Row;
 
-abstract class AbstractRecord
+class Record
 {
     private $row;
     private $related;
 
-    public function __construct(AbstractRow $row, Related $related)
+    public function __construct(Row $row, Related $related)
     {
         $this->row = $row;
         $this->related = $related;

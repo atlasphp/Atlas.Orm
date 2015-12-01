@@ -7,13 +7,13 @@ use Atlas\Orm\Exception;
 use Countable;
 use IteratorAggregate;
 
-abstract class AbstractRecordSet implements ArrayAccess, Countable, IteratorAggregate
+class RecordSet implements ArrayAccess, Countable, IteratorAggregate
 {
     private $recordFactory;
 
     private $records = [];
 
-    public function __construct(AbstractRecordFactory $recordFactory, array $records = [])
+    public function __construct(RecordFactory $recordFactory, array $records = [])
     {
         $this->recordFactory = $recordFactory;
         foreach ($records as $key => $record) {

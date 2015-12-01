@@ -2,7 +2,7 @@
 namespace Atlas\Orm;
 
 use Atlas\Orm\Mapper\MapperLocator;
-use Atlas\Orm\Mapper\AbstractRecord;
+use Atlas\Orm\Mapper\Record;
 use Atlas\Orm\Table\TableSelect;
 use Exception;
 
@@ -60,17 +60,17 @@ class Atlas
         return $this->mapper($class)->select($colsVals);
     }
 
-    public function insert(AbstractRecord $record)
+    public function insert(Record $record)
     {
         return $this->transact('insert', $record);
     }
 
-    public function update(AbstractRecord $record)
+    public function update(Record $record)
     {
         return $this->transact('update', $record);
     }
 
-    public function delete(AbstractRecord $record)
+    public function delete(Record $record)
     {
         return $this->transact('delete', $record);
     }

@@ -7,7 +7,7 @@ use Atlas\Orm\Relation\OneToMany;
 use Atlas\Orm\Relation\ManyToMany;
 use Atlas\Orm\Relation\OneToOne;
 
-abstract class AbstractRelations
+class MapperRelations
 {
     protected $relations = [];
 
@@ -24,7 +24,9 @@ abstract class AbstractRelations
         $this->setRelations();
     }
 
-    abstract protected function setRelations();
+    protected function setRelations()
+    {
+    }
 
     public function getFields()
     {
@@ -58,7 +60,7 @@ abstract class AbstractRelations
         );
     }
 
-    public function stitchIntoRecord(AbstractRecord $record, array $with = [])
+    public function stitchIntoRecord(Record $record, array $with = [])
     {
         foreach ($this->fixWith($with) as $name => $custom) {
             $this->relations[$name]->stitchIntoRecord(
@@ -68,7 +70,7 @@ abstract class AbstractRelations
         }
     }
 
-    public function stitchIntoRecordSet(AbstractRecordSet $recordSet, array $with = [])
+    public function stitchIntoRecordSet(RecordSet $recordSet, array $with = [])
     {
         foreach ($this->fixWith($with) as $name => $custom) {
             $this->relations[$name]->stitchIntoRecordSet(

@@ -1,9 +1,9 @@
 <?php
 namespace Atlas\Orm\DataSource\Employee;
 
-use Atlas\Orm\Mapper\AbstractRelations;
+use Atlas\Orm\Mapper\MapperRelations;
 
-class EmployeeRelations extends AbstractRelations
+class EmployeeRelations extends MapperRelations
 {
     protected function setRelations()
     {

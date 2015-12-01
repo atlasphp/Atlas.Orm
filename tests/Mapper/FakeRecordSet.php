@@ -1,6 +1,6 @@
 <?php
 namespace Atlas\Orm\Mapper;
 
-class FakeRecordSet extends AbstractRecordSet
+class FakeRecordSet extends RecordSet
 {
 }

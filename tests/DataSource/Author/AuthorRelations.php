@@ -3,9 +3,9 @@ namespace Atlas\Orm\DataSource\Author;
 
 use Atlas\Orm\DataSource\Reply\ReplyMapper;
 use Atlas\Orm\DataSource\Thread\ThreadMapper;
-use Atlas\Orm\Mapper\AbstractRelations;
+use Atlas\Orm\Mapper\MapperRelations;
 
-class AuthorRelations extends AbstractRelations
+class AuthorRelations extends MapperRelations
 {
     protected function setRelations()
     {
