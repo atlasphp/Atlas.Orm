@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Orm\DataSource\Tag;
 
-use Atlas\Orm\Table\AbstractRowSet;
+use Atlas\Orm\Table\RowSet;
 
-class TagRowSet extends AbstractRowSet
+class TagRowSet extends RowSet
 {
 }

@@ -2,9 +2,9 @@
 namespace Atlas\Orm\Mapper;
 
 use Atlas\Orm\Exception;
-use Atlas\Orm\Table\AbstractRow;
-use Atlas\Orm\Table\AbstractRowSet;
-use Atlas\Orm\Table\AbstractTable;
+use Atlas\Orm\Table\Row;
+use Atlas\Orm\Table\RowSet;
+use Atlas\Orm\Table\Table;
 use Atlas\Orm\Table\TableSelect;
 
 /**
@@ -25,7 +25,7 @@ class Mapper
     protected $recordFilter;
 
     public function __construct(
-        AbstractTable $table,
+        Table $table,
         RecordFactory $recordFactory,
         RecordFilter $recordFilter,
         MapperRelations $relations

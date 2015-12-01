@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Orm\DataSource\Summary;
 
-use Atlas\Orm\Table\AbstractRow;
+use Atlas\Orm\Table\Row;
 
-class SummaryRow extends AbstractRow
+class SummaryRow extends Row
 {
 }

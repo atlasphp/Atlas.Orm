@@ -30,7 +30,7 @@ class IdentityMap
     /**
      * @param Row $row
      */
-    public function setRow(AbstractRow $row, array $initial)
+    public function setRow(Row $row, array $initial)
     {
         if ($this->hasRow($row)) {
             throw Exception::rowAlreadyMapped();
@@ -50,7 +50,7 @@ class IdentityMap
      * @param Row $row
      * @return boolean
      */
-    public function hasRow(AbstractRow $row)
+    public function hasRow(Row $row)
     {
         return isset($this->rowToSerial[$row]);
     }
@@ -116,7 +116,7 @@ class IdentityMap
         return $serial;
     }
 
-    public function setInitial(AbstractRow $row)
+    public function setInitial(Row $row)
     {
         if (! $this->hasRow($row)) {
             throw Exception::rowNotMapped();
@@ -125,7 +125,7 @@ class IdentityMap
         $this->initial[$row] = $row->getArrayCopy();
     }
 
-    public function getInitial(AbstractRow $row)
+    public function getInitial(Row $row)
     {
         if (! $this->hasRow($row)) {
             throw Exception::rowNotMapped();

@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Orm\DataSource\Author;
 
-use Atlas\Orm\Table\AbstractRowIdentity;
+use Atlas\Orm\Table\RowIdentity;
 
-class AuthorRowIdentity extends AbstractRowIdentity
+class AuthorRowIdentity extends RowIdentity
 {
 }

@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Orm\DataSource\Thread;
 
-use Atlas\Orm\Table\AbstractRowSet;
+use Atlas\Orm\Table\RowSet;
 
-class ThreadRowSet extends AbstractRowSet
+class ThreadRowSet extends RowSet
 {
 }

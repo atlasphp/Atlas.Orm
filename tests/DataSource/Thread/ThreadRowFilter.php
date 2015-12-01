@@ -1,9 +1,9 @@
 <?php
 namespace Atlas\Orm\DataSource\Thread;
 
-use Atlas\Orm\Table\AbstractRow;
-use Atlas\Orm\Table\AbstractRowFilter;
+use Atlas\Orm\Table\Row;
+use Atlas\Orm\Table\RowFilter;
 
-class ThreadRowFilter extends AbstractRowFilter
+class ThreadRowFilter extends RowFilter
 {
 }

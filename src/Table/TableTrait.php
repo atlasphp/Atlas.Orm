@@ -1,7 +1,7 @@
 <?php
 namespace Atlas\Orm\Table;
 
-trait AbstractTableTrait
+trait TableTrait
 {
     /**
      *
@@ -10,7 +10,9 @@ trait AbstractTableTrait
      * @return string
      *
      */
-    abstract public function tableName();
+    public function tableName()
+    {
+    }
 
     /**
      *
@@ -19,7 +21,9 @@ trait AbstractTableTrait
      * @return array
      *
      */
-    abstract public function tableCols();
+    public function tableCols()
+    {
+    }
 
     /**
      *
@@ -28,7 +32,9 @@ trait AbstractTableTrait
      * @return array
      *
      */
-    abstract public function tableInfo();
+    public function tableInfo()
+    {
+    }
 
     /**
      *
@@ -37,7 +43,9 @@ trait AbstractTableTrait
      * @return string The primary column name.
      *
      */
-    abstract public function tablePrimary();
+    public function tablePrimary()
+    {
+    }
 
     /**
      *
@@ -46,7 +54,9 @@ trait AbstractTableTrait
      * @return bool
      *
      */
-    abstract public function tableAutoinc();
+    public function tableAutoinc()
+    {
+    }
 
     /**
      *
@@ -55,5 +65,7 @@ trait AbstractTableTrait
      * @return array
      *
      */
-    abstract public function tableDefault();
+    public function tableDefault()
+    {
+    }
 }

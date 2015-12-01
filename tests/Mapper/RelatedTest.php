@@ -3,7 +3,7 @@ namespace Atlas\Orm\Mapper;
 
 use Atlas\Orm\Exception;
 use Atlas\Orm\Table\FakeRow;
-use Atlas\Orm\Table\AbstractRowIdentity;
+use Atlas\Orm\Table\RowIdentity;
 
 class RelatedTest extends \PHPUnit_Framework_TestCase
 {

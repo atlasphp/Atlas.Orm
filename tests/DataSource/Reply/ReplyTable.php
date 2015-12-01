@@ -1,9 +1,9 @@
 <?php
 namespace Atlas\Orm\DataSource\Reply;
 
-use Atlas\Orm\Table\AbstractTable;
+use Atlas\Orm\Table\Table;
 
-class ReplyTable extends AbstractTable
+class ReplyTable extends Table
 {
     use ReplyTableTrait;
 }

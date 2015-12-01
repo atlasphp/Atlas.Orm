@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Orm\DataSource\Author;
 
-use Atlas\Orm\Table\AbstractRowFilter;
+use Atlas\Orm\Table\RowFilter;
 
-class AuthorRowFilter extends AbstractRowFilter
+class AuthorRowFilter extends RowFilter
 {
 }

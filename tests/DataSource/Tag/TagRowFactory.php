@@ -1,9 +1,9 @@
 <?php
 namespace Atlas\Orm\DataSource\Tag;
 
-use Atlas\Orm\Table\AbstractRowFactory;
+use Atlas\Orm\Table\RowFactory;
 
-class TagRowFactory extends AbstractRowFactory
+class TagRowFactory extends RowFactory
 {
     use TagTableTrait;
 }

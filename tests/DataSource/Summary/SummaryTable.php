@@ -1,9 +1,9 @@
 <?php
 namespace Atlas\Orm\DataSource\Summary;
 
-use Atlas\Orm\Table\AbstractTable;
+use Atlas\Orm\Table\Table;
 
-class SummaryTable extends AbstractTable
+class SummaryTable extends Table
 {
     use SummaryTableTrait;
 }

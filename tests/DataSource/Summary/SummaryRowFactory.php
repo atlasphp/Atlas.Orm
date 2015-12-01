@@ -1,9 +1,9 @@
 <?php
 namespace Atlas\Orm\DataSource\Summary;
 
-use Atlas\Orm\Table\AbstractRowFactory;
+use Atlas\Orm\Table\RowFactory;
 
-class SummaryRowFactory extends AbstractRowFactory
+class SummaryRowFactory extends RowFactory
 {
     use SummaryTableTrait;
 }

@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Orm\DataSource\Tag;
 
-use Atlas\Orm\Table\AbstractRow;
+use Atlas\Orm\Table\Row;
 
-class TagRow extends AbstractRow
+class TagRow extends Row
 {
 }

@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Orm\DataSource\Employee;
 
-use Atlas\Orm\Table\AbstractRowSet;
+use Atlas\Orm\Table\RowSet;
 
-class EmployeeRowSet extends AbstractRowSet
+class EmployeeRowSet extends RowSet
 {
 }
