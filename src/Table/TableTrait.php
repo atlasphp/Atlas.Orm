@@ -1,6 +1,8 @@
 <?php
 namespace Atlas\Orm\Table;
 
+use Atlas\Exception;
+
 trait TableTrait
 {
     /**
@@ -10,8 +12,9 @@ trait TableTrait
      * @return string
      *
      */
-    public function tableName()
+    protected function tableName()
     {
+        throw Exception::usingDefaultTableTrait(get_called_class());
     }
 
     /**
@@ -21,8 +24,9 @@ trait TableTrait
      * @return array
      *
      */
-    public function tableCols()
+    protected function tableCols()
     {
+        throw Exception::usingDefaultTableTrait(get_called_class());
     }
 
     /**
@@ -32,8 +36,9 @@ trait TableTrait
      * @return array
      *
      */
-    public function tableInfo()
+    protected function tableInfo()
     {
+        throw Exception::usingDefaultTableTrait(get_called_class());
     }
 
     /**
@@ -43,8 +48,9 @@ trait TableTrait
      * @return string The primary column name.
      *
      */
-    public function tablePrimary()
+    protected function tablePrimary()
     {
+        throw Exception::usingDefaultTableTrait(get_called_class());
     }
 
     /**
@@ -54,8 +60,9 @@ trait TableTrait
      * @return bool
      *
      */
-    public function tableAutoinc()
+    protected function tableAutoinc()
     {
+        throw Exception::usingDefaultTableTrait(get_called_class());
     }
 
     /**
@@ -65,7 +72,8 @@ trait TableTrait
      * @return array
      *
      */
-    public function tableDefault()
+    protected function tableDefault()
     {
+        throw Exception::usingDefaultTableTrait(get_called_class());
     }
 }

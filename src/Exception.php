@@ -10,6 +10,7 @@
  */
 namespace Atlas\Orm;
 
+use BadMethodCallException;
 use InvalidArgumentException;
 use UnexpectedValueException;
 
@@ -97,5 +98,13 @@ class Exception extends \Exception
     public static function unexpectedRowCountAffected($count)
     {
         return new UnexpectedValueException("Expected 1 row affected, actual {$count}");
+    }
+
+    public static function usingDefaultTableTrait($class)
+    {
+        return new BadMethodCallException(
+            "Using the default 'Atlas\Orm\Table\TableTrait' in '$class' "
+            . "is not allowed; use a table-specific TableTrait instead."
+        );
     }
 }
