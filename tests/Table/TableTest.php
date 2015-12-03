@@ -241,7 +241,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expect, $actual);
 
         // try to update again, should be a no-op because there are no changes
-        $this->assertNull($this->table->update($row));
+        $this->assertFalse($this->table->update($row));
 
         // delete the row and try to update it, should fail
         $this->assertTrue($this->table->delete($row));

@@ -229,7 +229,7 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expect, $actual);
 
         // try to update again, should be a no-op because there are no changes
-        $this->assertNull($this->atlas->update($author));
+        $this->assertFalse($this->atlas->update($author));
     }
 
     public function testDelete()

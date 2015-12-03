@@ -355,7 +355,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expect, $actual);
 
         // try to update again, should be a no-op because there are no changes
-        $this->assertNull($this->mapper->update($record));
+        $this->assertFalse($this->mapper->update($record));
 
         // delete the record and try to update it, should fail
         $this->assertTrue($this->mapper->delete($record));

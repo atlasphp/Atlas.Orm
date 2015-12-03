@@ -281,8 +281,7 @@ class Table
         $insert = $this->newInsert($row);
         $this->tableEvents->modifyInsert($this, $row, $insert);
 
-        $writeConnection = $this->getWriteConnection();
-        $pdoStatement = $writeConnection->perform(
+        $pdoStatement = $this->getWriteConnection()->perform(
             $insert->getStatement(),
             $insert->getBindValues()
         );
@@ -291,16 +290,15 @@ class Table
             throw Exception::unexpectedRowCountAffected(0);
         }
 
-        $primary = $this->tablePrimary();
         if ($this->tableAutoinc()) {
-            $row->$primary = $writeConnection->lastInsertId($primary);
+            $primary = $this->tablePrimary();
+            $row->$primary = $this->getWriteConnection()->lastInsertId($primary);
         }
 
         $this->tableEvents->afterInsert($this, $row, $insert, $pdoStatement);
 
         // set into the identity map
         $this->identityMap->setRow($row, $row->getArrayCopy());
-
         return true;
     }
 
@@ -339,7 +337,7 @@ class Table
         $this->tableEvents->modifyUpdate($this, $row, $update);
 
         if (! $update->hasCols()) {
-            return null;
+            return false;
         }
 
         $pdoStatement = $this->getWriteConnection()->perform(
@@ -405,7 +403,7 @@ class Table
 
         $rowCount = $pdoStatement->rowCount();
         if (! $rowCount) {
-            return null;
+            return false;
         }
 
         if ($rowCount != 1) {
