@@ -279,6 +279,8 @@ class Table
         $this->tableEvents->beforeInsert($this, $row);
 
         $insert = $this->newInsert($row);
+        $this->tableEvents->modifyInsert($this, $row, $insert);
+
         $writeConnection = $this->getWriteConnection();
         $pdoStatement = $writeConnection->perform(
             $insert->getStatement(),
@@ -334,6 +336,8 @@ class Table
         $this->tableEvents->beforeUpdate($this, $row);
 
         $update = $this->newUpdate($row);
+        $this->tableEvents->modifyUpdate($this, $row, $update);
+
         if (! $update->hasCols()) {
             return null;
         }
@@ -352,8 +356,6 @@ class Table
 
         // reinitialize the initial data for later updates
         $this->identityMap->setInitial($row);
-
-        // @todo add support for "returning" into the row
         return true;
     }
 
@@ -394,6 +396,8 @@ class Table
         $this->tableEvents->beforeDelete($this, $row);
 
         $delete = $this->newDelete($row);
+        $this->tableEvents->modifyDelete($this, $row, $delete);
+
         $pdoStatement = $this->getWriteConnection()->perform(
             $delete->getStatement(),
             $delete->getBindValues()

@@ -13,6 +13,11 @@ class TableEvents
         // do nothing
     }
 
+    public function modifyInsert(Table $table, Row $row, InsertInterface $insert)
+    {
+        // do nothing
+    }
+
     public function afterInsert(Table $table, Row $row, InsertInterface $insert, PdoStatement $pdoStatement)
     {
         // do nothing
@@ -23,12 +28,22 @@ class TableEvents
         // do nothing
     }
 
+    public function modifyUpdate(Table $table, Row $row, UpdateInterface $update)
+    {
+        // do nothing
+    }
+
     public function afterUpdate(Table $table, Row $row, UpdateInterface $update, PdoStatement $pdoStatement)
     {
         // do nothing
     }
 
     public function beforeDelete(Table $table, Row $row)
+    {
+        // do nothing
+    }
+
+    public function modifyDelete(Table $table, Row $row, DeleteInterface $delete)
     {
         // do nothing
     }
