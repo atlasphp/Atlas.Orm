@@ -276,7 +276,7 @@ class Table
     public function insert(Row $row)
     {
         $this->rowFactory->assertRowClass($row);
-        $this->tableEvents->beforeInsert($row);
+        $this->tableEvents->beforeInsert($this, $row);
 
         $insert = $this->newInsert($row);
         $writeConnection = $this->getWriteConnection();
@@ -294,7 +294,7 @@ class Table
             $row->$primary = $writeConnection->lastInsertId($primary);
         }
 
-        // @todo add support for "returning" into the row
+        $this->tableEvents->afterInsert($this, $row, $insert, $pdoStatement);
 
         // set into the identity map
         $this->identityMap->setRow($row, $row->getArrayCopy());
@@ -331,7 +331,7 @@ class Table
     public function update(Row $row)
     {
         $this->rowFactory->assertRowClass($row);
-        $this->tableEvents->beforeUpdate($row);
+        $this->tableEvents->beforeUpdate($this, $row);
 
         $update = $this->newUpdate($row);
         if (! $update->hasCols()) {
@@ -347,6 +347,8 @@ class Table
         if ($rowCount != 1) {
             throw Exception::unexpectedRowCountAffected($rowCount);
         }
+
+        $this->tableEvents->afterUpdate($this, $row, $update, $pdoStatement);
 
         // reinitialize the initial data for later updates
         $this->identityMap->setInitial($row);
@@ -389,7 +391,7 @@ class Table
     public function delete(Row $row)
     {
         $this->rowFactory->assertRowClass($row);
-        $this->tableEvents->beforeDelete($row);
+        $this->tableEvents->beforeDelete($this, $row);
 
         $delete = $this->newDelete($row);
         $pdoStatement = $this->getWriteConnection()->perform(
@@ -405,6 +407,8 @@ class Table
         if ($rowCount != 1) {
             throw Exception::unexpectedRowCountAffected($rowCount);
         }
+
+        $this->tableEvents->afterDelete($this, $row, $delete, $pdoStatement);
 
         return true;
     }
