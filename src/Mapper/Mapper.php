@@ -22,17 +22,17 @@ class Mapper
 
     protected $recordFactory;
 
-    protected $recordFilter;
+    protected $mapperEvents;
 
     public function __construct(
         Table $table,
         RecordFactory $recordFactory,
-        RecordFilter $recordFilter,
+        MapperEvents $mapperEvents,
         MapperRelations $relations
     ) {
         $this->table = $table;
         $this->recordFactory = $recordFactory;
-        $this->recordFilter = $recordFilter;
+        $this->mapperEvents = $mapperEvents;
         $this->relations = $relations;
     }
 
@@ -136,21 +136,21 @@ class Mapper
     public function insert(Record $record)
     {
         $this->recordFactory->assertRecordClass($record);
-        $this->recordFilter->forInsert($record);
+        $this->mapperEvents->beforeInsert($this, $record);
         return $this->getTable()->insert($record->getRow());
     }
 
     public function update(Record $record)
     {
         $this->recordFactory->assertRecordClass($record);
-        $this->recordFilter->forUpdate($record);
+        $this->mapperEvents->beforeUpdate($this, $record);
         return $this->getTable()->update($record->getRow());
     }
 
     public function delete(Record $record)
     {
         $this->recordFactory->assertRecordClass($record);
-        $this->recordFilter->forDelete($record);
+        $this->mapperEvents->beforeDelete($this, $record);
         return $this->getTable()->delete($record->getRow());
     }
 }
