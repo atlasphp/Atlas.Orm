@@ -8,7 +8,7 @@ use Atlas\Orm\DataSource\Employee\EmployeeRecordFactory;
 use Atlas\Orm\DataSource\Employee\EmployeeRecordFilter;
 use Atlas\Orm\DataSource\Employee\EmployeeRelations;
 use Atlas\Orm\DataSource\Employee\EmployeeRowFactory;
-use Atlas\Orm\DataSource\Employee\EmployeeRowFilter;
+use Atlas\Orm\DataSource\Employee\EmployeeTableEvents;
 use Atlas\Orm\DataSource\Employee\EmployeeTable;
 use Atlas\Orm\Mapper\MapperRelations;
 use Atlas\Orm\Mapper\RecordFactory;
@@ -40,7 +40,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
             new QueryFactory('sqlite'),
             new IdentityMap(),
             new EmployeeRowFactory(),
-            new EmployeeRowFilter()
+            new EmployeeTableEvents()
         );
 
         $fixture = new SqliteFixture($this->table->getWriteConnection());

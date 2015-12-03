@@ -23,7 +23,7 @@ class TableFactory
             $this->atlasContainer->getQueryFactory(),
             $this->atlasContainer->getIdentityMap(),
             $this->atlasContainer->newInstance("{$type}RowFactory"),
-            $this->atlasContainer->newInstance("{$type}RowFilter")
+            $this->atlasContainer->newInstance("{$type}TableEvents")
         );
     }
 }

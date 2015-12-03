@@ -64,7 +64,7 @@ class Table
      */
     protected $writeConnection;
 
-    protected $rowFilter;
+    protected $tableEvents;
 
     protected $rowFactory;
 
@@ -75,13 +75,13 @@ class Table
         QueryFactory $queryFactory,
         IdentityMap $identityMap,
         RowFactory $rowFactory,
-        RowFilter $rowFilter
+        TableEvents $tableEvents
     ) {
         $this->connectionLocator = $connectionLocator;
         $this->queryFactory = $queryFactory;
         $this->identityMap = $identityMap;
         $this->rowFactory = $rowFactory;
-        $this->rowFilter = $rowFilter;
+        $this->tableEvents = $tableEvents;
     }
 
     /**
@@ -276,7 +276,7 @@ class Table
     public function insert(Row $row)
     {
         $this->rowFactory->assertRowClass($row);
-        $this->rowFilter->forInsert($row);
+        $this->tableEvents->beforeInsert($row);
 
         $insert = $this->newInsert($row);
         $writeConnection = $this->getWriteConnection();
@@ -331,7 +331,7 @@ class Table
     public function update(Row $row)
     {
         $this->rowFactory->assertRowClass($row);
-        $this->rowFilter->forUpdate($row);
+        $this->tableEvents->beforeUpdate($row);
 
         $update = $this->newUpdate($row);
         if (! $update->hasCols()) {
@@ -389,7 +389,7 @@ class Table
     public function delete(Row $row)
     {
         $this->rowFactory->assertRowClass($row);
-        $this->rowFilter->forDelete($row);
+        $this->tableEvents->beforeDelete($row);
 
         $delete = $this->newDelete($row);
         $pdoStatement = $this->getWriteConnection()->perform(

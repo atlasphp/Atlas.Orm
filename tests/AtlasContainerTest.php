@@ -3,7 +3,7 @@ namespace Atlas\Orm;
 
 use Atlas\Orm\Exception;
 use Atlas\Orm\DataSource\Author\AuthorMapper;
-use Atlas\Orm\DataSource\Author\AuthorRowFilter;
+use Atlas\Orm\DataSource\Author\AuthorTableEvents;
 use Atlas\Orm\DataSource\Reply\ReplyMapper;
 use Atlas\Orm\DataSource\Summary\SummaryMapper;
 use Atlas\Orm\DataSource\Summary\SummaryTable;
@@ -34,8 +34,8 @@ class AtlasContainerTest extends \PHPUnit_Framework_TestCase
         ]);
 
         // fake a special factory for a row filter
-        $this->atlasContainer->setFactoryFor(AuthorRowFilter::CLASS, function () {
-            return new AuthorRowFilter();
+        $this->atlasContainer->setFactoryFor(AuthorTableEvents::CLASS, function () {
+            return new AuthorTableEvents();
         });
 
         // get the atlas

@@ -4,7 +4,7 @@ namespace Atlas\Orm\Table;
 use Atlas\Orm\Assertions;
 use Atlas\Orm\DataSource\Employee\EmployeeTable;
 use Atlas\Orm\DataSource\Employee\EmployeeRowFactory;
-use Atlas\Orm\DataSource\Employee\EmployeeRowFilter;
+use Atlas\Orm\DataSource\Employee\EmployeeTableEvents;
 use Atlas\Orm\SqliteFixture;
 use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
@@ -31,7 +31,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
             new QueryFactory('sqlite'),
             new IdentityMap(),
             new EmployeeRowFactory(),
-            new EmployeeRowFilter()
+            new EmployeeTableEvents()
         );
 
         $fixture = new SqliteFixture($this->table->getWriteConnection());
