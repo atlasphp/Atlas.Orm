@@ -2,8 +2,6 @@
 
 ## Initial Release Priority
 
-- Deal with abstracts: remove prefix entirely? Rename to Generic?
-
 - Clean up newRecord/RecordSet/RecordSetFromRows() to be more explicit.
 
 - Documentation.
