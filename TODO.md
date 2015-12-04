@@ -4,6 +4,8 @@
 
 - Documentation.
 
+- Add Row::isNew(), isDirty(), isClean(), isTrash() methods. Will need setStatus()/getStatus() as well. The idea is that it will help with auto-saving strategies on Record objects. Also add to Record?
+
 ## Near-Term
 
 - In MapperSelect, add support for relation-specific joins. E.g.:
@@ -12,8 +14,6 @@
             ->leftJoinWith('foo')
             ->innerJoinWith('bar')
             ->joinWith('OUTER', 'baz');
-
-- Add Row::isNew(), isDirty(), isClean(), isTrash() methods. Will need setStatus()/getStatus() as well. The idea is that it will help with auto-saving strategies on Record objects.
 
 ## Unknown Priority
 
