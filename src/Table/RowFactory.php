@@ -35,23 +35,7 @@ class RowFactory
             $rowSetClass = $this->getRowSetClass();
         }
 
-        return new $rowSetClass($this, $rows);
-    }
-
-    public function assertRowClass($row)
-    {
-        static $rowClass;
-        if (! $rowClass) {
-            $rowClass = $this->getRowClass();
-        }
-
-        if (! is_object($row)) {
-            throw Exception::invalidType($rowClass, gettype($row));
-        }
-
-        if (! $row instanceof $rowClass) {
-            throw Exception::invalidType($rowClass, $row);
-        }
+        return new $rowSetClass($rows);
     }
 
     /**

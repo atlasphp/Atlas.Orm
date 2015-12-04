@@ -70,6 +70,8 @@ class Table
 
     protected $identityMap;
 
+    protected $rowClass;
+
     public function __construct(
         ConnectionLocator $connectionLocator,
         QueryFactory $queryFactory,
@@ -82,6 +84,7 @@ class Table
         $this->identityMap = $identityMap;
         $this->rowFactory = $rowFactory;
         $this->tableEvents = $tableEvents;
+        $this->rowClass = substr(get_class($this), 0, -5) . 'Row';
     }
 
     /**
@@ -281,7 +284,7 @@ class Table
      */
     public function insert(Row $row)
     {
-        $this->rowFactory->assertRowClass($row);
+        $this->assertRow($row);
         $this->tableEvents->beforeInsert($this, $row);
 
         $insert = $this->newInsert($row);
@@ -336,7 +339,7 @@ class Table
      */
     public function update(Row $row)
     {
-        $this->rowFactory->assertRowClass($row);
+        $this->assertRow($row);
         $this->tableEvents->beforeUpdate($this, $row);
 
         $update = $this->newUpdate($row);
@@ -396,7 +399,7 @@ class Table
      */
     public function delete(Row $row)
     {
-        $this->rowFactory->assertRowClass($row);
+        $this->assertRow($row);
         $this->tableEvents->beforeDelete($this, $row);
 
         $delete = $this->newDelete($row);
@@ -455,5 +458,16 @@ class Table
         }
 
         return $this->newRowSet($rows);
+    }
+
+    protected function assertRow($row)
+    {
+        if (! is_object($row)) {
+            throw Exception::invalidType($this->rowClass, gettype($row));
+        }
+
+        if (! $row instanceof $this->rowClass) {
+            throw Exception::invalidType($this->rowClass, $row);
+        }
     }
 }

@@ -43,22 +43,6 @@ class RecordFactory
     public function newRecordSet(array $records = [])
     {
         $recordSetClass = $this->getRecordSetClass();
-        return new $recordSetClass($this, $records);
-    }
-
-    public function assertRecordClass($record)
-    {
-        static $recordClass;
-        if (! $recordClass) {
-            $recordClass = $this->getRecordClass();
-        }
-
-        if (! is_object($record)) {
-            throw Exception::invalidType($recordClass, gettype($record));
-        }
-
-        if (! $record instanceof $recordClass) {
-            throw Exception::invalidType($recordClass, $record);
-        }
+        return new $recordSetClass($records);
     }
 }

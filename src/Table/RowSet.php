@@ -9,13 +9,13 @@ use IteratorAggregate;
 
 class RowSet implements ArrayAccess, Countable, IteratorAggregate
 {
-    private $rowFactory;
-
     private $rows = [];
 
-    public function __construct(RowFactory $rowFactory, array $rows = [])
+    private $rowClass;
+
+    public function __construct(array $rows = [])
     {
-        $this->rowFactory = $rowFactory;
+        $this->rowClass = substr(get_class($this), 0, -3);
         foreach ($rows as $key => $row) {
             $this->offsetSet($key, $row);
         }
@@ -33,7 +33,13 @@ class RowSet implements ArrayAccess, Countable, IteratorAggregate
 
     public function offsetSet($offset, $value)
     {
-        $this->rowFactory->assertRowClass($value);
+        if (! is_object($value)) {
+            throw Exception::invalidType($this->rowClass, gettype($value));
+        }
+
+        if (! $value instanceof $this->rowClass) {
+            throw Exception::invalidType($this->rowClass, $value);
+        }
 
         if ($offset === null) {
             $this->rows[] = $value;

@@ -9,13 +9,13 @@ use IteratorAggregate;
 
 class RecordSet implements ArrayAccess, Countable, IteratorAggregate
 {
-    private $recordFactory;
-
     private $records = [];
 
-    public function __construct(RecordFactory $recordFactory, array $records = [])
+    private $recordClass;
+
+    public function __construct(array $records = [])
     {
-        $this->recordFactory = $recordFactory;
+        $this->recordClass = substr(get_class($this), 0, -3);
         foreach ($records as $key => $record) {
             $this->offsetSet($key, $record);
         }
@@ -33,7 +33,13 @@ class RecordSet implements ArrayAccess, Countable, IteratorAggregate
 
     public function offsetSet($offset, $value)
     {
-        $this->recordFactory->assertRecordClass($value);
+        if (! is_object($value)) {
+            throw Exception::invalidType($this->recordClass, gettype($value));
+        }
+
+        if (! $value instanceof $this->recordClass) {
+            throw Exception::invalidType($this->recordClass, $value);
+        }
 
         if ($offset === null) {
             $this->records[] = $value;

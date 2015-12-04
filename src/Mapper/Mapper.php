@@ -24,6 +24,8 @@ class Mapper
 
     protected $mapperEvents;
 
+    protected $recordClass;
+
     public function __construct(
         Table $table,
         RecordFactory $recordFactory,
@@ -34,6 +36,7 @@ class Mapper
         $this->recordFactory = $recordFactory;
         $this->mapperEvents = $mapperEvents;
         $this->relations = $relations;
+        $this->recordClass = substr(get_class($this), 0, -6) . 'Record';
     }
 
     static public function getTableClass()
@@ -133,22 +136,33 @@ class Mapper
 
     public function insert(Record $record)
     {
-        $this->recordFactory->assertRecordClass($record);
+        $this->assertRecord($record);
         $this->mapperEvents->beforeInsert($this, $record);
         return $this->getTable()->insert($record->getRow());
     }
 
     public function update(Record $record)
     {
-        $this->recordFactory->assertRecordClass($record);
+        $this->assertRecord($record);
         $this->mapperEvents->beforeUpdate($this, $record);
         return $this->getTable()->update($record->getRow());
     }
 
     public function delete(Record $record)
     {
-        $this->recordFactory->assertRecordClass($record);
+        $this->assertRecord($record);
         $this->mapperEvents->beforeDelete($this, $record);
         return $this->getTable()->delete($record->getRow());
+    }
+
+    protected function assertRecord($record)
+    {
+        if (! is_object($record)) {
+            throw Exception::invalidType($this->recordClass, gettype($record));
+        }
+
+        if (! $record instanceof $this->recordClass) {
+            throw Exception::invalidType($this->recordClass, $record);
+        }
     }
 }
