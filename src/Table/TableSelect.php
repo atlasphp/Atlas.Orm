@@ -32,7 +32,15 @@ class TableSelect implements SubselectInterface
      */
     protected $select;
 
-    protected $table;
+    protected $defaultCols;
+
+    protected $connection;
+
+    protected $defaultCols;
+
+    protected $getMappedOrNewRow;
+
+    protected $getMappedOrNewRowSet;
 
     /**
      *
