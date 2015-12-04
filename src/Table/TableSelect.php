@@ -40,11 +40,17 @@ class TableSelect implements SubselectInterface
      *
      */
     public function __construct(
-        Table $table,
-        SelectInterface $select
+        SelectInterface $select,
+        ExtendedPdo $connection,
+        array $defaultCols,
+        callable $getMappedOrNewRow,
+        callable $getMappedOrNewRowSet
     ) {
-        $this->table = $table; // getReadConnection(), tableCols(), mappedOrNewRow(), mappedOrNewRowSet()
         $this->select = $select;
+        $this->connection = $connection;
+        $this->defaultCols = $defaultCols;
+        $this->getMappedOrNewRow = $getMappedOrNewRow;
+        $this->getMappedOrNewRowSet = $getMappedOrNewRowSet;
     }
 
     /**
@@ -101,7 +107,7 @@ class TableSelect implements SubselectInterface
      */
     public function fetchAll()
     {
-        return $this->table->getReadConnection()->fetchAll(
+        return $this->connection->fetchAll(
             $this->select->getStatement(),
             $this->select->getBindValues()
         );
@@ -121,7 +127,7 @@ class TableSelect implements SubselectInterface
      */
     public function fetchAssoc()
     {
-        return $this->table->getReadConnection()->fetchAssoc(
+        return $this->connection->fetchAssoc(
             $this->select->getStatement(),
             $this->select->getBindValues()
         );
@@ -136,7 +142,7 @@ class TableSelect implements SubselectInterface
      */
     public function fetchCol()
     {
-        return $this->table->getReadConnection()->fetchCol(
+        return $this->connection->fetchCol(
             $this->select->getStatement(),
             $this->select->getBindValues()
         );
@@ -151,7 +157,7 @@ class TableSelect implements SubselectInterface
      */
     public function fetchOne()
     {
-        return $this->table->getReadConnection()->fetchOne(
+        return $this->connection->fetchOne(
             $this->select->getStatement(),
             $this->select->getBindValues()
         );
@@ -169,7 +175,7 @@ class TableSelect implements SubselectInterface
      */
     public function fetchPairs()
     {
-        return $this->table->getReadConnection()->fetchPairs(
+        return $this->connection->fetchPairs(
             $this->select->getStatement(),
             $this->select->getBindValues()
         );
@@ -184,7 +190,7 @@ class TableSelect implements SubselectInterface
      */
     public function fetchValue()
     {
-        return $this->table->getReadConnection()->fetchValue(
+        return $this->connection->fetchValue(
             $this->select->getStatement(),
             $this->select->getBindValues()
         );
@@ -192,25 +198,25 @@ class TableSelect implements SubselectInterface
 
     public function fetchRow()
     {
-        $this->select->cols($this->table->tableCols());
+        $this->select->cols($this->defaultCols);
 
         $cols = $this->fetchOne();
         if (! $cols) {
             return false;
         }
 
-        return $this->table->getMappedOrNewRow($cols);
+        return call_user_func($this->getMappedOrNewRow, $cols);
     }
 
     public function fetchRowSet()
     {
-        $this->select->cols($this->table->tableCols());
+        $this->select->cols($this->defaultCols);
 
         $data = $this->fetchAll();
         if (! $data) {
             return array();
         }
 
-        return $this->table->getMappedOrNewRowSet($data);
+        return call_user_func($this->getMappedOrNewRowSet, $data);
     }
 }

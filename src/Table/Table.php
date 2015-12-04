@@ -139,7 +139,13 @@ class Table
 
     protected function newTableSelect()
     {
-        return new TableSelect($this, $this->queryFactory->newSelect());
+        return new TableSelect(
+            $this->queryFactory->newSelect(),
+            $this->getReadConnection(),
+            $this->tableCols(),
+            [$this, 'getMappedOrNewRow'],
+            [$this, 'getMappedOrNewRowSet']
+        );
     }
 
     protected function selectWhere($select, $col, $val)
