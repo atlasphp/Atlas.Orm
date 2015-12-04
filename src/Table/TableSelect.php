@@ -32,8 +32,6 @@ class TableSelect implements SubselectInterface
      */
     protected $select;
 
-    protected $defaultCols;
-
     protected $connection;
 
     protected $defaultCols;

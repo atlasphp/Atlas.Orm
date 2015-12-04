@@ -2,8 +2,6 @@
 
 ## Initial Release Priority
 
-- Clean up newRecord/RecordSet/RecordSetFromRows() to be more explicit.
-
 - Documentation.
 
 ## Near-Term
