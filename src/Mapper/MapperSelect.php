@@ -9,11 +9,9 @@ class MapperSelect
 
     protected $tableSelect;
 
-    // need the whole mapper just for convertRow() and convertRowSet().
-    // any way to extract those?
     public function __construct(Mapper $mapper, TableSelect $tableSelect)
     {
-        $this->mapper = $mapper;
+        $this->mapper = $mapper; // convertRow(), convertRowSet()
         $this->tableSelect = $tableSelect;
     }
 

@@ -55,21 +55,10 @@ class Mapper
         return $this->relations;
     }
 
-    public function newRecord(array $data = [])
+    public function newRecord(array $cols = [])
     {
-        $row = $this->getTable()->newRow($data);
-        return $this->newRecordFromRow($row);
-    }
-
-    public function newRecordFromRow(Row $row)
-    {
-        return $this->recordFactory->newRecord($row, $this->relations->getFields());
-    }
-
-    // rowSet can be array of Rows, or RowSet object
-    public function newRecordSetFromRows($rows)
-    {
-        return $this->recordFactory->newRecordSetFromRows($rows, $this->relations->getFields());
+        $row = $this->getTable()->newRow($cols);
+        return $this->recordFactory->newRecordFromRow($row, $this->relations->getFields());
     }
 
     public function newRecordSet(array $records = [])
@@ -97,7 +86,7 @@ class Mapper
 
     public function convertRow(Row $row, array $with)
     {
-        $record = $this->recordFactory->newRecord($row, $this->relations->getFields());
+        $record = $this->recordFactory->newRecordFromRow($row, $this->relations->getFields());
         $this->relations->stitchIntoRecord($record, $with);
         return $record;
     }
@@ -122,7 +111,7 @@ class Mapper
 
     public function convertRowSet(RowSet $rowSet, array $with)
     {
-        $recordSet = $this->newRecordSetFromRows($rowSet);
+        $recordSet = $this->recordFactory->newRecordSetFromRowSet($rowSet, $this->relations->getFields());
         $this->relations->stitchIntoRecordSet($recordSet, $with);
         return $recordSet;
     }

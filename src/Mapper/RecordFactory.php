@@ -3,6 +3,7 @@ namespace Atlas\Orm\Mapper;
 
 use Atlas\Orm\Exception;
 use Atlas\Orm\Table\Row;
+use Atlas\Orm\Table\RowSet;
 
 class RecordFactory
 {
@@ -24,19 +25,17 @@ class RecordFactory
         return $recordSetClass;
     }
 
-    // row can be array or Row object
-    public function newRecord(Row $row, array $relatedFields)
+    public function newRecordFromRow(Row $row, array $relatedFields)
     {
         $recordClass = $this->getRecordClass();
         return new $recordClass($row, new Related($relatedFields));
     }
 
-    // rowSet can be array of Rows, or RowSet object
-    public function newRecordSetFromRows($rows, array $relatedFields)
+    public function newRecordSetFromRowSet(RowSet $rowSet, array $relatedFields)
     {
         $records = [];
-        foreach ($rows as $row) {
-            $records[] = $this->newRecord($row, $relatedFields);
+        foreach ($rowSet as $row) {
+            $records[] = $this->newRecordFromRow($row, $relatedFields);
         }
         return $this->newRecordSet($records);
     }
