@@ -9,6 +9,10 @@ class MapperSelect
 
     protected $tableSelect;
 
+    protected $newRecordFromRow;
+
+    protected $newRecordSetFromRowSet;
+
     public function __construct(
         TableSelect $tableSelect,
         callable $newRecordFromRow,
