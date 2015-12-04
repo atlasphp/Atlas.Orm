@@ -9,10 +9,14 @@ class MapperSelect
 
     protected $tableSelect;
 
-    public function __construct(Mapper $mapper, TableSelect $tableSelect)
-    {
-        $this->mapper = $mapper; // convertRow(), convertRowSet()
+    public function __construct(
+        TableSelect $tableSelect,
+        callable $newRecordFromRow,
+        callable $newRecordSetFromRowSet
+    ) {
         $this->tableSelect = $tableSelect;
+        $this->newRecordFromRow = $newRecordFromRow;
+        $this->newRecordSetFromRowSet = $newRecordSetFromRowSet;
     }
 
     public function __call($method, $params)
@@ -38,7 +42,7 @@ class MapperSelect
         if (! $row) {
             return false;
         }
-        return $this->mapper->convertRow($row, $this->with);
+        return call_user_func($this->newRecordFromRow, $row, $this->with);
     }
 
     public function fetchRecordSet()
@@ -47,6 +51,6 @@ class MapperSelect
         if (! $rowSet) {
             return array();
         }
-        return $this->mapper->convertRowSet($rowSet, $this->with);
+        return call_user_func($this->newRecordSetFromRowSet, $rowSet, $this->with);
     }
 }

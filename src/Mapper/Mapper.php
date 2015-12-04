@@ -72,7 +72,7 @@ class Mapper
         if (! $row) {
             return false;
         }
-        return $this->convertRow($row, $with);
+        return $this->newRecordFromRow($row, $with);
     }
 
     public function fetchRecordBy(array $colsVals = [], array $with = [])
@@ -81,10 +81,10 @@ class Mapper
         if (! $row) {
             return false;
         }
-        return $this->convertRow($row, $with);
+        return $this->newRecordFromRow($row, $with);
     }
 
-    public function convertRow(Row $row, array $with)
+    public function newRecordFromRow(Row $row, array $with = [])
     {
         $record = $this->recordFactory->newRecordFromRow($row, $this->relations->getFields());
         $this->relations->stitchIntoRecord($record, $with);
@@ -97,7 +97,7 @@ class Mapper
         if (! $rowSet) {
             return array();
         }
-        return $this->convertRowSet($rowSet, $with);
+        return $this->newRecordSetFromRowSet($rowSet, $with);
     }
 
     public function fetchRecordSetBy(array $colsVals = [], array $with = array())
@@ -106,10 +106,10 @@ class Mapper
         if (! $rowSet) {
             return array();
         }
-        return $this->convertRowSet($rowSet, $with);
+        return $this->newRecordSetFromRowSet($rowSet, $with);
     }
 
-    public function convertRowSet(RowSet $rowSet, array $with)
+    public function newRecordSetFromRowSet(RowSet $rowSet, array $with = [])
     {
         $recordSet = $this->recordFactory->newRecordSetFromRowSet($rowSet, $this->relations->getFields());
         $this->relations->stitchIntoRecordSet($recordSet, $with);
@@ -118,7 +118,11 @@ class Mapper
 
     protected function newMapperSelect(TableSelect $tableSelect)
     {
-        return new MapperSelect($this, $tableSelect);
+        return new MapperSelect(
+            $tableSelect,
+            [$this, 'newRecordFromRow'],
+            [$this, 'newRecordSetFromRowSet']
+        );
     }
 
     public function select(array $colsVals = [])
