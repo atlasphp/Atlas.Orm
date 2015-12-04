@@ -9,6 +9,8 @@ class MapperSelect
 
     protected $tableSelect;
 
+    // need the whole mapper just for convertRow() and convertRowSet().
+    // any way to extract those?
     public function __construct(Mapper $mapper, TableSelect $tableSelect)
     {
         $this->mapper = $mapper;
@@ -35,12 +37,18 @@ class MapperSelect
     public function fetchRecord()
     {
         $row = $this->tableSelect->fetchRow();
+        if (! $row) {
+            return false;
+        }
         return $this->mapper->convertRow($row, $this->with);
     }
 
     public function fetchRecordSet()
     {
         $rowSet = $this->tableSelect->fetchRowSet();
+        if (! $rowSet) {
+            return array();
+        }
         return $this->mapper->convertRowSet($rowSet, $this->with);
     }
 }
