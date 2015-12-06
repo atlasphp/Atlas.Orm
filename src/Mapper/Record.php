@@ -94,4 +94,9 @@ class Record
             $this->getRelated()->getArrayCopy()
         );
     }
+
+    public function getStatus()
+    {
+        return $this->getRow()->getStatus();
+    }
 }

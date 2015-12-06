@@ -357,14 +357,14 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         // try to update again, should be a no-op because there are no changes
         $this->assertFalse($this->mapper->update($record));
 
-        // delete the record and try to update it, should fail
-        $this->assertTrue($this->mapper->delete($record));
-        $record->name = 'Foo';
-        $this->setExpectedException(
-            UnexpectedValueException::CLASS,
-            "Expected 1 row affected, actual 0"
-        );
-        $this->mapper->update($record);
+        // // delete the record and try to update it, should fail
+        // $this->assertTrue($this->mapper->delete($record));
+        // $record->name = 'Foo';
+        // $this->setExpectedException(
+        //     UnexpectedValueException::CLASS,
+        //     "Expected 1 row affected, actual 0"
+        // );
+        // $this->mapper->update($record);
 
         // try to update a record of the wrong type
         $row = new FakeRow(new FakeRowIdentity(['id' => null]), []);

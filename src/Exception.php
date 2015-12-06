@@ -107,4 +107,12 @@ class Exception extends \Exception
             . "is not allowed; use a table-specific TableTrait instead."
         );
     }
+
+    public static function immutableOnceDeleted($class, $property)
+    {
+        if (is_object($class)) {
+            $class = get_class($class);
+        }
+        return new Exception("{$class}::\${$property} is immutable once deleted.");
+    }
 }

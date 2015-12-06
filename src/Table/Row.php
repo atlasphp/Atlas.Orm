@@ -5,14 +5,35 @@ use Atlas\Orm\Exception;
 
 class Row
 {
+    // new row instance (not in the database yet)
+    const IS_NEW = 'IS_NEW';
+
+    // selected and unmodified
+    const IS_CLEAN = 'IS_CLEAN';
+
+    // selected/inserted/updated, then changed
+    const IS_DIRTY = 'IS_DIRTY';
+
+    // inserted/updated, and unchanged
+    const IS_SAVED = 'IS_SAVED';
+
+    // marked for deletion but not deleted, changes are allowed but unimportant
+    const IS_TRASH = 'IS_TRASH';
+
+    // deleted, changes are not allowed
+    const IS_DELETED = 'IS_DELETED';
+
     private $identity;
 
     private $data = [];
+
+    private $status;
 
     public function __construct(RowIdentity $identity, array $data)
     {
         $this->identity = $identity;
         $this->data = $data;
+        $this->status = static::IS_NEW;
     }
 
     public function __get($col)
@@ -35,7 +56,7 @@ class Row
             return;
         }
 
-        $this->data[$col] = $val;
+        $this->modify($col, $val);
     }
 
     public function __isset($col)
@@ -58,7 +79,7 @@ class Row
             return;
         }
 
-        $this->data[$col] = null;
+        $this->modify($col, null);
     }
 
     protected function assertHas($col)
@@ -86,10 +107,7 @@ class Row
     {
         $diff = $this->getArrayCopy();
         foreach ($diff as $col => $val) {
-            $same = (is_numeric($diff[$col]) && is_numeric($init[$col]))
-                 ? $diff[$col] == $init[$col] // numeric, compare loosely
-                 : $diff[$col] === $init[$col]; // not numeric, compare strictly
-            if ($same) {
+            if ($this->isSameValue($init[$col], $diff[$col])) {
                 unset($diff[$col]);
             }
         }
@@ -99,5 +117,85 @@ class Row
     public function getIdentity()
     {
         return $this->identity;
+    }
+
+    protected function modify($col, $new)
+    {
+        if ($this->isDeleted()) {
+            throw Exception::immutableOnceDeleted($this, $col);
+        }
+
+        if ($this->isNew() || $this->isTrash()) {
+            $this->data[$col] = $new;
+            return;
+        }
+
+        $old = $this->data[$col];
+        $this->data[$col] = $new;
+        if (! $this->isSameValue($old, $new)) {
+            $this->status = static::IS_DIRTY;
+        }
+    }
+
+    protected function isSameValue($old, $new)
+    {
+        return (is_numeric($old) && is_numeric($new))
+            ? $old == $new // numeric, compare loosely
+            : $old === $new; // not numeric, compare strictly
+    }
+
+    public function isNew()
+    {
+        return $this->status == static::IS_NEW;
+    }
+
+    public function isClean()
+    {
+        return $this->status == static::IS_CLEAN;
+    }
+
+    public function isDirty()
+    {
+        return $this->status == static::IS_DIRTY;
+    }
+
+    public function isSaved()
+    {
+        return $this->status == static::IS_SAVED;
+    }
+
+    public function isTrash()
+    {
+        return $this->status == static::IS_TRASH;
+    }
+
+    public function isDeleted()
+    {
+        return $this->status == static::IS_DELETED;
+    }
+
+    public function markAsClean()
+    {
+        $this->status = static::IS_CLEAN;
+    }
+
+    public function markAsSaved()
+    {
+        $this->status = static::IS_SAVED;
+    }
+
+    public function markAsTrash()
+    {
+        $this->status = static::IS_TRASH;
+    }
+
+    public function markAsDeleted()
+    {
+        $this->status = static::IS_DELETED;
+    }
+
+    public function getStatus()
+    {
+        return $this->status();
     }
 }

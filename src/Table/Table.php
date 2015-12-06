@@ -304,6 +304,8 @@ class Table
             $row->$primary = $this->getWriteConnection()->lastInsertId($primary);
         }
 
+        $row->markAsClean();
+
         $this->tableEvents->afterInsert($this, $row, $insert, $pdoStatement);
 
         // set into the identity map
@@ -359,6 +361,7 @@ class Table
             throw Exception::unexpectedRowCountAffected($rowCount);
         }
 
+        $row->markAsClean();
         $this->tableEvents->afterUpdate($this, $row, $update, $pdoStatement);
 
         // reinitialize the initial data for later updates
@@ -419,6 +422,7 @@ class Table
             throw Exception::unexpectedRowCountAffected($rowCount);
         }
 
+        $row->markAsDeleted();
         $this->tableEvents->afterDelete($this, $row, $delete, $pdoStatement);
 
         return true;
@@ -445,6 +449,7 @@ class Table
         $row = $this->identityMap->getRowByPrimary($this->rowFactory->getRowClass(), $primaryIdentity);
         if (! $row) {
             $row = $this->newRow($cols);
+            $row->markAsClean();
             $this->identityMap->setRow($row, $cols);
         }
         return $row;
@@ -456,7 +461,6 @@ class Table
         foreach ($data as $cols) {
             $rows[] = $this->getMappedOrNewRow($cols);
         }
-
         return $this->newRowSet($rows);
     }
 
