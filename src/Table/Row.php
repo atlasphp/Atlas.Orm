@@ -196,6 +196,6 @@ class Row
 
     public function getStatus()
     {
-        return $this->status();
+        return $this->status;
     }
 }

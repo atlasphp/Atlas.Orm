@@ -307,4 +307,29 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $actual = $select->__toString();
         $this->assertSameSql($expect, $actual);
     }
+
+    public function testSave()
+    {
+        // insert
+        $row = $this->table->newRow([
+            'id' => null,
+            'name' => 'Mona',
+            'building' => '10',
+            'floor' => '99',
+        ]);
+        $this->assertTrue($this->table->save($row));
+        $this->assertTrue($row->isSaved());
+
+        // update
+        $row = $this->table->fetchRowBy(['name' => 'Mona']);
+        $row->name = 'Mona Lisa';
+        $this->assertTrue($this->table->save($row));
+        $this->assertTrue($row->isSaved());
+
+        // delete
+        $row = $this->table->fetchRowBy(['name' => 'Mona Lisa']);
+        $row->markAsTrash();
+        $this->assertTrue($this->table->delete($row));
+        $this->assertTrue($row->isDeleted());
+    }
 }

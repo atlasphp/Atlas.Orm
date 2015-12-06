@@ -273,6 +273,19 @@ class Table
         return $this->rowFactory->newRowSet($rows);
     }
 
+    public function save(Row $row)
+    {
+        switch ($row->getStatus()) {
+            case Row::IS_NEW:
+                return $this->insert($row);
+            case Row::IS_DIRTY:
+                return $this->update($row);
+            case Row::IS_TRASH:
+                return $this->delete($row);
+        }
+        return false;
+    }
+
     /**
      *
      * Inserts a row through the gateway.
@@ -304,9 +317,9 @@ class Table
             $row->$primary = $this->getWriteConnection()->lastInsertId($primary);
         }
 
-        $row->markAsClean();
 
         $this->tableEvents->afterInsert($this, $row, $insert, $pdoStatement);
+        $row->markAsSaved();
 
         // set into the identity map
         $this->identityMap->setRow($row, $row->getArrayCopy());
@@ -361,8 +374,8 @@ class Table
             throw Exception::unexpectedRowCountAffected($rowCount);
         }
 
-        $row->markAsClean();
         $this->tableEvents->afterUpdate($this, $row, $update, $pdoStatement);
+        $row->markAsSaved();
 
         // reinitialize the initial data for later updates
         $this->identityMap->setInitial($row);
@@ -422,8 +435,8 @@ class Table
             throw Exception::unexpectedRowCountAffected($rowCount);
         }
 
-        $row->markAsDeleted();
         $this->tableEvents->afterDelete($this, $row, $delete, $pdoStatement);
+        $row->markAsDeleted();
 
         return true;
     }
