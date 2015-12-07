@@ -11,6 +11,7 @@
 namespace Atlas\Orm\Table;
 
 use Atlas\Orm\Exception;
+use Atlas\Orm\Status;
 use Aura\Sql\ConnectionLocator;
 use Aura\SqlQuery\QueryFactory;
 use Aura\SqlQuery\Common\Delete;
@@ -276,11 +277,11 @@ class Table
     public function save(Row $row)
     {
         switch ($row->getStatus()) {
-            case Row::IS_NEW:
+            case Status::IS_NEW:
                 return $this->insert($row);
-            case Row::IS_DIRTY:
+            case Status::IS_DIRTY:
                 return $this->update($row);
-            case Row::IS_TRASH:
+            case Status::IS_TRASH:
                 return $this->delete($row);
         }
         return false;

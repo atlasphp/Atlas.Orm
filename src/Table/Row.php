@@ -2,27 +2,10 @@
 namespace Atlas\Orm\Table;
 
 use Atlas\Orm\Exception;
+use Atlas\Orm\Status;
 
 class Row
 {
-    // new row instance (not in the database yet)
-    const IS_NEW = 'IS_NEW';
-
-    // selected and unmodified
-    const IS_CLEAN = 'IS_CLEAN';
-
-    // selected/inserted/updated, then changed
-    const IS_DIRTY = 'IS_DIRTY';
-
-    // inserted/updated, and unchanged
-    const IS_SAVED = 'IS_SAVED';
-
-    // marked for deletion but not deleted, changes are allowed but unimportant
-    const IS_TRASH = 'IS_TRASH';
-
-    // deleted, changes are not allowed
-    const IS_DELETED = 'IS_DELETED';
-
     private $identity;
 
     private $data = [];
@@ -33,7 +16,7 @@ class Row
     {
         $this->identity = $identity;
         $this->data = $data;
-        $this->status = static::IS_NEW;
+        $this->status = Status::IS_NEW;
     }
 
     public function __get($col)
@@ -133,7 +116,7 @@ class Row
         $old = $this->data[$col];
         $this->data[$col] = $new;
         if (! $this->isSameValue($old, $new)) {
-            $this->status = static::IS_DIRTY;
+            $this->status = Status::IS_DIRTY;
         }
     }
 
@@ -146,52 +129,52 @@ class Row
 
     public function isNew()
     {
-        return $this->status == static::IS_NEW;
+        return $this->status == Status::IS_NEW;
     }
 
     public function isClean()
     {
-        return $this->status == static::IS_CLEAN;
+        return $this->status == Status::IS_CLEAN;
     }
 
     public function isDirty()
     {
-        return $this->status == static::IS_DIRTY;
+        return $this->status == Status::IS_DIRTY;
     }
 
     public function isSaved()
     {
-        return $this->status == static::IS_SAVED;
+        return $this->status == Status::IS_SAVED;
     }
 
     public function isTrash()
     {
-        return $this->status == static::IS_TRASH;
+        return $this->status == Status::IS_TRASH;
     }
 
     public function isDeleted()
     {
-        return $this->status == static::IS_DELETED;
+        return $this->status == Status::IS_DELETED;
     }
 
     public function markAsClean()
     {
-        $this->status = static::IS_CLEAN;
+        $this->status = Status::IS_CLEAN;
     }
 
     public function markAsSaved()
     {
-        $this->status = static::IS_SAVED;
+        $this->status = Status::IS_SAVED;
     }
 
     public function markAsTrash()
     {
-        $this->status = static::IS_TRASH;
+        $this->status = Status::IS_TRASH; // if not deleted, and not new
     }
 
     public function markAsDeleted()
     {
-        $this->status = static::IS_DELETED;
+        $this->status = Status::IS_DELETED;
     }
 
     public function getStatus()
