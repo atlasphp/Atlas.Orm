@@ -8,7 +8,7 @@ class AuthorTable extends AbstractTable
     /**
      * @inheritdoc
      */
-    public function tableName()
+    public function getName()
     {
         return 'authors';
     }
@@ -16,7 +16,7 @@ class AuthorTable extends AbstractTable
     /**
      * @inheritdoc
      */
-    public function tableCols()
+    public function getColNames()
     {
         return [
             'author_id',
@@ -27,7 +27,7 @@ class AuthorTable extends AbstractTable
     /**
      * @inheritdoc
      */
-    public function tableInfo()
+    public function getCols()
     {
         return [
             'author_id' => (object) [
@@ -56,7 +56,7 @@ class AuthorTable extends AbstractTable
     /**
      * @inheritdoc
      */
-    public function tablePrimary()
+    public function getPrimary()
     {
         return 'author_id';
     }
@@ -64,7 +64,7 @@ class AuthorTable extends AbstractTable
     /**
      * @inheritdoc
      */
-    public function tableAutoinc()
+    public function getAutoinc()
     {
         return true;
     }
@@ -72,7 +72,7 @@ class AuthorTable extends AbstractTable
     /**
      * @inheritdoc
      */
-    public function tableDefault()
+    public function getColDefaults()
     {
         return [
             'author_id' => null,

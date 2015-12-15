@@ -8,7 +8,7 @@ class TaggingTable extends AbstractTable
     /**
      * @inheritdoc
      */
-    public function tableName()
+    public function getName()
     {
         return 'taggings';
     }
@@ -16,7 +16,7 @@ class TaggingTable extends AbstractTable
     /**
      * @inheritdoc
      */
-    public function tableCols()
+    public function getColNames()
     {
         return [
             'tagging_id',
@@ -28,7 +28,7 @@ class TaggingTable extends AbstractTable
     /**
      * @inheritdoc
      */
-    public function tableInfo()
+    public function getCols()
     {
         return [
             'tagging_id' => (object) [
@@ -67,7 +67,7 @@ class TaggingTable extends AbstractTable
     /**
      * @inheritdoc
      */
-    public function tablePrimary()
+    public function getPrimary()
     {
         return 'tagging_id';
     }
@@ -75,7 +75,7 @@ class TaggingTable extends AbstractTable
     /**
      * @inheritdoc
      */
-    public function tableAutoinc()
+    public function getAutoinc()
     {
         return true;
     }
@@ -83,7 +83,7 @@ class TaggingTable extends AbstractTable
     /**
      * @inheritdoc
      */
-    public function tableDefault()
+    public function getColDefaults()
     {
         return [
             'tagging_id' => null,

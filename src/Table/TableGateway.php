@@ -88,7 +88,7 @@ class TableGateway
 
     public function tablePrimary()
     {
-        return $this->table->tablePrimary();
+        return $this->table->getPrimary();
     }
 
     /**
@@ -135,7 +135,7 @@ class TableGateway
      */
     public function select(array $colsVals = [])
     {
-        $select = $this->newTableSelect()->from($this->table->tableName());
+        $select = $this->newTableSelect()->from($this->table->getName());
 
         foreach ($colsVals as $col => $val) {
             $this->selectWhere($select, $col, $val);
@@ -149,7 +149,7 @@ class TableGateway
         return new TableSelect(
             $this->queryFactory->newSelect(),
             $this->getReadConnection(),
-            $this->table->tableCols(),
+            $this->table->getColNames(),
             [$this, 'getMappedOrNewRow'],
             [$this, 'getMappedOrNewRowSet']
         );
@@ -157,7 +157,7 @@ class TableGateway
 
     protected function selectWhere($select, $col, $val)
     {
-        $col = $this->table->tableName() . '.' . $col;
+        $col = $this->table->getName() . '.' . $col;
 
         if (is_array($val)) {
             return $select->where("{$col} IN (?)", $val);
@@ -182,7 +182,7 @@ class TableGateway
 
     public function getPrimaryIdentity($primaryVal)
     {
-        return [$this->table->tablePrimary() => $primaryVal];
+        return [$this->table->getPrimary() => $primaryVal];
     }
 
     public function fetchRowBy(array $colsVals)
@@ -252,9 +252,9 @@ class TableGateway
             return;
         }
         // fetch and retain remaining rows
-        $colsVals = [$this->table->tablePrimary() => $primaryVals];
+        $colsVals = [$this->table->getPrimary() => $primaryVals];
         $select = $this->select($colsVals);
-        $data = $select->cols($this->table->tableCols())->fetchAll();
+        $data = $select->cols($this->table->getColNames())->fetchAll();
         foreach ($data as $cols) {
             $row = $this->newRow($cols);
             $this->identityMap->setRow($row, $cols);
@@ -269,7 +269,7 @@ class TableGateway
 
     public function newRow(array $cols = [])
     {
-        $cols = array_merge($this->table->tableDefault(), $cols);
+        $cols = array_merge($this->table->getColDefaults(), $cols);
         $rowIdentity = $this->newRowIdentity($cols);
         $row = new Row($this->tableClass, $rowIdentity, $cols);
         $this->events->modifyNewRow($this, $row);
@@ -278,7 +278,7 @@ class TableGateway
 
     protected function newRowIdentity(array &$cols)
     {
-        $primaryCol = $this->table->tablePrimary();
+        $primaryCol = $this->table->getPrimary();
         $primaryVal = null;
         if (array_key_exists($primaryCol, $cols)) {
             $primaryVal = $cols[$primaryCol];
@@ -332,11 +332,10 @@ class TableGateway
             throw Exception::unexpectedRowCountAffected(0);
         }
 
-        if ($this->table->tableAutoinc()) {
-            $primary = $this->table->tablePrimary();
+        if ($this->table->getAutoinc()) {
+            $primary = $this->table->getPrimary();
             $row->$primary = $this->getWriteConnection()->lastInsertId($primary);
         }
-
 
         $this->events->afterInsert($this, $row, $insert, $pdoStatement);
         $row->markAsSaved();
@@ -349,7 +348,7 @@ class TableGateway
     protected function newInsert(Row $row)
     {
         $insert = $this->queryFactory->newInsert();
-        $insert->into($this->table->tableName());
+        $insert->into($this->table->getName());
         $this->newInsertCols($insert, $row);
         return $insert;
     }
@@ -357,8 +356,8 @@ class TableGateway
     protected function newInsertCols(Insert $insert, Row $row)
     {
         $cols = $row->getArrayCopy();
-        if ($this->table->tableAutoinc()) {
-            unset($cols[$this->table->tablePrimary()]);
+        if ($this->table->getAutoinc()) {
+            unset($cols[$this->table->getPrimary()]);
         }
         $insert->cols($cols);
     }
@@ -405,7 +404,7 @@ class TableGateway
     protected function newUpdate(Row $row)
     {
         $update = $this->queryFactory->newUpdate();
-        $update->table($this->table->tableName());
+        $update->table($this->table->getName());
         $this->newUpdateCols($update, $row);
         $this->newUpdateWhere($update, $row);
         return $update;
@@ -414,13 +413,13 @@ class TableGateway
     protected function newUpdateCols(Update $update, Row $row)
     {
         $cols = $row->getArrayDiff($this->identityMap->getInitial($row));
-        unset($cols[$this->table->tablePrimary()]);
+        unset($cols[$this->table->getPrimary()]);
         $update->cols($cols);
     }
 
     protected function newUpdateWhere(Update $update, Row $row)
     {
-        $primaryCol = $this->table->tablePrimary();
+        $primaryCol = $this->table->getPrimary();
         $update->where("{$primaryCol} = ?", $row->getIdentity()->getVal());
     }
 
@@ -464,20 +463,20 @@ class TableGateway
     protected function newDelete(Row $row)
     {
         $delete = $this->queryFactory->newDelete();
-        $delete->from($this->table->tableName());
+        $delete->from($this->table->getName());
         $this->newDeleteWhere($delete, $row);
         return $delete;
     }
 
     protected function newDeleteWhere(Delete $delete, Row $row)
     {
-        $primaryCol = $this->table->tablePrimary();
+        $primaryCol = $this->table->getPrimary();
         $delete->where("{$primaryCol} = ?", $row->getIdentity()->getVal());
     }
 
     public function getMappedOrNewRow(array $cols)
     {
-        $primaryVal = $cols[$this->table->tablePrimary()];
+        $primaryVal = $cols[$this->table->getPrimary()];
         $primaryIdentity = $this->getPrimaryIdentity($primaryVal);
         $row = $this->identityMap->getRowByPrimary($this->tableClass, $primaryIdentity);
         if (! $row) {

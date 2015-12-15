@@ -12,7 +12,7 @@ abstract class AbstractTable
      * @return string
      *
      */
-    abstract public function tableName();
+    abstract public function getName();
 
     /**
      *
@@ -21,7 +21,7 @@ abstract class AbstractTable
      * @return array
      *
      */
-    abstract public function tableCols();
+    abstract public function getColNames();
 
     /**
      *
@@ -30,7 +30,7 @@ abstract class AbstractTable
      * @return array
      *
      */
-    abstract public function tableInfo();
+    abstract public function getCols();
 
     /**
      *
@@ -39,7 +39,7 @@ abstract class AbstractTable
      * @return string The primary column name.
      *
      */
-    abstract public function tablePrimary();
+    abstract public function getPrimary();
 
     /**
      *
@@ -48,7 +48,7 @@ abstract class AbstractTable
      * @return bool
      *
      */
-    abstract public function tableAutoinc();
+    abstract public function getAutoinc();
 
     /**
      *
@@ -57,5 +57,5 @@ abstract class AbstractTable
      * @return array
      *
      */
-    abstract public function tableDefault();
+    abstract public function getColDefaults();
 }

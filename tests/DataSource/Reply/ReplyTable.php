@@ -8,7 +8,7 @@ class ReplyTable extends AbstractTable
     /**
      * @inheritdoc
      */
-    public function tableName()
+    public function getName()
     {
         return 'replies';
     }
@@ -16,7 +16,7 @@ class ReplyTable extends AbstractTable
     /**
      * @inheritdoc
      */
-    public function tableCols()
+    public function getColNames()
     {
         return [
             'reply_id',
@@ -29,7 +29,7 @@ class ReplyTable extends AbstractTable
     /**
      * @inheritdoc
      */
-    public function tableInfo()
+    public function getCols()
     {
         return [
             'reply_id' => (object) [
@@ -78,7 +78,7 @@ class ReplyTable extends AbstractTable
     /**
      * @inheritdoc
      */
-    public function tablePrimary()
+    public function getPrimary()
     {
         return 'reply_id';
     }
@@ -86,7 +86,7 @@ class ReplyTable extends AbstractTable
     /**
      * @inheritdoc
      */
-    public function tableAutoinc()
+    public function getAutoinc()
     {
         return true;
     }
@@ -94,7 +94,7 @@ class ReplyTable extends AbstractTable
     /**
      * @inheritdoc
      */
-    public function tableDefault()
+    public function getColDefaults()
     {
         return [
             'reply_id' => null,
