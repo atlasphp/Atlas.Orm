@@ -129,7 +129,10 @@ class Gateway
     public function fetchRow($primaryVal)
     {
         $primaryIdentity = $this->getPrimaryIdentity($primaryVal);
-        $row = $this->identityMap->getRowByPrimary($this->tableClass, $primaryIdentity);
+        $row = $this->identityMap->getRowByPrimary(
+            $this->tableClass,
+            $primaryIdentity
+        );
         if (! $row) {
             $row = $this->select($primaryIdentity)->fetchRow();
         }
@@ -178,11 +181,26 @@ class Gateway
      */
     public function select(array $colsVals = [])
     {
-        $select = $this->newTableSelect()->from($this->table->getName());
+        $select = $this->newTableSelect();
         foreach ($colsVals as $col => $val) {
             $this->selectWhere($select, $col, $val);
         }
         return $select;
+    }
+
+    protected function selectWhere(TableSelect $select, $col, $val)
+    {
+        $col = $this->table->getName() . '.' . $col;
+
+        if (is_array($val)) {
+            return $select->where("{$col} IN (?)", $val);
+        }
+
+        if ($val === null) {
+            return $select->where("{$col} IS NULL");
+        }
+
+        $select->where("{$col} = ?", $val);
     }
 
     /**
@@ -200,7 +218,8 @@ class Gateway
         $this->events->beforeInsert($this->table, $row);
 
         $insert = $this->newInsert($row);
-        $pdoStatement = $this->getWriteConnection()->perform(
+        $connection = $this->getWriteConnection();
+        $pdoStatement = $connection->perform(
             $insert->getStatement(),
             $insert->getBindValues()
         );
@@ -211,7 +230,7 @@ class Gateway
 
         if ($this->table->getAutoinc()) {
             $primary = $this->table->getPrimary();
-            $row->$primary = $this->getWriteConnection()->lastInsertId($primary);
+            $row->$primary = $connection->lastInsertId($primary);
         }
 
         $this->events->afterInsert($this->table, $row, $insert, $pdoStatement);
@@ -237,12 +256,12 @@ class Gateway
         $this->events->beforeUpdate($this->table, $row);
 
         $update = $this->newUpdate($row);
-
         if (! $update->hasCols()) {
             return false;
         }
 
-        $pdoStatement = $this->getWriteConnection()->perform(
+        $connection = $this->getWriteConnection();
+        $pdoStatement = $connection->perform(
             $update->getStatement(),
             $update->getBindValues()
         );
@@ -275,7 +294,8 @@ class Gateway
         $this->events->beforeDelete($this->table, $row);
 
         $delete = $this->newDelete($row);
-        $pdoStatement = $this->getWriteConnection()->perform(
+        $connection = $this->getWriteConnection();
+        $pdoStatement = $connection->perform(
             $delete->getStatement(),
             $delete->getBindValues()
         );
@@ -313,7 +333,10 @@ class Gateway
     {
         $primaryVal = $cols[$this->table->getPrimary()];
         $primaryIdentity = $this->getPrimaryIdentity($primaryVal);
-        $row = $this->identityMap->getRowByPrimary($this->tableClass, $primaryIdentity);
+        $row = $this->identityMap->getRowByPrimary(
+            $this->tableClass,
+            $primaryIdentity
+        );
         if (! $row) {
             $row = $this->newRow($cols);
             $row->markAsClean();
@@ -333,28 +356,15 @@ class Gateway
 
     protected function newTableSelect()
     {
-        return new TableSelect(
+        $select = new TableSelect(
             $this->queryFactory->newSelect(),
             $this->getReadConnection(),
             $this->table->getColNames(),
             [$this, 'newOrIdentifiedRow'],
             [$this, 'newOrIdentifiedRowSet']
         );
-    }
-
-    protected function selectWhere($select, $col, $val)
-    {
-        $col = $this->table->getName() . '.' . $col;
-
-        if (is_array($val)) {
-            return $select->where("{$col} IN (?)", $val);
-        }
-
-        if ($val === null) {
-            return $select->where("{$col} IS NULL");
-        }
-
-        return $select->where("{$col} = ?", $val);
+        $select->from($this->table->getName());
+        return $select;
     }
 
     protected function newInsert(Row $row)
@@ -444,8 +454,15 @@ class Gateway
         foreach ($primaryVals as $i => $primaryVal) {
             $rows[$primaryVal] = null;
             $primaryIdentity = $this->getPrimaryIdentity($primaryVal);
-            if ($this->identityMap->hasPrimary($this->tableClass, $primaryIdentity)) {
-                $rows[$primaryVal] = $this->identityMap->getRowByPrimary($this->tableClass, $primaryIdentity);
+            $hasPrimary = $this->identityMap->hasPrimary(
+                $this->tableClass,
+                $primaryIdentity
+            );
+            if ($hasPrimary) {
+                $rows[$primaryVal] = $this->identityMap->getRowByPrimary(
+                    $this->tableClass,
+                    $primaryIdentity
+                );
                 unset($primaryVals[$i]);
             }
         }
