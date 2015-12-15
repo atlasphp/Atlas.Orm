@@ -2,7 +2,7 @@
 namespace Atlas\Orm\Table;
 
 use Atlas\Orm\Assertions;
-use Atlas\Orm\DataSource\Employee\EmployeeTableGateway;
+use Atlas\Orm\DataSource\Employee\EmployeeTable;
 use Atlas\Orm\DataSource\Employee\EmployeeTableEvents;
 use Atlas\Orm\SqliteFixture;
 use Aura\Sql\ConnectionLocator;
@@ -22,10 +22,11 @@ class TableSelectTest extends \PHPUnit_Framework_TestCase
             return new ExtendedPdo('sqlite::memory:');
         });
 
-        $table = new EmployeeTableGateway(
+        $table = new TableGateway(
             $connectionLocator,
             new QueryFactory('sqlite'),
             new IdentityMap(),
+            new EmployeeTable(),
             new EmployeeTableEvents()
         );
 

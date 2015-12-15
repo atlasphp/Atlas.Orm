@@ -1,7 +1,9 @@
 <?php
 namespace Atlas\Orm\DataSource\Employee;
 
-trait EmployeeTableTrait
+use Atlas\Orm\Table\AbstractTable;
+
+class EmployeeTable extends AbstractTable
 {
     /**
      * @inheritdoc

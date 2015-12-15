@@ -100,14 +100,6 @@ class Exception extends \Exception
         return new UnexpectedValueException("Expected 1 row affected, actual {$count}");
     }
 
-    public static function usingDefaultTableTrait($class)
-    {
-        return new BadMethodCallException(
-            "Using the default 'Atlas\Orm\Table\TableTrait' in '$class' "
-            . "is not allowed; use a table-specific TableTrait instead."
-        );
-    }
-
     public static function immutableOnceDeleted($class, $property)
     {
         if (is_object($class)) {

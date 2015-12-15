@@ -1,14 +1,16 @@
 <?php
-namespace Atlas\Orm\DataSource\Thread;
+namespace Atlas\Orm\DataSource\Summary;
 
-trait ThreadTableTrait
+use Atlas\Orm\Table\AbstractTable;
+
+class SummaryTable extends AbstractTable
 {
     /**
      * @inheritdoc
      */
     public function tableName()
     {
-        return 'threads';
+        return 'summaries';
     }
 
     /**
@@ -18,9 +20,8 @@ trait ThreadTableTrait
     {
         return [
             'thread_id',
-            'author_id',
-            'subject',
-            'body',
+            'reply_count',
+            'view_count',
         ];
     }
 
@@ -37,11 +38,11 @@ trait ThreadTableTrait
                 'scale' => null,
                 'notnull' => false,
                 'default' => null,
-                'autoinc' => true,
+                'autoinc' => false,
                 'primary' => true,
             ],
-            'author_id' => (object) [
-                'name' => 'author_id',
+            'reply_count' => (object) [
+                'name' => 'reply_count',
                 'type' => 'integer',
                 'size' => null,
                 'scale' => null,
@@ -50,19 +51,9 @@ trait ThreadTableTrait
                 'autoinc' => false,
                 'primary' => false,
             ],
-            'subject' => (object) [
-                'name' => 'subject',
-                'type' => 'varchar',
-                'size' => 255,
-                'scale' => null,
-                'notnull' => true,
-                'default' => null,
-                'autoinc' => false,
-                'primary' => false,
-            ],
-            'body' => (object) [
-                'name' => 'body',
-                'type' => 'text',
+            'view_count' => (object) [
+                'name' => 'view_count',
+                'type' => 'integer',
                 'size' => null,
                 'scale' => null,
                 'notnull' => true,
@@ -86,7 +77,7 @@ trait ThreadTableTrait
      */
     public function tableAutoinc()
     {
-        return true;
+        return false;
     }
 
     /**
@@ -96,9 +87,8 @@ trait ThreadTableTrait
     {
         return [
             'thread_id' => null,
-            'author_id' => null,
-            'subject' => null,
-            'body' => null,
+            'reply_count' => null,
+            'view_count' => null,
         ];
     }
 }

@@ -4,17 +4,18 @@ namespace Atlas\Orm\Mapper;
 use Atlas\Orm\DataSource\Auto\AutoMapper;
 use Atlas\Orm\DataSource\Auto\AutoTable;
 use Atlas\Orm\DataSource\Employee\EmployeeMapper;
-use Atlas\Orm\DataSource\Employee\EmployeeRecordFactory;
 use Atlas\Orm\DataSource\Employee\EmployeeMapperEvents;
+use Atlas\Orm\DataSource\Employee\EmployeeRecordFactory;
 use Atlas\Orm\DataSource\Employee\EmployeeRelations;
+use Atlas\Orm\DataSource\Employee\EmployeeTable;
 use Atlas\Orm\DataSource\Employee\EmployeeTableEvents;
-use Atlas\Orm\DataSource\Employee\EmployeeTableGateway;
 use Atlas\Orm\Mapper\MapperRelations;
 use Atlas\Orm\Mapper\RecordFactory;
 use Atlas\Orm\SqliteFixture;
+use Atlas\Orm\Table\IdentityMap;
 use Atlas\Orm\Table\Row;
 use Atlas\Orm\Table\RowIdentity;
-use Atlas\Orm\Table\IdentityMap;
+use Atlas\Orm\Table\TableGateway;
 use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\QueryFactory;
@@ -34,10 +35,11 @@ class MapperTest extends \PHPUnit_Framework_TestCase
             return new ExtendedPdo('sqlite::memory:');
         });
 
-        $this->table = new EmployeeTableGateway(
+        $this->table = new TableGateway(
             $connectionLocator,
             new QueryFactory('sqlite'),
             new IdentityMap(),
+            new EmployeeTable(),
             new EmployeeTableEvents()
         );
 

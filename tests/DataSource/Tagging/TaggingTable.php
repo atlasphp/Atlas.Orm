@@ -1,14 +1,16 @@
 <?php
-namespace Atlas\Orm\DataSource\Tag;
+namespace Atlas\Orm\DataSource\Tagging;
 
-trait TagTableTrait
+use Atlas\Orm\Table\AbstractTable;
+
+class TaggingTable extends AbstractTable
 {
     /**
      * @inheritdoc
      */
     public function tableName()
     {
-        return 'tags';
+        return 'taggings';
     }
 
     /**
@@ -17,8 +19,9 @@ trait TagTableTrait
     public function tableCols()
     {
         return [
+            'tagging_id',
+            'thread_id',
             'tag_id',
-            'name',
         ];
     }
 
@@ -28,8 +31,8 @@ trait TagTableTrait
     public function tableInfo()
     {
         return [
-            'tag_id' => (object) [
-                'name' => 'tag_id',
+            'tagging_id' => (object) [
+                'name' => 'tagging_id',
                 'type' => 'integer',
                 'size' => null,
                 'scale' => null,
@@ -38,10 +41,20 @@ trait TagTableTrait
                 'autoinc' => true,
                 'primary' => true,
             ],
-            'name' => (object) [
-                'name' => 'name',
-                'type' => 'varchar',
-                'size' => 50,
+            'thread_id' => (object) [
+                'name' => 'thread_id',
+                'type' => 'integer',
+                'size' => null,
+                'scale' => null,
+                'notnull' => true,
+                'default' => null,
+                'autoinc' => false,
+                'primary' => false,
+            ],
+            'tag_id' => (object) [
+                'name' => 'tag_id',
+                'type' => 'integer',
+                'size' => null,
                 'scale' => null,
                 'notnull' => true,
                 'default' => null,
@@ -56,7 +69,7 @@ trait TagTableTrait
      */
     public function tablePrimary()
     {
-        return 'tag_id';
+        return 'tagging_id';
     }
 
     /**
@@ -73,8 +86,9 @@ trait TagTableTrait
     public function tableDefault()
     {
         return [
+            'tagging_id' => null,
+            'thread_id' => null,
             'tag_id' => null,
-            'name' => null,
         ];
     }
 }

@@ -1,14 +1,16 @@
 <?php
-namespace Atlas\Orm\DataSource\Summary;
+namespace Atlas\Orm\DataSource\Reply;
 
-trait SummaryTableTrait
+use Atlas\Orm\Table\AbstractTable;
+
+class ReplyTable extends AbstractTable
 {
     /**
      * @inheritdoc
      */
     public function tableName()
     {
-        return 'summaries';
+        return 'replies';
     }
 
     /**
@@ -17,9 +19,10 @@ trait SummaryTableTrait
     public function tableCols()
     {
         return [
+            'reply_id',
             'thread_id',
-            'reply_count',
-            'view_count',
+            'author_id',
+            'body',
         ];
     }
 
@@ -29,18 +32,18 @@ trait SummaryTableTrait
     public function tableInfo()
     {
         return [
-            'thread_id' => (object) [
-                'name' => 'thread_id',
+            'reply_id' => (object) [
+                'name' => 'reply_id',
                 'type' => 'integer',
                 'size' => null,
                 'scale' => null,
                 'notnull' => false,
                 'default' => null,
-                'autoinc' => false,
+                'autoinc' => true,
                 'primary' => true,
             ],
-            'reply_count' => (object) [
-                'name' => 'reply_count',
+            'thread_id' => (object) [
+                'name' => 'thread_id',
                 'type' => 'integer',
                 'size' => null,
                 'scale' => null,
@@ -49,12 +52,22 @@ trait SummaryTableTrait
                 'autoinc' => false,
                 'primary' => false,
             ],
-            'view_count' => (object) [
-                'name' => 'view_count',
+            'author_id' => (object) [
+                'name' => 'author_id',
                 'type' => 'integer',
                 'size' => null,
                 'scale' => null,
                 'notnull' => true,
+                'default' => null,
+                'autoinc' => false,
+                'primary' => false,
+            ],
+            'body' => (object) [
+                'name' => 'body',
+                'type' => 'text',
+                'size' => null,
+                'scale' => null,
+                'notnull' => false,
                 'default' => null,
                 'autoinc' => false,
                 'primary' => false,
@@ -67,7 +80,7 @@ trait SummaryTableTrait
      */
     public function tablePrimary()
     {
-        return 'thread_id';
+        return 'reply_id';
     }
 
     /**
@@ -75,7 +88,7 @@ trait SummaryTableTrait
      */
     public function tableAutoinc()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -84,9 +97,10 @@ trait SummaryTableTrait
     public function tableDefault()
     {
         return [
+            'reply_id' => null,
             'thread_id' => null,
-            'reply_count' => null,
-            'view_count' => null,
+            'author_id' => null,
+            'body' => null,
         ];
     }
 }

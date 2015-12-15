@@ -63,7 +63,7 @@ class AtlasContainerTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException(
             Exception::CLASS,
-            'FooTableGateway does not exist'
+            'FooTable does not exist'
         );
         $this->atlasContainer->setTable('FooTable');
     }

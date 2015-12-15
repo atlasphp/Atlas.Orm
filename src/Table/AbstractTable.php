@@ -3,7 +3,7 @@ namespace Atlas\Orm\Table;
 
 use Atlas\Exception;
 
-trait TableTrait
+abstract class AbstractTable
 {
     /**
      *
@@ -12,10 +12,7 @@ trait TableTrait
      * @return string
      *
      */
-    protected function tableName()
-    {
-        throw Exception::usingDefaultTableTrait(get_called_class());
-    }
+    abstract public function tableName();
 
     /**
      *
@@ -24,10 +21,7 @@ trait TableTrait
      * @return array
      *
      */
-    protected function tableCols()
-    {
-        throw Exception::usingDefaultTableTrait(get_called_class());
-    }
+    abstract public function tableCols();
 
     /**
      *
@@ -36,10 +30,7 @@ trait TableTrait
      * @return array
      *
      */
-    protected function tableInfo()
-    {
-        throw Exception::usingDefaultTableTrait(get_called_class());
-    }
+    abstract public function tableInfo();
 
     /**
      *
@@ -48,10 +39,7 @@ trait TableTrait
      * @return string The primary column name.
      *
      */
-    protected function tablePrimary()
-    {
-        throw Exception::usingDefaultTableTrait(get_called_class());
-    }
+    abstract public function tablePrimary();
 
     /**
      *
@@ -60,10 +48,7 @@ trait TableTrait
      * @return bool
      *
      */
-    protected function tableAutoinc()
-    {
-        throw Exception::usingDefaultTableTrait(get_called_class());
-    }
+    abstract public function tableAutoinc();
 
     /**
      *
@@ -72,8 +57,5 @@ trait TableTrait
      * @return array
      *
      */
-    protected function tableDefault()
-    {
-        throw Exception::usingDefaultTableTrait(get_called_class());
-    }
+    abstract public function tableDefault();
 }

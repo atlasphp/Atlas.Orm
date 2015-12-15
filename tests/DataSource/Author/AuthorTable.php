@@ -1,7 +1,9 @@
 <?php
 namespace Atlas\Orm\DataSource\Author;
 
-trait AuthorTableTrait
+use Atlas\Orm\Table\AbstractTable;
+
+class AuthorTable extends AbstractTable
 {
     /**
      * @inheritdoc

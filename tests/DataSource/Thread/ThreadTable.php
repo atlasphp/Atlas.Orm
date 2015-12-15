@@ -1,14 +1,16 @@
 <?php
-namespace Atlas\Orm\DataSource\Reply;
+namespace Atlas\Orm\DataSource\Thread;
 
-trait ReplyTableTrait
+use Atlas\Orm\Table\AbstractTable;
+
+class ThreadTable extends AbstractTable
 {
     /**
      * @inheritdoc
      */
     public function tableName()
     {
-        return 'replies';
+        return 'threads';
     }
 
     /**
@@ -17,9 +19,9 @@ trait ReplyTableTrait
     public function tableCols()
     {
         return [
-            'reply_id',
             'thread_id',
             'author_id',
+            'subject',
             'body',
         ];
     }
@@ -30,8 +32,8 @@ trait ReplyTableTrait
     public function tableInfo()
     {
         return [
-            'reply_id' => (object) [
-                'name' => 'reply_id',
+            'thread_id' => (object) [
+                'name' => 'thread_id',
                 'type' => 'integer',
                 'size' => null,
                 'scale' => null,
@@ -39,16 +41,6 @@ trait ReplyTableTrait
                 'default' => null,
                 'autoinc' => true,
                 'primary' => true,
-            ],
-            'thread_id' => (object) [
-                'name' => 'thread_id',
-                'type' => 'integer',
-                'size' => null,
-                'scale' => null,
-                'notnull' => true,
-                'default' => null,
-                'autoinc' => false,
-                'primary' => false,
             ],
             'author_id' => (object) [
                 'name' => 'author_id',
@@ -60,12 +52,22 @@ trait ReplyTableTrait
                 'autoinc' => false,
                 'primary' => false,
             ],
+            'subject' => (object) [
+                'name' => 'subject',
+                'type' => 'varchar',
+                'size' => 255,
+                'scale' => null,
+                'notnull' => true,
+                'default' => null,
+                'autoinc' => false,
+                'primary' => false,
+            ],
             'body' => (object) [
                 'name' => 'body',
                 'type' => 'text',
                 'size' => null,
                 'scale' => null,
-                'notnull' => false,
+                'notnull' => true,
                 'default' => null,
                 'autoinc' => false,
                 'primary' => false,
@@ -78,7 +80,7 @@ trait ReplyTableTrait
      */
     public function tablePrimary()
     {
-        return 'reply_id';
+        return 'thread_id';
     }
 
     /**
@@ -95,9 +97,9 @@ trait ReplyTableTrait
     public function tableDefault()
     {
         return [
-            'reply_id' => null,
             'thread_id' => null,
             'author_id' => null,
+            'subject' => null,
             'body' => null,
         ];
     }

@@ -16,11 +16,11 @@ class TableFactory
 
     public function __invoke()
     {
-        $gateway = $this->tableClass . 'Gateway';
-        return new $gateway(
+        return new TableGateway(
             $this->atlasContainer->getConnectionLocator(),
             $this->atlasContainer->getQueryFactory(),
             $this->atlasContainer->getIdentityMap(),
+            $this->atlasContainer->newInstance($this->tableClass),
             $this->atlasContainer->newInstance($this->tableClass . 'Events')
         );
     }
