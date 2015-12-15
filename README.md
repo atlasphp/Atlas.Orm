@@ -70,17 +70,11 @@ That will create this directory and these empty extended classes in `src/App/Dat
 
     └── Thread
         ├── ThreadMapper.php
+        ├── ThreadMapperEvents.php
         ├── ThreadRecord.php
-        ├── ThreadRecordFactory.php
         ├── ThreadRecordSet.php
-        ├── ThreadRelations.php
-        ├── ThreadRow.php
-        ├── ThreadRowFactory.php
-        ├── ThreadRowFilter.php
-        ├── ThreadRowIdentity.php
-        ├── ThreadRowSet.php
         ├── ThreadTable.php
-        └── ThreadTableTrait.php
+        └── ThreadTableEvents.php
 
 Do that once for each SQL table in your database.
 
@@ -95,11 +89,11 @@ use App\DataSource\Summary\SummaryMapper;
 use App\DataSource\Reply\ReplyMapper;
 use App\DataSource\Tagging\TaggingMapper;
 use App\DataSource\Tag\TagMapper;
-use Atlas\Mapper\AbstractRelations;
+use Atlas\Orm\Mapper\Mapper;
 
-class ThreadRelations extends AbstractRelations
+class ThreadMapper extends Mapper
 {
-    protected function setRelations()
+    protected function defineRelations()
     {
         $this->manyToOne('author', AuthorMapper::CLASS);
         $this->oneToOne('summary', SummaryMapper::CLASS);
@@ -178,7 +172,7 @@ $threadRecordSet = $atlas
 ?>
 ```
 
-If you do not load a _Record_ "with" a related, it will not be present in the _Record_, and it will not be lazy-loaded for you later. This means you need to think ahead as to exactly what you will need from the database.
+If you do not load a _Record_ "with" a related, it will be `null` in the _Record_, and it will not be lazy-loaded for you later. This means you need to think ahead as to exactly what you will need from the database.
 
 You can then address the _Record_'s underlying _Row_ columns and the related fields as properties.
 

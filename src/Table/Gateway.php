@@ -86,9 +86,9 @@ class Gateway
         $this->tableClass = get_class($this->table);
     }
 
-    public function tablePrimary()
+    public function getTable()
     {
-        return $this->table->getPrimary();
+        return $this->table;
     }
 
     /**
