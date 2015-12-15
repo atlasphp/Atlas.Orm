@@ -279,8 +279,7 @@ class Table
             unset($cols[$primaryCol]);
         }
 
-        $rowIdentityClass = $this->rowClass . 'Identity';
-        return new $rowIdentityClass([$primaryCol => $primaryVal]);
+        return new RowIdentity([$primaryCol => $primaryVal]);
     }
 
     public function newRowSet(array $rows)
