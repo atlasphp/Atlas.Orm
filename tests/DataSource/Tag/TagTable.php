@@ -1,9 +1,9 @@
 <?php
 namespace Atlas\Orm\DataSource\Tag;
 
-use Atlas\Orm\Table\AbstractTable;
+use Atlas\Orm\Table\TableInterface;
 
-class TagTable extends AbstractTable
+class TagTable implements TableInterface
 {
     /**
      * @inheritdoc

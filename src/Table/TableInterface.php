@@ -3,7 +3,7 @@ namespace Atlas\Orm\Table;
 
 use Atlas\Exception;
 
-abstract class AbstractTable
+interface TableInterface
 {
     /**
      *
@@ -12,7 +12,7 @@ abstract class AbstractTable
      * @return string
      *
      */
-    abstract public function getName();
+    public function getName();
 
     /**
      *
@@ -21,7 +21,7 @@ abstract class AbstractTable
      * @return array
      *
      */
-    abstract public function getColNames();
+    public function getColNames();
 
     /**
      *
@@ -30,7 +30,7 @@ abstract class AbstractTable
      * @return array
      *
      */
-    abstract public function getCols();
+    public function getCols();
 
     /**
      *
@@ -39,7 +39,7 @@ abstract class AbstractTable
      * @return string The primary column name.
      *
      */
-    abstract public function getPrimary();
+    public function getPrimary();
 
     /**
      *
@@ -48,7 +48,7 @@ abstract class AbstractTable
      * @return bool
      *
      */
-    abstract public function getAutoinc();
+    public function getAutoinc();
 
     /**
      *
@@ -57,5 +57,5 @@ abstract class AbstractTable
      * @return array
      *
      */
-    abstract public function getColDefaults();
+    public function getColDefaults();
 }

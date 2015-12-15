@@ -15,7 +15,7 @@ use Atlas\Orm\SqliteFixture;
 use Atlas\Orm\Table\IdentityMap;
 use Atlas\Orm\Table\Row;
 use Atlas\Orm\Table\RowIdentity;
-use Atlas\Orm\Table\TableGateway;
+use Atlas\Orm\Table\Gateway;
 use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\QueryFactory;
@@ -35,7 +35,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
             return new ExtendedPdo('sqlite::memory:');
         });
 
-        $this->table = new TableGateway(
+        $this->table = new Gateway(
             $connectionLocator,
             new QueryFactory('sqlite'),
             new IdentityMap(),
@@ -56,7 +56,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
 
     public function testGetTable()
     {
-        $this->assertSame($this->table, $this->mapper->getTable());
+        $this->assertSame($this->table, $this->mapper->getGateway());
     }
 
     public function testGetRelations()
@@ -309,7 +309,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
             'building' => '10',
             'floor' => '99',
         ];
-        $actual = $this->mapper->getTable()->getReadConnection()->fetchOne(
+        $actual = $this->mapper->getGateway()->getReadConnection()->fetchOne(
             'SELECT * FROM employee WHERE id = 13'
         );
         $this->assertSame($expect, $actual);
@@ -349,7 +349,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
 
         // was it *actually* updated?
         $expect = $record->getRow()->getArrayCopy();
-        $actual = $this->mapper->getTable()->getReadConnection()->fetchOne(
+        $actual = $this->mapper->getGateway()->getReadConnection()->fetchOne(
             "SELECT * FROM employee WHERE name = 'Annabelle'"
         );
         $this->assertSame($expect, $actual);
@@ -406,7 +406,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
 
     protected function silenceErrors()
     {
-        $conn = $this->mapper->getTable()->getWriteConnection();
+        $conn = $this->mapper->getGateway()->getWriteConnection();
         $conn->setAttribute($conn::ATTR_ERRMODE, $conn::ERRMODE_SILENT);
     }
 }

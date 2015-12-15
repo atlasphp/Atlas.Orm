@@ -1,9 +1,9 @@
 <?php
 namespace Atlas\Orm\DataSource\Reply;
 
-use Atlas\Orm\Table\AbstractTable;
+use Atlas\Orm\Table\TableInterface;
 
-class ReplyTable extends AbstractTable
+class ReplyTable implements TableInterface
 {
     /**
      * @inheritdoc

@@ -25,7 +25,7 @@ use Aura\SqlQuery\Common\Update;
  * @package Atlas.Atlas
  *
  */
-class TableGateway
+class Gateway
 {
     /**
      *
@@ -75,7 +75,7 @@ class TableGateway
         ConnectionLocator $connectionLocator,
         QueryFactory $queryFactory,
         IdentityMap $identityMap,
-        AbstractTable $table,
+        TableInterface $table,
         TableEvents $events
     ) {
         $this->connectionLocator = $connectionLocator;
@@ -272,7 +272,7 @@ class TableGateway
         $cols = array_merge($this->table->getColDefaults(), $cols);
         $rowIdentity = $this->newRowIdentity($cols);
         $row = new Row($this->tableClass, $rowIdentity, $cols);
-        $this->events->modifyNewRow($this, $row);
+        $this->events->modifyNewRow($this->table, $row);
         return $row;
     }
 
@@ -318,10 +318,10 @@ class TableGateway
     public function insert(Row $row)
     {
         $row->assertTableClass($this->tableClass);
-        $this->events->beforeInsert($this, $row);
+        $this->events->beforeInsert($this->table, $row);
 
         $insert = $this->newInsert($row);
-        $this->events->modifyInsert($this, $row, $insert);
+        $this->events->modifyInsert($this->table, $row, $insert);
 
         $pdoStatement = $this->getWriteConnection()->perform(
             $insert->getStatement(),
@@ -337,7 +337,7 @@ class TableGateway
             $row->$primary = $this->getWriteConnection()->lastInsertId($primary);
         }
 
-        $this->events->afterInsert($this, $row, $insert, $pdoStatement);
+        $this->events->afterInsert($this->table, $row, $insert, $pdoStatement);
         $row->markAsSaved();
 
         // set into the identity map
@@ -374,10 +374,10 @@ class TableGateway
     public function update(Row $row)
     {
         $row->assertTableClass($this->tableClass);
-        $this->events->beforeUpdate($this, $row);
+        $this->events->beforeUpdate($this->table, $row);
 
         $update = $this->newUpdate($row);
-        $this->events->modifyUpdate($this, $row, $update);
+        $this->events->modifyUpdate($this->table, $row, $update);
 
         if (! $update->hasCols()) {
             return false;
@@ -393,7 +393,7 @@ class TableGateway
             throw Exception::unexpectedRowCountAffected($rowCount);
         }
 
-        $this->events->afterUpdate($this, $row, $update, $pdoStatement);
+        $this->events->afterUpdate($this->table, $row, $update, $pdoStatement);
         $row->markAsSaved();
 
         // reinitialize the initial data for later updates
@@ -435,10 +435,10 @@ class TableGateway
     public function delete(Row $row)
     {
         $row->assertTableClass($this->tableClass);
-        $this->events->beforeDelete($this, $row);
+        $this->events->beforeDelete($this->table, $row);
 
         $delete = $this->newDelete($row);
-        $this->events->modifyDelete($this, $row, $delete);
+        $this->events->modifyDelete($this->table, $row, $delete);
 
         $pdoStatement = $this->getWriteConnection()->perform(
             $delete->getStatement(),
@@ -454,7 +454,7 @@ class TableGateway
             throw Exception::unexpectedRowCountAffected($rowCount);
         }
 
-        $this->events->afterDelete($this, $row, $delete, $pdoStatement);
+        $this->events->afterDelete($this->table, $row, $delete, $pdoStatement);
         $row->markAsDeleted();
 
         return true;

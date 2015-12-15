@@ -189,7 +189,7 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
         ];
         $actual = $this->atlas
             ->mapper(AuthorMapper::CLASS)
-            ->getTable()
+            ->getGateway()
             ->getReadConnection()
             ->fetchOne(
                 'SELECT * FROM authors WHERE author_id = 13'
@@ -221,7 +221,7 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
         $expect = $author->getRow()->getArrayCopy();
         $actual = $this->atlas
             ->mapper(AuthorMapper::CLASS)
-            ->getTable()
+            ->getGateway()
             ->getReadConnection()
             ->fetchOne(
                 "SELECT * FROM authors WHERE name = 'Annabelle'"

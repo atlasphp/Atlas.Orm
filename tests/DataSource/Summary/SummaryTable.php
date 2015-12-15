@@ -1,9 +1,9 @@
 <?php
 namespace Atlas\Orm\DataSource\Summary;
 
-use Atlas\Orm\Table\AbstractTable;
+use Atlas\Orm\Table\TableInterface;
 
-class SummaryTable extends AbstractTable
+class SummaryTable implements TableInterface
 {
     /**
      * @inheritdoc

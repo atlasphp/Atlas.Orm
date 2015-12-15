@@ -3,7 +3,7 @@ namespace Atlas\Orm\Table;
 
 use Atlas\Orm\AtlasContainer;
 
-class TableFactory
+class GatewayFactory
 {
     protected $atlasContainer;
     protected $tableClass;
@@ -16,7 +16,7 @@ class TableFactory
 
     public function __invoke()
     {
-        return new TableGateway(
+        return new Gateway(
             $this->atlasContainer->getConnectionLocator(),
             $this->atlasContainer->getQueryFactory(),
             $this->atlasContainer->getIdentityMap(),

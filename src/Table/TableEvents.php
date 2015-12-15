@@ -8,52 +8,52 @@ use PdoStatement;
 
 class TableEvents
 {
-    public function modifyNewRow(TableGateway $table, Row $row)
+    public function modifyNewRow(TableInterface $table, Row $row)
     {
         // do nothing
     }
 
-    public function beforeInsert(TableGateway $table, Row $row)
+    public function beforeInsert(TableInterface $table, Row $row)
     {
         // do nothing
     }
 
-    public function modifyInsert(TableGateway $table, Row $row, InsertInterface $insert)
+    public function modifyInsert(TableInterface $table, Row $row, InsertInterface $insert)
     {
         // do nothing
     }
 
-    public function afterInsert(TableGateway $table, Row $row, InsertInterface $insert, PdoStatement $pdoStatement)
+    public function afterInsert(TableInterface $table, Row $row, InsertInterface $insert, PdoStatement $pdoStatement)
     {
         // do nothing
     }
 
-    public function beforeUpdate(TableGateway $table, Row $row)
+    public function beforeUpdate(TableInterface $table, Row $row)
     {
         // do nothing
     }
 
-    public function modifyUpdate(TableGateway $table, Row $row, UpdateInterface $update)
+    public function modifyUpdate(TableInterface $table, Row $row, UpdateInterface $update)
     {
         // do nothing
     }
 
-    public function afterUpdate(TableGateway $table, Row $row, UpdateInterface $update, PdoStatement $pdoStatement)
+    public function afterUpdate(TableInterface $table, Row $row, UpdateInterface $update, PdoStatement $pdoStatement)
     {
         // do nothing
     }
 
-    public function beforeDelete(TableGateway $table, Row $row)
+    public function beforeDelete(TableInterface $table, Row $row)
     {
         // do nothing
     }
 
-    public function modifyDelete(TableGateway $table, Row $row, DeleteInterface $delete)
+    public function modifyDelete(TableInterface $table, Row $row, DeleteInterface $delete)
     {
         // do nothing
     }
 
-    public function afterDelete(TableGateway $table, Row $row, DeleteInterface $delete, PdoStatement $pdoStatement)
+    public function afterDelete(TableInterface $table, Row $row, DeleteInterface $delete, PdoStatement $pdoStatement)
     {
         // do nothing
     }

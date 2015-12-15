@@ -1,9 +1,9 @@
 <?php
 namespace Atlas\Orm\DataSource\Thread;
 
-use Atlas\Orm\Table\AbstractTable;
+use Atlas\Orm\Table\TableInterface;
 
-class ThreadTable extends AbstractTable
+class ThreadTable implements TableInterface
 {
     /**
      * @inheritdoc

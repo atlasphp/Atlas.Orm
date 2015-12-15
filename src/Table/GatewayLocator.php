@@ -19,7 +19,7 @@ use Atlas\Orm\Exception;
  * @package Atlas.Atlas
  *
  */
-class TableLocator
+class GatewayLocator
 {
     /**
      *

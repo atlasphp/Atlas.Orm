@@ -22,7 +22,7 @@ class TableSelectTest extends \PHPUnit_Framework_TestCase
             return new ExtendedPdo('sqlite::memory:');
         });
 
-        $table = new TableGateway(
+        $table = new Gateway(
             $connectionLocator,
             new QueryFactory('sqlite'),
             new IdentityMap(),

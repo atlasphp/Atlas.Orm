@@ -4,7 +4,7 @@ namespace Atlas\Orm\Mapper;
 use Atlas\Orm\Exception;
 use Atlas\Orm\Table\Row;
 use Atlas\Orm\Table\RowSet;
-use Atlas\Orm\Table\TableGateway;
+use Atlas\Orm\Table\Gateway;
 use Atlas\Orm\Table\TableSelect;
 
 /**
@@ -16,7 +16,7 @@ use Atlas\Orm\Table\TableSelect;
  */
 class Mapper
 {
-    protected $table;
+    protected $gateway;
 
     protected $relations;
 
@@ -27,12 +27,12 @@ class Mapper
     protected $recordClass;
 
     public function __construct(
-        TableGateway $table,
+        Gateway $gateway,
         RecordFactory $recordFactory,
         MapperEvents $mapperEvents,
         MapperRelations $relations
     ) {
-        $this->table = $table;
+        $this->gateway = $gateway;
         $this->recordFactory = $recordFactory;
         $this->mapperEvents = $mapperEvents;
         $this->relations = $relations;
@@ -48,9 +48,9 @@ class Mapper
         return $tableClass;
     }
 
-    public function getTable()
+    public function getGateway()
     {
-        return $this->table;
+        return $this->gateway;
     }
 
     public function getRelations()
@@ -60,7 +60,7 @@ class Mapper
 
     public function newRecord(array $cols = [])
     {
-        $row = $this->getTable()->newRow($cols);
+        $row = $this->gateway->newRow($cols);
         return $this->recordFactory->newRecordFromRow($row, $this->relations->getFields());
     }
 
@@ -71,7 +71,7 @@ class Mapper
 
     public function fetchRecord($primaryVal, array $with = [])
     {
-        $row = $this->table->fetchRow($primaryVal);
+        $row = $this->gateway->fetchRow($primaryVal);
         if (! $row) {
             return false;
         }
@@ -80,7 +80,7 @@ class Mapper
 
     public function fetchRecordBy(array $colsVals = [], array $with = [])
     {
-        $row = $this->table->fetchRowBy($colsVals);
+        $row = $this->gateway->fetchRowBy($colsVals);
         if (! $row) {
             return false;
         }
@@ -96,7 +96,7 @@ class Mapper
 
     public function fetchRecordSet(array $primaryVals, array $with = array())
     {
-        $rowSet = $this->table->fetchRowSet($primaryVals);
+        $rowSet = $this->gateway->fetchRowSet($primaryVals);
         if (! $rowSet) {
             return array();
         }
@@ -105,7 +105,7 @@ class Mapper
 
     public function fetchRecordSetBy(array $colsVals = [], array $with = array())
     {
-        $rowSet = $this->table->fetchRowSetBy($colsVals);
+        $rowSet = $this->gateway->fetchRowSetBy($colsVals);
         if (! $rowSet) {
             return array();
         }
@@ -130,7 +130,7 @@ class Mapper
 
     public function select(array $colsVals = [])
     {
-        $tableSelect = $this->getTable()->select($colsVals);
+        $tableSelect = $this->gateway->select($colsVals);
         return $this->newMapperSelect($tableSelect);
     }
 
@@ -138,21 +138,21 @@ class Mapper
     {
         $this->assertRecord($record);
         $this->mapperEvents->beforeInsert($this, $record);
-        return $this->getTable()->insert($record->getRow());
+        return $this->gateway->insert($record->getRow());
     }
 
     public function update(Record $record)
     {
         $this->assertRecord($record);
         $this->mapperEvents->beforeUpdate($this, $record);
-        return $this->getTable()->update($record->getRow());
+        return $this->gateway->update($record->getRow());
     }
 
     public function delete(Record $record)
     {
         $this->assertRecord($record);
         $this->mapperEvents->beforeDelete($this, $record);
-        return $this->getTable()->delete($record->getRow());
+        return $this->gateway->delete($record->getRow());
     }
 
     protected function assertRecord($record)

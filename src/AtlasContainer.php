@@ -5,8 +5,8 @@ use Atlas\Orm\Mapper\MapperFactory;
 use Atlas\Orm\Mapper\MapperLocator;
 use Atlas\Orm\Mapper\MapperRelations;
 use Atlas\Orm\Table\IdentityMap;
-use Atlas\Orm\Table\TableFactory;
-use Atlas\Orm\Table\TableLocator;
+use Atlas\Orm\Table\GatewayFactory;
+use Atlas\Orm\Table\GatewayLocator;
 use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\QueryFactory;
@@ -20,7 +20,7 @@ class AtlasContainer
     protected $identityMap;
     protected $mapperLocator;
     protected $queryFactory;
-    protected $tableLocator;
+    protected $gatewayLocator;
 
     public function __construct(
         $dsn,
@@ -32,7 +32,7 @@ class AtlasContainer
         $this->setConnectionLocator(func_get_args());
         $this->setQueryFactory($dsn);
 
-        $this->tableLocator = new TableLocator();
+        $this->gatewayLocator = new GatewayLocator();
         $this->mapperLocator = new MapperLocator();
         $this->identityMap = new IdentityMap();
 
@@ -84,7 +84,7 @@ class AtlasContainer
 
     public function getTable($tableClass)
     {
-        return $this->tableLocator->get($tableClass);
+        return $this->gatewayLocator->get($tableClass);
     }
 
     public function setReadConnection($name, callable $callable)
@@ -127,8 +127,8 @@ class AtlasContainer
             throw Exception::classDoesNotExist($tableClass);
         }
 
-        if (! $this->tableLocator->has($tableClass)) {
-            $this->tableLocator->set($tableClass, $this->newTableFactory($tableClass));
+        if (! $this->gatewayLocator->has($tableClass)) {
+            $this->gatewayLocator->set($tableClass, $this->newGatewayFactory($tableClass));
         }
     }
 
@@ -152,8 +152,8 @@ class AtlasContainer
         return new MapperFactory($this, $mapperClass, $tableClass);
     }
 
-    public function newTableFactory($tableClass)
+    public function newGatewayFactory($tableClass)
     {
-        return new TableFactory($this, $tableClass);
+        return new GatewayFactory($this, $tableClass);
     }
 }
