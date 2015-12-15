@@ -25,7 +25,7 @@ use Aura\SqlQuery\Common\Update;
  * @package Atlas.Atlas
  *
  */
-class Table
+class TableGateway
 {
     use TableTrait;
 

@@ -8,7 +8,7 @@ use Atlas\Orm\DataSource\Employee\EmployeeRecordFactory;
 use Atlas\Orm\DataSource\Employee\EmployeeMapperEvents;
 use Atlas\Orm\DataSource\Employee\EmployeeRelations;
 use Atlas\Orm\DataSource\Employee\EmployeeTableEvents;
-use Atlas\Orm\DataSource\Employee\EmployeeTable;
+use Atlas\Orm\DataSource\Employee\EmployeeTableGateway;
 use Atlas\Orm\Mapper\MapperRelations;
 use Atlas\Orm\Mapper\RecordFactory;
 use Atlas\Orm\SqliteFixture;
@@ -34,7 +34,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
             return new ExtendedPdo('sqlite::memory:');
         });
 
-        $this->table = new EmployeeTable(
+        $this->table = new EmployeeTableGateway(
             $connectionLocator,
             new QueryFactory('sqlite'),
             new IdentityMap(),

@@ -4,7 +4,7 @@ namespace Atlas\Orm\Mapper;
 use Atlas\Orm\Exception;
 use Atlas\Orm\Table\Row;
 use Atlas\Orm\Table\RowSet;
-use Atlas\Orm\Table\Table;
+use Atlas\Orm\Table\TableGateway;
 use Atlas\Orm\Table\TableSelect;
 
 /**
@@ -27,7 +27,7 @@ class Mapper
     protected $recordClass;
 
     public function __construct(
-        Table $table,
+        TableGateway $table,
         RecordFactory $recordFactory,
         MapperEvents $mapperEvents,
         MapperRelations $relations

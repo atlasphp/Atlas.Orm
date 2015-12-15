@@ -2,7 +2,7 @@
 namespace Atlas\Orm\Table;
 
 use Atlas\Orm\Exception;
-use Atlas\Orm\DataSource\Employee\EmployeeTable;
+use Atlas\Orm\DataSource\Employee\EmployeeTableGateway;
 
 class TableLocatorTest extends \PHPUnit_Framework_TestCase
 {

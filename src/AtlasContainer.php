@@ -123,8 +123,9 @@ class AtlasContainer
 
     public function setTable($tableClass)
     {
-        if (! class_exists($tableClass)) {
-            throw Exception::classDoesNotExist($tableClass);
+        $class = $tableClass . 'Gateway';
+        if (! class_exists($class)) {
+            throw Exception::classDoesNotExist($class);
         }
 
         if (! $this->tableLocator->has($tableClass)) {

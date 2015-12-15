@@ -8,52 +8,52 @@ use PdoStatement;
 
 class TableEvents
 {
-    public function modifyNewRow(Table $table, Row $row)
+    public function modifyNewRow(TableGateway $table, Row $row)
     {
         // do nothing
     }
 
-    public function beforeInsert(Table $table, Row $row)
+    public function beforeInsert(TableGateway $table, Row $row)
     {
         // do nothing
     }
 
-    public function modifyInsert(Table $table, Row $row, InsertInterface $insert)
+    public function modifyInsert(TableGateway $table, Row $row, InsertInterface $insert)
     {
         // do nothing
     }
 
-    public function afterInsert(Table $table, Row $row, InsertInterface $insert, PdoStatement $pdoStatement)
+    public function afterInsert(TableGateway $table, Row $row, InsertInterface $insert, PdoStatement $pdoStatement)
     {
         // do nothing
     }
 
-    public function beforeUpdate(Table $table, Row $row)
+    public function beforeUpdate(TableGateway $table, Row $row)
     {
         // do nothing
     }
 
-    public function modifyUpdate(Table $table, Row $row, UpdateInterface $update)
+    public function modifyUpdate(TableGateway $table, Row $row, UpdateInterface $update)
     {
         // do nothing
     }
 
-    public function afterUpdate(Table $table, Row $row, UpdateInterface $update, PdoStatement $pdoStatement)
+    public function afterUpdate(TableGateway $table, Row $row, UpdateInterface $update, PdoStatement $pdoStatement)
     {
         // do nothing
     }
 
-    public function beforeDelete(Table $table, Row $row)
+    public function beforeDelete(TableGateway $table, Row $row)
     {
         // do nothing
     }
 
-    public function modifyDelete(Table $table, Row $row, DeleteInterface $delete)
+    public function modifyDelete(TableGateway $table, Row $row, DeleteInterface $delete)
     {
         // do nothing
     }
 
-    public function afterDelete(Table $table, Row $row, DeleteInterface $delete, PdoStatement $pdoStatement)
+    public function afterDelete(TableGateway $table, Row $row, DeleteInterface $delete, PdoStatement $pdoStatement)
     {
         // do nothing
     }

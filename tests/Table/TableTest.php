@@ -2,7 +2,7 @@
 namespace Atlas\Orm\Table;
 
 use Atlas\Orm\Assertions;
-use Atlas\Orm\DataSource\Employee\EmployeeTable;
+use Atlas\Orm\DataSource\Employee\EmployeeTableGateway;
 use Atlas\Orm\DataSource\Employee\EmployeeTableEvents;
 use Atlas\Orm\SqliteFixture;
 use Aura\Sql\ConnectionLocator;
@@ -25,7 +25,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
             return new ExtendedPdo('sqlite::memory:');
         });
 
-        $this->table = new EmployeeTable(
+        $this->table = new EmployeeTableGateway(
             $connectionLocator,
             new QueryFactory('sqlite'),
             new IdentityMap(),
@@ -214,7 +214,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $row = new Row('FakeTable', new RowIdentity(['id' => null]), []);
         $this->setExpectedException(
             UnexpectedValueException::CLASS,
-            "Expected Row with table class 'Atlas\Orm\DataSource\Employee\EmployeeTable', had 'FakeTable' instead."
+            "Expected Row with table class 'Atlas\Orm\DataSource\Employee\EmployeeTableGateway', had 'FakeTable' instead."
         );
         $this->table->insert($row);
     }
@@ -256,7 +256,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $row = new Row('FakeTable', new RowIdentity(['id' => null]), []);
         $this->setExpectedException(
             UnexpectedValueException::CLASS,
-            "Expected Row with table class 'Atlas\Orm\DataSource\Employee\EmployeeTable', got 'FakeTable' instead."
+            "Expected Row with table class 'Atlas\Orm\DataSource\Employee\EmployeeTableGateway', got 'FakeTable' instead."
         );
         $this->table->update($row);
     }
@@ -280,7 +280,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $row = new Row('FakeTable', new RowIdentity(['id' => null]), []);
         $this->setExpectedException(
             UnexpectedValueException::CLASS,
-            "Expected Row with table class 'Atlas\Orm\DataSource\Employee\EmployeeTable', got 'FakeTable' instead."
+            "Expected Row with table class 'Atlas\Orm\DataSource\Employee\EmployeeTableGateway', got 'FakeTable' instead."
         );
         $this->table->delete($row);
     }

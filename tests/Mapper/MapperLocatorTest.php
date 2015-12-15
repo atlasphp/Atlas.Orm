@@ -4,7 +4,7 @@ namespace Atlas\Orm\Mapper;
 use Atlas\Orm\DataSource\Employee\EmployeeMapper;
 use Atlas\Orm\DataSource\Employee\EmployeeRecord;
 use Atlas\Orm\DataSource\Employee\EmployeeRecordSet;
-use Atlas\Orm\DataSource\Employee\EmployeeTable;
+use Atlas\Orm\DataSource\Employee\EmployeeTableGateway;
 use Atlas\Orm\Exception;
 use Atlas\Orm\Mapper\Related;
 use Atlas\Orm\Table\Row;
