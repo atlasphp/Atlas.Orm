@@ -7,7 +7,6 @@ use Atlas\Orm\DataSource\Employee\EmployeeMapper;
 use Atlas\Orm\DataSource\Employee\EmployeeRecordFactory;
 use Atlas\Orm\DataSource\Employee\EmployeeMapperEvents;
 use Atlas\Orm\DataSource\Employee\EmployeeRelations;
-use Atlas\Orm\DataSource\Employee\EmployeeRowFactory;
 use Atlas\Orm\DataSource\Employee\EmployeeTableEvents;
 use Atlas\Orm\DataSource\Employee\EmployeeTable;
 use Atlas\Orm\Mapper\MapperRelations;
@@ -39,7 +38,6 @@ class MapperTest extends \PHPUnit_Framework_TestCase
             $connectionLocator,
             new QueryFactory('sqlite'),
             new IdentityMap(),
-            new EmployeeRowFactory(),
             new EmployeeTableEvents()
         );
 

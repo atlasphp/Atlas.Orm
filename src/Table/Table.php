@@ -67,8 +67,6 @@ class Table
 
     protected $tableEvents;
 
-    protected $rowFactory;
-
     protected $identityMap;
 
     protected $rowClass;
@@ -77,13 +75,11 @@ class Table
         ConnectionLocator $connectionLocator,
         QueryFactory $queryFactory,
         IdentityMap $identityMap,
-        RowFactory $rowFactory,
         TableEvents $tableEvents
     ) {
         $this->connectionLocator = $connectionLocator;
         $this->queryFactory = $queryFactory;
         $this->identityMap = $identityMap;
-        $this->rowFactory = $rowFactory;
         $this->tableEvents = $tableEvents;
         $this->rowClass = substr(get_class($this), 0, -5) . 'Row';
     }
@@ -170,7 +166,7 @@ class Table
     public function fetchRow($primaryVal)
     {
         $primaryIdentity = $this->getPrimaryIdentity($primaryVal);
-        $row = $this->identityMap->getRowByPrimary($this->rowFactory->getRowClass(), $primaryIdentity);
+        $row = $this->identityMap->getRowByPrimary($this->rowClass, $primaryIdentity);
         if (! $row) {
             $row = $this->select($primaryIdentity)->fetchRow();
         }
@@ -225,7 +221,7 @@ class Table
             return array();
         }
 
-        return $this->rowFactory->newRowSet(array_values($rows));
+        return $this->newRowSet(array_values($rows));
     }
 
     // get existing rows from identity map
@@ -234,8 +230,8 @@ class Table
         foreach ($primaryVals as $i => $primaryVal) {
             $rows[$primaryVal] = null;
             $primaryIdentity = $this->getPrimaryIdentity($primaryVal);
-            if ($this->identityMap->hasPrimary($this->rowFactory->getRowClass(), $primaryIdentity)) {
-                $rows[$primaryVal] = $this->identityMap->getRowByPrimary($this->rowFactory->getRowClass(), $primaryIdentity);
+            if ($this->identityMap->hasPrimary($this->rowClass, $primaryIdentity)) {
+                $rows[$primaryVal] = $this->identityMap->getRowByPrimary($this->rowClass, $primaryIdentity);
                 unset($primaryVals[$i]);
             }
         }
@@ -253,7 +249,7 @@ class Table
         $select = $this->select($colsVals);
         $data = $select->cols($this->tableCols())->fetchAll();
         foreach ($data as $cols) {
-            $row = $this->rowFactory->newRow($cols);
+            $row = $this->newRow($cols);
             $this->identityMap->setRow($row, $cols);
             $rows[$row->getIdentity()->getVal()] = $row;
         }
@@ -264,14 +260,33 @@ class Table
         return $this->select($colsVals)->fetchRowSet();
     }
 
-    public function newRow(array $cols)
+    public function newRow(array $cols = [])
     {
-        return $this->rowFactory->newRow($cols);
+        $cols = array_merge($this->tableDefault(), $cols);
+        $rowIdentity = $this->newRowIdentity($cols);
+        $rowClass = $this->rowClass;
+        $row = new $rowClass($rowIdentity, $cols);
+        $this->tableEvents->modifyNewRow($this, $row);
+        return $row;
+    }
+
+    protected function newRowIdentity(array &$cols)
+    {
+        $primaryCol = $this->tablePrimary();
+        $primaryVal = null;
+        if (array_key_exists($primaryCol, $cols)) {
+            $primaryVal = $cols[$primaryCol];
+            unset($cols[$primaryCol]);
+        }
+
+        $rowIdentityClass = $this->rowClass . 'Identity';
+        return new $rowIdentityClass([$primaryCol => $primaryVal]);
     }
 
     public function newRowSet(array $rows)
     {
-        return $this->rowFactory->newRowSet($rows);
+        $rowSetClass = $this->rowClass . 'Set';
+        return new $rowSetClass($rows);
     }
 
     public function save(Row $row)
@@ -460,7 +475,7 @@ class Table
     {
         $primaryVal = $cols[$this->tablePrimary()];
         $primaryIdentity = $this->getPrimaryIdentity($primaryVal);
-        $row = $this->identityMap->getRowByPrimary($this->rowFactory->getRowClass(), $primaryIdentity);
+        $row = $this->identityMap->getRowByPrimary($this->rowClass, $primaryIdentity);
         if (! $row) {
             $row = $this->newRow($cols);
             $row->markAsClean();

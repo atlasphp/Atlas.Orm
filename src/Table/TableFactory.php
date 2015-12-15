@@ -22,7 +22,6 @@ class TableFactory
             $this->atlasContainer->getConnectionLocator(),
             $this->atlasContainer->getQueryFactory(),
             $this->atlasContainer->getIdentityMap(),
-            $this->atlasContainer->newInstance("{$type}RowFactory"),
             $this->atlasContainer->newInstance("{$type}TableEvents")
         );
     }

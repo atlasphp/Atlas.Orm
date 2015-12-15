@@ -8,6 +8,11 @@ use PdoStatement;
 
 class TableEvents
 {
+    public function modifyNewRow(Table $table, Row $row)
+    {
+        // do nothing
+    }
+
     public function beforeInsert(Table $table, Row $row)
     {
         // do nothing
