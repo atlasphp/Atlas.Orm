@@ -126,50 +126,6 @@ class Gateway
         return $this->identityMap;
     }
 
-    /**
-     *
-     * Returns a new Select object.
-     *
-     * @return TableSelect
-     *
-     */
-    public function select(array $colsVals = [])
-    {
-        $select = $this->newTableSelect()->from($this->table->getName());
-
-        foreach ($colsVals as $col => $val) {
-            $this->selectWhere($select, $col, $val);
-        }
-
-        return $select;
-    }
-
-    protected function newTableSelect()
-    {
-        return new TableSelect(
-            $this->queryFactory->newSelect(),
-            $this->getReadConnection(),
-            $this->table->getColNames(),
-            [$this, 'getMappedOrNewRow'],
-            [$this, 'getMappedOrNewRowSet']
-        );
-    }
-
-    protected function selectWhere($select, $col, $val)
-    {
-        $col = $this->table->getName() . '.' . $col;
-
-        if (is_array($val)) {
-            return $select->where("{$col} IN (?)", $val);
-        }
-
-        if ($val === null) {
-            return $select->where("{$col} IS NULL");
-        }
-
-        return $select->where("{$col} = ?", $val);
-    }
-
     public function fetchRow($primaryVal)
     {
         $primaryIdentity = $this->getPrimaryIdentity($primaryVal);
@@ -180,117 +136,24 @@ class Gateway
         return $row;
     }
 
-    public function getPrimaryIdentity($primaryVal)
-    {
-        return [$this->table->getPrimary() => $primaryVal];
-    }
-
     public function fetchRowBy(array $colsVals)
     {
         return $this->select($colsVals)->fetchRow();
     }
 
-    /*
-    Rows by primary:
-        create empty rows
-        foreach primary value ...
-            add null in rows keyed on primary value to maintain place
-            if primary value in map
-                retain mapped row in set keyed on primary value
-                remove primary value from list
-        select remaining primary values
-        foreach returned one ...
-            new row object
-            retain row in map
-            add row in set on ID key
-        return rows
-    */
     public function fetchRowSet(array $primaryVals)
     {
-        // pre-empt working on empty array
-        if (! $primaryVals) {
-            return array();
-        }
-
-        $rows = [];
-        $this->fillExistingRows($primaryVals, $rows);
-        $this->fillMissingRows($primaryVals, $rows);
-
-        // remove unfound rows
-        foreach ($rows as $key => $val) {
-            if ($val === null) {
-                unset($rows[$key]);
-            }
-        }
-
-        // anything left?
+        $rows = $this->identifyRows($primaryVals);
         if (! $rows) {
-            return array();
+            return [];
         }
 
-        return $this->newRowSet(array_values($rows));
-    }
-
-    // get existing rows from identity map
-    protected function fillExistingRows(&$primaryVals, &$rows)
-    {
-        foreach ($primaryVals as $i => $primaryVal) {
-            $rows[$primaryVal] = null;
-            $primaryIdentity = $this->getPrimaryIdentity($primaryVal);
-            if ($this->identityMap->hasPrimary($this->tableClass, $primaryIdentity)) {
-                $rows[$primaryVal] = $this->identityMap->getRowByPrimary($this->tableClass, $primaryIdentity);
-                unset($primaryVals[$i]);
-            }
-        }
-    }
-
-    // get missing rows from database
-    protected function fillMissingRows(&$primaryVals, &$rows)
-    {
-        // are there still rows to fetch?
-        if (! $primaryVals) {
-            return;
-        }
-        // fetch and retain remaining rows
-        $colsVals = [$this->table->getPrimary() => $primaryVals];
-        $select = $this->select($colsVals);
-        $data = $select->cols($this->table->getColNames())->fetchAll();
-        foreach ($data as $cols) {
-            $row = $this->newRow($cols);
-            $this->identityMap->setRow($row, $cols);
-            $rows[$row->getIdentity()->getVal()] = $row;
-        }
+        return $this->newRowSet($rows);
     }
 
     public function fetchRowSetBy(array $colsVals)
     {
         return $this->select($colsVals)->fetchRowSet();
-    }
-
-    public function newRow(array $cols = [])
-    {
-        $cols = array_merge($this->table->getColDefaults(), $cols);
-        $rowIdentity = $this->newRowIdentity($cols);
-        $row = new Row($this->tableClass, $rowIdentity, $cols);
-        $this->events->modifyNewRow($this->table, $row);
-        return $row;
-    }
-
-    protected function newRowIdentity(array &$cols)
-    {
-        $primaryCol = $this->table->getPrimary();
-        $primaryVal = null;
-        if (array_key_exists($primaryCol, $cols)) {
-            $primaryVal = $cols[$primaryCol];
-            unset($cols[$primaryCol]);
-        }
-
-        return new RowIdentity([$primaryCol => $primaryVal]);
-    }
-
-    public function newRowSet(array $rows)
-    {
-        return new RowSet($this->tableClass, $rows);
     }
 
     public function save(Row $row)
@@ -308,7 +171,23 @@ class Gateway
 
     /**
      *
-     * Inserts a row through the gateway.
+     * Returns a new Select object.
+     *
+     * @return TableSelect
+     *
+     */
+    public function select(array $colsVals = [])
+    {
+        $select = $this->newTableSelect()->from($this->table->getName());
+        foreach ($colsVals as $col => $val) {
+            $this->selectWhere($select, $col, $val);
+        }
+        return $select;
+    }
+
+    /**
+     *
+     * Inserts a row.
      *
      * @param Row $row The row to insert.
      *
@@ -321,8 +200,6 @@ class Gateway
         $this->events->beforeInsert($this->table, $row);
 
         $insert = $this->newInsert($row);
-        $this->events->modifyInsert($this->table, $row, $insert);
-
         $pdoStatement = $this->getWriteConnection()->perform(
             $insert->getStatement(),
             $insert->getBindValues()
@@ -345,20 +222,6 @@ class Gateway
         return true;
     }
 
-    protected function newInsert(Row $row)
-    {
-        $insert = $this->queryFactory->newInsert();
-        $insert->into($this->table->getName());
-
-        $cols = $row->getArrayCopy();
-        if ($this->table->getAutoinc()) {
-            unset($cols[$this->table->getPrimary()]);
-        }
-        $insert->cols($cols);
-
-        return $insert;
-    }
-
     /**
      *
      * Updates a row.
@@ -374,7 +237,6 @@ class Gateway
         $this->events->beforeUpdate($this->table, $row);
 
         $update = $this->newUpdate($row);
-        $this->events->modifyUpdate($this->table, $row, $update);
 
         if (! $update->hasCols()) {
             return false;
@@ -398,26 +260,11 @@ class Gateway
         return true;
     }
 
-    protected function newUpdate(Row $row)
-    {
-        $update = $this->queryFactory->newUpdate();
-        $update->table($this->table->getName());
-
-        $cols = $row->getArrayDiff($this->identityMap->getInitial($row));
-        unset($cols[$this->table->getPrimary()]);
-        $update->cols($cols);
-
-        $primaryCol = $this->table->getPrimary();
-        $update->where("{$primaryCol} = ?", $row->getIdentity()->getVal());
-
-        return $update;
-    }
-
     /**
      *
-     * Deletes a row through the gateway.
+     * Deletes a row.
      *
-     * @param object $row The row to delete.
+     * @param Row $row The row to delete.
      *
      * @return bool
      *
@@ -428,8 +275,6 @@ class Gateway
         $this->events->beforeDelete($this->table, $row);
 
         $delete = $this->newDelete($row);
-        $this->events->modifyDelete($this->table, $row, $delete);
-
         $pdoStatement = $this->getWriteConnection()->perform(
             $delete->getStatement(),
             $delete->getBindValues()
@@ -450,18 +295,21 @@ class Gateway
         return true;
     }
 
-    protected function newDelete(Row $row)
+    public function newRow(array $cols = [])
     {
-        $delete = $this->queryFactory->newDelete();
-        $delete->from($this->table->getName());
-
-        $primaryCol = $this->table->getPrimary();
-        $delete->where("{$primaryCol} = ?", $row->getIdentity()->getVal());
-
-        return $delete;
+        $cols = array_merge($this->table->getColDefaults(), $cols);
+        $rowIdentity = $this->newRowIdentity($cols);
+        $row = new Row($this->tableClass, $rowIdentity, $cols);
+        $this->events->modifyNewRow($this->table, $row);
+        return $row;
     }
 
-    public function getMappedOrNewRow(array $cols)
+    public function newRowSet(array $rows)
+    {
+        return new RowSet($this->tableClass, $rows);
+    }
+
+    public function newOrIdentifiedRow(array $cols)
     {
         $primaryVal = $cols[$this->table->getPrimary()];
         $primaryIdentity = $this->getPrimaryIdentity($primaryVal);
@@ -474,12 +322,157 @@ class Gateway
         return $row;
     }
 
-    public function getMappedOrNewRowSet(array $data)
+    public function newOrIdentifiedRowSet(array $data)
     {
         $rows = [];
         foreach ($data as $cols) {
-            $rows[] = $this->getMappedOrNewRow($cols);
+            $rows[] = $this->newOrIdentifiedRow($cols);
         }
         return $this->newRowSet($rows);
+    }
+
+    protected function newTableSelect()
+    {
+        return new TableSelect(
+            $this->queryFactory->newSelect(),
+            $this->getReadConnection(),
+            $this->table->getColNames(),
+            [$this, 'newOrIdentifiedRow'],
+            [$this, 'newOrIdentifiedRowSet']
+        );
+    }
+
+    protected function selectWhere($select, $col, $val)
+    {
+        $col = $this->table->getName() . '.' . $col;
+
+        if (is_array($val)) {
+            return $select->where("{$col} IN (?)", $val);
+        }
+
+        if ($val === null) {
+            return $select->where("{$col} IS NULL");
+        }
+
+        return $select->where("{$col} = ?", $val);
+    }
+
+    protected function newInsert(Row $row)
+    {
+        $insert = $this->queryFactory->newInsert();
+        $insert->into($this->table->getName());
+
+        $cols = $row->getArrayCopy();
+        if ($this->table->getAutoinc()) {
+            unset($cols[$this->table->getPrimary()]);
+        }
+        $insert->cols($cols);
+
+        $this->events->modifyInsert($this->table, $row, $insert);
+        return $insert;
+    }
+
+    protected function newUpdate(Row $row)
+    {
+        $update = $this->queryFactory->newUpdate();
+        $update->table($this->table->getName());
+
+        $cols = $row->getArrayDiff($this->identityMap->getInitial($row));
+        unset($cols[$this->table->getPrimary()]);
+        $update->cols($cols);
+
+        $primaryCol = $this->table->getPrimary();
+        $update->where("{$primaryCol} = ?", $row->getIdentity()->getVal());
+
+        $this->events->modifyUpdate($this->table, $row, $update);
+        return $update;
+    }
+
+    protected function newDelete(Row $row)
+    {
+        $delete = $this->queryFactory->newDelete();
+        $delete->from($this->table->getName());
+
+        $primaryCol = $this->table->getPrimary();
+        $delete->where("{$primaryCol} = ?", $row->getIdentity()->getVal());
+
+        $this->events->modifyDelete($this->table, $row, $delete);
+        return $delete;
+    }
+
+    protected function newRowIdentity(array &$cols)
+    {
+        $primaryCol = $this->table->getPrimary();
+        $primaryVal = null;
+        if (array_key_exists($primaryCol, $cols)) {
+            $primaryVal = $cols[$primaryCol];
+            unset($cols[$primaryCol]);
+        }
+
+        return new RowIdentity([$primaryCol => $primaryVal]);
+    }
+
+    protected function getPrimaryIdentity($primaryVal)
+    {
+        return [$this->table->getPrimary() => $primaryVal];
+    }
+
+    /*
+    Retrieve rows from identity map and/or database.
+
+    Rows by primary:
+        create empty rows
+        foreach primary value ...
+            add null in rows keyed on primary value to maintain place
+            if primary value in map
+                retain mapped row in set keyed on primary value
+                remove primary value from list
+        select remaining primary values
+        foreach returned one ...
+            new row object
+            retain row in map
+            add row in set on ID key
+        return rows
+    */
+    protected function identifyRows($primaryVals)
+    {
+        if (! $primaryVals) {
+            return [];
+        }
+
+        $rows = [];
+        foreach ($primaryVals as $i => $primaryVal) {
+            $rows[$primaryVal] = null;
+            $primaryIdentity = $this->getPrimaryIdentity($primaryVal);
+            if ($this->identityMap->hasPrimary($this->tableClass, $primaryIdentity)) {
+                $rows[$primaryVal] = $this->identityMap->getRowByPrimary($this->tableClass, $primaryIdentity);
+                unset($primaryVals[$i]);
+            }
+        }
+
+        // are there still rows to fetch?
+        if (! $primaryVals) {
+            return array_values($rows);
+        }
+
+        // fetch and retain remaining rows
+        $colsVals = [$this->table->getPrimary() => $primaryVals];
+        $select = $this->select($colsVals);
+        $data = $select->cols($this->table->getColNames())->fetchAll();
+        foreach ($data as $cols) {
+            $row = $this->newRow($cols);
+            $this->identityMap->setRow($row, $cols);
+            $rows[$row->getIdentity()->getVal()] = $row;
+        }
+
+        // remove unfound rows
+        foreach ($rows as $key => $val) {
+            if ($val === null) {
+                unset($rows[$key]);
+            }
+        }
+
+        // done
+        return array_values($rows);
     }
 }

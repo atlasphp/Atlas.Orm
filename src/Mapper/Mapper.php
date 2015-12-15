@@ -45,6 +45,126 @@ class Mapper
         return $tableClass;
     }
 
+    public function getGateway()
+    {
+        return $this->gateway;
+    }
+
+    public function getRelations()
+    {
+        return $this->relations;
+    }
+
+    public function fetchRecord($primaryVal, array $with = [])
+    {
+        $row = $this->gateway->fetchRow($primaryVal);
+        if (! $row) {
+            return false;
+        }
+        return $this->newRecordFromRow($row, $with);
+    }
+
+    public function fetchRecordBy(array $colsVals = [], array $with = [])
+    {
+        $row = $this->gateway->fetchRowBy($colsVals);
+        if (! $row) {
+            return false;
+        }
+        return $this->newRecordFromRow($row, $with);
+    }
+
+    public function fetchRecordSet(array $primaryVals, array $with = array())
+    {
+        $rowSet = $this->gateway->fetchRowSet($primaryVals);
+        if (! $rowSet) {
+            return array();
+        }
+        return $this->newRecordSetFromRowSet($rowSet, $with);
+    }
+
+    public function fetchRecordSetBy(array $colsVals = [], array $with = array())
+    {
+        $rowSet = $this->gateway->fetchRowSetBy($colsVals);
+        if (! $rowSet) {
+            return array();
+        }
+        return $this->newRecordSetFromRowSet($rowSet, $with);
+    }
+
+    public function select(array $colsVals = [])
+    {
+        $tableSelect = $this->gateway->select($colsVals);
+        return $this->newMapperSelect($tableSelect);
+    }
+
+    public function insert(Record $record)
+    {
+        $this->assertRecord($record);
+        $this->events->beforeInsert($this, $record);
+        return $this->gateway->insert($record->getRow());
+    }
+
+    public function update(Record $record)
+    {
+        $this->assertRecord($record);
+        $this->events->beforeUpdate($this, $record);
+        return $this->gateway->update($record->getRow());
+    }
+
+    public function delete(Record $record)
+    {
+        $this->assertRecord($record);
+        $this->events->beforeDelete($this, $record);
+        return $this->gateway->delete($record->getRow());
+    }
+
+    public function newRecord(array $cols = [])
+    {
+        $row = $this->gateway->newRow($cols);
+        $record = $this->newRecordFromRow($row);
+        $this->events->modifyNewRecord($this, $record);
+        return $record;
+    }
+
+    public function newRecordFromRow(Row $row, array $with = [])
+    {
+        $recordClass = $this->recordClass;
+        $record = new $recordClass($row, $this->newRelated());
+        $this->relations->stitchIntoRecord($record, $with);
+        return $record;
+    }
+
+    public function newRecordSet(array $records = [])
+    {
+        $recordSetClass = $this->recordClass . 'Set';
+        return new $recordSetClass($records);
+    }
+
+    public function newRecordSetFromRowSet(RowSet $rowSet, array $with = [])
+    {
+        $records = [];
+        foreach ($rowSet as $row) {
+            $records[] = $this->newRecordFromRow($row);
+        }
+        $recordSet = $this->newRecordSet($records);
+        $this->relations->stitchIntoRecordSet($recordSet, $with);
+        return $recordSet;
+    }
+
+    protected function newRelated()
+    {
+        return new Related($this->relations->getFields());
+    }
+
+    protected function newMapperSelect(TableSelect $tableSelect)
+    {
+        return new MapperSelect(
+            $tableSelect,
+            [$this, 'newRecordFromRow'],
+            [$this, 'newRecordSetFromRowSet']
+        );
+    }
+
     protected function defineRelations()
     {
     }
@@ -88,126 +208,6 @@ class Mapper
             $foreignMapperClass,
             $throughName
         );
-    }
-
-    public function getGateway()
-    {
-        return $this->gateway;
-    }
-
-    public function getRelations()
-    {
-        return $this->relations;
-    }
-
-    public function newRecord(array $cols = [])
-    {
-        $row = $this->gateway->newRow($cols);
-        $record = $this->newRecordFromRow($row);
-        $this->events->modifyNewRecord($this, $record);
-        return $record;
-    }
-
-    public function newRecordSet(array $records = [])
-    {
-        $recordSetClass = $this->recordClass . 'Set';
-        return new $recordSetClass($records);
-    }
-
-    public function fetchRecord($primaryVal, array $with = [])
-    {
-        $row = $this->gateway->fetchRow($primaryVal);
-        if (! $row) {
-            return false;
-        }
-        return $this->newRecordFromRow($row, $with);
-    }
-
-    public function fetchRecordBy(array $colsVals = [], array $with = [])
-    {
-        $row = $this->gateway->fetchRowBy($colsVals);
-        if (! $row) {
-            return false;
-        }
-        return $this->newRecordFromRow($row, $with);
-    }
-
-    public function newRecordFromRow(Row $row, array $with = [])
-    {
-        $recordClass = $this->recordClass;
-        $record = new $recordClass($row, $this->newRelated());
-        $this->relations->stitchIntoRecord($record, $with);
-        return $record;
-    }
-
-    protected function newRelated()
-    {
-        return new Related($this->relations->getFields());
-    }
-
-    public function fetchRecordSet(array $primaryVals, array $with = array())
-    {
-        $rowSet = $this->gateway->fetchRowSet($primaryVals);
-        if (! $rowSet) {
-            return array();
-        }
-        return $this->newRecordSetFromRowSet($rowSet, $with);
-    }
-
-    public function fetchRecordSetBy(array $colsVals = [], array $with = array())
-    {
-        $rowSet = $this->gateway->fetchRowSetBy($colsVals);
-        if (! $rowSet) {
-            return array();
-        }
-        return $this->newRecordSetFromRowSet($rowSet, $with);
-    }
-
-    public function newRecordSetFromRowSet(RowSet $rowSet, array $with = [])
-    {
-        $records = [];
-        foreach ($rowSet as $row) {
-            $records[] = $this->newRecordFromRow($row);
-        }
-        $recordSet = $this->newRecordSet($records);
-        $this->relations->stitchIntoRecordSet($recordSet, $with);
-        return $recordSet;
-    }
-
-    protected function newMapperSelect(TableSelect $tableSelect)
-    {
-        return new MapperSelect(
-            $tableSelect,
-            [$this, 'newRecordFromRow'],
-            [$this, 'newRecordSetFromRowSet']
-        );
-    }
-
-    public function select(array $colsVals = [])
-    {
-        $tableSelect = $this->gateway->select($colsVals);
-        return $this->newMapperSelect($tableSelect);
-    }
-
-    public function insert(Record $record)
-    {
-        $this->assertRecord($record);
-        $this->events->beforeInsert($this, $record);
-        return $this->gateway->insert($record->getRow());
-    }
-
-    public function update(Record $record)
-    {
-        $this->assertRecord($record);
-        $this->events->beforeUpdate($this, $record);
-        return $this->gateway->update($record->getRow());
-    }
-
-    public function delete(Record $record)
-    {
-        $this->assertRecord($record);
-        $this->events->beforeDelete($this, $record);
-        return $this->gateway->delete($record->getRow());
     }
 
     protected function assertRecord($record)

@@ -34,11 +34,11 @@ class TableSelect implements SubselectInterface
 
     protected $connection;
 
-    protected $defaultCols;
+    protected $colNames;
 
-    protected $getMappedOrNewRow;
+    protected $newOrIdentifiedRow;
 
-    protected $getMappedOrNewRowSet;
+    protected $newOrIdentifiedRowSet;
 
     /**
      *
@@ -48,15 +48,15 @@ class TableSelect implements SubselectInterface
     public function __construct(
         SelectInterface $select,
         ExtendedPdo $connection,
-        array $defaultCols,
-        callable $getMappedOrNewRow,
-        callable $getMappedOrNewRowSet
+        array $colNames,
+        callable $newOrIdentifiedRow,
+        callable $newOrIdentifiedRowSet
     ) {
         $this->select = $select;
         $this->connection = $connection;
-        $this->defaultCols = $defaultCols;
-        $this->getMappedOrNewRow = $getMappedOrNewRow;
-        $this->getMappedOrNewRowSet = $getMappedOrNewRowSet;
+        $this->colNames = $colNames;
+        $this->newOrIdentifiedRow = $newOrIdentifiedRow;
+        $this->newOrIdentifiedRowSet = $newOrIdentifiedRowSet;
     }
 
     /**
@@ -204,25 +204,25 @@ class TableSelect implements SubselectInterface
 
     public function fetchRow()
     {
-        $this->select->cols($this->defaultCols);
+        $this->select->cols($this->colNames);
 
         $cols = $this->fetchOne();
         if (! $cols) {
             return false;
         }
 
-        return call_user_func($this->getMappedOrNewRow, $cols);
+        return call_user_func($this->newOrIdentifiedRow, $cols);
     }
 
     public function fetchRowSet()
     {
-        $this->select->cols($this->defaultCols);
+        $this->select->cols($this->colNames);
 
         $data = $this->fetchAll();
         if (! $data) {
             return array();
         }
 
-        return call_user_func($this->getMappedOrNewRowSet, $data);
+        return call_user_func($this->newOrIdentifiedRowSet, $data);
     }
 }
