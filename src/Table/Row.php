@@ -6,14 +6,17 @@ use Atlas\Orm\Status;
 
 class Row
 {
+    private $tableClass;
+
     private $identity;
 
     private $data = [];
 
     private $status;
 
-    public function __construct(RowIdentity $identity, array $data)
+    public function __construct($tableClass, RowIdentity $identity, array $data)
     {
+        $this->tableClass = $tableClass;
         $this->identity = $identity;
         $this->data = $data;
         $this->status = Status::IS_NEW;
@@ -69,6 +72,18 @@ class Row
     {
         if (! $this->has($col)) {
             throw Exception::propertyDoesNotExist($this, $col);
+        }
+    }
+
+    public function getTableClass()
+    {
+        return $this->tableClass;
+    }
+
+    public function assertTableClass($tableClass)
+    {
+        if ($tableClass !== $this->tableClass) {
+            throw Exception::wrongTableClass($tableClass, $this->tableClass);
         }
     }
 

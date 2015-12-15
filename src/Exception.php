@@ -115,4 +115,9 @@ class Exception extends \Exception
         }
         return new Exception("{$class}::\${$property} is immutable once deleted.");
     }
+
+    public static function wrongTableClass($expect, $actual)
+    {
+        return new UnexpectedValueException("Expected Row with table class '$expect', got '$actual' instead.");
+    }
 }

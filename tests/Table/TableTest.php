@@ -208,11 +208,13 @@ class TableTest extends \PHPUnit_Framework_TestCase
         );
         $this->table->insert($row);
 
+        // DOES THIS ACTUALLY RUN???
+
         // try to insert a row of the wrong type
-        $row = new FakeRow(new FakeRowIdentity(['id' => null]), []);
+        $row = new Row('FakeTable', new RowIdentity(['id' => null]), []);
         $this->setExpectedException(
-            InvalidArgumentException::CLASS,
-            "Expected object of type 'Atlas\Orm\DataSource\Employee\EmployeeRow', got 'Atlas\Orm\Table\FakeRow' instead."
+            UnexpectedValueException::CLASS,
+            "Expected Row with table class 'Atlas\Orm\DataSource\Employee\EmployeeTable', had 'FakeTable' instead."
         );
         $this->table->insert($row);
     }
@@ -250,11 +252,11 @@ class TableTest extends \PHPUnit_Framework_TestCase
         // );
         // $this->table->update($row);
 
-        // try to update a row of the wrong type
-        $row = new FakeRow(new FakeRowIdentity(['id' => null]), []);
+        // try to update a row from the wrong table
+        $row = new Row('FakeTable', new RowIdentity(['id' => null]), []);
         $this->setExpectedException(
-            InvalidArgumentException::CLASS,
-            "Expected object of type 'Atlas\Orm\DataSource\Employee\EmployeeRow', got 'Atlas\Orm\Table\FakeRow' instead."
+            UnexpectedValueException::CLASS,
+            "Expected Row with table class 'Atlas\Orm\DataSource\Employee\EmployeeTable', got 'FakeTable' instead."
         );
         $this->table->update($row);
     }
@@ -275,10 +277,10 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expect, count($actual));
 
         // try to delete a row of the wrong type
-        $row = new FakeRow(new FakeRowIdentity(['id' => null]), []);
+        $row = new Row('FakeTable', new RowIdentity(['id' => null]), []);
         $this->setExpectedException(
-            InvalidArgumentException::CLASS,
-            "Expected object of type 'Atlas\Orm\DataSource\Employee\EmployeeRow', got 'Atlas\Orm\Table\FakeRow' instead."
+            UnexpectedValueException::CLASS,
+            "Expected Row with table class 'Atlas\Orm\DataSource\Employee\EmployeeTable', got 'FakeTable' instead."
         );
         $this->table->delete($row);
     }

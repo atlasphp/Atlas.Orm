@@ -37,7 +37,7 @@ class IdentityMap
         }
 
         $serial = $this->getSerial(
-            get_class($row),
+            $row->getTableClass(),
             $row->getIdentity()->getPrimary()
         );
 
@@ -59,9 +59,9 @@ class IdentityMap
      * @param mixed $primary
      * @return boolean
      */
-    public function hasPrimary($rowClass, $primary)
+    public function hasPrimary($tableClass, $primary)
     {
-        $serial = $this->getSerial($rowClass, $primary);
+        $serial = $this->getSerial($tableClass, $primary);
         return isset($this->serialToRow[$serial]);
     }
 
@@ -69,9 +69,9 @@ class IdentityMap
      * @param mixed $primary
      * @return Row
      */
-    public function getRowByPrimary($rowClass, $primary)
+    public function getRowByPrimary($tableClass, $primary)
     {
-        $serial = $this->getSerial($rowClass, $primary);
+        $serial = $this->getSerial($tableClass, $primary);
         if (! isset($this->serialToRow[$serial])) {
             return false;
         }
@@ -107,10 +107,10 @@ class IdentityMap
      * though the key-value pairs themselves are the same.
      *
      */
-    public function getSerial($rowClass, $primary)
+    public function getSerial($tableClass, $primary)
     {
         $separator = "|\x1F"; // a pipe, and ASCII 31 ("unit separator")
-        $serial = $separator . $rowClass. $separator
+        $serial = $separator . $tableClass. $separator
                 . implode($separator, (array) $primary)
                 . $separator;
         return $serial;

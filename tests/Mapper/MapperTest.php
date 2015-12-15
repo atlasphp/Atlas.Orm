@@ -12,8 +12,8 @@ use Atlas\Orm\DataSource\Employee\EmployeeTable;
 use Atlas\Orm\Mapper\MapperRelations;
 use Atlas\Orm\Mapper\RecordFactory;
 use Atlas\Orm\SqliteFixture;
-use Atlas\Orm\Table\FakeRow;
-use Atlas\Orm\Table\FakeRowIdentity;
+use Atlas\Orm\Table\Row;
+use Atlas\Orm\Table\RowIdentity;
 use Atlas\Orm\Table\IdentityMap;
 use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
@@ -321,7 +321,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $this->mapper->insert($record);
 
         // try to insert a record of the wrong type
-        $row = new FakeRow(new FakeRowIdentity(['id' => null]), []);
+        $row = new Row('FakeTable', new RowIdentity(['id' => null]), []);
         $related = new Related([]);
         $record = new FakeRecord($row, $related);
         $this->setExpectedException(
@@ -365,7 +365,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         // $this->mapper->update($record);
 
         // try to update a record of the wrong type
-        $row = new FakeRow(new FakeRowIdentity(['id' => null]), []);
+        $row = new Row('FakeTable', new RowIdentity(['id' => null]), []);
         $related = new Related([]);
         $record = new FakeRecord($row, $related);
         $this->setExpectedException(
@@ -392,7 +392,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expect, count($actual));
 
         // try to update a record of the wrong type
-        $row = new FakeRow(new FakeRowIdentity(['id' => null]), []);
+        $row = new Row('FakeTable', new RowIdentity(['id' => null]), []);
         $related = new Related([]);
         $record = new FakeRecord($row, $related);
         $this->setExpectedException(

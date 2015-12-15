@@ -166,7 +166,7 @@ class Table
     public function fetchRow($primaryVal)
     {
         $primaryIdentity = $this->getPrimaryIdentity($primaryVal);
-        $row = $this->identityMap->getRowByPrimary($this->rowClass, $primaryIdentity);
+        $row = $this->identityMap->getRowByPrimary(get_class($this), $primaryIdentity);
         if (! $row) {
             $row = $this->select($primaryIdentity)->fetchRow();
         }
@@ -230,8 +230,8 @@ class Table
         foreach ($primaryVals as $i => $primaryVal) {
             $rows[$primaryVal] = null;
             $primaryIdentity = $this->getPrimaryIdentity($primaryVal);
-            if ($this->identityMap->hasPrimary($this->rowClass, $primaryIdentity)) {
-                $rows[$primaryVal] = $this->identityMap->getRowByPrimary($this->rowClass, $primaryIdentity);
+            if ($this->identityMap->hasPrimary(get_class($this), $primaryIdentity)) {
+                $rows[$primaryVal] = $this->identityMap->getRowByPrimary(get_class($this), $primaryIdentity);
                 unset($primaryVals[$i]);
             }
         }
@@ -264,8 +264,7 @@ class Table
     {
         $cols = array_merge($this->tableDefault(), $cols);
         $rowIdentity = $this->newRowIdentity($cols);
-        $rowClass = $this->rowClass;
-        $row = new $rowClass($rowIdentity, $cols);
+        $row = new Row(get_class($this), $rowIdentity, $cols);
         $this->tableEvents->modifyNewRow($this, $row);
         return $row;
     }
@@ -284,7 +283,7 @@ class Table
 
     public function newRowSet(array $rows)
     {
-        return new RowSet($this->rowClass, $rows);
+        return new RowSet(get_class($this), $rows);
     }
 
     public function save(Row $row)
@@ -311,7 +310,7 @@ class Table
      */
     public function insert(Row $row)
     {
-        $this->assertRow($row);
+        $row->assertTableClass(get_class($this));
         $this->tableEvents->beforeInsert($this, $row);
 
         $insert = $this->newInsert($row);
@@ -368,7 +367,7 @@ class Table
      */
     public function update(Row $row)
     {
-        $this->assertRow($row);
+        $row->assertTableClass(get_class($this));
         $this->tableEvents->beforeUpdate($this, $row);
 
         $update = $this->newUpdate($row);
@@ -429,7 +428,7 @@ class Table
      */
     public function delete(Row $row)
     {
-        $this->assertRow($row);
+        $row->assertTableClass(get_class($this));
         $this->tableEvents->beforeDelete($this, $row);
 
         $delete = $this->newDelete($row);
@@ -473,7 +472,7 @@ class Table
     {
         $primaryVal = $cols[$this->tablePrimary()];
         $primaryIdentity = $this->getPrimaryIdentity($primaryVal);
-        $row = $this->identityMap->getRowByPrimary($this->rowClass, $primaryIdentity);
+        $row = $this->identityMap->getRowByPrimary(get_class($this), $primaryIdentity);
         if (! $row) {
             $row = $this->newRow($cols);
             $row->markAsClean();
@@ -489,16 +488,5 @@ class Table
             $rows[] = $this->getMappedOrNewRow($cols);
         }
         return $this->newRowSet($rows);
-    }
-
-    protected function assertRow($row)
-    {
-        if (! is_object($row)) {
-            throw Exception::invalidType($this->rowClass, gettype($row));
-        }
-
-        if (! $row instanceof $this->rowClass) {
-            throw Exception::invalidType($this->rowClass, $row);
-        }
     }
 }

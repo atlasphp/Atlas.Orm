@@ -4,9 +4,10 @@ namespace Atlas\Orm\Mapper;
 use Atlas\Orm\DataSource\Employee\EmployeeMapper;
 use Atlas\Orm\DataSource\Employee\EmployeeRecord;
 use Atlas\Orm\DataSource\Employee\EmployeeRecordSet;
-use Atlas\Orm\DataSource\Employee\EmployeeRow;
+use Atlas\Orm\DataSource\Employee\EmployeeTable;
 use Atlas\Orm\Exception;
 use Atlas\Orm\Mapper\Related;
+use Atlas\Orm\Table\Row;
 use Atlas\Orm\Table\RowIdentity;
 
 class MapperLocatorTest extends \PHPUnit_Framework_TestCase
@@ -37,7 +38,7 @@ class MapperLocatorTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expect, $this->mapperLocator->get(EmployeeRecord::CLASS));
         $this->assertSame($expect, $this->mapperLocator->get(EmployeeRecordSet::CLASS));
 
-        $row = new EmployeeRow(new RowIdentity(['id' => null]), []);
+        $row = new Row(EmployeeTable::CLASS, new RowIdentity(['id' => null]), []);
         $related = new Related([]);
         $record = new EmployeeRecord($row, $related);
         $this->assertSame($expect, $this->mapperLocator->get($record));

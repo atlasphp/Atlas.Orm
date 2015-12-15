@@ -11,11 +11,11 @@ class RowSet implements ArrayAccess, Countable, IteratorAggregate
 {
     private $rows = [];
 
-    private $rowClass;
+    private $tableClass;
 
-    public function __construct($rowClass, array $rows = [])
+    public function __construct($tableClass, array $rows = [])
     {
-        $this->rowClass = $rowClass;
+        $this->tableClass = $tableClass;
         foreach ($rows as $key => $row) {
             $this->offsetSet($key, $row);
         }
@@ -34,12 +34,14 @@ class RowSet implements ArrayAccess, Countable, IteratorAggregate
     public function offsetSet($offset, $value)
     {
         if (! is_object($value)) {
-            throw Exception::invalidType($this->rowClass, gettype($value));
+            throw Exception::invalidType('Atlas\Orm\Table\Row', gettype($value));
         }
 
-        if (! $value instanceof $this->rowClass) {
-            throw Exception::invalidType($this->rowClass, $value);
+        if (! $value instanceof Row) {
+            throw Exception::invalidType('Atlas\Orm\Table\Row', get_class($value));
         }
+
+        $value->assertTableClass($this->tableClass);
 
         if ($offset === null) {
             $this->rows[] = $value;

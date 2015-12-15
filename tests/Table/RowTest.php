@@ -5,27 +5,27 @@ class RowTest extends \PHPUnit_Framework_TestCase
 {
     public function testConstructWithoutPrimary()
     {
-        $row = new FakeRow(new FakeRowIdentity(['id' => null]), []);
+        $row = new Row('FakeTable', new RowIdentity(['id' => null]), []);
         $this->assertNull($row->id);
     }
 
     public function testGetMissingCol()
     {
-        $row = new FakeRow(new FakeRowIdentity(['id' => null]), []);
+        $row = new Row('FakeTable', new RowIdentity(['id' => null]), []);
         $this->setExpectedException('Atlas\Orm\Exception');
         $row->no_such_col;
     }
 
     public function testSetMissingCol()
     {
-        $row = new FakeRow(new FakeRowIdentity(['id' => null]), []);
+        $row = new Row('FakeTable', new RowIdentity(['id' => null]), []);
         $this->setExpectedException('Atlas\Orm\Exception');
         $row->no_such_col = 'foo';
     }
 
     public function testSetImmutable()
     {
-        $row = new FakeRow(new FakeRowIdentity(['id' => null]), []);
+        $row = new Row('FakeTable', new RowIdentity(['id' => null]), []);
         $row->id = '1';
 
         $this->setExpectedException('Atlas\Orm\Exception');
@@ -34,7 +34,7 @@ class RowTest extends \PHPUnit_Framework_TestCase
 
     public function testIsset()
     {
-        $row = new FakeRow(new FakeRowIdentity(['id' => null]), []);
+        $row = new Row('FakeTable', new RowIdentity(['id' => null]), []);
         $this->assertFalse(isset($row->id));
         $row->id = 1;
         $this->assertTrue(isset($row->id));
@@ -42,7 +42,7 @@ class RowTest extends \PHPUnit_Framework_TestCase
 
     public function testUnset()
     {
-        $row = new FakeRow(new FakeRowIdentity(['id' => null]), ['foo' => 'bar']);
+        $row = new Row('FakeTable', new RowIdentity(['id' => null]), ['foo' => 'bar']);
         $this->assertSame('bar', $row->foo);
         unset($row->foo);
         $this->assertNull($row->foo);
@@ -50,7 +50,7 @@ class RowTest extends \PHPUnit_Framework_TestCase
 
     public function testUnsetIdentity()
     {
-        $row = new FakeRow(new FakeRowIdentity(['id' => null]), ['foo' => 'bar']);
+        $row = new Row('FakeTable', new RowIdentity(['id' => null]), ['foo' => 'bar']);
         $this->assertNull($row->id);
         unset($row->id);
         $this->assertNull($row->id);
@@ -58,14 +58,14 @@ class RowTest extends \PHPUnit_Framework_TestCase
 
     public function testUnsetMissingCol()
     {
-        $row = new FakeRow(new FakeRowIdentity(['id' => null]), []);
+        $row = new Row('FakeTable', new RowIdentity(['id' => null]), []);
         $this->setExpectedException('Atlas\Orm\Exception');
         unset($row->no_such_col);
     }
 
     public function testUnsetImmutable()
     {
-        $row = new FakeRow(new FakeRowIdentity(['id' => '1']), []);
+        $row = new Row('FakeTable', new RowIdentity(['id' => '1']), []);
         $this->setExpectedException('Atlas\Orm\Exception');
         unset($row->id);
     }
