@@ -48,7 +48,6 @@ class MapperTest extends \PHPUnit_Framework_TestCase
 
         $this->mapper = new EmployeeMapper(
             $this->table,
-            new EmployeeRecordFactory(),
             new EmployeeMapperEvents(),
             new MapperRelations(new MapperLocator())
         );

@@ -18,12 +18,9 @@ class MapperFactory
     public function __invoke()
     {
         $mapperClass = $this->mapperClass;
-        $type = substr($mapperClass, 0, -6);
-
         return new $mapperClass(
             $this->atlasContainer->getGateway($this->tableClass),
-            $this->atlasContainer->newInstance("{$type}RecordFactory"),
-            $this->atlasContainer->newInstance("{$type}MapperEvents"),
+            $this->atlasContainer->newInstance($mapperClass . 'Events'),
             new MapperRelations($this->atlasContainer->getMapperLocator())
         );
     }

@@ -20,20 +20,16 @@ class Mapper
 
     protected $relations;
 
-    protected $recordFactory;
-
     protected $events;
 
     protected $recordClass;
 
     public function __construct(
         Gateway $gateway,
-        RecordFactory $recordFactory,
         MapperEvents $events,
         MapperRelations $relations
     ) {
         $this->gateway = $gateway;
-        $this->recordFactory = $recordFactory;
         $this->events = $events;
         $this->relations = $relations;
         $this->recordClass = substr(get_class($this), 0, -6) . 'Record';
@@ -107,12 +103,15 @@ class Mapper
     public function newRecord(array $cols = [])
     {
         $row = $this->gateway->newRow($cols);
-        return $this->recordFactory->newRecordFromRow($row, $this->relations->getFields());
+        $record = $this->newRecordFromRow($row);
+        $this->events->modifyNewRecord($this, $record);
+        return $record;
     }
 
     public function newRecordSet(array $records = [])
     {
-        return $this->recordFactory->newRecordSet($records);
+        $recordSetClass = $this->recordClass . 'Set';
+        return new $recordSetClass($records);
     }
 
     public function fetchRecord($primaryVal, array $with = [])
@@ -135,9 +134,15 @@ class Mapper
 
     public function newRecordFromRow(Row $row, array $with = [])
     {
-        $record = $this->recordFactory->newRecordFromRow($row, $this->relations->getFields());
+        $recordClass = $this->recordClass;
+        $record = new $recordClass($row, $this->newRelated());
         $this->relations->stitchIntoRecord($record, $with);
         return $record;
+    }
+
+    protected function newRelated()
+    {
+        return new Related($this->relations->getFields());
     }
 
     public function fetchRecordSet(array $primaryVals, array $with = array())
@@ -160,7 +165,11 @@ class Mapper
 
     public function newRecordSetFromRowSet(RowSet $rowSet, array $with = [])
     {
-        $recordSet = $this->recordFactory->newRecordSetFromRowSet($rowSet, $this->relations->getFields());
+        $records = [];
+        foreach ($rowSet as $row) {
+            $records[] = $this->newRecordFromRow($row);
+        }
+        $recordSet = $this->newRecordSet($records);
         $this->relations->stitchIntoRecordSet($recordSet, $with);
         return $recordSet;
     }
