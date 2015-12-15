@@ -50,7 +50,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
             $this->table,
             new EmployeeRecordFactory(),
             new EmployeeMapperEvents(),
-            new EmployeeRelations(new MapperLocator())
+            new MapperRelations(new MapperLocator())
         );
     }
 
@@ -61,7 +61,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
 
     public function testGetRelations()
     {
-        $this->assertInstanceOf(EmployeeRelations::CLASS, $this->mapper->getRelations());
+        $this->assertInstanceOf(MapperRelations::CLASS, $this->mapper->getRelations());
     }
 
     public function testFetchRecord()

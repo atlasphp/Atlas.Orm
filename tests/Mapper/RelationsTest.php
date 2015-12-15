@@ -31,8 +31,9 @@ class MapperRelationsTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->relations->set(
+            EmployeeMapper::CLASS,
             'bar',
-            ManyToMany::CLASS,
+            'ManyToMany',
             EmployeeMapper::CLASS,
             'foo'
         );
@@ -46,8 +47,9 @@ class MapperRelationsTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->relations->set(
+            EmployeeMapper::CLASS,
             'bar',
-            OneToOne::CLASS,
+            'OneToOne',
             NoSuchMapper::CLASS
         );
     }

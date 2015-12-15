@@ -82,7 +82,7 @@ class AtlasContainer
         return $this->identityMap;
     }
 
-    public function getTable($tableClass)
+    public function getGateway($tableClass)
     {
         return $this->gatewayLocator->get($tableClass);
     }

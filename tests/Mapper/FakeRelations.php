@@ -7,8 +7,4 @@ class FakeRelations extends MapperRelations
     {
         return 'Atlas\Orm\DataSource\EmployeeMapper';
     }
-
-    protected function setRelations()
-    {
-    }
 }

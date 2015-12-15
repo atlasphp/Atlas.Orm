@@ -20,16 +20,11 @@ class MapperFactory
         $mapperClass = $this->mapperClass;
         $type = substr($mapperClass, 0, -6);
 
-        $relationsClass = "{$type}Relations";
-        $relations = new $relationsClass(
-            $this->atlasContainer->getMapperLocator()
-        );
-
         return new $mapperClass(
-            $this->atlasContainer->getTable($this->tableClass),
+            $this->atlasContainer->getGateway($this->tableClass),
             $this->atlasContainer->newInstance("{$type}RecordFactory"),
             $this->atlasContainer->newInstance("{$type}MapperEvents"),
-            $relations
+            new MapperRelations($this->atlasContainer->getMapperLocator())
         );
     }
 }

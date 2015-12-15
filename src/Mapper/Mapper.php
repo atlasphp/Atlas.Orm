@@ -22,21 +22,22 @@ class Mapper
 
     protected $recordFactory;
 
-    protected $mapperEvents;
+    protected $events;
 
     protected $recordClass;
 
     public function __construct(
         Gateway $gateway,
         RecordFactory $recordFactory,
-        MapperEvents $mapperEvents,
+        MapperEvents $events,
         MapperRelations $relations
     ) {
         $this->gateway = $gateway;
         $this->recordFactory = $recordFactory;
-        $this->mapperEvents = $mapperEvents;
+        $this->events = $events;
         $this->relations = $relations;
         $this->recordClass = substr(get_class($this), 0, -6) . 'Record';
+        $this->defineRelations();
     }
 
     static public function getTableClass()
@@ -46,6 +47,51 @@ class Mapper
             $tableClass = substr(get_called_class(), 0, -6) . 'Table';
         }
         return $tableClass;
+    }
+
+    protected function defineRelations()
+    {
+    }
+
+    protected function oneToOne($name, $foreignMapperClass)
+    {
+        return $this->relations->set(
+            get_class($this),
+            $name,
+            'OneToOne',
+            $foreignMapperClass
+        );
+    }
+
+    protected function oneToMany($name, $foreignMapperClass)
+    {
+        return $this->relations->set(
+            get_class($this),
+            $name,
+            'OneToMany',
+            $foreignMapperClass
+        );
+    }
+
+    protected function manyToOne($name, $foreignMapperClass)
+    {
+        return $this->relations->set(
+            get_class($this),
+            $name,
+            'ManyToOne',
+            $foreignMapperClass
+        );
+    }
+
+    protected function manyToMany($name, $foreignMapperClass, $throughName)
+    {
+        return $this->relations->set(
+            get_class($this),
+            $name,
+            'ManyToMany',
+            $foreignMapperClass,
+            $throughName
+        );
     }
 
     public function getGateway()
@@ -137,21 +183,21 @@ class Mapper
     public function insert(Record $record)
     {
         $this->assertRecord($record);
-        $this->mapperEvents->beforeInsert($this, $record);
+        $this->events->beforeInsert($this, $record);
         return $this->gateway->insert($record->getRow());
     }
 
     public function update(Record $record)
     {
         $this->assertRecord($record);
-        $this->mapperEvents->beforeUpdate($this, $record);
+        $this->events->beforeUpdate($this, $record);
         return $this->gateway->update($record->getRow());
     }
 
     public function delete(Record $record)
     {
         $this->assertRecord($record);
-        $this->mapperEvents->beforeDelete($this, $record);
+        $this->events->beforeDelete($this, $record);
         return $this->gateway->delete($record->getRow());
     }
 

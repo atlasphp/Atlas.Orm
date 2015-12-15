@@ -20,12 +20,6 @@ class MapperRelations
     public function __construct(MapperLocator $mapperLocator)
     {
         $this->mapperLocator = $mapperLocator;
-        $this->nativeMapperClass = substr(get_class($this), 0, -9) . 'Mapper';
-        $this->setRelations();
-    }
-
-    protected function setRelations()
-    {
     }
 
     public function getFields()
@@ -33,7 +27,7 @@ class MapperRelations
         return $this->fields;
     }
 
-    public function set($name, $relationClass, $foreignMapperClass, $throughName = null)
+    public function set($nativeMapperClass, $name, $relation, $foreignMapperClass, $throughName = null)
     {
         if (! class_exists($foreignMapperClass)) {
             throw Exception::classDoesNotExist($foreignMapperClass);
@@ -43,17 +37,18 @@ class MapperRelations
             throw Exception::relationDoesNotExist($throughName);
         }
 
-        $relation = $this->newRelation($name, $relationClass, $foreignMapperClass, $throughName);
+        $relation = $this->newRelation($nativeMapperClass, $name, $relation, $foreignMapperClass, $throughName);
         $this->fields[$name] = null;
         $this->relations[$name] = $relation;
         return $relation;
     }
 
-    protected function newRelation($name, $relationClass, $foreignMapperClass, $throughName = null)
+    protected function newRelation($nativeMapperClass, $name, $relation, $foreignMapperClass, $throughName = null)
     {
+        $relationClass = "Atlas\Orm\Relation\\{$relation}";
         return new $relationClass(
             $this->mapperLocator,
-            $this->nativeMapperClass,
+            $nativeMapperClass,
             $name,
             $foreignMapperClass,
             $throughName
@@ -91,42 +86,5 @@ class MapperRelations
             }
         }
         return $with;
-    }
-
-    protected function oneToOne($name, $foreignMapperClass)
-    {
-        return $this->set(
-            $name,
-            OneToOne::CLASS,
-            $foreignMapperClass
-        );
-    }
-
-    protected function oneToMany($name, $foreignMapperClass)
-    {
-        return $this->set(
-            $name,
-            OneToMany::CLASS,
-            $foreignMapperClass
-        );
-    }
-
-    protected function manyToOne($name, $foreignMapperClass)
-    {
-        $this->set(
-            $name,
-            ManyToOne::CLASS,
-            $foreignMapperClass
-        );
-    }
-
-    protected function manyToMany($name, $foreignMapperClass, $throughName)
-    {
-        return $this->set(
-            $name,
-            ManyToMany::CLASS,
-            $foreignMapperClass,
-            $throughName
-        );
     }
 }
