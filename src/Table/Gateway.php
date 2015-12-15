@@ -349,17 +349,14 @@ class Gateway
     {
         $insert = $this->queryFactory->newInsert();
         $insert->into($this->table->getName());
-        $this->newInsertCols($insert, $row);
-        return $insert;
-    }
 
-    protected function newInsertCols(Insert $insert, Row $row)
-    {
         $cols = $row->getArrayCopy();
         if ($this->table->getAutoinc()) {
             unset($cols[$this->table->getPrimary()]);
         }
         $insert->cols($cols);
+
+        return $insert;
     }
 
     /**
@@ -405,22 +402,15 @@ class Gateway
     {
         $update = $this->queryFactory->newUpdate();
         $update->table($this->table->getName());
-        $this->newUpdateCols($update, $row);
-        $this->newUpdateWhere($update, $row);
-        return $update;
-    }
 
-    protected function newUpdateCols(Update $update, Row $row)
-    {
         $cols = $row->getArrayDiff($this->identityMap->getInitial($row));
         unset($cols[$this->table->getPrimary()]);
         $update->cols($cols);
-    }
 
-    protected function newUpdateWhere(Update $update, Row $row)
-    {
         $primaryCol = $this->table->getPrimary();
         $update->where("{$primaryCol} = ?", $row->getIdentity()->getVal());
+
+        return $update;
     }
 
     /**
@@ -464,14 +454,11 @@ class Gateway
     {
         $delete = $this->queryFactory->newDelete();
         $delete->from($this->table->getName());
-        $this->newDeleteWhere($delete, $row);
-        return $delete;
-    }
 
-    protected function newDeleteWhere(Delete $delete, Row $row)
-    {
         $primaryCol = $this->table->getPrimary();
         $delete->where("{$primaryCol} = ?", $row->getIdentity()->getVal());
+
+        return $delete;
     }
 
     public function getMappedOrNewRow(array $cols)
