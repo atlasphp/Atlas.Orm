@@ -284,8 +284,7 @@ class Table
 
     public function newRowSet(array $rows)
     {
-        $rowSetClass = $this->rowClass . 'Set';
-        return new $rowSetClass($rows);
+        return new RowSet($this->rowClass, $rows);
     }
 
     public function save(Row $row)

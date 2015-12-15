@@ -13,9 +13,9 @@ class RowSet implements ArrayAccess, Countable, IteratorAggregate
 
     private $rowClass;
 
-    public function __construct(array $rows = [])
+    public function __construct($rowClass, array $rows = [])
     {
-        $this->rowClass = substr(get_class($this), 0, -3);
+        $this->rowClass = $rowClass;
         foreach ($rows as $key => $row) {
             $this->offsetSet($key, $row);
         }
