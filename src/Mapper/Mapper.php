@@ -2,9 +2,13 @@
 namespace Atlas\Orm\Mapper;
 
 use Atlas\Orm\Exception;
+use Atlas\Orm\Relation\ManyToMany;
+use Atlas\Orm\Relation\ManyToOne;
+use Atlas\Orm\Relation\OneToMany;
+use Atlas\Orm\Relation\OneToOne;
+use Atlas\Orm\Table\Gateway;
 use Atlas\Orm\Table\Row;
 use Atlas\Orm\Table\RowSet;
-use Atlas\Orm\Table\Gateway;
 use Atlas\Orm\Table\TableSelect;
 
 /**
@@ -174,7 +178,7 @@ class Mapper
         return $this->relations->set(
             get_class($this),
             $name,
-            'OneToOne',
+            OneToOne::CLASS,
             $foreignMapperClass
         );
     }
@@ -184,7 +188,7 @@ class Mapper
         return $this->relations->set(
             get_class($this),
             $name,
-            'OneToMany',
+            OneToMany::CLASS,
             $foreignMapperClass
         );
     }
@@ -194,7 +198,7 @@ class Mapper
         return $this->relations->set(
             get_class($this),
             $name,
-            'ManyToOne',
+            ManyToOne::CLASS,
             $foreignMapperClass
         );
     }
@@ -204,7 +208,7 @@ class Mapper
         return $this->relations->set(
             get_class($this),
             $name,
-            'ManyToMany',
+            ManyToMany::CLASS,
             $foreignMapperClass,
             $throughName
         );

@@ -2,10 +2,6 @@
 namespace Atlas\Orm\Mapper;
 
 use Atlas\Orm\Exception;
-use Atlas\Orm\Relation\ManyToOne;
-use Atlas\Orm\Relation\OneToMany;
-use Atlas\Orm\Relation\ManyToMany;
-use Atlas\Orm\Relation\OneToOne;
 
 class MapperRelations
 {
@@ -27,7 +23,7 @@ class MapperRelations
         return $this->fields;
     }
 
-    public function set($nativeMapperClass, $name, $relation, $foreignMapperClass, $throughName = null)
+    public function set($nativeMapperClass, $name, $relationClass, $foreignMapperClass, $throughName = null)
     {
         if (! class_exists($foreignMapperClass)) {
             throw Exception::classDoesNotExist($foreignMapperClass);
@@ -37,15 +33,14 @@ class MapperRelations
             throw Exception::relationDoesNotExist($throughName);
         }
 
-        $relation = $this->newRelation($nativeMapperClass, $name, $relation, $foreignMapperClass, $throughName);
+        $relation = $this->newRelation($nativeMapperClass, $name, $relationClass, $foreignMapperClass, $throughName);
         $this->fields[$name] = null;
         $this->relations[$name] = $relation;
         return $relation;
     }
 
-    protected function newRelation($nativeMapperClass, $name, $relation, $foreignMapperClass, $throughName = null)
+    protected function newRelation($nativeMapperClass, $name, $relationClass, $foreignMapperClass, $throughName = null)
     {
-        $relationClass = "Atlas\Orm\Relation\\{$relation}";
         return new $relationClass(
             $this->mapperLocator,
             $nativeMapperClass,
