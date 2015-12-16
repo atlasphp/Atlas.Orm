@@ -5,11 +5,9 @@ use Atlas\Orm\Exception;
 
 class MapperRelations
 {
-    protected $relations = [];
-
     protected $mapperLocator;
 
-    protected $nativeMapperClass;
+    protected $relations = [];
 
     protected $fields = [];
 
@@ -23,8 +21,13 @@ class MapperRelations
         return $this->fields;
     }
 
-    public function set($nativeMapperClass, $name, $relationClass, $foreignMapperClass, $throughName = null)
-    {
+    public function set(
+        $nativeMapperClass,
+        $name,
+        $relationClass,
+        $foreignMapperClass,
+        $throughName = null
+    ) {
         if (! class_exists($foreignMapperClass)) {
             throw Exception::classDoesNotExist($foreignMapperClass);
         }
@@ -33,14 +36,25 @@ class MapperRelations
             throw Exception::relationDoesNotExist($throughName);
         }
 
-        $relation = $this->newRelation($nativeMapperClass, $name, $relationClass, $foreignMapperClass, $throughName);
         $this->fields[$name] = null;
-        $this->relations[$name] = $relation;
-        return $relation;
+        $this->relations[$name] = $this->newRelation(
+            $nativeMapperClass,
+            $name,
+            $relationClass,
+            $foreignMapperClass,
+            $throughName
+        );
+
+        return $this->relations[$name];
     }
 
-    protected function newRelation($nativeMapperClass, $name, $relationClass, $foreignMapperClass, $throughName = null)
-    {
+    protected function newRelation(
+        $nativeMapperClass,
+        $name,
+        $relationClass,
+        $foreignMapperClass,
+        $throughName = null
+    ) {
         return new $relationClass(
             $this->mapperLocator,
             $nativeMapperClass,
