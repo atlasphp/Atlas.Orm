@@ -1,9 +1,9 @@
 <?php
 namespace Atlas\Orm\DataSource\Employee;
 
-use Atlas\Orm\Table\TableInterface;
+use Atlas\Orm\Table\AbstractTable;
 
-class EmployeeTable implements TableInterface
+class EmployeeTable extends AbstractTable
 {
     /**
      * @inheritdoc

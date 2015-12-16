@@ -58,4 +58,13 @@ interface TableInterface
      *
      */
     public function getColDefaults();
+
+    /**
+     *
+     * Does the table have a particular column?
+     *
+     * @return bool
+     *
+     */
+    public function hasCol($name);
 }
