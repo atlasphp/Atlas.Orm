@@ -229,7 +229,7 @@ class Gateway
         }
 
         if ($this->table->getAutoinc()) {
-            $primary = $this->table->getPrimary();
+            $primary = $this->table->getPrimaryKey();
             $row->$primary = $connection->lastInsertId($primary);
         }
 
@@ -331,7 +331,7 @@ class Gateway
 
     public function newOrIdentifiedRow(array $cols)
     {
-        $primaryVal = $cols[$this->table->getPrimary()];
+        $primaryVal = $cols[$this->table->getPrimaryKey()];
         $primaryIdentity = $this->getPrimaryIdentity($primaryVal);
         $row = $this->identityMap->getRowByPrimary(
             $this->tableClass,
@@ -374,7 +374,7 @@ class Gateway
 
         $cols = $row->getArrayCopy();
         if ($this->table->getAutoinc()) {
-            unset($cols[$this->table->getPrimary()]);
+            unset($cols[$this->table->getPrimaryKey()]);
         }
         $insert->cols($cols);
 
@@ -388,10 +388,10 @@ class Gateway
         $update->table($this->table->getName());
 
         $cols = $row->getArrayDiff($this->identityMap->getInitial($row));
-        unset($cols[$this->table->getPrimary()]);
+        unset($cols[$this->table->getPrimaryKey()]);
         $update->cols($cols);
 
-        $primaryCol = $this->table->getPrimary();
+        $primaryCol = $this->table->getPrimaryKey();
         $update->where("{$primaryCol} = ?", $row->getIdentity()->getVal());
 
         $this->events->modifyUpdate($this->table, $row, $update);
@@ -403,7 +403,7 @@ class Gateway
         $delete = $this->queryFactory->newDelete();
         $delete->from($this->table->getName());
 
-        $primaryCol = $this->table->getPrimary();
+        $primaryCol = $this->table->getPrimaryKey();
         $delete->where("{$primaryCol} = ?", $row->getIdentity()->getVal());
 
         $this->events->modifyDelete($this->table, $row, $delete);
@@ -412,7 +412,7 @@ class Gateway
 
     protected function newRowIdentity(array &$cols)
     {
-        $primaryCol = $this->table->getPrimary();
+        $primaryCol = $this->table->getPrimaryKey();
         $primaryVal = null;
         if (array_key_exists($primaryCol, $cols)) {
             $primaryVal = $cols[$primaryCol];
@@ -424,7 +424,7 @@ class Gateway
 
     protected function getPrimaryIdentity($primaryVal)
     {
-        return [$this->table->getPrimary() => $primaryVal];
+        return [$this->table->getPrimaryKey() => $primaryVal];
     }
 
     /*
@@ -473,7 +473,7 @@ class Gateway
         }
 
         // fetch and retain remaining rows
-        $colsVals = [$this->table->getPrimary() => $primaryVals];
+        $colsVals = [$this->table->getPrimaryKey() => $primaryVals];
         $select = $this->select($colsVals);
         $data = $select->cols($this->table->getColNames())->fetchAll();
         foreach ($data as $cols) {

@@ -88,7 +88,7 @@ abstract class AbstractRelation
             return;
         }
 
-        $this->nativeCol($this->nativeMapper->getGateway()->getTable()->getPrimary());
+        $this->nativeCol($this->nativeMapper->getGateway()->getTable()->getPrimaryKey());
     }
 
     protected function fixForeignCol()
@@ -97,7 +97,7 @@ abstract class AbstractRelation
             return;
         }
 
-        $this->foreignCol($this->nativeMapper->getGateway()->getTable()->getPrimary());
+        $this->foreignCol($this->nativeMapper->getGateway()->getTable()->getPrimaryKey());
     }
 
     protected function fixThroughNativeCol()

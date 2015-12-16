@@ -34,12 +34,12 @@ interface TableInterface
 
     /**
      *
-     * Returns the primary column name on the table.
+     * Returns the primary key on the table, typically a single column name.
      *
      * @return string The primary column name.
      *
      */
-    public function getPrimary();
+    public function getPrimaryKey();
 
     /**
      *

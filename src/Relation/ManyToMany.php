@@ -26,7 +26,7 @@ class ManyToMany extends AbstractRelation
             return;
         }
 
-        $this->throughNativeCol($this->nativeMapper->getGateway()->getTable()->getPrimary());
+        $this->throughNativeCol($this->nativeMapper->getGateway()->getTable()->getPrimaryKey());
     }
 
     protected function fixThroughForeignCol()
@@ -35,7 +35,7 @@ class ManyToMany extends AbstractRelation
             return;
         }
 
-        $this->throughForeignCol($this->foreignMapper->getGateway()->getTable()->getPrimary());
+        $this->throughForeignCol($this->foreignMapper->getGateway()->getTable()->getPrimaryKey());
     }
 
     protected function fixForeignCol()
@@ -44,7 +44,7 @@ class ManyToMany extends AbstractRelation
             return;
         }
 
-        $this->foreignCol($this->foreignMapper->getGateway()->getTable()->getPrimary());
+        $this->foreignCol($this->foreignMapper->getGateway()->getTable()->getPrimaryKey());
     }
 
     public function stitchIntoRecord(

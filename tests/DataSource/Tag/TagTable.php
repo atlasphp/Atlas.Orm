@@ -56,7 +56,7 @@ class TagTable implements TableInterface
     /**
      * @inheritdoc
      */
-    public function getPrimary()
+    public function getPrimaryKey()
     {
         return 'tag_id';
     }

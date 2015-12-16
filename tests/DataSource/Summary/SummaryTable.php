@@ -67,7 +67,7 @@ class SummaryTable implements TableInterface
     /**
      * @inheritdoc
      */
-    public function getPrimary()
+    public function getPrimaryKey()
     {
         return 'thread_id';
     }

@@ -67,7 +67,7 @@ class TaggingTable implements TableInterface
     /**
      * @inheritdoc
      */
-    public function getPrimary()
+    public function getPrimaryKey()
     {
         return 'tagging_id';
     }

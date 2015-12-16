@@ -78,7 +78,7 @@ class ReplyTable implements TableInterface
     /**
      * @inheritdoc
      */
-    public function getPrimary()
+    public function getPrimaryKey()
     {
         return 'reply_id';
     }

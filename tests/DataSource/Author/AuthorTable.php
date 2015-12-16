@@ -56,7 +56,7 @@ class AuthorTable implements TableInterface
     /**
      * @inheritdoc
      */
-    public function getPrimary()
+    public function getPrimaryKey()
     {
         return 'author_id';
     }

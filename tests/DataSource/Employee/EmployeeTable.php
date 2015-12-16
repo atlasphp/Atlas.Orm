@@ -78,7 +78,7 @@ class EmployeeTable implements TableInterface
     /**
      * @inheritdoc
      */
-    public function getPrimary()
+    public function getPrimaryKey()
     {
         return 'id';
     }
