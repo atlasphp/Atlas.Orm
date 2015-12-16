@@ -126,7 +126,6 @@ class Mapper
     {
         $row = $this->gateway->newRow($cols);
         $record = $this->newRecordFromRow($row);
-        $this->events->modifyNewRecord($this, $record);
         return $record;
     }
 

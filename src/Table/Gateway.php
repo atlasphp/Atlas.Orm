@@ -320,7 +320,6 @@ class Gateway
         $cols = array_merge($this->table->getColDefaults(), $cols);
         $rowIdentity = $this->newRowIdentity($cols);
         $row = new Row($this->tableClass, $rowIdentity, $cols);
-        $this->events->modifyNewRow($this->table, $row);
         return $row;
     }
 

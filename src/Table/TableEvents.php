@@ -8,11 +8,6 @@ use PdoStatement;
 
 class TableEvents
 {
-    public function modifyNewRow(TableInterface $table, Row $row)
-    {
-        // do nothing
-    }
-
     public function beforeInsert(TableInterface $table, Row $row)
     {
         // do nothing

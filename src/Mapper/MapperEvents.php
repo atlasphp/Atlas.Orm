@@ -3,11 +3,6 @@ namespace Atlas\Orm\Mapper;
 
 class MapperEvents
 {
-    public function modifyNewRecord(Mapper $mapper, Record $record)
-    {
-        // do nothing
-    }
-
     public function beforeInsert(Mapper $mapper, Record $record)
     {
         // do nothing
