@@ -374,10 +374,12 @@ class Mapper
         return $record;
     }
 
-    public function newRecordSet(array $records = [])
+    public function newRecordSet(array $records = [], array $with = [])
     {
         $recordSetClass = $this->recordClass . 'Set';
-        return new $recordSetClass($records);
+        $recordSet = new $recordSetClass($records);
+        $this->relations->stitchIntoRecordSet($recordSet, $with);
+        return $recordSet;
     }
 
     protected function newRecordSetFromRows(array $rows, array $with = [])
@@ -386,9 +388,7 @@ class Mapper
         foreach ($rows as $row) {
             $records[] = $this->newRecordFromRow($row);
         }
-        $recordSet = $this->newRecordSet($records);
-        $this->relations->stitchIntoRecordSet($recordSet, $with);
-        return $recordSet;
+        return $this->newRecordSet($records, $with);
     }
 
     public function getSelectedRecordSet(array $data, array $with = [])
