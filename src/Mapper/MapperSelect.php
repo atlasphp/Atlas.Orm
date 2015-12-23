@@ -192,30 +192,6 @@ class MapperSelect
         );
     }
 
-    public function fetchRow()
-    {
-        $this->select->cols($this->colNames);
-
-        $cols = $this->fetchOne();
-        if (! $cols) {
-            return false;
-        }
-
-        return call_user_func($this->newOrIdentifiedRow, $cols);
-    }
-
-    public function fetchRows()
-    {
-        $this->select->cols($this->colNames);
-
-        $data = $this->fetchAll();
-        if (! $data) {
-            return array();
-        }
-
-        return call_user_func($this->newOrIdentifiedRows, $data);
-    }
-
     public function with(array $with)
     {
         $this->with = $with;
@@ -224,19 +200,26 @@ class MapperSelect
 
     public function fetchRecord()
     {
-        $row = $this->fetchRow();
-        if (! $row) {
+        $this->select->cols($this->colNames);
+        $cols = $this->fetchOne();
+        if (! $cols) {
             return false;
         }
+
+        $row = call_user_func($this->newOrIdentifiedRow, $cols);
         return call_user_func($this->newRecordFromRow, $row, $this->with);
     }
 
     public function fetchRecordSet()
     {
-        $rows = $this->fetchRows();
-        if (! $rows) {
+        $this->select->cols($this->colNames);
+
+        $data = $this->fetchAll();
+        if (! $data) {
             return array();
         }
+
+        $rows = call_user_func($this->newOrIdentifiedRows, $data);
         return call_user_func($this->newRecordSetFromRows, $rows, $this->with);
     }
 }

@@ -282,15 +282,25 @@ class Mapper
             $this->tableClass,
             $primaryIdentity
         );
-        if (! $row) {
-            $row = $this->select($primaryIdentity)->fetchRow();
+        if ($row) {
+            return $row;
         }
-        return $row;
+
+        return $this->fetchRowBy($primaryIdentity);
     }
 
     protected function fetchRowBy(array $colsVals)
     {
-        return $this->select($colsVals)->fetchRow();
+        $cols = $this
+            ->select($colsVals)
+            ->cols($this->table->getColNames())
+            ->fetchOne();
+
+        if (! $cols) {
+            return false;
+        }
+
+        return $this->newOrIdentifiedRow($cols);
     }
 
     protected function fetchRows(array $primaryVals)
@@ -304,7 +314,15 @@ class Mapper
 
     protected function fetchRowsBy(array $colsVals)
     {
-        return $this->select($colsVals)->fetchRows();
+        $data = $this
+            ->select($colsVals)
+            ->cols($this->table->getColNames())
+            ->fetchAll();
+
+        if (! $data) {
+            return [];
+        }
+        return $this->newOrIdentifiedRows($data);
     }
 
     /**
