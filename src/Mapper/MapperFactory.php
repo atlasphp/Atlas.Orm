@@ -19,9 +19,12 @@ class MapperFactory
     {
         $mapperClass = $this->mapperClass;
         return new $mapperClass(
-            $this->atlasContainer->getGateway($this->tableClass),
+            $this->atlasContainer->getConnectionLocator(),
+            $this->atlasContainer->getQueryFactory(),
+            $this->atlasContainer->getIdentityMap(),
+            $this->atlasContainer->newInstance($this->tableClass),
             $this->atlasContainer->newInstance($mapperClass . 'Events'),
-            new MapperRelations($this->atlasContainer->getMapperLocator())
+            $this->atlasContainer->newMapperRelations()
         );
     }
 }

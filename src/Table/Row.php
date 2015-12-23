@@ -101,6 +101,7 @@ class Row
         );
     }
 
+    /** @todo array_key_exists($col, $init) */
     public function getArrayDiff(array $init)
     {
         $diff = $this->getArrayCopy();

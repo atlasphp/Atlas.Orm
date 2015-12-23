@@ -13,27 +13,26 @@ class TableSelectTest extends \PHPUnit_Framework_TestCase
 {
     use Assertions;
 
-    protected $decoratedSelect;
     protected $tableSelect;
 
     protected function setUp()
     {
-        $connectionLocator = new ConnectionLocator(function () {
-            return new ExtendedPdo('sqlite::memory:');
-        });
+        $connection = new ExtendedPdo('sqlite::memory:');
 
-        $table = new Gateway(
-            $connectionLocator,
-            new QueryFactory('sqlite'),
-            new IdentityMap(),
-            new EmployeeTable(),
-            new EmployeeTableEvents()
-        );
-
-        $fixture = new SqliteFixture($table->getWriteConnection());
+        $fixture = new SqliteFixture($connection);
         $fixture->exec();
 
-        $this->tableSelect = $table->select();
+        $queryFactory = new QueryFactory('sqlite');
+        $select = $queryFactory->newSelect();
+        $select->from('employee');
+
+        $this->tableSelect = new TableSelect(
+            $select,
+            $connection,
+            ['id', 'name', 'building', 'floor'],
+            function () { },
+            function () { }
+        );
     }
 
     public function testGetStatement()

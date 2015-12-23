@@ -31,31 +31,24 @@ class MapperTest extends \PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        $connectionLocator = new ConnectionLocator(function () {
-            return new ExtendedPdo('sqlite::memory:');
-        });
-
-        $this->table = new Gateway(
-            $connectionLocator,
+        $this->mapper = new EmployeeMapper(
+            new ConnectionLocator(function () {
+                return new ExtendedPdo('sqlite::memory:');
+            }),
             new QueryFactory('sqlite'),
             new IdentityMap(),
             new EmployeeTable(),
-            new EmployeeTableEvents()
-        );
-
-        $fixture = new SqliteFixture($this->table->getWriteConnection());
-        $fixture->exec();
-
-        $this->mapper = new EmployeeMapper(
-            $this->table,
             new EmployeeMapperEvents(),
             new MapperRelations(new MapperLocator())
         );
+
+        $fixture = new SqliteFixture($this->mapper->getWriteConnection());
+        $fixture->exec();
     }
 
     public function testGetTable()
     {
-        $this->assertSame($this->table, $this->mapper->getGateway());
+        $this->assertInstanceOf(EmployeeTable::CLASS, $this->mapper->getTable());
     }
 
     public function testGetRelations()
@@ -308,7 +301,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
             'building' => '10',
             'floor' => '99',
         ];
-        $actual = $this->mapper->getGateway()->getReadConnection()->fetchOne(
+        $actual = $this->mapper->getReadConnection()->fetchOne(
             'SELECT * FROM employee WHERE id = 13'
         );
         $this->assertSame($expect, $actual);
@@ -348,7 +341,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
 
         // was it *actually* updated?
         $expect = $record->getRow()->getArrayCopy();
-        $actual = $this->mapper->getGateway()->getReadConnection()->fetchOne(
+        $actual = $this->mapper->getReadConnection()->fetchOne(
             "SELECT * FROM employee WHERE name = 'Annabelle'"
         );
         $this->assertSame($expect, $actual);
@@ -405,7 +398,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
 
     protected function silenceErrors()
     {
-        $conn = $this->mapper->getGateway()->getWriteConnection();
+        $conn = $this->mapper->getWriteConnection();
         $conn->setAttribute($conn::ATTR_ERRMODE, $conn::ERRMODE_SILENT);
     }
 }

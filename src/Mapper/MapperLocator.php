@@ -78,6 +78,8 @@ class MapperLocator
         return $this->instances[$class];
     }
 
+    /** @todo class_exists($class) */
+    /** @todo $class instanceof Mapper */
     protected function getMapperClass($class)
     {
         if (is_object($class)) {
