@@ -152,11 +152,11 @@ class Mapper
             $primaryIdentity
         );
 
-        if (! $row) {
-            return $this->fetchRecordBy($primaryIdentity, $with);
+        if ($row) {
+            return $this->newRecordFromRow($row, $with);
         }
 
-        return $this->newRecordFromRow($row, $with);
+        return $this->fetchRecordBy($primaryIdentity, $with);
     }
 
     public function fetchRecordBy(array $colsVals = [], array $with = [])
@@ -204,10 +204,8 @@ class Mapper
             $this->queryFactory->newSelect(),
             $this->getReadConnection(),
             $this->table->getColNames(),
-            [$this, 'newOrIdentifiedRow'],
-            [$this, 'newOrIdentifiedRows'],
-            [$this, 'newRecordFromRow'],
-            [$this, 'newRecordSetFromRows']
+            [$this, 'newRecordFromCols'],
+            [$this, 'newRecordSetFromData']
         );
 
         $select->from($this->table->getName());
@@ -255,11 +253,16 @@ class Mapper
         return $this->gatewayDelete($record->getRow());
     }
 
-    public function newRecord(array $cols = [])
+    public function newRecord(array $cols = [], array $with = [])
     {
         $row = $this->newRow($cols);
-        $record = $this->newRecordFromRow($row);
-        return $record;
+        return $this->newRecordFromRow($row, $with);
+    }
+
+    public function newRecordFromCols(array $cols, array $with = [])
+    {
+        $row = $this->newOrIdentifiedRow($cols);
+        return $this->newRecordFromRow($row, $with);
     }
 
     public function newRecordFromRow(Row $row, array $with = [])
@@ -281,6 +284,17 @@ class Mapper
         $records = [];
         foreach ($rows as $row) {
             $records[] = $this->newRecordFromRow($row);
+        }
+        $recordSet = $this->newRecordSet($records);
+        $this->relations->stitchIntoRecordSet($recordSet, $with);
+        return $recordSet;
+    }
+
+    public function newRecordSetFromData(array $data, array $with = [])
+    {
+        $records = [];
+        foreach ($data as $cols) {
+            $records[] = $this->newRecordFromCols($cols);
         }
         $recordSet = $this->newRecordSet($records);
         $this->relations->stitchIntoRecordSet($recordSet, $with);
