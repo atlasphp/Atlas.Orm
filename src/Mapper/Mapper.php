@@ -9,7 +9,6 @@ use Atlas\Orm\Relation\OneToOne;
 use Atlas\Orm\Table\IdentityMap;
 use Atlas\Orm\Table\Row;
 use Atlas\Orm\Table\RowIdentity;
-use Atlas\Orm\Table\RowSet;
 use Atlas\Orm\Table\TableInterface;
 use Aura\Sql\ConnectionLocator;
 use Aura\SqlQuery\QueryFactory;
@@ -164,20 +163,20 @@ class Mapper
 
     public function fetchRecordSet(array $primaryVals, array $with = array())
     {
-        $rowSet = $this->fetchRowSet($primaryVals);
-        if (! $rowSet) {
+        $rows = $this->fetchRows($primaryVals);
+        if (! $rows) {
             return array();
         }
-        return $this->newRecordSetFromRowSet($rowSet, $with);
+        return $this->newRecordSetFromRows($rows, $with);
     }
 
     public function fetchRecordSetBy(array $colsVals = [], array $with = array())
     {
-        $rowSet = $this->fetchRowSetBy($colsVals);
-        if (! $rowSet) {
+        $rows = $this->fetchRowsBy($colsVals);
+        if (! $rows) {
             return array();
         }
-        return $this->newRecordSetFromRowSet($rowSet, $with);
+        return $this->newRecordSetFromRows($rows, $with);
     }
 
     public function select(array $colsVals = [])
@@ -187,9 +186,9 @@ class Mapper
             $this->getReadConnection(),
             $this->table->getColNames(),
             [$this, 'newOrIdentifiedRow'],
-            [$this, 'newOrIdentifiedRowSet'],
+            [$this, 'newOrIdentifiedRows'],
             [$this, 'newRecordFromRow'],
-            [$this, 'newRecordSetFromRowSet']
+            [$this, 'newRecordSetFromRows']
         );
 
         $select->from($this->table->getName());
@@ -258,10 +257,10 @@ class Mapper
         return new $recordSetClass($records);
     }
 
-    public function newRecordSetFromRowSet(RowSet $rowSet, array $with = [])
+    public function newRecordSetFromRows(array $rows, array $with = [])
     {
         $records = [];
-        foreach ($rowSet as $row) {
+        foreach ($rows as $row) {
             $records[] = $this->newRecordFromRow($row);
         }
         $recordSet = $this->newRecordSet($records);
@@ -294,19 +293,18 @@ class Mapper
         return $this->select($colsVals)->fetchRow();
     }
 
-    protected function fetchRowSet(array $primaryVals)
+    protected function fetchRows(array $primaryVals)
     {
         $rows = $this->identifyRows($primaryVals);
         if (! $rows) {
             return [];
         }
-
-        return $this->newRowSet($rows);
+        return $rows;
     }
 
-    protected function fetchRowSetBy(array $colsVals)
+    protected function fetchRowsBy(array $colsVals)
     {
-        return $this->select($colsVals)->fetchRowSet();
+        return $this->select($colsVals)->fetchRows();
     }
 
     /**
@@ -429,11 +427,6 @@ class Mapper
         return $row;
     }
 
-    protected function newRowSet(array $rows)
-    {
-        return new RowSet($this->tableClass, $rows);
-    }
-
     public function newOrIdentifiedRow(array $cols)
     {
         $primaryVal = $cols[$this->table->getPrimaryKey()];
@@ -450,13 +443,13 @@ class Mapper
         return $row;
     }
 
-    public function newOrIdentifiedRowSet(array $data)
+    public function newOrIdentifiedRows(array $data)
     {
         $rows = [];
         foreach ($data as $cols) {
             $rows[] = $this->newOrIdentifiedRow($cols);
         }
-        return $this->newRowSet($rows);
+        return $rows;
     }
 
     protected function newInsert(Row $row)

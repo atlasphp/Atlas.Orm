@@ -22,7 +22,7 @@ class MapperSelect
 
     protected $newRecordFromRow;
 
-    protected $newRecordSetFromRowSet;
+    protected $newRecordSetFromRows;
 
     protected $with = [];
 
@@ -31,17 +31,17 @@ class MapperSelect
         ExtendedPdo $connection,
         array $colNames,
         callable $newOrIdentifiedRow,
-        callable $newOrIdentifiedRowSet,
+        callable $newOrIdentifiedRows,
         callable $newRecordFromRow,
-        callable $newRecordSetFromRowSet
+        callable $newRecordSetFromRows
     ) {
         $this->select = $select;
         $this->connection = $connection;
         $this->colNames = $colNames;
         $this->newOrIdentifiedRow = $newOrIdentifiedRow;
-        $this->newOrIdentifiedRowSet = $newOrIdentifiedRowSet;
+        $this->newOrIdentifiedRows = $newOrIdentifiedRows;
         $this->newRecordFromRow = $newRecordFromRow;
-        $this->newRecordSetFromRowSet = $newRecordSetFromRowSet;
+        $this->newRecordSetFromRows = $newRecordSetFromRows;
     }
 
     /**
@@ -204,7 +204,7 @@ class MapperSelect
         return call_user_func($this->newOrIdentifiedRow, $cols);
     }
 
-    public function fetchRowSet()
+    public function fetchRows()
     {
         $this->select->cols($this->colNames);
 
@@ -213,7 +213,7 @@ class MapperSelect
             return array();
         }
 
-        return call_user_func($this->newOrIdentifiedRowSet, $data);
+        return call_user_func($this->newOrIdentifiedRows, $data);
     }
 
     public function with(array $with)
@@ -233,10 +233,10 @@ class MapperSelect
 
     public function fetchRecordSet()
     {
-        $rowSet = $this->fetchRowSet();
-        if (! $rowSet) {
+        $rows = $this->fetchRows();
+        if (! $rows) {
             return array();
         }
-        return call_user_func($this->newRecordSetFromRowSet, $rowSet, $this->with);
+        return call_user_func($this->newRecordSetFromRows, $rows, $this->with);
     }
 }
