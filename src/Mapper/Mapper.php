@@ -145,19 +145,32 @@ class Mapper
 
     public function fetchRecord($primaryVal, array $with = [])
     {
-        $row = $this->fetchRow($primaryVal);
+        $primaryIdentity = $this->getPrimaryIdentity($primaryVal);
+
+        $row = $this->identityMap->getRowByPrimary(
+            $this->tableClass,
+            $primaryIdentity
+        );
+
         if (! $row) {
-            return false;
+            return $this->fetchRecordBy($primaryIdentity, $with);
         }
+
         return $this->newRecordFromRow($row, $with);
     }
 
     public function fetchRecordBy(array $colsVals = [], array $with = [])
     {
-        $row = $this->fetchRowBy($colsVals);
-        if (! $row) {
+        $cols = $this
+            ->select($colsVals)
+            ->cols($this->table->getColNames())
+            ->fetchOne();
+
+        if (! $cols) {
             return false;
         }
+
+        $row = $this->newOrIdentifiedRow($cols);
         return $this->newRecordFromRow($row, $with);
     }
 
@@ -274,34 +287,6 @@ class Mapper
     }
 
 /** GATEWAY ***************************************************************** */
-
-    protected function fetchRow($primaryVal)
-    {
-        $primaryIdentity = $this->getPrimaryIdentity($primaryVal);
-        $row = $this->identityMap->getRowByPrimary(
-            $this->tableClass,
-            $primaryIdentity
-        );
-        if ($row) {
-            return $row;
-        }
-
-        return $this->fetchRowBy($primaryIdentity);
-    }
-
-    protected function fetchRowBy(array $colsVals)
-    {
-        $cols = $this
-            ->select($colsVals)
-            ->cols($this->table->getColNames())
-            ->fetchOne();
-
-        if (! $cols) {
-            return false;
-        }
-
-        return $this->newOrIdentifiedRow($cols);
-    }
 
     protected function fetchRows(array $primaryVals)
     {
