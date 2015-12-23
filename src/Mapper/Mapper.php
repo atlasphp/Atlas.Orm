@@ -176,19 +176,25 @@ class Mapper
 
     public function fetchRecordSet(array $primaryVals, array $with = array())
     {
-        $rows = $this->fetchRows($primaryVals);
+        $rows = $this->identifyRows($primaryVals);
         if (! $rows) {
-            return array();
+            return [];
         }
         return $this->newRecordSetFromRows($rows, $with);
     }
 
     public function fetchRecordSetBy(array $colsVals = [], array $with = array())
     {
-        $rows = $this->fetchRowsBy($colsVals);
-        if (! $rows) {
-            return array();
+        $data = $this
+            ->select($colsVals)
+            ->cols($this->table->getColNames())
+            ->fetchAll();
+
+        if (! $data) {
+            return [];
         }
+
+        $rows = $this->newOrIdentifiedRows($data);
         return $this->newRecordSetFromRows($rows, $with);
     }
 
@@ -287,28 +293,6 @@ class Mapper
     }
 
 /** GATEWAY ***************************************************************** */
-
-    protected function fetchRows(array $primaryVals)
-    {
-        $rows = $this->identifyRows($primaryVals);
-        if (! $rows) {
-            return [];
-        }
-        return $rows;
-    }
-
-    protected function fetchRowsBy(array $colsVals)
-    {
-        $data = $this
-            ->select($colsVals)
-            ->cols($this->table->getColNames())
-            ->fetchAll();
-
-        if (! $data) {
-            return [];
-        }
-        return $this->newOrIdentifiedRows($data);
-    }
 
     /**
      *
