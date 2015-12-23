@@ -6,16 +6,12 @@ use Atlas\Orm\DataSource\Auto\AutoTable;
 use Atlas\Orm\DataSource\Employee\EmployeeMapper;
 use Atlas\Orm\DataSource\Employee\EmployeeMapperEvents;
 use Atlas\Orm\DataSource\Employee\EmployeeRecordFactory;
-use Atlas\Orm\DataSource\Employee\EmployeeRelations;
 use Atlas\Orm\DataSource\Employee\EmployeeTable;
-use Atlas\Orm\DataSource\Employee\EmployeeTableEvents;
 use Atlas\Orm\Mapper\MapperRelations;
-use Atlas\Orm\Mapper\RecordFactory;
 use Atlas\Orm\SqliteFixture;
 use Atlas\Orm\Table\IdentityMap;
 use Atlas\Orm\Table\Row;
 use Atlas\Orm\Table\RowIdentity;
-use Atlas\Orm\Table\Gateway;
 use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\QueryFactory;
@@ -183,7 +179,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($actual[2]->getRow(), $again[2]->getRow());
 
         $actual = $this->mapper->fetchRecordSet([997, 998, 999]);
-        $this->assertSame(array(), $actual);
+        $this->assertSame([], $actual);
     }
 
     public function testFetchRecordSetBy()
@@ -230,7 +226,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($actual[2]->getRow(), $again[2]->getRow());
 
         $actual = $this->mapper->fetchRecordSetBy(['id' => [997, 998, 999]]);
-        $this->assertSame(array(), $actual);
+        $this->assertSame([], $actual);
     }
 
     public function testSelectFetchRecordSet()
@@ -271,7 +267,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
 
         $select = $this->mapper->select(['id' => [997,998,999]]);
         $actual = $select->fetchRecordSet();
-        $this->assertSame(array(), $actual);
+        $this->assertSame([], $actual);
     }
 
     public function testInsert()

@@ -174,7 +174,7 @@ class Mapper
         return $this->newRecordFromRow($row, $with);
     }
 
-    public function fetchRecordSet(array $primaryVals, array $with = array())
+    public function fetchRecordSet(array $primaryVals, array $with = [])
     {
         $rows = $this->identifyOrFetchRows($primaryVals);
         if (! $rows) {
@@ -183,7 +183,7 @@ class Mapper
         return $this->newRecordSetFromRows($rows, $with);
     }
 
-    public function fetchRecordSetBy(array $colsVals = [], array $with = array())
+    public function fetchRecordSetBy(array $colsVals = [], array $with = [])
     {
         $data = $this
             ->select($colsVals)

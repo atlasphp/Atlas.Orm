@@ -211,7 +211,7 @@ class MapperSelect
 
         $data = $this->fetchAll();
         if (! $data) {
-            return array();
+            return [];
         }
 
         return call_user_func($this->getSelectedRecordSet, $data, $this->with);

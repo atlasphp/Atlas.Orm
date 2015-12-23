@@ -128,7 +128,7 @@ abstract class AbstractRelation
 
     protected function groupRecordSets($recordSet, $field)
     {
-        $groups = array();
+        $groups = [];
         foreach ($recordSet as $record) {
             $key = $record->$field;
             if (! isset($groups[$key])) {
