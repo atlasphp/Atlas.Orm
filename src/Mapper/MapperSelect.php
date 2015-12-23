@@ -20,9 +20,9 @@ class MapperSelect
 
     protected $colNames;
 
-    protected $newRecordFromCols;
+    protected $getSelectedRecord;
 
-    protected $newRecordSetFromData;
+    protected $getSelectedRecordSet;
 
     protected $with = [];
 
@@ -30,14 +30,14 @@ class MapperSelect
         SelectInterface $select,
         ExtendedPdo $connection,
         array $colNames,
-        callable $newRecordFromCols,
-        callable $newRecordSetFromData
+        callable $getSelectedRecord,
+        callable $getSelectedRecordSet
     ) {
         $this->select = $select;
         $this->connection = $connection;
         $this->colNames = $colNames;
-        $this->newRecordFromCols = $newRecordFromCols;
-        $this->newRecordSetFromData = $newRecordSetFromData;
+        $this->getSelectedRecord = $getSelectedRecord;
+        $this->getSelectedRecordSet = $getSelectedRecordSet;
     }
 
     /**
@@ -202,7 +202,7 @@ class MapperSelect
             return false;
         }
 
-        return call_user_func($this->newRecordFromCols, $cols, $this->with);
+        return call_user_func($this->getSelectedRecord, $cols, $this->with);
     }
 
     public function fetchRecordSet()
@@ -214,6 +214,6 @@ class MapperSelect
             return array();
         }
 
-        return call_user_func($this->newRecordSetFromData, $data, $this->with);
+        return call_user_func($this->getSelectedRecordSet, $data, $this->with);
     }
 }

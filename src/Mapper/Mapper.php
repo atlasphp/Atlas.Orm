@@ -170,13 +170,13 @@ class Mapper
             return false;
         }
 
-        $row = $this->newOrIdentifiedRow($cols);
+        $row = $this->getIdentifiedOrSelectedRow($cols);
         return $this->newRecordFromRow($row, $with);
     }
 
     public function fetchRecordSet(array $primaryVals, array $with = array())
     {
-        $rows = $this->identifyRows($primaryVals);
+        $rows = $this->identifyOrFetchRows($primaryVals);
         if (! $rows) {
             return [];
         }
@@ -194,7 +194,11 @@ class Mapper
             return [];
         }
 
-        $rows = $this->newOrIdentifiedRows($data);
+        $rows = [];
+        foreach ($data as $cols) {
+            $rows[] = $this->getIdentifiedOrSelectedRow($cols);
+        }
+
         return $this->newRecordSetFromRows($rows, $with);
     }
 
@@ -204,8 +208,8 @@ class Mapper
             $this->queryFactory->newSelect(),
             $this->getReadConnection(),
             $this->table->getColNames(),
-            [$this, 'newRecordFromCols'],
-            [$this, 'newRecordSetFromData']
+            [$this, 'getSelectedRecord'],
+            [$this, 'getSelectedRecordSet']
         );
 
         $select->from($this->table->getName());
@@ -232,94 +236,20 @@ class Mapper
         $select->where("{$col} = ?", $val);
     }
 
-    public function insert(Record $record)
-    {
-        $this->assertRecord($record);
-        $this->events->beforeInsert($this, $record);
-        return $this->gatewayInsert($record->getRow());
-    }
-
-    public function update(Record $record)
-    {
-        $this->assertRecord($record);
-        $this->events->beforeUpdate($this, $record);
-        return $this->gatewayUpdate($record->getRow());
-    }
-
-    public function delete(Record $record)
-    {
-        $this->assertRecord($record);
-        $this->events->beforeDelete($this, $record);
-        return $this->gatewayDelete($record->getRow());
-    }
-
-    public function newRecord(array $cols = [], array $with = [])
-    {
-        $row = $this->newRow($cols);
-        return $this->newRecordFromRow($row, $with);
-    }
-
-    public function newRecordFromCols(array $cols, array $with = [])
-    {
-        $row = $this->newOrIdentifiedRow($cols);
-        return $this->newRecordFromRow($row, $with);
-    }
-
-    public function newRecordFromRow(Row $row, array $with = [])
-    {
-        $recordClass = $this->recordClass;
-        $record = new $recordClass($row, $this->newRelated());
-        $this->relations->stitchIntoRecord($record, $with);
-        return $record;
-    }
-
-    public function newRecordSet(array $records = [])
-    {
-        $recordSetClass = $this->recordClass . 'Set';
-        return new $recordSetClass($records);
-    }
-
-    public function newRecordSetFromRows(array $rows, array $with = [])
-    {
-        $records = [];
-        foreach ($rows as $row) {
-            $records[] = $this->newRecordFromRow($row);
-        }
-        $recordSet = $this->newRecordSet($records);
-        $this->relations->stitchIntoRecordSet($recordSet, $with);
-        return $recordSet;
-    }
-
-    public function newRecordSetFromData(array $data, array $with = [])
-    {
-        $records = [];
-        foreach ($data as $cols) {
-            $records[] = $this->newRecordFromCols($cols);
-        }
-        $recordSet = $this->newRecordSet($records);
-        $this->relations->stitchIntoRecordSet($recordSet, $with);
-        return $recordSet;
-    }
-
-    protected function newRelated()
-    {
-        return new Related($this->relations->getFields());
-    }
-
-/** GATEWAY ***************************************************************** */
-
     /**
      *
-     * Inserts a row.
+     * Inserts the Row for a Record.
      *
-     * @param Row $row The row to insert.
+     * @param Record $record Insert the Row for this Record.
      *
      * @return bool
      *
      */
-    protected function gatewayInsert(Row $row)
+    public function insert(Record $record)
     {
-        $row->assertTableClass($this->tableClass);
+        $this->assertRecord($record);
+        $row = $record->getRow();
+
         // $this->events->beforeInsert($this->table, $row);
 
         $insert = $this->newInsert($row);
@@ -348,16 +278,18 @@ class Mapper
 
     /**
      *
-     * Updates a row.
+     * Updates the Row for a Record.
      *
-     * @param Row $row The row to update.
+     * @param Record $record Update the Row for this Record.
      *
      * @return bool
      *
      */
-    protected function gatewayUpdate(Row $row)
+    public function update(Record $record)
     {
-        $row->assertTableClass($this->tableClass);
+        $this->assertRecord($record);
+        $row = $record->getRow();
+
         // $this->events->beforeUpdate($this->table, $row);
 
         $update = $this->newUpdate($row);
@@ -386,16 +318,18 @@ class Mapper
 
     /**
      *
-     * Deletes a row.
+     * Deletes the Row for a Record.
      *
-     * @param Row $row The row to delete.
+     * @param Record $record Delete the Row for this Record.
      *
      * @return bool
      *
      */
-    protected function gatewayDelete(Row $row)
+    public function delete(Record $record)
     {
-        $row->assertTableClass($this->tableClass);
+        $this->assertRecord($record);
+        $row = $record->getRow();
+
         // $this->events->beforeDelete($this->table, $row);
 
         $delete = $this->newDelete($row);
@@ -420,6 +354,59 @@ class Mapper
         return true;
     }
 
+    public function newRecord(array $cols = [], array $with = [])
+    {
+        $row = $this->newRow($cols);
+        return $this->newRecordFromRow($row, $with);
+    }
+
+    public function getSelectedRecord(array $cols, array $with = [])
+    {
+        $row = $this->getIdentifiedOrSelectedRow($cols);
+        return $this->newRecordFromRow($row, $with);
+    }
+
+    protected function newRecordFromRow(Row $row, array $with = [])
+    {
+        $recordClass = $this->recordClass;
+        $record = new $recordClass($row, $this->newRelated());
+        $this->relations->stitchIntoRecord($record, $with);
+        return $record;
+    }
+
+    public function newRecordSet(array $records = [])
+    {
+        $recordSetClass = $this->recordClass . 'Set';
+        return new $recordSetClass($records);
+    }
+
+    protected function newRecordSetFromRows(array $rows, array $with = [])
+    {
+        $records = [];
+        foreach ($rows as $row) {
+            $records[] = $this->newRecordFromRow($row);
+        }
+        $recordSet = $this->newRecordSet($records);
+        $this->relations->stitchIntoRecordSet($recordSet, $with);
+        return $recordSet;
+    }
+
+    public function getSelectedRecordSet(array $data, array $with = [])
+    {
+        $records = [];
+        foreach ($data as $cols) {
+            $records[] = $this->getSelectedRecord($cols);
+        }
+        $recordSet = $this->newRecordSet($records);
+        $this->relations->stitchIntoRecordSet($recordSet, $with);
+        return $recordSet;
+    }
+
+    protected function newRelated()
+    {
+        return new Related($this->relations->getFields());
+    }
+
     protected function newRow(array $cols = [])
     {
         $cols = array_merge($this->table->getColDefaults(), $cols);
@@ -428,7 +415,15 @@ class Mapper
         return $row;
     }
 
-    public function newOrIdentifiedRow(array $cols)
+    protected function newSelectedRow(array $cols)
+    {
+        $row = $this->newRow($cols);
+        $row->markAsClean();
+        $this->identityMap->setRow($row, $cols);
+        return $row;
+    }
+
+    protected function getIdentifiedOrSelectedRow(array $cols)
     {
         $primaryVal = $cols[$this->table->getPrimaryKey()];
         $primaryIdentity = $this->getPrimaryIdentity($primaryVal);
@@ -437,20 +432,9 @@ class Mapper
             $primaryIdentity
         );
         if (! $row) {
-            $row = $this->newRow($cols);
-            $row->markAsClean();
-            $this->identityMap->setRow($row, $cols);
+            $row = $this->newSelectedRow($cols);
         }
         return $row;
-    }
-
-    public function newOrIdentifiedRows(array $data)
-    {
-        $rows = [];
-        foreach ($data as $cols) {
-            $rows[] = $this->newOrIdentifiedRow($cols);
-        }
-        return $rows;
     }
 
     protected function newInsert(Row $row)
@@ -530,7 +514,7 @@ class Mapper
             add row in set on ID key
         return rows
     */
-    protected function identifyRows($primaryVals)
+    protected function identifyOrFetchRows($primaryVals)
     {
         if (! $primaryVals) {
             return [];
@@ -563,8 +547,7 @@ class Mapper
         $select = $this->select($colsVals);
         $data = $select->cols($this->table->getColNames())->fetchAll();
         foreach ($data as $cols) {
-            $row = $this->newRow($cols);
-            $this->identityMap->setRow($row, $cols);
+            $row = $this->newSelectedRow($cols);
             $rows[$row->getIdentity()->getVal()] = $row;
         }
 
