@@ -381,7 +381,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
 
         // do we still have everything else?
         $select = $this->mapper->select()->cols(['id'])->where('id > 0');
-        $actual = $select->getTableSelect()->fetchAll();
+        $actual = $select->fetchAll();
         $expect = 11;
         $this->assertEquals($expect, count($actual));
 

@@ -10,7 +10,6 @@ use Atlas\Orm\Table\IdentityMap;
 use Atlas\Orm\Table\Row;
 use Atlas\Orm\Table\RowIdentity;
 use Atlas\Orm\Table\RowSet;
-use Atlas\Orm\Table\TableSelect;
 use Atlas\Orm\Table\TableInterface;
 use Aura\Sql\ConnectionLocator;
 use Aura\SqlQuery\QueryFactory;
@@ -183,12 +182,38 @@ class Mapper
 
     public function select(array $colsVals = [])
     {
-        $tableSelect = $this->gatewaySelect($colsVals);
-        return new MapperSelect(
-            $tableSelect,
+        $select = new MapperSelect(
+            $this->queryFactory->newSelect(),
+            $this->getReadConnection(),
+            $this->table->getColNames(),
+            [$this, 'newOrIdentifiedRow'],
+            [$this, 'newOrIdentifiedRowSet'],
             [$this, 'newRecordFromRow'],
             [$this, 'newRecordSetFromRowSet']
         );
+
+        $select->from($this->table->getName());
+
+        foreach ($colsVals as $col => $val) {
+            $this->selectWhere($select, $col, $val);
+        }
+
+        return $select;
+    }
+
+    protected function selectWhere(MapperSelect $select, $col, $val)
+    {
+        $col = $this->table->getName() . '.' . $col;
+
+        if (is_array($val)) {
+            return $select->where("{$col} IN (?)", $val);
+        }
+
+        if ($val === null) {
+            return $select->where("{$col} IS NULL");
+        }
+
+        $select->where("{$col} = ?", $val);
     }
 
     public function insert(Record $record)
@@ -251,37 +276,6 @@ class Mapper
 
 /** GATEWAY ***************************************************************** */
 
-    protected function gatewaySelect(array $colsVals = [])
-    {
-        $select = new TableSelect(
-            $this->queryFactory->newSelect(),
-            $this->getReadConnection(),
-            $this->table->getColNames(),
-            [$this, 'newOrIdentifiedRow'],
-            [$this, 'newOrIdentifiedRowSet']
-        );
-        $select->from($this->table->getName());
-        foreach ($colsVals as $col => $val) {
-            $this->gatewaySelectWhere($select, $col, $val);
-        }
-        return $select;
-    }
-
-    protected function gatewaySelectWhere(TableSelect $select, $col, $val)
-    {
-        $col = $this->table->getName() . '.' . $col;
-
-        if (is_array($val)) {
-            return $select->where("{$col} IN (?)", $val);
-        }
-
-        if ($val === null) {
-            return $select->where("{$col} IS NULL");
-        }
-
-        $select->where("{$col} = ?", $val);
-    }
-
     protected function fetchRow($primaryVal)
     {
         $primaryIdentity = $this->getPrimaryIdentity($primaryVal);
@@ -290,14 +284,14 @@ class Mapper
             $primaryIdentity
         );
         if (! $row) {
-            $row = $this->gatewaySelect($primaryIdentity)->fetchRow();
+            $row = $this->select($primaryIdentity)->fetchRow();
         }
         return $row;
     }
 
     protected function fetchRowBy(array $colsVals)
     {
-        return $this->gatewaySelect($colsVals)->fetchRow();
+        return $this->select($colsVals)->fetchRow();
     }
 
     protected function fetchRowSet(array $primaryVals)
@@ -312,7 +306,7 @@ class Mapper
 
     protected function fetchRowSetBy(array $colsVals)
     {
-        return $this->gatewaySelect($colsVals)->fetchRowSet();
+        return $this->select($colsVals)->fetchRowSet();
     }
 
     /**
@@ -572,7 +566,7 @@ class Mapper
 
         // fetch and retain remaining rows
         $colsVals = [$this->table->getPrimaryKey() => $primaryVals];
-        $select = $this->gatewaySelect($colsVals);
+        $select = $this->select($colsVals);
         $data = $select->cols($this->table->getColNames())->fetchAll();
         foreach ($data as $cols) {
             $row = $this->newRow($cols);
