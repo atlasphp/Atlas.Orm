@@ -99,7 +99,18 @@ class AtlasContainer
             throw Exception::classDoesNotExist($tableClass);
         }
 
-        $mapperFactory = $this->newMapperFactory($mapperClass, $tableClass);
+        $self = $this;
+        $mapperFactory = function () use ($self, $mapperClass, $tableClass) {
+            return new $mapperClass(
+                $self->getConnectionLocator(),
+                $self->getQueryFactory(),
+                $self->getIdentityMap(),
+                $self->newInstance($tableClass),
+                $self->newInstance($mapperClass . 'Events'),
+                $self->newMapperRelations()
+            );
+        };
+
         $this->mapperLocator->set($mapperClass, $mapperFactory);
     }
 
