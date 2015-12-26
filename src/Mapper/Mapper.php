@@ -248,11 +248,9 @@ class Mapper
     public function insert(Record $record)
     {
         $this->assertRecord($record);
-        $row = $record->getRow();
+        $this->events->beforeInsert($this, $record);
 
-        // $this->events->beforeInsert($this->table, $row);
-
-        $insert = $this->newInsert($row);
+        $insert = $this->newInsert($record);
         $connection = $this->getWriteConnection();
         $pdoStatement = $connection->perform(
             $insert->getStatement(),
@@ -265,13 +263,14 @@ class Mapper
 
         if ($this->table->getAutoinc()) {
             $primary = $this->table->getPrimaryKey();
-            $row->$primary = $connection->lastInsertId($primary);
+            $record->$primary = $connection->lastInsertId($primary);
         }
 
-        // $this->events->afterInsert($this->table, $row, $insert, $pdoStatement);
-        $row->markAsSaved();
+        $this->events->afterInsert($this, $record, $insert, $pdoStatement);
 
-        // set into the identity map
+        // mark as saved and retain in identity map
+        $row = $record->getRow();
+        $row->markAsSaved();
         $this->identityMap->setRow($row, $row->getArrayCopy());
         return true;
     }
@@ -288,11 +287,9 @@ class Mapper
     public function update(Record $record)
     {
         $this->assertRecord($record);
-        $row = $record->getRow();
+        $this->events->beforeUpdate($this, $record);
 
-        // $this->events->beforeUpdate($this->table, $row);
-
-        $update = $this->newUpdate($row);
+        $update = $this->newUpdate($record);
         if (! $update->hasCols()) {
             return false;
         }
@@ -308,10 +305,11 @@ class Mapper
             throw Exception::unexpectedRowCountAffected($rowCount);
         }
 
-        // $this->events->afterUpdate($this->table, $row, $update, $pdoStatement);
-        $row->markAsSaved();
+        $this->events->afterUpdate($this, $record, $update, $pdoStatement);
 
-        // reinitialize the identity-map data for later updates
+        // mark as saved and retain updated identity-map data
+        $row = $record->getRow();
+        $row->markAsSaved();
         $this->identityMap->setInitial($row);
         return true;
     }
@@ -328,11 +326,9 @@ class Mapper
     public function delete(Record $record)
     {
         $this->assertRecord($record);
-        $row = $record->getRow();
+        $this->events->beforeDelete($this, $record);
 
-        // $this->events->beforeDelete($this->table, $row);
-
-        $delete = $this->newDelete($row);
+        $delete = $this->newDelete($record);
         $connection = $this->getWriteConnection();
         $pdoStatement = $connection->perform(
             $delete->getStatement(),
@@ -348,9 +344,11 @@ class Mapper
             throw Exception::unexpectedRowCountAffected($rowCount);
         }
 
-        // $this->events->afterDelete($this->table, $row, $delete, $pdoStatement);
-        $row->markAsDeleted();
+        $this->events->afterDelete($this, $record, $delete, $pdoStatement);
 
+        // mark as deleted, no need to update identity map
+        $row = $record->getRow();
+        $row->markAsDeleted();
         return true;
     }
 
@@ -437,26 +435,28 @@ class Mapper
         return $row;
     }
 
-    protected function newInsert(Row $row)
+    protected function newInsert(Record $record)
     {
         $insert = $this->queryFactory->newInsert();
         $insert->into($this->table->getName());
 
+        $row = $record->getRow();
         $cols = $row->getArrayCopy();
         if ($this->table->getAutoinc()) {
             unset($cols[$this->table->getPrimaryKey()]);
         }
         $insert->cols($cols);
 
-        // $this->events->modifyInsert($this->table, $row, $insert);
+        $this->events->modifyInsert($this, $record, $insert);
         return $insert;
     }
 
-    protected function newUpdate(Row $row)
+    protected function newUpdate(Record $record)
     {
         $update = $this->queryFactory->newUpdate();
         $update->table($this->table->getName());
 
+        $row = $record->getRow();
         $cols = $row->getArrayDiff($this->identityMap->getInitial($row));
         unset($cols[$this->table->getPrimaryKey()]);
         $update->cols($cols);
@@ -464,19 +464,20 @@ class Mapper
         $primaryCol = $this->table->getPrimaryKey();
         $update->where("{$primaryCol} = ?", $row->getIdentity()->getVal());
 
-        // $this->events->modifyUpdate($this->table, $row, $update);
+        $this->events->modifyUpdate($this, $record, $update);
         return $update;
     }
 
-    protected function newDelete(Row $row)
+    protected function newDelete(Record $record)
     {
         $delete = $this->queryFactory->newDelete();
         $delete->from($this->table->getName());
 
+        $row = $record->getRow();
         $primaryCol = $this->table->getPrimaryKey();
         $delete->where("{$primaryCol} = ?", $row->getIdentity()->getVal());
 
-        // $this->events->modifyDelete($this->table, $row, $delete);
+        $this->events->modifyDelete($this, $record, $delete);
         return $delete;
     }
 
@@ -488,7 +489,6 @@ class Mapper
             $primaryVal = $cols[$primaryCol];
             unset($cols[$primaryCol]);
         }
-
         return new RowIdentity([$primaryCol => $primaryVal]);
     }
 
