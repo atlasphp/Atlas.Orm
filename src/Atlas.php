@@ -19,44 +19,44 @@ class Atlas
         $this->prototypeTransaction = $prototypeTransaction;
     }
 
-    public function mapper($class)
+    public function mapper($mapperClass)
     {
-        return $this->mapperLocator->get($class);
+        return $this->mapperLocator->get($mapperClass);
     }
 
-    public function newRecord($class, array $data = [])
+    public function newRecord($mapperClass, array $cols = [])
     {
-        return $this->mapper($class)->newRecord($data);
+        return $this->mapper($mapperClass)->newRecord($cols);
     }
 
-    public function newRecordSet($class)
+    public function newRecordSet($mapperClass)
     {
-        return $this->mapper($class)->newRecordSet();
+        return $this->mapper($mapperClass)->newRecordSet();
     }
 
-    public function fetchRecord($class, $primaryVal, array $with = [])
+    public function fetchRecord($mapperClass, $primaryVal, array $with = [])
     {
-        return $this->mapper($class)->fetchRecord($primaryVal, $with);
+        return $this->mapper($mapperClass)->fetchRecord($primaryVal, $with);
     }
 
-    public function fetchRecordBy($class, array $colsVals, array $with = [])
+    public function fetchRecordBy($mapperClass, array $colsVals, array $with = [])
     {
-        return $this->mapper($class)->fetchRecordBy($colsVals, $with);
+        return $this->mapper($mapperClass)->fetchRecordBy($colsVals, $with);
     }
 
-    public function fetchRecordSet($class, array $primaryVals, array $with = [])
+    public function fetchRecordSet($mapperClass, array $primaryVals, array $with = [])
     {
-        return $this->mapper($class)->fetchRecordSet($primaryVals, $with);
+        return $this->mapper($mapperClass)->fetchRecordSet($primaryVals, $with);
     }
 
-    public function fetchRecordSetBy($class, array $colsVals, array $with = [])
+    public function fetchRecordSetBy($mapperClass, array $colsVals, array $with = [])
     {
-        return $this->mapper($class)->fetchRecordSetBy($colsVals, $with);
+        return $this->mapper($mapperClass)->fetchRecordSetBy($colsVals, $with);
     }
 
-    public function select($class, array $colsVals = [])
+    public function select($mapperClass, array $colsVals = [])
     {
-        return $this->mapper($class)->select($colsVals);
+        return $this->mapper($mapperClass)->select($colsVals);
     }
 
     public function insert(Record $record)

@@ -24,26 +24,16 @@ class MapperLocatorTest extends \PHPUnit_Framework_TestCase
 
     public function testHas()
     {
-        $this->assertFalse($this->mapperLocator->has('Atlas\Orm\DataSource\Employee'));
+        $this->assertFalse($this->mapperLocator->has('NoSuchMapper'));
         $this->assertTrue($this->mapperLocator->has(EmployeeMapper::CLASS));
-        $this->assertTrue($this->mapperLocator->has(EmployeeRecord::CLASS));
-        $this->assertTrue($this->mapperLocator->has(EmployeeRecordSet::CLASS));
     }
 
     public function testGet()
     {
         $expect = EmployeeMapper::CLASS;
-
         $this->assertSame($expect, $this->mapperLocator->get(EmployeeMapper::CLASS));
-        $this->assertSame($expect, $this->mapperLocator->get(EmployeeRecord::CLASS));
-        $this->assertSame($expect, $this->mapperLocator->get(EmployeeRecordSet::CLASS));
 
-        $row = new Row(EmployeeTable::CLASS, new RowIdentity(['id' => null]), []);
-        $related = new Related([]);
-        $record = new EmployeeRecord($row, $related);
-        $this->assertSame($expect, $this->mapperLocator->get($record));
-
-        $this->setExpectedException(Exception::CLASS, "Atlas\Orm\DataSource\Employee not found in mapper locator");
-        $this->mapperLocator->get('Atlas\Orm\DataSource\Employee');
+        $this->setExpectedException(Exception::CLASS, "NoSuchMapper not found in mapper locator");
+        $this->mapperLocator->get('NoSuchMapper');
     }
 }

@@ -15,7 +15,6 @@ class RecordSet implements ArrayAccess, Countable, IteratorAggregate
 
     public function __construct(array $records = [])
     {
-        $this->recordClass = substr(get_class($this), 0, -3);
         foreach ($records as $key => $record) {
             $this->offsetSet($key, $record);
         }
@@ -34,11 +33,11 @@ class RecordSet implements ArrayAccess, Countable, IteratorAggregate
     public function offsetSet($offset, $value)
     {
         if (! is_object($value)) {
-            throw Exception::invalidType($this->recordClass, gettype($value));
+            throw Exception::invalidType(Record::CLASS, gettype($value));
         }
 
-        if (! $value instanceof $this->recordClass) {
-            throw Exception::invalidType($this->recordClass, $value);
+        if (! $value instanceof Record) {
+            throw Exception::invalidType(Record::CLASS, $value);
         }
 
         if ($offset === null) {

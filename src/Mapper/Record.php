@@ -8,9 +8,11 @@ class Record
 {
     private $row;
     private $related;
+    private $mapperClass;
 
-    public function __construct(Row $row, Related $related)
+    public function __construct($mapperClass, Row $row, Related $related)
     {
+        $this->mapperClass = $mapperClass;
         $this->row = $row;
         $this->related = $related;
     }
@@ -69,6 +71,11 @@ class Record
         }
 
         throw Exception::propertyDoesNotExist($this, $field);
+    }
+
+    public function getMapperClass()
+    {
+        return $this->mapperClass;
     }
 
     public function has($field)

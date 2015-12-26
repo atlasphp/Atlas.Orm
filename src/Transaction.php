@@ -199,10 +199,10 @@ class Transaction
      */
     protected function planRecordWork($method, Record $record)
     {
-        $mapper = $this->mapperLocator->get($record);
+        $mapper = $this->mapperLocator->get($record->getMapperClass());
         $this->connections->attach($mapper->getWriteConnection());
 
-        $label = "$method " . get_class($record);
+        $label = "$method " . get_class($record) . " via " . get_class($mapper);
         $callable = [$mapper, $method];
         $this->plan($label, $callable, $record);
     }

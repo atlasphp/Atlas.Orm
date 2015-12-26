@@ -64,11 +64,11 @@ class Mapper
 
     protected $tableClass;
 
+    protected $mapperClass;
+
     protected $relations;
 
     protected $plugin;
-
-    protected $recordSetClass;
 
     public function __construct(
         ConnectionLocator $connectionLocator,
@@ -82,10 +82,12 @@ class Mapper
         $this->queryFactory = $queryFactory;
         $this->identityMap = $identityMap;
         $this->table = $table;
-        $this->tableClass = get_class($this->table);
         $this->plugin = $plugin;
         $this->relations = $relations;
-        $this->recordSetClass = substr(get_class($this), 0, -6) . 'RecordSet';
+
+        $this->tableClass = get_class($this->table);
+        $this->mapperClass = get_class($this);
+
         $this->defineRelations();
     }
 
@@ -368,21 +370,36 @@ class Mapper
         static $recordClass;
         if (! $recordClass) {
             $recordClass = substr(get_class($this), 0, -6) . 'Record';
+            $recordClass = class_exists($recordClass)
+                ? $recordClass
+                : Record::CLASS;
         }
         return $recordClass;
+    }
+
+    protected function getRecordSetClass()
+    {
+        static $recordSetClass;
+        if (! $recordSetClass) {
+            $recordSetClass = substr(get_class($this), 0, -6) . 'RecordSet';
+            $recordSetClass = class_exists($recordSetClass)
+                ? $recordSetClass
+                : RecordSet::CLASS;
+        }
+        return $recordSetClass;
     }
 
     protected function newRecordFromRow(Row $row, array $with = [])
     {
         $recordClass = $this->getRecordClass($row);
-        $record = new $recordClass($row, $this->newRelated());
+        $record = new $recordClass($this->mapperClass, $row, $this->newRelated());
         $this->relations->stitchIntoRecord($record, $with);
         return $record;
     }
 
     public function newRecordSet(array $records = [], array $with = [])
     {
-        $recordSetClass = $this->recordSetClass;
+        $recordSetClass = $this->getRecordSetClass();
         $recordSet = new $recordSetClass($records);
         $this->relations->stitchIntoRecordSet($recordSet, $with);
         return $recordSet;

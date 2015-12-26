@@ -2,7 +2,7 @@
 namespace Atlas\Orm;
 
 use Atlas\Orm\DataSource\Employee\EmployeeMapper;
-use Atlas\Orm\DataSource\Employee\EmployeeRecord;
+use Atlas\Orm\Mapper\Record;
 use Aura\Sql\ExtendedPdo;
 
 class TransactionTest extends \PHPUnit_Framework_TestCase
@@ -47,7 +47,8 @@ class TransactionTest extends \PHPUnit_Framework_TestCase
 
         // test the work item
         $work = $plan[0];
-        $this->assertSame("insert " . EmployeeRecord::CLASS, $work->getLabel());
+        $expect = "insert " . Record::CLASS . " via " . EmployeeMapper::CLASS;
+        $this->assertSame($expect, $work->getLabel());
         $this->assertSame([$mapper, 'insert'], $work->getCallable());
         $args = $work->getArgs();
         $this->assertSame($employee, $args[0]);
@@ -92,7 +93,8 @@ class TransactionTest extends \PHPUnit_Framework_TestCase
 
         // test the work item
         $work = $plan[0];
-        $this->assertSame("update " . EmployeeRecord::CLASS, $work->getLabel());
+        $expect = "update " . Record::CLASS . " via " . EmployeeMapper::CLASS;
+        $this->assertSame($expect, $work->getLabel());
         $this->assertSame([$mapper, 'update'], $work->getCallable());
         $args = $work->getArgs();
         $this->assertSame($employee, $args[0]);
@@ -135,7 +137,8 @@ class TransactionTest extends \PHPUnit_Framework_TestCase
 
         // test the work item
         $work = $plan[0];
-        $this->assertSame("delete " . EmployeeRecord::CLASS, $work->getLabel());
+        $expect = "delete " . Record::CLASS . " via " . EmployeeMapper::CLASS;
+        $this->assertSame($expect, $work->getLabel());
         $this->assertSame([$mapper, 'delete'], $work->getCallable());
         $args = $work->getArgs();
         $this->assertSame($employee, $args[0]);

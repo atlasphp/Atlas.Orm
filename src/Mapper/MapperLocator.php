@@ -46,7 +46,6 @@ class MapperLocator
 
     public function has($class)
     {
-        $class = $this->getMapperClass($class);
         return isset($this->factories[$class]);
     }
 
@@ -64,8 +63,6 @@ class MapperLocator
      */
     public function get($class)
     {
-        $class = $this->getMapperClass($class);
-
         if (! isset($this->factories[$class])) {
             throw Exception::mapperNotFound($class);
         }
@@ -76,24 +73,5 @@ class MapperLocator
         }
 
         return $this->instances[$class];
-    }
-
-    /** @todo class_exists($class) */
-    /** @todo $class instanceof Mapper */
-    protected function getMapperClass($class)
-    {
-        if (is_object($class)) {
-            $class = get_class($class);
-        }
-
-        if (substr($class, -6) == 'Record') {
-            $class = substr($class, 0, -6) . 'Mapper';
-        }
-
-        if (substr($class, -9) == 'RecordSet') {
-            $class = substr($class, 0, -9) . 'Mapper';
-        }
-
-        return $class;
     }
 }
