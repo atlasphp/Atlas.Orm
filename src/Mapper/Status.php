@@ -1,5 +1,5 @@
 <?php
-namespace Atlas\Orm;
+namespace Atlas\Orm\Mapper;
 
 class Status
 {

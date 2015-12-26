@@ -2,7 +2,7 @@
 namespace Atlas\Orm\Mapper;
 
 use Atlas\Orm\Exception;
-use Atlas\Orm\Status;
+use Atlas\Orm\Mapper\Status;
 
 class Row
 {
