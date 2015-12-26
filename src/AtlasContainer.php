@@ -99,14 +99,19 @@ class AtlasContainer
             throw Exception::classDoesNotExist($tableClass);
         }
 
+        $pluginClass = substr($mapperClass, 0, -6) . 'Plugin';
+        if (! class_exists($pluginClass)) {
+            $pluginClass = 'Atlas\Orm\Mapper\Plugin';
+        }
+
         $self = $this;
-        $mapperFactory = function () use ($self, $mapperClass, $tableClass) {
+        $mapperFactory = function () use ($self, $mapperClass, $tableClass, $pluginClass) {
             return new $mapperClass(
                 $self->getConnectionLocator(),
                 $self->getQueryFactory(),
                 $self->getIdentityMap(),
                 $self->newInstance($tableClass),
-                $self->newInstance($mapperClass . 'Events'),
+                $self->newInstance($pluginClass),
                 $self->newMapperRelations()
             );
         };

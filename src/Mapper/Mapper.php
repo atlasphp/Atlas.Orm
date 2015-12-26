@@ -66,7 +66,7 @@ class Mapper
 
     protected $relations;
 
-    protected $events;
+    protected $plugin;
 
     protected $recordSetClass;
 
@@ -75,7 +75,7 @@ class Mapper
         QueryFactory $queryFactory,
         IdentityMap $identityMap,
         TableInterface $table,
-        MapperEvents $events,
+        Plugin $plugin,
         MapperRelations $relations
     ) {
         $this->connectionLocator = $connectionLocator;
@@ -83,7 +83,7 @@ class Mapper
         $this->identityMap = $identityMap;
         $this->table = $table;
         $this->tableClass = get_class($this->table);
-        $this->events = $events;
+        $this->plugin = $plugin;
         $this->relations = $relations;
         $this->recordSetClass = substr(get_class($this), 0, -6) . 'RecordSet';
         $this->defineRelations();
@@ -247,7 +247,7 @@ class Mapper
      */
     public function insert(Record $record)
     {
-        $this->events->beforeInsert($this, $record);
+        $this->plugin->beforeInsert($this, $record);
 
         $insert = $this->newInsert($record);
         $connection = $this->getWriteConnection();
@@ -265,7 +265,7 @@ class Mapper
             $record->$primary = $connection->lastInsertId($primary);
         }
 
-        $this->events->afterInsert($this, $record, $insert, $pdoStatement);
+        $this->plugin->afterInsert($this, $record, $insert, $pdoStatement);
 
         // mark as saved and retain in identity map
         $row = $record->getRow();
@@ -285,7 +285,7 @@ class Mapper
      */
     public function update(Record $record)
     {
-        $this->events->beforeUpdate($this, $record);
+        $this->plugin->beforeUpdate($this, $record);
 
         $update = $this->newUpdate($record);
         if (! $update->hasCols()) {
@@ -303,7 +303,7 @@ class Mapper
             throw Exception::unexpectedRowCountAffected($rowCount);
         }
 
-        $this->events->afterUpdate($this, $record, $update, $pdoStatement);
+        $this->plugin->afterUpdate($this, $record, $update, $pdoStatement);
 
         // mark as saved and retain updated identity-map data
         $row = $record->getRow();
@@ -323,7 +323,7 @@ class Mapper
      */
     public function delete(Record $record)
     {
-        $this->events->beforeDelete($this, $record);
+        $this->plugin->beforeDelete($this, $record);
 
         $delete = $this->newDelete($record);
         $connection = $this->getWriteConnection();
@@ -341,7 +341,7 @@ class Mapper
             throw Exception::unexpectedRowCountAffected($rowCount);
         }
 
-        $this->events->afterDelete($this, $record, $delete, $pdoStatement);
+        $this->plugin->afterDelete($this, $record, $delete, $pdoStatement);
 
         // mark as deleted, no need to update identity map
         $row = $record->getRow();
@@ -353,7 +353,7 @@ class Mapper
     {
         $row = $this->newRow($cols);
         $record = $this->newRecordFromRow($row);
-        $this->events->modifyNewRecord($record);
+        $this->plugin->modifyNewRecord($record);
         return $record;
     }
 
@@ -455,7 +455,7 @@ class Mapper
         }
         $insert->cols($cols);
 
-        $this->events->modifyInsert($this, $record, $insert);
+        $this->plugin->modifyInsert($this, $record, $insert);
         return $insert;
     }
 
@@ -472,7 +472,7 @@ class Mapper
         $primaryCol = $this->table->getPrimaryKey();
         $update->where("{$primaryCol} = ?", $row->getIdentity()->getVal());
 
-        $this->events->modifyUpdate($this, $record, $update);
+        $this->plugin->modifyUpdate($this, $record, $update);
         return $update;
     }
 
@@ -485,7 +485,7 @@ class Mapper
         $primaryCol = $this->table->getPrimaryKey();
         $delete->where("{$primaryCol} = ?", $row->getIdentity()->getVal());
 
-        $this->events->modifyDelete($this, $record, $delete);
+        $this->plugin->modifyDelete($this, $record, $delete);
         return $delete;
     }
 

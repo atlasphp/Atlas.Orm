@@ -4,7 +4,6 @@ namespace Atlas\Orm\Mapper;
 use Atlas\Orm\DataSource\Auto\AutoMapper;
 use Atlas\Orm\DataSource\Auto\AutoTable;
 use Atlas\Orm\DataSource\Employee\EmployeeMapper;
-use Atlas\Orm\DataSource\Employee\EmployeeMapperEvents;
 use Atlas\Orm\DataSource\Employee\EmployeeRecordFactory;
 use Atlas\Orm\DataSource\Employee\EmployeeTable;
 use Atlas\Orm\Mapper\MapperRelations;
@@ -34,7 +33,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
             new QueryFactory('sqlite'),
             new IdentityMap(),
             new EmployeeTable(),
-            new EmployeeMapperEvents(),
+            new Plugin(),
             new MapperRelations(new MapperLocator())
         );
 
