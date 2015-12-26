@@ -352,10 +352,12 @@ class Mapper
         return true;
     }
 
-    public function newRecord(array $cols = [], array $with = [])
+    public function newRecord(array $cols = [])
     {
         $row = $this->newRow($cols);
-        return $this->newRecordFromRow($row, $with);
+        $record = $this->newRecordFromRow($row);
+        $this->events->modifyNewRecord($record);
+        return $record;
     }
 
     public function getSelectedRecord(array $cols, array $with = [])

@@ -9,6 +9,11 @@ use PDOStatement;
 // modify? alter? customize?
 class MapperEvents
 {
+    public function modifyNewRecord(Record $record)
+    {
+        // do nothing
+    }
+
     public function beforeInsert(Mapper $mapper, Record $record)
     {
         // do nothing
