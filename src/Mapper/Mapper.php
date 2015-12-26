@@ -75,7 +75,7 @@ class Mapper
         QueryFactory $queryFactory,
         IdentityMap $identityMap,
         TableInterface $table,
-        Plugin $plugin,
+        PluginInterface $plugin,
         MapperRelations $relations
     ) {
         $this->connectionLocator = $connectionLocator;
