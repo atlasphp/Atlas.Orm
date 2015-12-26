@@ -6,7 +6,7 @@ use Atlas\Orm\DataSource\Auto\AutoTable;
 use Atlas\Orm\DataSource\Employee\EmployeeMapper;
 use Atlas\Orm\DataSource\Employee\EmployeeRecordFactory;
 use Atlas\Orm\DataSource\Employee\EmployeeTable;
-use Atlas\Orm\Mapper\MapperRelations;
+use Atlas\Orm\Mapper\Relations;
 use Atlas\Orm\SqliteFixture;
 use Atlas\Orm\Mapper\IdentityMap;
 use Atlas\Orm\Mapper\Row;
@@ -34,7 +34,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
             new IdentityMap(),
             new EmployeeTable(),
             new Plugin(),
-            new MapperRelations(new MapperLocator())
+            new Relations(new MapperLocator())
         );
 
         $fixture = new SqliteFixture($this->mapper->getWriteConnection());
@@ -48,7 +48,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
 
     public function testGetRelations()
     {
-        $this->assertInstanceOf(MapperRelations::CLASS, $this->mapper->getRelations());
+        $this->assertInstanceOf(Relations::CLASS, $this->mapper->getRelations());
     }
 
     public function testFetchRecord()

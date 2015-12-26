@@ -76,7 +76,7 @@ class Mapper
         IdentityMap $identityMap,
         TableInterface $table,
         PluginInterface $plugin,
-        MapperRelations $relations
+        Relations $relations
     ) {
         $this->connectionLocator = $connectionLocator;
         $this->queryFactory = $queryFactory;
@@ -206,7 +206,7 @@ class Mapper
 
     public function select(array $colsVals = [])
     {
-        $select = new MapperSelect(
+        $select = new Select(
             $this->queryFactory->newSelect(),
             $this->getReadConnection(),
             $this->table->getColNames(),
@@ -223,7 +223,7 @@ class Mapper
         return $select;
     }
 
-    protected function selectWhere(MapperSelect $select, $col, $val)
+    protected function selectWhere(Select $select, $col, $val)
     {
         $col = $this->table->getName() . '.' . $col;
 

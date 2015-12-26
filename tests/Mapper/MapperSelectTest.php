@@ -9,7 +9,7 @@ use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\QueryFactory;
 
-class MapperSelectTest extends \PHPUnit_Framework_TestCase
+class SelectTest extends \PHPUnit_Framework_TestCase
 {
     use Assertions;
 
@@ -26,7 +26,7 @@ class MapperSelectTest extends \PHPUnit_Framework_TestCase
         $select = $queryFactory->newSelect();
         $select->from('employee');
 
-        $this->mapperSelect = new MapperSelect(
+        $this->mapperSelect = new Select(
             $select,
             $connection,
             ['id', 'name', 'building', 'floor'],

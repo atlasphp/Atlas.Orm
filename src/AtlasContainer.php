@@ -3,7 +3,7 @@ namespace Atlas\Orm;
 
 use Atlas\Orm\Mapper\MapperFactory;
 use Atlas\Orm\Mapper\MapperLocator;
-use Atlas\Orm\Mapper\MapperRelations;
+use Atlas\Orm\Mapper\Relations;
 use Atlas\Orm\Mapper\IdentityMap;
 use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
@@ -112,7 +112,7 @@ class AtlasContainer
                 $self->getIdentityMap(),
                 $self->newInstance($tableClass),
                 $self->newInstance($pluginClass),
-                $self->newMapperRelations()
+                $self->newRelations()
             );
         };
 
@@ -150,8 +150,8 @@ class AtlasContainer
         return new MapperFactory($this, $mapperClass, $tableClass);
     }
 
-    public function newMapperRelations()
+    public function newRelations()
     {
-        return new MapperRelations($this->getMapperLocator());
+        return new Relations($this->getMapperLocator());
     }
 }

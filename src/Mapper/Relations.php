@@ -3,7 +3,7 @@ namespace Atlas\Orm\Mapper;
 
 use Atlas\Orm\Exception;
 
-class MapperRelations
+class Relations
 {
     protected $mapperLocator;
 

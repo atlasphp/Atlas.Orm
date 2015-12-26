@@ -8,7 +8,7 @@ use Atlas\Orm\DataSource\Employee\EmployeeRecordSet;
 use Atlas\Orm\DataSource\Employee\EmployeeRow;
 use Atlas\Orm\Relation\ManyToMany;
 
-class MapperRelationsTest extends \PHPUnit_Framework_TestCase
+class RelationsTest extends \PHPUnit_Framework_TestCase
 {
     protected $mapperLocator;
     protected $relations;
