@@ -1,7 +1,7 @@
 <?php
 namespace Atlas\Orm\DataSource\Summary;
 
-use Atlas\Orm\Table\AbstractTable;
+use Atlas\Orm\Mapper\AbstractTable;
 
 class SummaryTable extends AbstractTable
 {

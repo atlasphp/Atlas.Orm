@@ -2,7 +2,7 @@
 namespace Atlas\Orm\Mapper;
 
 use Atlas\Orm\Exception;
-use Atlas\Orm\Table\Row;
+use Atlas\Orm\Mapper\Row;
 
 class Record
 {

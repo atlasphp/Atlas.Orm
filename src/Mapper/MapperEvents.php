@@ -6,7 +6,6 @@ use Aura\SqlQuery\Common\Update;
 use Aura\SqlQuery\Common\Delete;
 use PDOStatement;
 
-// modify? alter? customize?
 class MapperEvents
 {
     public function modifyNewRecord(Record $record)

@@ -1,7 +1,7 @@
 <?php
 namespace Atlas\Orm\DataSource\Tag;
 
-use Atlas\Orm\Table\AbstractTable;
+use Atlas\Orm\Mapper\AbstractTable;
 
 class TagTable extends AbstractTable
 {

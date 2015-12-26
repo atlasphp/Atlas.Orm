@@ -1,5 +1,5 @@
 <?php
-namespace Atlas\Orm\Table;
+namespace Atlas\Orm\Mapper;
 
 class RowIdentityTest extends \PHPUnit_Framework_TestCase
 {

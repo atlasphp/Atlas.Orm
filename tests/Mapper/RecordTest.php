@@ -2,8 +2,8 @@
 namespace Atlas\Orm\Mapper;
 
 use Atlas\Orm\Exception;
-use Atlas\Orm\Table\Row;
-use Atlas\Orm\Table\RowIdentity;
+use Atlas\Orm\Mapper\Row;
+use Atlas\Orm\Mapper\RowIdentity;
 
 class RecordTest extends \PHPUnit_Framework_TestCase
 {

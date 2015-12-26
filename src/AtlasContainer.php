@@ -4,7 +4,7 @@ namespace Atlas\Orm;
 use Atlas\Orm\Mapper\MapperFactory;
 use Atlas\Orm\Mapper\MapperLocator;
 use Atlas\Orm\Mapper\MapperRelations;
-use Atlas\Orm\Table\IdentityMap;
+use Atlas\Orm\Mapper\IdentityMap;
 use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\QueryFactory;

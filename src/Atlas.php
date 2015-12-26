@@ -3,7 +3,6 @@ namespace Atlas\Orm;
 
 use Atlas\Orm\Mapper\MapperLocator;
 use Atlas\Orm\Mapper\Record;
-use Atlas\Orm\Table\TableSelect;
 use Exception;
 
 class Atlas

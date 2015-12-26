@@ -1,7 +1,7 @@
 <?php
 namespace Atlas\Orm\DataSource\Thread;
 
-use Atlas\Orm\Table\AbstractTable;
+use Atlas\Orm\Mapper\AbstractTable;
 
 class ThreadTable extends AbstractTable
 {

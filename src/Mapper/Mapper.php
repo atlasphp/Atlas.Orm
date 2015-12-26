@@ -6,10 +6,10 @@ use Atlas\Orm\Relation\ManyToMany;
 use Atlas\Orm\Relation\ManyToOne;
 use Atlas\Orm\Relation\OneToMany;
 use Atlas\Orm\Relation\OneToOne;
-use Atlas\Orm\Table\IdentityMap;
-use Atlas\Orm\Table\Row;
-use Atlas\Orm\Table\RowIdentity;
-use Atlas\Orm\Table\TableInterface;
+use Atlas\Orm\Mapper\IdentityMap;
+use Atlas\Orm\Mapper\Row;
+use Atlas\Orm\Mapper\RowIdentity;
+use Atlas\Orm\Mapper\TableInterface;
 use Aura\Sql\ConnectionLocator;
 use Aura\SqlQuery\QueryFactory;
 
