@@ -68,7 +68,7 @@ class Mapper
 
     protected $events;
 
-    protected $recordClass;
+    protected $recordSetClass;
 
     public function __construct(
         ConnectionLocator $connectionLocator,
@@ -85,7 +85,7 @@ class Mapper
         $this->tableClass = get_class($this->table);
         $this->events = $events;
         $this->relations = $relations;
-        $this->recordClass = substr(get_class($this), 0, -6) . 'Record';
+        $this->recordSetClass = substr(get_class($this), 0, -6) . 'RecordSet';
         $this->defineRelations();
     }
 
@@ -247,7 +247,6 @@ class Mapper
      */
     public function insert(Record $record)
     {
-        $this->assertRecord($record);
         $this->events->beforeInsert($this, $record);
 
         $insert = $this->newInsert($record);
@@ -286,7 +285,6 @@ class Mapper
      */
     public function update(Record $record)
     {
-        $this->assertRecord($record);
         $this->events->beforeUpdate($this, $record);
 
         $update = $this->newUpdate($record);
@@ -325,7 +323,6 @@ class Mapper
      */
     public function delete(Record $record)
     {
-        $this->assertRecord($record);
         $this->events->beforeDelete($this, $record);
 
         $delete = $this->newDelete($record);
@@ -366,9 +363,18 @@ class Mapper
         return $this->newRecordFromRow($row, $with);
     }
 
+    protected function getRecordClass(Row $row)
+    {
+        static $recordClass;
+        if (! $recordClass) {
+            $recordClass = substr(get_class($this), 0, -6) . 'Record';
+        }
+        return $recordClass;
+    }
+
     protected function newRecordFromRow(Row $row, array $with = [])
     {
-        $recordClass = $this->recordClass;
+        $recordClass = $this->getRecordClass($row);
         $record = new $recordClass($row, $this->newRelated());
         $this->relations->stitchIntoRecord($record, $with);
         return $record;
@@ -376,7 +382,7 @@ class Mapper
 
     public function newRecordSet(array $records = [], array $with = [])
     {
-        $recordSetClass = $this->recordClass . 'Set';
+        $recordSetClass = $this->recordSetClass;
         $recordSet = new $recordSetClass($records);
         $this->relations->stitchIntoRecordSet($recordSet, $with);
         return $recordSet;
@@ -609,16 +615,5 @@ class Mapper
             $foreignMapperClass,
             $throughName
         );
-    }
-
-    protected function assertRecord($record)
-    {
-        if (! is_object($record)) {
-            throw Exception::invalidType($this->recordClass, gettype($record));
-        }
-
-        if (! $record instanceof $this->recordClass) {
-            throw Exception::invalidType($this->recordClass, $record);
-        }
     }
 }

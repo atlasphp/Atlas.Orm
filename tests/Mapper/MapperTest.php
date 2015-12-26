@@ -309,16 +309,6 @@ class MapperTest extends \PHPUnit_Framework_TestCase
             "Expected 1 row affected, actual 0"
         );
         $this->mapper->insert($record);
-
-        // try to insert a record of the wrong type
-        $row = new Row('FakeTable', new RowIdentity(['id' => null]), []);
-        $related = new Related([]);
-        $record = new FakeRecord($row, $related);
-        $this->setExpectedException(
-            InvalidArgumentException::CLASS,
-            "Expected object of type 'Atlas\Orm\DataSource\Employee\EmployeeRecord', got 'Atlas\Orm\Mapper\FakeRecord' instead."
-        );
-        $this->mapper->insert($record);
     }
 
     public function testUpdate()
@@ -353,16 +343,6 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         //     "Expected 1 row affected, actual 0"
         // );
         // $this->mapper->update($record);
-
-        // try to update a record of the wrong type
-        $row = new Row('FakeTable', new RowIdentity(['id' => null]), []);
-        $related = new Related([]);
-        $record = new FakeRecord($row, $related);
-        $this->setExpectedException(
-            InvalidArgumentException::CLASS,
-            "Expected object of type 'Atlas\Orm\DataSource\Employee\EmployeeRecord', got 'Atlas\Orm\Mapper\FakeRecord' instead."
-        );
-        $this->mapper->update($record);
     }
 
     public function testDelete()
@@ -380,16 +360,6 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $actual = $select->fetchAll();
         $expect = 11;
         $this->assertEquals($expect, count($actual));
-
-        // try to update a record of the wrong type
-        $row = new Row('FakeTable', new RowIdentity(['id' => null]), []);
-        $related = new Related([]);
-        $record = new FakeRecord($row, $related);
-        $this->setExpectedException(
-            InvalidArgumentException::CLASS,
-            "Expected object of type 'Atlas\Orm\DataSource\Employee\EmployeeRecord', got 'Atlas\Orm\Mapper\FakeRecord' instead."
-        );
-        $this->mapper->delete($record);
     }
 
     protected function silenceErrors()
