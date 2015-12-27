@@ -255,7 +255,7 @@ class Mapper implements MapperInterface
 
         // mark as saved and retain in identity map
         $row = $record->getRow();
-        $row->markAsSaved();
+        $row->setStatus(Status::IS_INSERTED);
         $this->identityMap->setRow($row, $row->getArrayCopy());
         return true;
     }
@@ -293,7 +293,7 @@ class Mapper implements MapperInterface
 
         // mark as saved and retain updated identity-map data
         $row = $record->getRow();
-        $row->markAsSaved();
+        $row->setStatus(Status::IS_UPDATED);
         $this->identityMap->setInitial($row);
         return true;
     }
@@ -331,7 +331,7 @@ class Mapper implements MapperInterface
 
         // mark as deleted, no need to update identity map
         $row = $record->getRow();
-        $row->markAsDeleted();
+        $row->setStatus(Status::IS_DELETED);
         return true;
     }
 
@@ -376,7 +376,11 @@ class Mapper implements MapperInterface
     protected function newRecordFromRow(Row $row, array $with = [])
     {
         $recordClass = $this->getRecordClass($row);
-        $record = new $recordClass($this->mapperClass, $row, $this->newRelated());
+        $record = new $recordClass(
+            $this->mapperClass,
+            $row,
+            $this->relations->newRelated()
+        );
         $this->relations->stitchIntoRecord($record, $with);
         return $record;
     }
@@ -425,7 +429,7 @@ class Mapper implements MapperInterface
     protected function newSelectedRow(array $cols)
     {
         $row = $this->newRow($cols);
-        $row->markAsClean();
+        $row->setStatus(Status::IS_CLEAN);
         $this->identityMap->setRow($row, $cols);
         return $row;
     }

@@ -97,12 +97,7 @@ class Record
     public function getArrayCopy()
     {
         // use +, not array_merge(), so row takes precedence over related
-        return $this->getRow()->getArrayCopy()
-             + $this->getRelated()->getArrayCopy();
-    }
-
-    public function getStatus()
-    {
-        return $this->getRow()->getStatus();
+        return $this->row->getArrayCopy()
+             + $this->related->getArrayCopy();
     }
 }

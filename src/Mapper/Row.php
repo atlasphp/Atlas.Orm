@@ -158,14 +158,26 @@ class Row
         return $this->status == Status::IS_DIRTY;
     }
 
-    public function isSaved()
-    {
-        return $this->status == Status::IS_SAVED;
-    }
-
     public function isTrash()
     {
         return $this->status == Status::IS_TRASH;
+    }
+
+    public function isSaved() // persisted? flushed?
+    {
+        return $this->status == Status::IS_INSERTED
+            || $this->status == Status::IS_UPDATED
+            || $this->status == Status::IS_DELETED;
+    }
+
+    public function isInserted()
+    {
+        return $this->status == Status::IS_INSERTED;
+    }
+
+    public function isUpdated()
+    {
+        return $this->status == Status::IS_UPDATED;
     }
 
     public function isDeleted()
@@ -173,28 +185,21 @@ class Row
         return $this->status == Status::IS_DELETED;
     }
 
-    public function markAsClean()
+    public function hasStatus($status)
     {
-        $this->status = Status::IS_CLEAN;
-    }
-
-    public function markAsSaved()
-    {
-        $this->status = Status::IS_SAVED;
-    }
-
-    public function markAsTrash()
-    {
-        $this->status = Status::IS_TRASH; // if not deleted, and not new
-    }
-
-    public function markAsDeleted()
-    {
-        $this->status = Status::IS_DELETED;
+        return in_array($this->status, (array) $status);
     }
 
     public function getStatus()
     {
         return $this->status;
+    }
+
+    public function setStatus($status)
+    {
+        if (! defined("Atlas\Orm\Mapper\Status::{$status}")) {
+            throw new Exception('Invalid status: ' . $status);
+        }
+        $this->status = $status;
     }
 }
