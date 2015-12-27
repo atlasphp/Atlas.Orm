@@ -6,6 +6,7 @@ use Atlas\Orm\Relation\ManyToMany;
 use Atlas\Orm\Relation\ManyToOne;
 use Atlas\Orm\Relation\OneToMany;
 use Atlas\Orm\Relation\OneToOne;
+use Atlas\Orm\Relation\Relations;
 use Atlas\Orm\Mapper\IdentityMap;
 use Atlas\Orm\Mapper\Row;
 use Atlas\Orm\Mapper\Primary;
@@ -379,10 +380,15 @@ class Mapper implements MapperInterface
         $record = new $recordClass(
             $this->mapperClass,
             $row,
-            $this->relations->newRelated()
+            $this->newRelated()
         );
         $this->relations->stitchIntoRecord($record, $with);
         return $record;
+    }
+
+    protected function newRelated()
+    {
+        return new Related($this->relations->getFields());
     }
 
     public function newRecordSet(array $records = [], array $with = [])

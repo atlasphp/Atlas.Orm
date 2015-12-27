@@ -3,8 +3,8 @@ namespace Atlas\Orm;
 
 use Atlas\Orm\Mapper\MapperFactory;
 use Atlas\Orm\Mapper\MapperLocator;
-use Atlas\Orm\Mapper\Relations;
 use Atlas\Orm\Mapper\IdentityMap;
+use Atlas\Orm\Relation\Relations;
 use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\QueryFactory;

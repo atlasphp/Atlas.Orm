@@ -1,5 +1,5 @@
 <?php
-namespace Atlas\Orm\Mapper;
+namespace Atlas\Orm\Relation;
 
 class FakeRelations extends Relations
 {

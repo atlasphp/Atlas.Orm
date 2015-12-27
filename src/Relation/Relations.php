@@ -1,7 +1,10 @@
 <?php
-namespace Atlas\Orm\Mapper;
+namespace Atlas\Orm\Relation;
 
 use Atlas\Orm\Exception;
+use Atlas\Orm\Mapper\MapperLocator;
+use Atlas\Orm\Mapper\Record;
+use Atlas\Orm\Mapper\RecordSet;
 
 class Relations
 {
@@ -16,9 +19,9 @@ class Relations
         $this->mapperLocator = $mapperLocator;
     }
 
-    public function newRelated()
+    public function getFields()
     {
-        return new Related($this->fields);
+        return $this->fields;
     }
 
     public function set(
