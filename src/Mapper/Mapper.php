@@ -588,8 +588,6 @@ class Mapper implements MapperInterface
         return array_values($rows);
     }
 
-/** RECORD SUPPORT ********************************************************** */
-
     protected function setRelated()
     {
     }
