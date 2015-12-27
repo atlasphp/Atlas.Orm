@@ -20,7 +20,7 @@ use Aura\SqlQuery\QueryFactory;
  * @package Atlas.Atlas
  *
  */
-class Mapper
+class Mapper implements MapperInterface
 {
     /**
      *
@@ -133,16 +133,6 @@ class Mapper
             $this->writeConnection = $this->connectionLocator->getWrite();
         }
         return $this->writeConnection;
-    }
-
-    public function getIdentityMap()
-    {
-        return $this->identityMap;
-    }
-
-    public function getRelations()
-    {
-        return $this->relations;
     }
 
     public function fetchRecord($primaryVal, array $with = [])

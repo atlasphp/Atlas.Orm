@@ -46,11 +46,6 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf(EmployeeTable::CLASS, $this->mapper->getTable());
     }
 
-    public function testGetRelations()
-    {
-        $this->assertInstanceOf(Relations::CLASS, $this->mapper->getRelations());
-    }
-
     public function testFetchRecord()
     {
         $expect = [
