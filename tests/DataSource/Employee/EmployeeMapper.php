@@ -5,4 +5,7 @@ use Atlas\Orm\Mapper\Mapper;
 
 class EmployeeMapper extends Mapper
 {
+    protected function setRelated()
+    {
+    }
 }

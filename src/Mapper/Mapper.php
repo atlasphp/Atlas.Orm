@@ -90,7 +90,7 @@ class Mapper implements MapperInterface
         $this->tableClass = get_class($this->table);
         $this->mapperClass = get_class($this);
 
-        $this->defineRelationship();
+        $this->setRelated();
     }
 
     static public function getTableClass()
@@ -590,7 +590,7 @@ class Mapper implements MapperInterface
 
 /** RECORD SUPPORT ********************************************************** */
 
-    protected function defineRelationship()
+    protected function setRelated()
     {
     }
 

@@ -10,7 +10,7 @@ use Atlas\Orm\Mapper\Mapper;
 
 class ThreadMapper extends Mapper
 {
-    protected function defineRelationship()
+    protected function setRelated()
     {
         $this->manyToOne('author', AuthorMapper::CLASS);
         $this->oneToOne('summary', SummaryMapper::CLASS);
