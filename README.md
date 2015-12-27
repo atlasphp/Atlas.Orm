@@ -2,16 +2,20 @@
 
 > No migrations. No annotations. No lazy loading. No domain models. No data-type abstractions. No behaviors. No opinions. Just data mapping.
 
-Atlas is an ORM for your **persistence** (or **data source**) model, not for your domain model. Use Atlas data source objects to populate your domain model objects.
+Atlas is a [data mapper](http://martinfowler.com/eaaCatalog/dataMapper.html) implementation for your **persistence** model (**not** your domain model). As such, Atlas uses the term "record" to indicate that its objects are *not* domain entities. Note that an Atlas record is a *passive* record, not an [active record](http://martinfowler.com/eaaCatalog/activeRecord.html); it is disconnected from the database. Use Atlas records to populate your domain entities.
 
 **ATLAS IS A WORK IN PROGRESS. FOR ENTERTAINMENT PURPOSES ONLY. DO NOT USE IN PRODUCTION OR EVEN IN SIDE PROJECTS. BREAKING CHANGES ARE GUARANTEED.**
 
 
 ## Rationale
 
-Per [this article from Mehdi Khalili](http://www.mehdi-khalili.com/orm-anti-patterns-part-4-persistence-domain-model/), we're targeting "Domain Model composed of Persistence Model". That is, the domain Entities and Aggregates use data source Records and RecordSets internally, but never expose them. They can manipulate the persistence model internally as much as they wish. E.g., an Entity might have "getAddress()" and read from the internal Record (which in turn reads from its internal Row).
+I wanted an alternative to Active Record that would allow you to get started about as easily as ActiveRecord, and then refactor as needed toward Data Mapper.
 
-Alternatively, we can do "DDD on top of ORM" where Repositories map the data source Records to domain Entities, Value Objects, and Aggregates.
+You can add behaviors to the Record and RecordSet persistence model objects to start with, but per [this article from Mehdi Khalili](http://www.mehdi-khalili.com/orm-anti-patterns-part-4-persistence-domain-model/), the target should be "Domain Model composed of Persistence Model" as the end state. That is, the domain Entities and Aggregates use data source Records and RecordSets internally, but do not expose them. They can manipulate the persistence model internally as much as they wish. E.g., an Entity might have "getAddress()" and read from the internal Record (which in turn reads from its internal Row or Related objects).
+
+Alternatively, the end state might be "DDD on top of ORM" where Repositories map the data source Records to domain Entities, Value Objects, and Aggregates.
+
+Regardless, the Record and RecordSet objects are disconnected from the database connection, making the refactoring process toward Data Mapper a lot cleaner.
 
 
 ## Installation
@@ -20,28 +24,6 @@ This package is installable and autoloadable via [Composer](https://getcomposer.
 packagist.org/packages/atlas/atlas).
 Make sure that you’ve set up your project to [autoload Composer-installed packages](https://getcomposer.org/doc/00-intro.md#autoloading).
 
-
-## Operation
-
-Atlas works in 2 layers. The lower _Table_ layer is a [table data gateway](http://martinfowler.com/eaaCatalog/tableDataGateway.html) implementation:
-
-- A _Row_ represents a single table row.
-
-- A _RowSet_ represents a collection of _Row_ objects.
-
-- A _Table_ acts as a gateway to a single SQL table to select _Row_ and _RowSet_ objects from that table, and insert/update/delete _Row_ objects in that table.
-
-- A _RowFilter_ acts as a validator and sanitizer on _Row_ data for inserts and updates.
-
-The upper _Mapper_ layer is a [data mapper](http://martinfowler.com/eaaCatalog/dataMapper.html) implementation **for the persistence model**. As such, Atlas uses the term "record" to indicate that its objects are *not* domain entities. Note that this is a *passive* record, not an [active record](http://martinfowler.com/eaaCatalog/activeRecord.html); you do not add behaviors to it, and it is disconnected from the database.
-
-- A _Record_ combines a single _Row_ object with its related _Record_ and _RecordSet_ objects.
-
-- A _RecordSet_ is a collection of _Record_ objects.
-
-- A _Mapper_ wraps _Row_ and _RowSet_ objects from a _Table_ in _Record_ and _RecordSet_ objects. It also handles relationships to other _Mapper_ objects.
-
-Finally, an _Atlas_ object acts as a collection point for all _Mapper_ objects, allowing you to work with them as a cohesive whole.
 
 ## Basic Usage
 
@@ -70,11 +52,10 @@ That will create this directory and these empty extended classes in `src/App/Dat
 
     └── Thread
         ├── ThreadMapper.php
-        ├── ThreadMapperEvents.php
+        ├── ThreadPlugin.php
         ├── ThreadRecord.php
         ├── ThreadRecordSet.php
-        ├── ThreadTable.php
-        └── ThreadTableEvents.php
+        └── ThreadTable.php
 
 Do that once for each SQL table in your database.
 
@@ -93,7 +74,7 @@ use Atlas\Orm\Mapper\Mapper;
 
 class ThreadMapper extends Mapper
 {
-    protected function defineRelations()
+    protected function setRelated()
     {
         $this->manyToOne('author', AuthorMapper::CLASS);
         $this->oneToOne('summary', SummaryMapper::CLASS);
@@ -107,26 +88,29 @@ class ThreadMapper extends Mapper
 
 ### Reading
 
-Create an _Atlas_ instance using the _AtlasContainer_:
+Create an _Atlas_ instance using the _AtlasContainer_, and provide the default _ExtendedPdo_ connection parameters:
 
 ```php
 <?php
-$atlasContainer = new AtlasContainer('mysql');
-$atlasContainer->setDefaultConnection(function () {
-    return new ExtendedPdo(
-        'mysql:host=localhost;dbname=testdb',
-        'username',
-        'password'
-    );
-});
+$atlasContainer = new AtlasContainer(
+    'mysql:host=localhost;dbname=testdb',
+    'username',
+    'password'
+);
+?>
+```
 
+Next, set the available mapper classes, and get back an _Atlas_ instance:
+
+```php
+<?php
 $atlasContainer->setMappers([
     AuthorMapper::CLASS,
     ReplyMapper::CLASS,
     SummaryMapper::CLASS,
     TagMapper::CLASS,
     ThreadMapper::CLASS,
-    Thread2TagMapper::CLASS,
+    TaggingMapper::CLASS,
 ]);
 
 $atlas = $atlasContainer->getAtlas();
@@ -144,7 +128,7 @@ $threadRecord = $atlas->fetchRecord(ThreadMapper::CLASS, '1', [
     'replies' => function ($select) {
         $select->with(['author']);
     },
-    'threads2tags',
+    'taggings',
     'tags',
 ]);
 
@@ -180,7 +164,7 @@ You can then address the _Record_'s underlying _Row_ columns and the related fie
 <?php
 echo $thread->title;
 echo $thread->body;
-foreach ($thread->reples as $reply) {
+foreach ($thread->replies as $reply) {
     echo $reply->author->name;
     echo $reply->body;
 }
