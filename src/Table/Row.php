@@ -140,11 +140,11 @@ class Row
 
     protected function modify($col, $new)
     {
-        if ($this->isDeleted()) {
+        if ($this->status == static::IS_DELETED) {
             throw Exception::immutableOnceDeleted($this, $col);
         }
 
-        if ($this->isNew() || $this->isTrash()) {
+        if ($this->status == static::IS_NEW || $this->status == static::IS_TRASH) {
             $this->cols[$col] = $new;
             return;
         }
@@ -152,7 +152,7 @@ class Row
         $old = $this->cols[$col];
         $this->cols[$col] = $new;
         if (! $this->isSameValue($old, $new)) {
-            $this->status = static::IS_DIRTY;
+            $this->setStatus(static::IS_DIRTY);
         }
     }
 
@@ -161,48 +161,6 @@ class Row
         return (is_numeric($old) && is_numeric($new))
             ? $old == $new // numeric, compare loosely
             : $old === $new; // not numeric, compare strictly
-    }
-
-    public function isNew()
-    {
-        return $this->status == static::IS_NEW;
-    }
-
-    public function isClean()
-    {
-        return $this->status == static::IS_CLEAN;
-    }
-
-    public function isDirty()
-    {
-        return $this->status == static::IS_DIRTY;
-    }
-
-    public function isTrash()
-    {
-        return $this->status == static::IS_TRASH;
-    }
-
-    public function isSaved() // persisted? flushed?
-    {
-        return $this->status == static::IS_INSERTED
-            || $this->status == static::IS_UPDATED
-            || $this->status == static::IS_DELETED;
-    }
-
-    public function isInserted()
-    {
-        return $this->status == static::IS_INSERTED;
-    }
-
-    public function isUpdated()
-    {
-        return $this->status == static::IS_UPDATED;
-    }
-
-    public function isDeleted()
-    {
-        return $this->status == static::IS_DELETED;
     }
 
     public function hasStatus($status)
