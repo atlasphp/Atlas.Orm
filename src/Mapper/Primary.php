@@ -3,48 +3,48 @@ namespace Atlas\Orm\Mapper;
 
 use Atlas\Orm\Exception;
 
-// using arrays to plan ahead for composite keys
-class RowIdentity
+// using arrays to plan ahead for composite key
+class Primary
 {
-    private $primary;
+    private $key;
 
-    public function __construct(array $primary)
+    public function __construct(array $key)
     {
-        $this->primary = $primary;
+        $this->key = $key;
     }
 
     public function __get($col)
     {
         $this->assertHas($col);
-        return $this->primary[$col];
+        return $this->key[$col];
     }
 
     public function __set($col, $val)
     {
         $this->assertHas($col);
 
-        if (isset($this->primary[$col])) {
+        if (isset($this->key[$col])) {
             throw Exception::immutableOnceSet($this, $col);
         }
 
-        $this->primary[$col] = $val;
+        $this->key[$col] = $val;
     }
 
     public function __isset($col)
     {
         $this->assertHas($col);
-        return isset($this->primary[$col]);
+        return isset($this->key[$col]);
     }
 
     public function __unset($col)
     {
         $this->assertHas($col);
 
-        if (isset($this->primary[$col])) {
+        if (isset($this->key[$col])) {
             throw Exception::immutableOnceSet($this, $col);
         }
 
-        $this->primary[$col] = null;
+        $this->key[$col] = null;
     }
 
     protected function assertHas($col)
@@ -56,16 +56,16 @@ class RowIdentity
 
     public function has($col)
     {
-        return array_key_exists($col, $this->primary);
+        return array_key_exists($col, $this->key);
     }
 
-    public function getPrimary()
+    public function getKey()
     {
-        return $this->primary;
+        return $this->key;
     }
 
     public function getVal()
     {
-        return current($this->primary);
+        return current($this->key);
     }
 }

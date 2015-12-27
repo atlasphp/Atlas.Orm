@@ -8,7 +8,7 @@ use Atlas\Orm\Relation\OneToMany;
 use Atlas\Orm\Relation\OneToOne;
 use Atlas\Orm\Mapper\IdentityMap;
 use Atlas\Orm\Mapper\Row;
-use Atlas\Orm\Mapper\RowIdentity;
+use Atlas\Orm\Mapper\Primary;
 use Atlas\Orm\Mapper\TableInterface;
 use Aura\Sql\ConnectionLocator;
 use Aura\SqlQuery\QueryFactory;
@@ -206,33 +206,27 @@ class Mapper
 
     public function select(array $colsVals = [])
     {
-        $select = new Select(
-            $this->queryFactory->newSelect(),
-            $this->getReadConnection(),
-            $this->table->getColNames(),
-            [$this, 'getSelectedRecord'],
-            [$this, 'getSelectedRecordSet']
-        );
-
-        $select->from($this->table->getName());
-
+        $select = $this->newSelect();
+        $table = $this->table->getName();
+        $select->from($table);
         foreach ($colsVals as $col => $val) {
-            $this->selectWhere($select, $col, $val);
+            $this->selectWhere($select, $table, $col, $val);
         }
-
         return $select;
     }
 
-    protected function selectWhere(Select $select, $col, $val)
+    protected function selectWhere(Select $select, $table, $col, $val)
     {
-        $col = $this->table->getName() . '.' . $col;
+        $col = $table . '.' . $col;
 
         if (is_array($val)) {
-            return $select->where("{$col} IN (?)", $val);
+            $select->where("{$col} IN (?)", $val);
+            return;
         }
 
         if ($val === null) {
-            return $select->where("{$col} IS NULL");
+            $select->where("{$col} IS NULL");
+            return;
         }
 
         $select->where("{$col} = ?", $val);
@@ -433,7 +427,7 @@ class Mapper
     protected function newRow(array $cols = [])
     {
         $cols = array_merge($this->table->getColDefaults(), $cols);
-        $rowIdentity = $this->newRowIdentity($cols);
+        $rowIdentity = $this->newPrimary($cols);
         $row = new Row($this->tableClass, $rowIdentity, $cols);
         return $row;
     }
@@ -458,6 +452,17 @@ class Mapper
             $row = $this->newSelectedRow($cols);
         }
         return $row;
+    }
+
+    protected function newSelect()
+    {
+        return new Select(
+            $this->queryFactory->newSelect(),
+            $this->getReadConnection(),
+            $this->table->getColNames(),
+            [$this, 'getSelectedRecord'],
+            [$this, 'getSelectedRecordSet']
+        );
     }
 
     protected function newInsert(Record $record)
@@ -487,7 +492,7 @@ class Mapper
         $update->cols($cols);
 
         $primaryCol = $this->table->getPrimaryKey();
-        $update->where("{$primaryCol} = ?", $row->getIdentity()->getVal());
+        $update->where("{$primaryCol} = ?", $row->getPrimary()->getVal());
 
         $this->plugin->modifyUpdate($this, $record, $update);
         return $update;
@@ -500,13 +505,13 @@ class Mapper
 
         $row = $record->getRow();
         $primaryCol = $this->table->getPrimaryKey();
-        $delete->where("{$primaryCol} = ?", $row->getIdentity()->getVal());
+        $delete->where("{$primaryCol} = ?", $row->getPrimary()->getVal());
 
         $this->plugin->modifyDelete($this, $record, $delete);
         return $delete;
     }
 
-    protected function newRowIdentity(array &$cols)
+    protected function newPrimary(array &$cols)
     {
         $primaryCol = $this->table->getPrimaryKey();
         $primaryVal = null;
@@ -514,7 +519,7 @@ class Mapper
             $primaryVal = $cols[$primaryCol];
             unset($cols[$primaryCol]);
         }
-        return new RowIdentity([$primaryCol => $primaryVal]);
+        return new Primary([$primaryCol => $primaryVal]);
     }
 
     protected function getPrimaryIdentity($primaryVal)
@@ -573,7 +578,7 @@ class Mapper
         $data = $select->cols($this->table->getColNames())->fetchAll();
         foreach ($data as $cols) {
             $row = $this->newSelectedRow($cols);
-            $rows[$row->getIdentity()->getVal()] = $row;
+            $rows[$row->getPrimary()->getVal()] = $row;
         }
 
         // remove unfound rows

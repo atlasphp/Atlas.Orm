@@ -8,17 +8,17 @@ class Row
 {
     private $tableClass;
 
-    private $identity;
+    private $primary;
 
-    private $data = [];
+    private $cols = [];
 
     private $status;
 
-    public function __construct($tableClass, RowIdentity $identity, array $data)
+    public function __construct($tableClass, Primary $primary, array $cols)
     {
         $this->tableClass = $tableClass;
-        $this->identity = $identity;
-        $this->data = $data;
+        $this->primary = $primary;
+        $this->cols = $cols;
         $this->status = Status::IS_NEW;
     }
 
@@ -26,19 +26,19 @@ class Row
     {
         $this->assertHas($col);
 
-        if ($this->identity->has($col)) {
-            return $this->identity->$col;
+        if ($this->primary->has($col)) {
+            return $this->primary->$col;
         }
 
-        return $this->data[$col];
+        return $this->cols[$col];
     }
 
     public function __set($col, $val)
     {
         $this->assertHas($col);
 
-        if ($this->identity->has($col)) {
-            $this->identity->$col = $val;
+        if ($this->primary->has($col)) {
+            $this->primary->$col = $val;
             return;
         }
 
@@ -49,19 +49,19 @@ class Row
     {
         $this->assertHas($col);
 
-        if ($this->identity->has($col)) {
-            return isset($this->identity->$col);
+        if ($this->primary->has($col)) {
+            return isset($this->primary->$col);
         }
 
-        return isset($this->data[$col]);
+        return isset($this->cols[$col]);
     }
 
     public function __unset($col)
     {
         $this->assertHas($col);
 
-        if ($this->identity->has($col)) {
-            unset($this->identity->$col);
+        if ($this->primary->has($col)) {
+            unset($this->primary->$col);
             return;
         }
 
@@ -89,15 +89,15 @@ class Row
 
     public function has($col)
     {
-        return array_key_exists($col, $this->data)
-            || $this->identity->has($col);
+        return array_key_exists($col, $this->cols)
+            || $this->primary->has($col);
     }
 
     public function getArrayCopy()
     {
         return array_merge(
-            $this->identity->getPrimary(),
-            $this->data
+            $this->primary->getKey(),
+            $this->cols
         );
     }
 
@@ -113,9 +113,9 @@ class Row
         return $diff;
     }
 
-    public function getIdentity()
+    public function getPrimary()
     {
-        return $this->identity;
+        return $this->primary;
     }
 
     protected function modify($col, $new)
@@ -125,12 +125,12 @@ class Row
         }
 
         if ($this->isNew() || $this->isTrash()) {
-            $this->data[$col] = $new;
+            $this->cols[$col] = $new;
             return;
         }
 
-        $old = $this->data[$col];
-        $this->data[$col] = $new;
+        $old = $this->cols[$col];
+        $this->cols[$col] = $new;
         if (! $this->isSameValue($old, $new)) {
             $this->status = Status::IS_DIRTY;
         }

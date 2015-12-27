@@ -38,7 +38,7 @@ class IdentityMap
 
         $serial = $this->getSerial(
             $row->getTableClass(),
-            $row->getIdentity()->getPrimary()
+            $row->getPrimary()->getKey()
         );
 
         $this->serialToRow[$serial] = $row;

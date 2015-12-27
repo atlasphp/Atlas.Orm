@@ -10,7 +10,7 @@ use Atlas\Orm\Mapper\Relations;
 use Atlas\Orm\SqliteFixture;
 use Atlas\Orm\Mapper\IdentityMap;
 use Atlas\Orm\Mapper\Row;
-use Atlas\Orm\Mapper\RowIdentity;
+use Atlas\Orm\Mapper\Primary;
 use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\QueryFactory;

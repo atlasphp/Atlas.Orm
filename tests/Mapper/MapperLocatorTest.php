@@ -8,7 +8,7 @@ use Atlas\Orm\DataSource\Employee\EmployeeTable;
 use Atlas\Orm\Exception;
 use Atlas\Orm\Mapper\Related;
 use Atlas\Orm\Mapper\Row;
-use Atlas\Orm\Mapper\RowIdentity;
+use Atlas\Orm\Mapper\Primary;
 
 class MapperLocatorTest extends \PHPUnit_Framework_TestCase
 {
