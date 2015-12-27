@@ -1,14 +1,13 @@
 <?php
 namespace Atlas\Orm\Relationship;
 
-use Atlas\Orm\Mapper\Related;
-use Atlas\Orm\Mapper\Record;
-use Atlas\Orm\Mapper\RecordSet;
+use Atlas\Orm\Mapper\RecordInterface;
+use Atlas\Orm\Mapper\RecordSetInterface;
 
 class OneToOne extends AbstractRelationship
 {
     public function stitchIntoRecord(
-        Record $nativeRecord,
+        RecordInterface $nativeRecord,
         callable $custom = null
     ) {
         $this->fix();
@@ -18,7 +17,7 @@ class OneToOne extends AbstractRelationship
     }
 
     public function stitchIntoRecordSet(
-        RecordSet $nativeRecordSet,
+        RecordSetInterface $nativeRecordSet,
         callable $custom = null
     ) {
         $this->fix();

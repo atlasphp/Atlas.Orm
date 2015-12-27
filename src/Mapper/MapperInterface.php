@@ -28,11 +28,11 @@ interface MapperInterface
 
     public function select(array $colsVals = []);
 
-    public function insert(Record $record);
+    public function insert(RecordInterface $record);
 
-    public function update(Record $record);
+    public function update(RecordInterface $record);
 
-    public function delete(Record $record);
+    public function delete(RecordInterface $record);
 
     public function newRecord(array $cols = []);
 

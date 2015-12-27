@@ -2,7 +2,7 @@
 namespace Atlas\Orm;
 
 use Atlas\Orm\Exception;
-use Atlas\Orm\Mapper\Record;
+use Atlas\Orm\Mapper\RecordInterface;
 use Atlas\Orm\Mapper\MapperLocator;
 use SplObjectStorage;
 
@@ -144,12 +144,12 @@ class Transaction
      *
      * Specifies a record to insert as part of the transaction.
      *
-     * @param Record $record The record to insert.
+     * @param RecordInterface $record The record to insert.
      *
      * @return null
      *
      */
-    public function insert(Record $record)
+    public function insert(RecordInterface $record)
     {
         $this->planRecordWork('insert', $record);
         return $this;
@@ -159,12 +159,12 @@ class Transaction
      *
      * Specifies a record to update as part of the transaction.
      *
-     * @param Record $record The record to update.
+     * @param RecordInterface $record The record to update.
      *
      * @return null
      *
      */
-    public function update(Record $record)
+    public function update(RecordInterface $record)
     {
         $this->planRecordWork('update', $record);
         return $this;
@@ -174,12 +174,12 @@ class Transaction
      *
      * Specifies a record to delete as part of the transaction.
      *
-     * @param Record $record The record to delete.
+     * @param RecordInterface $record The record to delete.
      *
      * @return null
      *
      */
-    public function delete(Record $record)
+    public function delete(RecordInterface $record)
     {
         $this->planRecordWork('delete', $record);
         return $this;
@@ -192,12 +192,12 @@ class Transaction
      *
      * @param string $method The relevant mapper method to call.
      *
-     * @param Record $record The record to work with.
+     * @param RecordInterface $record The record to work with.
      *
      * @return null
      *
      */
-    protected function planRecordWork($method, Record $record)
+    protected function planRecordWork($method, RecordInterface $record)
     {
         $mapper = $this->mapperLocator->get($record->getMapperClass());
         $this->connections->attach($mapper->getWriteConnection());

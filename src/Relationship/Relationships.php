@@ -3,8 +3,8 @@ namespace Atlas\Orm\Relationship;
 
 use Atlas\Orm\Exception;
 use Atlas\Orm\Mapper\MapperLocator;
-use Atlas\Orm\Mapper\Record;
-use Atlas\Orm\Mapper\RecordSet;
+use Atlas\Orm\Mapper\RecordInterface;
+use Atlas\Orm\Mapper\RecordSetInterface;
 
 class Relationships
 {
@@ -67,7 +67,7 @@ class Relationships
         );
     }
 
-    public function stitchIntoRecord(Record $record, array $with = [])
+    public function stitchIntoRecord(RecordInterface $record, array $with = [])
     {
         foreach ($this->fixWith($with) as $name => $custom) {
             $this->defs[$name]->stitchIntoRecord(
@@ -77,7 +77,7 @@ class Relationships
         }
     }
 
-    public function stitchIntoRecordSet(RecordSet $recordSet, array $with = [])
+    public function stitchIntoRecordSet(RecordSetInterface $recordSet, array $with = [])
     {
         foreach ($this->fixWith($with) as $name => $custom) {
             $this->defs[$name]->stitchIntoRecordSet(

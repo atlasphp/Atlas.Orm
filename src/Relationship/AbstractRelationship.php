@@ -3,9 +3,8 @@ namespace Atlas\Orm\Relationship;
 
 use Atlas\Orm\Mapper\Mapper;
 use Atlas\Orm\Mapper\MapperLocator;
-use Atlas\Orm\Mapper\Record;
-use Atlas\Orm\Mapper\RecordSet;
-use Atlas\Orm\Mapper\Related;
+use Atlas\Orm\Mapper\RecordInterface;
+use Atlas\Orm\Mapper\RecordSetInterface;
 
 abstract class AbstractRelationship
 {
@@ -117,7 +116,7 @@ abstract class AbstractRelationship
         return $select;
     }
 
-    protected function getUniqueVals(RecordSet $recordSet, $col)
+    protected function getUniqueVals(RecordSetInterface $recordSet, $col)
     {
         $vals = [];
         foreach ($recordSet as $record) {
@@ -140,12 +139,12 @@ abstract class AbstractRelationship
     }
 
     abstract public function stitchIntoRecord(
-        Record $nativeRecord,
+        RecordInterface $nativeRecord,
         callable $custom = null
     );
 
     abstract public function stitchIntoRecordSet(
-        RecordSet $nativeRecordSet,
+        RecordSetInterface $nativeRecordSet,
         callable $custom = null
     );
 }

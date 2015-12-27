@@ -228,12 +228,12 @@ class Mapper implements MapperInterface
      *
      * Inserts the Row for a Record.
      *
-     * @param Record $record Insert the Row for this Record.
+     * @param RecordInterface $record Insert the Row for this Record.
      *
      * @return bool
      *
      */
-    public function insert(Record $record)
+    public function insert(RecordInterface $record)
     {
         $this->plugin->beforeInsert($this, $record);
 
@@ -266,12 +266,12 @@ class Mapper implements MapperInterface
      *
      * Updates the Row for a Record.
      *
-     * @param Record $record Update the Row for this Record.
+     * @param RecordInterface $record Update the Row for this Record.
      *
      * @return bool
      *
      */
-    public function update(Record $record)
+    public function update(RecordInterface $record)
     {
         $this->plugin->beforeUpdate($this, $record);
 
@@ -304,12 +304,12 @@ class Mapper implements MapperInterface
      *
      * Deletes the Row for a Record.
      *
-     * @param Record $record Delete the Row for this Record.
+     * @param RecordInterface $record Delete the Row for this Record.
      *
      * @return bool
      *
      */
-    public function delete(Record $record)
+    public function delete(RecordInterface $record)
     {
         $this->plugin->beforeDelete($this, $record);
 
@@ -461,7 +461,7 @@ class Mapper implements MapperInterface
         );
     }
 
-    protected function newInsert(Record $record)
+    protected function newInsert(RecordInterface $record)
     {
         $insert = $this->queryFactory->newInsert();
         $insert->into($this->table->getName());
@@ -477,7 +477,7 @@ class Mapper implements MapperInterface
         return $insert;
     }
 
-    protected function newUpdate(Record $record)
+    protected function newUpdate(RecordInterface $record)
     {
         $update = $this->queryFactory->newUpdate();
         $update->table($this->table->getName());
@@ -494,7 +494,7 @@ class Mapper implements MapperInterface
         return $update;
     }
 
-    protected function newDelete(Record $record)
+    protected function newDelete(RecordInterface $record)
     {
         $delete = $this->queryFactory->newDelete();
         $delete->from($this->table->getName());

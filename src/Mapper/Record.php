@@ -4,7 +4,7 @@ namespace Atlas\Orm\Mapper;
 use Atlas\Orm\Exception;
 use Atlas\Orm\Table\Row;
 
-class Record
+class Record implements RecordInterface
 {
     private $row;
     private $related;
