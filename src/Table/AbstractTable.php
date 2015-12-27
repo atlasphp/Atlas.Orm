@@ -1,5 +1,5 @@
 <?php
-namespace Atlas\Orm\Mapper;
+namespace Atlas\Orm\Table;
 
 abstract class AbstractTable implements TableInterface
 {

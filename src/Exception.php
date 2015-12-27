@@ -112,4 +112,9 @@ class Exception extends \Exception
     {
         return new UnexpectedValueException("Expected Row with table class '$expect', got '$actual' instead.");
     }
+
+    public static function invalidStatus($status)
+    {
+        return new UnexpectedValueException("Expected valid row status, got '$status' instead.");
+    }
 }

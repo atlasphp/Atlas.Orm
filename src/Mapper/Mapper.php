@@ -7,10 +7,11 @@ use Atlas\Orm\Relationship\ManyToOne;
 use Atlas\Orm\Relationship\OneToMany;
 use Atlas\Orm\Relationship\OneToOne;
 use Atlas\Orm\Relationship\Relationships;
-use Atlas\Orm\Mapper\IdentityMap;
-use Atlas\Orm\Mapper\Row;
-use Atlas\Orm\Mapper\Primary;
-use Atlas\Orm\Mapper\TableInterface;
+use Atlas\Orm\Table\IdentityMap;
+use Atlas\Orm\Table\Row;
+use Atlas\Orm\Table\Primary;
+use Atlas\Orm\Table\Status;
+use Atlas\Orm\Table\TableInterface;
 use Aura\Sql\ConnectionLocator;
 use Aura\SqlQuery\QueryFactory;
 
@@ -256,7 +257,7 @@ class Mapper implements MapperInterface
 
         // mark as saved and retain in identity map
         $row = $record->getRow();
-        $row->setStatus(Status::IS_INSERTED);
+        $row->setStatus($row::IS_INSERTED);
         $this->identityMap->setRow($row, $row->getArrayCopy());
         return true;
     }
@@ -294,7 +295,7 @@ class Mapper implements MapperInterface
 
         // mark as saved and retain updated identity-map data
         $row = $record->getRow();
-        $row->setStatus(Status::IS_UPDATED);
+        $row->setStatus($row::IS_UPDATED);
         $this->identityMap->setInitial($row);
         return true;
     }
@@ -332,7 +333,7 @@ class Mapper implements MapperInterface
 
         // mark as deleted, no need to update identity map
         $row = $record->getRow();
-        $row->setStatus(Status::IS_DELETED);
+        $row->setStatus($row::IS_DELETED);
         return true;
     }
 
@@ -430,7 +431,7 @@ class Mapper implements MapperInterface
     protected function newSelectedRow(array $cols)
     {
         $row = $this->newRow($cols);
-        $row->setStatus(Status::IS_CLEAN);
+        $row->setStatus($row::IS_CLEAN);
         $this->identityMap->setRow($row, $cols);
         return $row;
     }

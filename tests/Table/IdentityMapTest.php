@@ -1,5 +1,5 @@
 <?php
-namespace Atlas\Orm\Mapper;
+namespace Atlas\Orm\Table;
 
 class IdentityMapTest extends \PHPUnit_Framework_TestCase
 {

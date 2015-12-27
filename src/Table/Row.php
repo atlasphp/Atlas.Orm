@@ -1,11 +1,31 @@
 <?php
-namespace Atlas\Orm\Mapper;
+namespace Atlas\Orm\Table;
 
 use Atlas\Orm\Exception;
-use Atlas\Orm\Mapper\Status;
 
 class Row
 {
+    // new instance, in memory only
+    const IS_NEW = 'IS_NEW';
+
+    // selected, and not yet modified in memory
+    const IS_CLEAN = 'IS_CLEAN';
+
+    // selected/inserted/updated, then modified in memory
+    const IS_DIRTY = 'IS_DIRTY';
+
+    // marked for deletion but not deleted, modification in memory allowed
+    const IS_TRASH = 'IS_TRASH';
+
+    // inserted, and not again modified in memory
+    const IS_INSERTED = 'IS_INSERTED';
+
+    // updated, and not again modified in memory
+    const IS_UPDATED = 'IS_UPDATED';
+
+    // deleted, modification in memory not allowed
+    const IS_DELETED = 'IS_DELETED';
+
     private $tableClass;
 
     private $primary;
@@ -19,7 +39,7 @@ class Row
         $this->tableClass = $tableClass;
         $this->primary = $primary;
         $this->cols = $cols;
-        $this->status = Status::IS_NEW;
+        $this->status = static::IS_NEW;
     }
 
     public function __get($col)
@@ -132,7 +152,7 @@ class Row
         $old = $this->cols[$col];
         $this->cols[$col] = $new;
         if (! $this->isSameValue($old, $new)) {
-            $this->status = Status::IS_DIRTY;
+            $this->status = static::IS_DIRTY;
         }
     }
 
@@ -145,44 +165,44 @@ class Row
 
     public function isNew()
     {
-        return $this->status == Status::IS_NEW;
+        return $this->status == static::IS_NEW;
     }
 
     public function isClean()
     {
-        return $this->status == Status::IS_CLEAN;
+        return $this->status == static::IS_CLEAN;
     }
 
     public function isDirty()
     {
-        return $this->status == Status::IS_DIRTY;
+        return $this->status == static::IS_DIRTY;
     }
 
     public function isTrash()
     {
-        return $this->status == Status::IS_TRASH;
+        return $this->status == static::IS_TRASH;
     }
 
     public function isSaved() // persisted? flushed?
     {
-        return $this->status == Status::IS_INSERTED
-            || $this->status == Status::IS_UPDATED
-            || $this->status == Status::IS_DELETED;
+        return $this->status == static::IS_INSERTED
+            || $this->status == static::IS_UPDATED
+            || $this->status == static::IS_DELETED;
     }
 
     public function isInserted()
     {
-        return $this->status == Status::IS_INSERTED;
+        return $this->status == static::IS_INSERTED;
     }
 
     public function isUpdated()
     {
-        return $this->status == Status::IS_UPDATED;
+        return $this->status == static::IS_UPDATED;
     }
 
     public function isDeleted()
     {
-        return $this->status == Status::IS_DELETED;
+        return $this->status == static::IS_DELETED;
     }
 
     public function hasStatus($status)
@@ -197,8 +217,8 @@ class Row
 
     public function setStatus($status)
     {
-        if (! defined("Atlas\Orm\Mapper\Status::{$status}")) {
-            throw new Exception('Invalid status: ' . $status);
+        if (! defined("static::{$status}")) {
+            throw Exception::invalidStatus($status);
         }
         $this->status = $status;
     }

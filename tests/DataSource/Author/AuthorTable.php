@@ -1,7 +1,7 @@
 <?php
 namespace Atlas\Orm\DataSource\Author;
 
-use Atlas\Orm\Mapper\AbstractTable;
+use Atlas\Orm\Table\AbstractTable;
 
 class AuthorTable extends AbstractTable
 {

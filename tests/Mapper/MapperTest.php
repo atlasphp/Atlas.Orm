@@ -1,13 +1,12 @@
 <?php
 namespace Atlas\Orm\Mapper;
 
-use Atlas\Orm\DataSource\Auto\AutoMapper;
-use Atlas\Orm\DataSource\Auto\AutoTable;
 use Atlas\Orm\DataSource\Employee\EmployeeMapper;
 use Atlas\Orm\DataSource\Employee\EmployeeRecordFactory;
 use Atlas\Orm\DataSource\Employee\EmployeeTable;
 use Atlas\Orm\Relationship\Relationships;
 use Atlas\Orm\SqliteFixture;
+use Atlas\Orm\Table\IdentityMap;
 use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\QueryFactory;

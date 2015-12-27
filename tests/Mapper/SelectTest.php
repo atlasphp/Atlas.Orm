@@ -2,10 +2,7 @@
 namespace Atlas\Orm\Mapper;
 
 use Atlas\Orm\Assertions;
-use Atlas\Orm\DataSource\Employee\EmployeeTable;
-use Atlas\Orm\DataSource\Employee\EmployeeTableEvents;
 use Atlas\Orm\SqliteFixture;
-use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\QueryFactory;
 
@@ -13,7 +10,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase
 {
     use Assertions;
 
-    protected $mapperSelect;
+    protected $select;
 
     protected function setUp()
     {
@@ -23,38 +20,36 @@ class SelectTest extends \PHPUnit_Framework_TestCase
         $fixture->exec();
 
         $queryFactory = new QueryFactory('sqlite');
-        $select = $queryFactory->newSelect();
-        $select->from('employee');
 
-        $this->mapperSelect = new Select(
-            $select,
+        $this->select = new Select(
+            $queryFactory->newSelect(),
             $connection,
             ['id', 'name', 'building', 'floor'],
             function () { },
-            function () { },
-            function () { },
             function () { }
         );
+
+        $this->select->from('employee');
     }
 
     public function testGetStatement()
     {
-        $this->mapperSelect->cols(['*']);
+        $this->select->cols(['*']);
         $expect = '
             SELECT
                 *
             FROM
                 "employee"
         ';
-        $actual = $this->mapperSelect->getStatement();
+        $actual = $this->select->getStatement();
         $this->assertSameSql($expect, $actual);
     }
 
     public function testGetBindValues()
     {
         $expect = ['foo' => 'bar'];
-        $this->mapperSelect->bindValues($expect);
-        $actual = $this->mapperSelect->getBindValues();
+        $this->select->bindValues($expect);
+        $actual = $this->select->getBindValues();
         $this->assertSame($expect, $actual);
     }
 
@@ -81,7 +76,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase
             ],
         ];
 
-        $actual = $this->mapperSelect
+        $actual = $this->select
             ->cols(['*'])
             ->where('id <= ?', 3)
             ->fetchAssoc();
@@ -93,7 +88,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase
     {
         $expect = ['Anna', 'Betty', 'Clara'];
 
-        $actual = $this->mapperSelect
+        $actual = $this->select
             ->cols(['name'])
             ->where('id <= ?', 3)
             ->fetchCol();
@@ -109,7 +104,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase
             '3' => 'Clara',
         ];
 
-        $actual = $this->mapperSelect
+        $actual = $this->select
             ->cols(['id', 'name'])
             ->where('id <= ?', 3)
             ->fetchPairs();
@@ -120,7 +115,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase
     public function testFetchValue()
     {
         $expect = 'Clara';
-        $actual = $this->mapperSelect
+        $actual = $this->select
             ->cols(['name'])
             ->where('id = ?', 3)
             ->fetchValue();
