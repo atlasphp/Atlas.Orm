@@ -100,13 +100,6 @@ class Row
         return $this->tableClass;
     }
 
-    public function assertTableClass($tableClass)
-    {
-        if ($tableClass !== $this->tableClass) {
-            throw Exception::wrongTableClass($tableClass, $this->tableClass);
-        }
-    }
-
     public function has($col)
     {
         return array_key_exists($col, $this->cols)

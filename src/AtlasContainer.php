@@ -120,12 +120,8 @@ class AtlasContainer
 
     public function setMappers(array $mapperClasses)
     {
-        foreach ($mapperClasses as $key => $val) {
-            if (is_int($key)) {
-                $this->setMapper($val);
-            } else {
-                $this->setMapper($key, $val);
-            }
+        foreach ($mapperClasses as $mapperClass) {
+            $this->setMapper($mapperClass);
         }
     }
 
@@ -142,11 +138,6 @@ class AtlasContainer
         }
 
         return new $class();
-    }
-
-    public function newMapperFactory($mapperClass, $tableClass)
-    {
-        return new MapperFactory($this, $mapperClass, $tableClass);
     }
 
     public function newRelationships()
