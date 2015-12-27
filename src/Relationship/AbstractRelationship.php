@@ -1,7 +1,6 @@
 <?php
 namespace Atlas\Orm\Relationship;
 
-use Atlas\Orm\Mapper\Mapper;
 use Atlas\Orm\Mapper\MapperLocator;
 use Atlas\Orm\Mapper\RecordInterface;
 use Atlas\Orm\Mapper\RecordSetInterface;

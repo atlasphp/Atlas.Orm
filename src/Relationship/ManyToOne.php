@@ -1,8 +1,6 @@
 <?php
 namespace Atlas\Orm\Relationship;
 
-use Atlas\Orm\Mapper\MapperLocator;
-
 class ManyToOne extends OneToOne
 {
     protected function fixNativeCol()

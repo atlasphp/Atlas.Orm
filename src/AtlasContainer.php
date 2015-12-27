@@ -1,10 +1,9 @@
 <?php
 namespace Atlas\Orm;
 
-use Atlas\Orm\Mapper\MapperFactory;
 use Atlas\Orm\Mapper\MapperLocator;
-use Atlas\Orm\Table\IdentityMap;
 use Atlas\Orm\Relationship\Relationships;
+use Atlas\Orm\Table\IdentityMap;
 use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\QueryFactory;
