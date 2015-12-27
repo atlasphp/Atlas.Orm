@@ -413,11 +413,6 @@ class Mapper implements MapperInterface
         return $recordSet;
     }
 
-    protected function newRelated()
-    {
-        return new Related($this->relations->getFields());
-    }
-
     protected function newRow(array $cols = [])
     {
         $cols = array_merge($this->table->getColDefaults(), $cols);

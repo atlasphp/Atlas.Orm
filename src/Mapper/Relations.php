@@ -16,9 +16,9 @@ class Relations
         $this->mapperLocator = $mapperLocator;
     }
 
-    public function getFields()
+    public function newRelated()
     {
-        return $this->fields;
+        return new Related($this->fields);
     }
 
     public function set(
