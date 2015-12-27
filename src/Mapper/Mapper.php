@@ -2,11 +2,11 @@
 namespace Atlas\Orm\Mapper;
 
 use Atlas\Orm\Exception;
-use Atlas\Orm\Relation\ManyToMany;
-use Atlas\Orm\Relation\ManyToOne;
-use Atlas\Orm\Relation\OneToMany;
-use Atlas\Orm\Relation\OneToOne;
-use Atlas\Orm\Relation\Relations;
+use Atlas\Orm\Relationship\ManyToMany;
+use Atlas\Orm\Relationship\ManyToOne;
+use Atlas\Orm\Relationship\OneToMany;
+use Atlas\Orm\Relationship\OneToOne;
+use Atlas\Orm\Relationship\Relationships;
 use Atlas\Orm\Mapper\IdentityMap;
 use Atlas\Orm\Mapper\Row;
 use Atlas\Orm\Mapper\Primary;
@@ -67,7 +67,7 @@ class Mapper implements MapperInterface
 
     protected $mapperClass;
 
-    protected $relations;
+    protected $relationships;
 
     protected $plugin;
 
@@ -77,19 +77,19 @@ class Mapper implements MapperInterface
         IdentityMap $identityMap,
         TableInterface $table,
         PluginInterface $plugin,
-        Relations $relations
+        Relationships $relationships
     ) {
         $this->connectionLocator = $connectionLocator;
         $this->queryFactory = $queryFactory;
         $this->identityMap = $identityMap;
         $this->table = $table;
         $this->plugin = $plugin;
-        $this->relations = $relations;
+        $this->relationships = $relationships;
 
         $this->tableClass = get_class($this->table);
         $this->mapperClass = get_class($this);
 
-        $this->defineRelations();
+        $this->defineRelationship();
     }
 
     static public function getTableClass()
@@ -382,20 +382,20 @@ class Mapper implements MapperInterface
             $row,
             $this->newRelated()
         );
-        $this->relations->stitchIntoRecord($record, $with);
+        $this->relationships->stitchIntoRecord($record, $with);
         return $record;
     }
 
     protected function newRelated()
     {
-        return new Related($this->relations->getFields());
+        return new Related($this->relationships->getFields());
     }
 
     public function newRecordSet(array $records = [], array $with = [])
     {
         $recordSetClass = $this->getRecordSetClass();
         $recordSet = new $recordSetClass($records);
-        $this->relations->stitchIntoRecordSet($recordSet, $with);
+        $this->relationships->stitchIntoRecordSet($recordSet, $with);
         return $recordSet;
     }
 
@@ -415,7 +415,7 @@ class Mapper implements MapperInterface
             $records[] = $this->getSelectedRecord($cols);
         }
         $recordSet = $this->newRecordSet($records);
-        $this->relations->stitchIntoRecordSet($recordSet, $with);
+        $this->relationships->stitchIntoRecordSet($recordSet, $with);
         return $recordSet;
     }
 
@@ -589,13 +589,13 @@ class Mapper implements MapperInterface
 
 /** RECORD SUPPORT ********************************************************** */
 
-    protected function defineRelations()
+    protected function defineRelationship()
     {
     }
 
     protected function oneToOne($name, $foreignMapperClass)
     {
-        return $this->relations->set(
+        return $this->relationships->set(
             get_class($this),
             $name,
             OneToOne::CLASS,
@@ -605,7 +605,7 @@ class Mapper implements MapperInterface
 
     protected function oneToMany($name, $foreignMapperClass)
     {
-        return $this->relations->set(
+        return $this->relationships->set(
             get_class($this),
             $name,
             OneToMany::CLASS,
@@ -615,7 +615,7 @@ class Mapper implements MapperInterface
 
     protected function manyToOne($name, $foreignMapperClass)
     {
-        return $this->relations->set(
+        return $this->relationships->set(
             get_class($this),
             $name,
             ManyToOne::CLASS,
@@ -625,7 +625,7 @@ class Mapper implements MapperInterface
 
     protected function manyToMany($name, $foreignMapperClass, $throughName)
     {
-        return $this->relations->set(
+        return $this->relationships->set(
             get_class($this),
             $name,
             ManyToMany::CLASS,

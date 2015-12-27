@@ -1,5 +1,5 @@
 <?php
-namespace Atlas\Orm\Relation;
+namespace Atlas\Orm\Relationship;
 
 use Atlas\Orm\Exception;
 use Atlas\Orm\DataSource\Employee\EmployeeMapper;
@@ -8,7 +8,7 @@ use Atlas\Orm\DataSource\Employee\EmployeeRecordSet;
 use Atlas\Orm\DataSource\Employee\EmployeeRow;
 use Atlas\Orm\Mapper\MapperLocator;
 
-class RelationsTest extends \PHPUnit_Framework_TestCase
+class RelationshipsTest extends \PHPUnit_Framework_TestCase
 {
     protected $mapperLocator;
     protected $relations;
@@ -20,7 +20,7 @@ class RelationsTest extends \PHPUnit_Framework_TestCase
             return EmployeeMapper::CLASS;
         });
 
-        $this->relations = new FakeRelations($mapperLocator);
+        $this->relationships = new FakeRelationships($mapperLocator);
     }
 
     public function testSet_manyToMany_noThroughName()
@@ -30,7 +30,7 @@ class RelationsTest extends \PHPUnit_Framework_TestCase
             "Relation 'foo' does not exist"
         );
 
-        $this->relations->set(
+        $this->relationships->set(
             EmployeeMapper::CLASS,
             'bar',
             'ManyToMany',
@@ -46,7 +46,7 @@ class RelationsTest extends \PHPUnit_Framework_TestCase
             "NoSuchMapper does not exist"
         );
 
-        $this->relations->set(
+        $this->relationships->set(
             EmployeeMapper::CLASS,
             'bar',
             'OneToOne',

@@ -1,27 +1,27 @@
 <?php
-namespace Atlas\Orm\Relation;
+namespace Atlas\Orm\Relationship;
 
-use Atlas\Orm\DataSource\Author\AuthorMapper;
+use Atlas\Orm\DataSource\Summary\SummaryMapper;
 use Atlas\Orm\DataSource\Thread\ThreadMapper;
 
-class ManyToOneTest extends AbstractRelationTest
+class OneToOneTest extends AbstractRelationshipTest
 {
     public function testCustomSettings()
     {
-        $rel = new ManyToOne(
+        $rel = new OneToOne(
             $this->mapperLocator,
             ThreadMapper::CLASS,
-            'author',
-            AuthorMapper::CLASS
+            'summary',
+            SummaryMapper::CLASS
         );
 
         $rel->nativeCol('native')
             ->foreignCol('foreign');
 
         $expect = [
-            'name' => 'author',
+            'name' => 'summary',
             'nativeMapperClass' => 'Atlas\\Orm\\DataSource\\Thread\\ThreadMapper',
-            'foreignMapperClass' => 'Atlas\\Orm\\DataSource\\Author\\AuthorMapper',
+            'foreignMapperClass' => 'Atlas\\Orm\\DataSource\\Summary\\SummaryMapper',
             'nativeCol' => 'native',
             'throughName' => null,
             'throughNativeCol' => null,

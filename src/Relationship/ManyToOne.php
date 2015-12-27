@@ -1,5 +1,5 @@
 <?php
-namespace Atlas\Orm\Relation;
+namespace Atlas\Orm\Relationship;
 
 use Atlas\Orm\Mapper\MapperLocator;
 

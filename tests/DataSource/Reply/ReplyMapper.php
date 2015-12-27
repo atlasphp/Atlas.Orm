@@ -6,7 +6,7 @@ use Atlas\Orm\Mapper\Mapper;
 
 class ReplyMapper extends Mapper
 {
-    protected function defineRelations()
+    protected function defineRelationship()
     {
         $this->manyToOne('author', AuthorMapper::CLASS);
     }

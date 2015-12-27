@@ -7,7 +7,7 @@ use Atlas\Orm\Mapper\Mapper;
 
 class TagMapper extends Mapper
 {
-    protected function defineRelations()
+    protected function defineRelationship()
     {
         $this->oneToMany('taggings', TaggingMapper::CLASS);
         $this->manyToMany('threads', ThreadMapper::CLASS, 'taggings');

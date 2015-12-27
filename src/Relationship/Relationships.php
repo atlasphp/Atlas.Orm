@@ -1,16 +1,16 @@
 <?php
-namespace Atlas\Orm\Relation;
+namespace Atlas\Orm\Relationship;
 
 use Atlas\Orm\Exception;
 use Atlas\Orm\Mapper\MapperLocator;
 use Atlas\Orm\Mapper\Record;
 use Atlas\Orm\Mapper\RecordSet;
 
-class Relations
+class Relationships
 {
     protected $mapperLocator;
 
-    protected $relations = [];
+    protected $defs = [];
 
     protected $fields = [];
 
@@ -35,12 +35,12 @@ class Relations
             throw Exception::classDoesNotExist($foreignMapperClass);
         }
 
-        if ($throughName && ! isset($this->relations[$throughName])) {
+        if ($throughName && ! isset($this->defs[$throughName])) {
             throw Exception::relationDoesNotExist($throughName);
         }
 
         $this->fields[$name] = null;
-        $this->relations[$name] = $this->newRelation(
+        $this->defs[$name] = $this->newRelation(
             $nativeMapperClass,
             $name,
             $relationClass,
@@ -48,7 +48,7 @@ class Relations
             $throughName
         );
 
-        return $this->relations[$name];
+        return $this->defs[$name];
     }
 
     protected function newRelation(
@@ -70,7 +70,7 @@ class Relations
     public function stitchIntoRecord(Record $record, array $with = [])
     {
         foreach ($this->fixWith($with) as $name => $custom) {
-            $this->relations[$name]->stitchIntoRecord(
+            $this->defs[$name]->stitchIntoRecord(
                 $record,
                 $custom
             );
@@ -80,7 +80,7 @@ class Relations
     public function stitchIntoRecordSet(RecordSet $recordSet, array $with = [])
     {
         foreach ($this->fixWith($with) as $name => $custom) {
-            $this->relations[$name]->stitchIntoRecordSet(
+            $this->defs[$name]->stitchIntoRecordSet(
                 $recordSet,
                 $custom
             );

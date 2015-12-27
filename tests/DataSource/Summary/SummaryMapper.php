@@ -6,7 +6,7 @@ use Atlas\Orm\Mapper\Mapper;
 
 class SummaryMapper extends Mapper
 {
-    protected function defineRelations()
+    protected function defineRelationship()
     {
         $this->oneToOne('thread', ThreadMapper::CLASS);
     }

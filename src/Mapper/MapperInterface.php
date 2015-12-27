@@ -2,10 +2,10 @@
 namespace Atlas\Orm\Mapper;
 
 use Atlas\Orm\Exception;
-use Atlas\Orm\Relation\ManyToMany;
-use Atlas\Orm\Relation\ManyToOne;
-use Atlas\Orm\Relation\OneToMany;
-use Atlas\Orm\Relation\OneToOne;
+use Atlas\Orm\Relationship\ManyToMany;
+use Atlas\Orm\Relationship\ManyToOne;
+use Atlas\Orm\Relationship\OneToMany;
+use Atlas\Orm\Relationship\OneToOne;
 use Atlas\Orm\Mapper\IdentityMap;
 use Atlas\Orm\Mapper\Row;
 use Atlas\Orm\Mapper\Primary;

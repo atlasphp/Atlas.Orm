@@ -1,12 +1,12 @@
 <?php
-namespace Atlas\Orm\Relation;
+namespace Atlas\Orm\Relationship;
 
 use Atlas\Orm\Exception;
 use Atlas\Orm\DataSource\Tag\TagMapper;
 use Atlas\Orm\DataSource\Tagging\TaggingMapper;
 use Atlas\Orm\DataSource\Thread\ThreadMapper;
 
-class ManyToManyTest extends AbstractRelationTest
+class ManyToManyTest extends AbstractRelationshipTest
 {
     public function testCustomSettings()
     {

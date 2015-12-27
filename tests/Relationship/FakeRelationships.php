@@ -1,7 +1,7 @@
 <?php
-namespace Atlas\Orm\Relation;
+namespace Atlas\Orm\Relationship;
 
-class FakeRelations extends Relations
+class FakeRelationships extends Relationships
 {
     protected function getNativeMapperClass()
     {
