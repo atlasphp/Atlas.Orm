@@ -50,8 +50,7 @@ class TransactionTest extends \PHPUnit_Framework_TestCase
         $expect = "insert " . Record::CLASS . " via " . EmployeeMapper::CLASS;
         $this->assertSame($expect, $work->getLabel());
         $this->assertSame([$mapper, 'insert'], $work->getCallable());
-        $args = $work->getArgs();
-        $this->assertSame($employee, $args[0]);
+        $this->assertSame($employee, $work->getRecord());
         $this->assertFalse($work->getInvoked());
         $this->assertNull($work->getResult());
 
@@ -96,8 +95,7 @@ class TransactionTest extends \PHPUnit_Framework_TestCase
         $expect = "update " . Record::CLASS . " via " . EmployeeMapper::CLASS;
         $this->assertSame($expect, $work->getLabel());
         $this->assertSame([$mapper, 'update'], $work->getCallable());
-        $args = $work->getArgs();
-        $this->assertSame($employee, $args[0]);
+        $this->assertSame($employee, $work->getRecord());
         $this->assertFalse($work->getInvoked());
         $this->assertNull($work->getResult());
 
@@ -140,8 +138,7 @@ class TransactionTest extends \PHPUnit_Framework_TestCase
         $expect = "delete " . Record::CLASS . " via " . EmployeeMapper::CLASS;
         $this->assertSame($expect, $work->getLabel());
         $this->assertSame([$mapper, 'delete'], $work->getCallable());
-        $args = $work->getArgs();
-        $this->assertSame($employee, $args[0]);
+        $this->assertSame($employee, $work->getRecord());
         $this->assertFalse($work->getInvoked());
         $this->assertNull($work->getResult());
 
@@ -165,6 +162,8 @@ class TransactionTest extends \PHPUnit_Framework_TestCase
 
     public function testExec_reExec()
     {
+        $this->markTestIncomplete();
+
         $transaction = $this->atlas->newTransaction();
         $transaction->plan('no-op', function () { });
         $result = $transaction->exec();
@@ -179,6 +178,8 @@ class TransactionTest extends \PHPUnit_Framework_TestCase
 
     public function testExec_rollBack()
     {
+        $this->markTestIncomplete();
+
         $transaction = $this->atlas->newTransaction();
 
         // throw an exception

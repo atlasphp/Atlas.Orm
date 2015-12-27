@@ -125,34 +125,16 @@ class Transaction
 
     /**
      *
-     * Adds a callable as part of the transaction plan.
-     *
-     * @param string $label A label for the planned work.
-     *
-     * @param callable $callable The callable to invoke.
-     *
-     * @param mixed ...$args Arguments to pass to the callable.
-     *
-     */
-    public function plan($label, callable $callable, ...$args)
-    {
-        $this->plan[] = $this->newWork($label, $callable, $args);
-        return $this;
-    }
-
-    /**
-     *
      * Specifies a record to insert as part of the transaction.
      *
      * @param RecordInterface $record The record to insert.
      *
-     * @return null
+     * @return self
      *
      */
     public function insert(RecordInterface $record)
     {
-        $this->planRecordWork('insert', $record);
-        return $this;
+        return $this->plan('insert', $record);
     }
 
     /**
@@ -161,13 +143,12 @@ class Transaction
      *
      * @param RecordInterface $record The record to update.
      *
-     * @return null
+     * @return self
      *
      */
     public function update(RecordInterface $record)
     {
-        $this->planRecordWork('update', $record);
-        return $this;
+        return $this->plan('update', $record);
     }
 
     /**
@@ -176,13 +157,12 @@ class Transaction
      *
      * @param RecordInterface $record The record to delete.
      *
-     * @return null
+     * @return self
      *
      */
     public function delete(RecordInterface $record)
     {
-        $this->planRecordWork('delete', $record);
-        return $this;
+        return $this->plan('delete', $record);
     }
 
     /**
@@ -194,17 +174,18 @@ class Transaction
      *
      * @param RecordInterface $record The record to work with.
      *
-     * @return null
+     * @return self
      *
      */
-    protected function planRecordWork($method, RecordInterface $record)
+    protected function plan($method, RecordInterface $record)
     {
         $mapper = $this->mapperLocator->get($record->getMapperClass());
         $this->connections->attach($mapper->getWriteConnection());
 
         $label = "$method " . get_class($record) . " via " . get_class($mapper);
         $callable = [$mapper, $method];
-        $this->plan($label, $callable, $record);
+        $this->plan[] = $this->newWork($label, $callable, $record);
+        return $this;
     }
 
     /**
@@ -215,14 +196,14 @@ class Transaction
      *
      * @param callable $callable The callable to invoke for the work.
      *
-     * @param array $args Arguments to pass to the callable.
+     * @param RecordInterface $record The record to work with.
      *
      * @return Work
      *
      */
-    protected function newWork($label, callable $callable, array $args)
+    protected function newWork($label, callable $callable, RecordInterface $record)
     {
-        return new Work($label, $callable, $args);
+        return new Work($label, $callable, $record);
     }
 
     /**

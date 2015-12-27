@@ -1,20 +1,22 @@
 <?php
 namespace Atlas\Orm;
 
+use Atlas\Orm\Mapper\RecordInterface;
+
 // work to be performed inside a transaction
 class Work
 {
     protected $label;
     protected $callable;
-    protected $args;
+    protected $record;
     protected $result;
     protected $invoked = false;
 
-    public function __construct($label, callable $callable, array $args)
+    public function __construct($label, callable $callable, RecordInterface $record)
     {
         $this->label = $label;
         $this->callable = $callable;
-        $this->args = $args;
+        $this->record = $record;
     }
 
     public function __invoke()
@@ -24,7 +26,7 @@ class Work
         }
 
         $this->invoked = true;
-        $this->result = call_user_func_array($this->callable, $this->args);
+        $this->result = call_user_func($this->callable, $this->record);
     }
 
     public function getLabel()
@@ -37,9 +39,9 @@ class Work
         return $this->callable;
     }
 
-    public function getArgs()
+    public function getRecord()
     {
-        return $this->args;
+        return $this->record;
     }
 
     public function getResult()
