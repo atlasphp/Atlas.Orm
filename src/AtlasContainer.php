@@ -2,6 +2,7 @@
 namespace Atlas\Orm;
 
 use Atlas\Orm\Mapper\MapperLocator;
+use Atlas\Orm\Mapper\Plugin;
 use Atlas\Orm\Relationship\Relationships;
 use Atlas\Orm\Table\IdentityMap;
 use Aura\Sql\ConnectionLocator;
@@ -99,9 +100,9 @@ class AtlasContainer
         }
 
         $pluginClass = substr($mapperClass, 0, -6) . 'Plugin';
-        if (! class_exists($pluginClass)) {
-            $pluginClass = 'Atlas\Orm\Mapper\Plugin';
-        }
+        $pluginClass = class_exists($pluginClass)
+            ? $pluginClass
+            : Plugin::CLASS;
 
         $self = $this;
         $mapperFactory = function () use ($self, $mapperClass, $tableClass, $pluginClass) {
