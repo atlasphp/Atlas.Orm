@@ -2,9 +2,9 @@
 namespace Atlas\Orm\DataSource\Reply;
 
 use Atlas\Orm\DataSource\Author\AuthorMapper;
-use Atlas\Orm\Mapper\Mapper;
+use Atlas\Orm\Mapper\AbstractMapper;
 
-class ReplyMapper extends Mapper
+class ReplyMapper extends AbstractMapper
 {
     protected function setRelated()
     {

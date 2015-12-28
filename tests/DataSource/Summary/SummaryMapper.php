@@ -2,9 +2,9 @@
 namespace Atlas\Orm\DataSource\Summary;
 
 use Atlas\Orm\DataSource\Thread\ThreadMapper;
-use Atlas\Orm\Mapper\Mapper;
+use Atlas\Orm\Mapper\AbstractMapper;
 
-class SummaryMapper extends Mapper
+class SummaryMapper extends AbstractMapper
 {
     protected function setRelated()
     {

@@ -1,8 +1,8 @@
 <?php
 namespace Atlas\Orm\DataSource\Tagging;
 
-use Atlas\Orm\Mapper\Mapper;
+use Atlas\Orm\Mapper\AbstractMapper;
 
-class TaggingMapper extends Mapper
+class TaggingMapper extends AbstractMapper
 {
 }

@@ -22,7 +22,7 @@ use Aura\SqlQuery\QueryFactory;
  * @package Atlas.Atlas
  *
  */
-class Mapper implements MapperInterface
+abstract class AbstractMapper implements MapperInterface
 {
     /**
      *

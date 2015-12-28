@@ -3,9 +3,9 @@ namespace Atlas\Orm\DataSource\Tag;
 
 use Atlas\Orm\DataSource\Tagging\TaggingMapper;
 use Atlas\Orm\DataSource\Thread\ThreadMapper;
-use Atlas\Orm\Mapper\Mapper;
+use Atlas\Orm\Mapper\AbstractMapper;
 
-class TagMapper extends Mapper
+class TagMapper extends AbstractMapper
 {
     protected function setRelated()
     {
