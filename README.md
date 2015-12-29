@@ -1,28 +1,50 @@
 # Atlas.Orm
 
-> No migrations. No annotations. No lazy loading. No domain models. No data-type abstractions. No behaviors. No opinions. Just data mapping.
+> No migrations. No annotations. No lazy loading. No domain models.
+> No data-type abstractions. No behaviors. No opinions. Just data source mapping.
 
-Atlas is a [data mapper](http://martinfowler.com/eaaCatalog/dataMapper.html) implementation for your **persistence** model (**not** your domain model). As such, Atlas uses the term "record" to indicate that its objects are *not* domain entities. Note that an Atlas record is a *passive* record, not an [active record](http://martinfowler.com/eaaCatalog/activeRecord.html); it is disconnected from the database. Use Atlas records to populate your domain entities.
+Atlas is a [data mapper](http://martinfowler.com/eaaCatalog/dataMapper.html)
+implementation for your **persistence model** (*not* your domain model).
 
-**ATLAS IS A WORK IN PROGRESS. FOR ENTERTAINMENT PURPOSES ONLY. DO NOT USE IN PRODUCTION OR EVEN IN SIDE PROJECTS. BREAKING CHANGES ARE GUARANTEED.**
+As such, Atlas uses the term "record" to indicate that its objects are *not*
+domain entities. Note that an Atlas record is a *passive* record, not an [active
+record](http://martinfowler.com/eaaCatalog/activeRecord.html); it is
+disconnected from the database. Use Atlas records indirectly to populate your
+domain entities, or directly for simple data source interactions.
+
+**ATLAS IS A WORK IN PROGRESS. FOR ENTERTAINMENT PURPOSES ONLY. DO NOT USE IN
+PRODUCTION OR EVEN IN SIDE PROJECTS. BREAKING CHANGES ARE GUARANTEED.**
 
 
 ## Rationale
 
-I wanted an alternative to Active Record that would allow you to get started about as easily as ActiveRecord, and then refactor as needed toward Data Mapper.
+I wanted an alternative to Active Record that would allow you to get started
+about as easily as Active Record, and then refactor quickly thereafter toward
+Data Mapper.
 
-You can add behaviors to the Record and RecordSet persistence model objects to start with, but per [this article from Mehdi Khalili](http://www.mehdi-khalili.com/orm-anti-patterns-part-4-persistence-domain-model/), the target should be "Domain Model composed of Persistence Model" as the end state. That is, the domain Entities and Aggregates use data source Records and RecordSets internally, but do not expose them. They can manipulate the persistence model internally as much as they wish. E.g., an Entity might have "getAddress()" and read from the internal Record (which in turn reads from its internal Row or Related objects).
+You can add behaviors to the Record and RecordSet persistence model objects to
+start with, but per [this article from Mehdi Khalili][mkap], the target end-
+state should be "Domain Model composed of Persistence Model". That is, the
+domain Entity and Aggregate classes may use data source Records and RecordSets
+internally, but do not expose them. They can manipulate the persistence model
+internally as much as they wish. E.g., an Entity might have "getAddress()" and
+read from the internal Record (which in turn reads from its internal Row or
+Related objects).
 
-Alternatively, the end state might be "DDD on top of ORM" where Repositories map the data source Records to domain Entities, Value Objects, and Aggregates.
+Alternatively, the end state might be "DDD on top of ORM" where Repositories map
+the data source Records to domain Entities, Value Objects, and Aggregates.
 
-Regardless, the Record and RecordSet objects are disconnected from the database connection, making the refactoring process toward Data Mapper a lot cleaner.
+Regardless, the Record and RecordSet objects are disconnected from the database
+connection, making the refactoring process toward Data Mapper a lot cleaner.
 
+[mkap]: http://www.mehdi-khalili.com/orm-anti-patterns-part-4-persistence-domain-model/
 
 ## Installation
 
-This package is installable and autoloadable via [Composer](https://getcomposer.org/) as [atlas/atlas](https://
-packagist.org/packages/atlas/atlas).
-Make sure that you’ve set up your project to [autoload Composer-installed packages](https://getcomposer.org/doc/00-intro.md#autoloading).
+This package is installable and autoloadable via [Composer](https://getcomposer.org/)
+as [atlas/orm](https://packagist.org/packages/atlas/orm).
+
+Make sure your project it set up to [autoload Composer-installed packages](https://getcomposer.org/doc/00-intro.md#autoloading).
 
 
 ## Basic Usage
@@ -31,35 +53,53 @@ Make sure that you’ve set up your project to [autoload Composer-installed pack
 
 ### Creating Classes
 
-You can create your data source classes by hand, but it's going to be tedious to do so. Instead, use the skeleton generator command. While you don't need a database connection, it will be convenient to connect to the database and let the generator read from it.
+You can create your data source classes by hand, but it's going to be tedious to
+do so. Instead, use the `atlas-skeleton` command to read the table information
+from the database.
 
 Create a PHP file to return an array of connection parameters suitable for PDO:
 
 ```php
 <?php
-// ./conn.php
+// /path/to/conn.php
 return ['mysql:dbname=testdb;host=localhost', 'username', 'password'];
 ?>
 ```
 
-You can then invoke the skeleton generator using that connection. Specify a target directory for the skeleton files if you like, and pass the namespace name for the data source classes. Pass an explicit table name to keep the generator from trying to guess the name.
+You can then invoke `atlas-skeleton` using that connection and a table name.
+Specify a target directory for the skeleton files if you like, and pass the
+namespace name for the data source classes.
 
 ```bash
-./bin/atlas-skeleton.php --conn=./conn.php --dir=src/App/DataSource App\\DataSource\\Thread --table=threads
+./bin/atlas-skeleton.php \
+    --dir=./src/App/DataSource \
+    --conn=/path/to/conn.php \
+    --table=threads \
+    App\\DataSource\\Thread
 ```
 
-That will create this directory and these empty extended classes in `src/App/DataSource/`:
+> N.b.: Calling `atlas-skeleton` with `--conn` and `--table` will overwrite any
+> existing Table class; this makes sense only because the Table class represents
+> the table description at the database. No other existing files will ever be
+> overwritten.
+
+That will create this subdirectory and these classes in `./src/App/DataSource/`:
 
     └── Thread
         ├── ThreadMapper.php
-        ├── ThreadPlugin.php
-        ├── ThreadRecord.php
-        ├── ThreadRecordSet.php
         └── ThreadTable.php
+
+The Mapper class will be essentially empty, and the Table class will contain a
+description of the database table.
 
 Do that once for each SQL table in your database.
 
-You can add relationships on a _Record_ by editing its _Relations_ class:
+> N.b.: By default, Atlas uses generic Record and RecordSet classes to hold the
+> database rows. You can create custom Record and RecordSet classes passing
+> `--full` to `atlas-skeleton`; the Mapper will use the custom classes if
+> available, and fall back to the generic ones if not.
+
+You can add relationships by editing the _Mapper_ class:
 
 ```php
 <?php
@@ -88,7 +128,8 @@ class ThreadMapper extends Mapper
 
 ### Reading
 
-Create an _Atlas_ instance using the _AtlasContainer_, and provide the default _ExtendedPdo_ connection parameters:
+Create an _Atlas_ instance using the _AtlasContainer_, and provide the default
+_ExtendedPdo_ connection parameters:
 
 ```php
 <?php
@@ -148,6 +189,7 @@ $threadRecordSet = $atlas->fetchRecordSet(ThreadMapper::CLASS, [1, 2, 3], [
 $threadRecordSet = $atlas
     ->select(ThreadMapper::CLASS)
     ->orderBy('thread_id DESC')
+    ->limit(10)
     ->with([
         'author',
         'summary'
@@ -156,9 +198,12 @@ $threadRecordSet = $atlas
 ?>
 ```
 
-If you do not load a _Record_ "with" a related, it will be `null` in the _Record_, and it will not be lazy-loaded for you later. This means you need to think ahead as to exactly what you will need from the database.
+If you do not load a _Record_ "with" a related, it will be `null` in the
+_Record_, and it will not be lazy-loaded for you later. This means you need to
+think ahead as to exactly what you will need from the database.
 
-You can then address the _Record_'s underlying _Row_ columns and the related fields as properties.
+You can then address the _Record_'s underlying _Row_ columns and the related
+fields as properties.
 
 ```php
 <?php
@@ -170,6 +215,37 @@ foreach ($thread->replies as $reply) {
 }
 ?>
 ```
+
+Incidentally, you can also use the mapper to select non-Record values directly
+from the database; the mapper selection tool exposes the underlying
+`ExtendedPdo::fetch*()` methods for your convenience.
+
+```php
+<?php
+// an array of IDs
+$threadIds = $atlas
+    ->select(ThreadMapper::CLASS)
+    ->cols(['thread_id'])
+    ->limit(10)
+    ->orderBy('thread_id DESC')
+    ->fetchCol();
+
+// key-value pairs of IDs and titles
+$threadIdsAndTitles = $atlas
+    ->select(ThreadMapper::CLASS)
+    ->cols(['thread_id', 'tite'])
+    ->limit(10)
+    ->orderBy('thread_id DESC')
+    ->fetchPairs();
+
+// etc.
+?>
+```
+
+See [the list of `ExtendedPdo::fetch*()` methods][fetch] for more.
+
+[fetch]: https://github.com/auraphp/Aura.Sql#new-fetch-methods
+
 
 ### Changing
 
@@ -183,7 +259,9 @@ $thread->body = "Body text for the thread";
 ?>
 ```
 
-Note that each _Row_ supporting each _Record_ is identity-mapped, so a change to a _Row_ used by more than one _Record_ will be reflected immediately in each _Record_ using that _Row_.
+Note that the _Row_ supporting each _Record_ is identity-mapped, so a change to
+a _Row_ used by more than one _Record_ will be reflected immediately in each
+_Record_ using that _Row_.
 
  ```php
 <?php
@@ -195,7 +273,10 @@ $reply1->author->name = "New name"; // $reply2->author->name is now also "New na
 
 ### Writing
 
-After you make changes to a _Record_, you can write it back to the database using a unit-of-work _Transaction_. You can plan for _Record_s to be inserted, updated, and deleted, in whatever order you like, and then execute the entire transaction plan at once. Exceptions will cause a rollback.
+After you make changes to a _Record_, you can write it back to the database
+using a unit-of-work _Transaction_. You can plan for _Record_s to be inserted,
+updated, and deleted, in whatever order you like, and then execute the entire
+transaction plan at once. Exceptions will cause a rollback.
 
 ```php
 <?php
