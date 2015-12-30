@@ -420,6 +420,18 @@ abstract class AbstractMapper implements MapperInterface
         return $recordSet;
     }
 
+    protected function getRowClass()
+    {
+        static $rowClass;
+        if (! $rowClass) {
+            $rowClass = substr(static::getTableClass(), 0, -5) . 'Row';
+            $rowClass = class_exists($rowClass)
+                ? $rowClass
+                : Row::CLASS;
+        }
+        return $rowClass;
+    }
+
     protected function newRow(array $cols = [])
     {
         $cols = array_merge($this->table->getColDefaults(), $cols);
