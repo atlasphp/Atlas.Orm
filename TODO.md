@@ -1,6 +1,6 @@
 # TODO
 
-## Initial Release Priority
+## Next Release Priority
 
 - Documentation.
 
@@ -12,10 +12,6 @@
             ->leftJoinWith('foo')
             ->innerJoinWith('bar')
             ->joinWith('OUTER', 'baz');
-
-- In Record::__get(), check if a getter method for the column/property is available, and use it if so
-
-- In Record::__set(), check if a getter method for the column/property is available, and use it if so
 
 ## Unknown Priority
 
