@@ -22,9 +22,9 @@ I wanted an alternative to Active Record that would allow you to get started
 about as easily as Active Record for your *persistence* model, and then refactor
 more easily towards a richer *domain* model as needed.
 
-Using a data-mapper for the underlying table rows, then composing them into
+Using a data-mapper for the underlying table Rows, then composing them into
 Records and RecordSets, does the trick. As you begin to need simple behaviors,
-you can add them to the Row, Record, and RecordSet persistence model object.
+you can add them to the Row, Record, and RecordSet persistence model objects.
 Your domain logic layer (e.g. a Service Layer) can use them as needed.
 
 However, per [this article from Mehdi Khalili][mkap], the target end-state for
