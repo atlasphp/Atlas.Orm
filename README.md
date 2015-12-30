@@ -19,23 +19,28 @@ PRODUCTION OR EVEN IN SIDE PROJECTS. BREAKING CHANGES ARE GUARANTEED.**
 ## Rationale
 
 I wanted an alternative to Active Record that would allow you to get started
-about as easily as Active Record, and then refactor quickly thereafter toward
-Data Mapper.
+about as easily as Active Record for your *persistence* model, and then refactor
+more easily towards a richer *domain* model as needed.
 
-You can add behaviors to the Record and RecordSet persistence model objects to
-start with, but per [this article from Mehdi Khalili][mkap], the target end-
-state should be "Domain Model composed of Persistence Model". That is, the
-domain Entity and Aggregate classes may use data source Records and RecordSets
-internally, but do not expose them. They can manipulate the persistence model
-internally as much as they wish. E.g., an Entity might have "getAddress()" and
-read from the internal Record (which in turn reads from its internal Row or
-Related objects).
+Using a data-mapper for the underlying table rows, then composing them into
+Records and RecordSets, does the trick. As you begin to need simple behaviors,
+you can add them to the Row, Record, and RecordSet persistence model object.
+Your domain logic layer (e.g. a Service Layer) can use them as needed.
 
-Alternatively, the end state might be "DDD on top of ORM" where Repositories map
-the data source Records to domain Entities, Value Objects, and Aggregates.
+However, per [this article from Mehdi Khalili][mkap], the target end-state for
+your modeling should eventually move toward "Domain Model composed of
+Persistence Model". That is, the domain Entity and Aggregate classes might use
+data source Records and RecordSets internally, but will not expose them. They
+can manipulate the persistence model objects internally as much as they wish.
+E.g., an Entity might have "getAddress()" and read from the internal Record
+(which in turn reads from its internal Row or Related objects).  Alternatively,
+the end state might be "DDD on top of ORM" where Repositories map the
+persistence model objects to domain Entities, Value Objects, and Aggregates.
 
-Regardless, the Record and RecordSet objects are disconnected from the database
-connection, making the refactoring process toward Data Mapper a lot cleaner.
+A persistence model alone should get you a long way, especially at the beginning
+of a project. Even so, the data-mapped Row, Record, and RecordSet objects are
+disconnected from the database, which will make any refactoring processes a lot
+cleaner than with Active Record.
 
 [mkap]: http://www.mehdi-khalili.com/orm-anti-patterns-part-4-persistence-domain-model/
 
@@ -94,8 +99,8 @@ description of the database table.
 
 Do that once for each SQL table in your database.
 
-> N.b.: By default, Atlas uses generic Record and RecordSet classes to hold the
-> database rows. You can create custom Record and RecordSet classes passing
+> N.b.: By default, Atlas uses generic Row, Record, and RecordSet classes for
+> table data. You can create custom Row, Record and RecordSet classes passing
 > `--full` to `atlas-skeleton`; the Mapper will use the custom classes if
 > available, and fall back to the generic ones if not.
 
@@ -172,7 +177,6 @@ $threadRecord = $atlas->fetchRecord(ThreadMapper::CLASS, '1', [
     'taggings',
     'tags',
 ]);
-
 
 // fetch thread_id 1, 2, and 3; with related replies, including each reply author
 $threadRecordSet = $atlas->fetchRecordSet(ThreadMapper::CLASS, [1, 2, 3], [
