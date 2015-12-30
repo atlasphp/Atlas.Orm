@@ -69,7 +69,7 @@ class Record implements RecordInterface
              + $this->related->getArrayCopy();
     }
 
-    public function assertHas($field)
+    protected function assertHas($field)
     {
         if ($this->row->has($field)) {
             return 'row';
