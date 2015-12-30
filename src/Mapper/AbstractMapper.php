@@ -435,9 +435,9 @@ abstract class AbstractMapper implements MapperInterface
     protected function newRow(array $cols = [])
     {
         $cols = array_merge($this->table->getColDefaults(), $cols);
-        $rowIdentity = $this->newPrimary($cols);
+        $rowPrimary = $this->newPrimary($cols);
         $rowClass = $this->getRowClass();
-        $row = new $rowClass($this->tableClass, $rowIdentity, $cols);
+        $row = new $rowClass($this->tableClass, $rowPrimary, $cols);
         return $row;
     }
 
