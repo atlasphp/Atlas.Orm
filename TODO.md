@@ -13,6 +13,10 @@
             ->innerJoinWith('bar')
             ->joinWith('OUTER', 'baz');
 
+- In Record::__get(), check if a getter method for the column/property is available, and use it if so
+
+- In Record::__set(), check if a getter method for the column/property is available, and use it if so
+
 ## Unknown Priority
 
 - Add `addNew()` to RecordSet to append a new Record of the proper type.
