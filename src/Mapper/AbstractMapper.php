@@ -137,7 +137,7 @@ abstract class AbstractMapper implements MapperInterface
 
     public function fetchRecord($primaryVal, array $with = [])
     {
-        $primaryIdentity = $this->getPrimaryIdentity($primaryVal);
+        $primaryIdentity = $this->table->getPrimaryIdentity($primaryVal);
 
         $row = $this->identityMap->getRowByPrimary(
             $this->tableClass,
@@ -473,11 +473,6 @@ abstract class AbstractMapper implements MapperInterface
 
         $this->plugin->modifyDelete($this, $record, $delete);
         return $delete;
-    }
-
-    protected function getPrimaryIdentity($primaryVal)
-    {
-        return [$this->table->getPrimaryKey() => $primaryVal];
     }
 
     protected function setRelated()

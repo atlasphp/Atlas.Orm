@@ -165,7 +165,7 @@ abstract class AbstractTable implements TableInterface
         return array_values($rows);
     }
 
-    protected function getPrimaryIdentity($primaryVal)
+    public function getPrimaryIdentity($primaryVal)
     {
         return [$this->getPrimaryKey() => $primaryVal];
     }
