@@ -210,7 +210,10 @@ abstract class AbstractMapper implements MapperInterface
     {
         $this->plugin->beforeInsert($this, $record);
 
-        $insert = $this->newInsert($record);
+        $row = $record->getRow();
+        $insert = $this->gateway->newInsert($row);
+        $this->plugin->modifyInsert($this, $record, $insert);
+
         $connection = $this->getWriteConnection();
         $pdoStatement = $connection->perform(
             $insert->getStatement(),
@@ -229,7 +232,6 @@ abstract class AbstractMapper implements MapperInterface
         $this->plugin->afterInsert($this, $record, $insert, $pdoStatement);
 
         // mark as saved and retain in identity map
-        $row = $record->getRow();
         $row->setStatus($row::IS_INSERTED);
         $this->identityMap->setRow($row, $row->getArrayCopy());
         return true;
@@ -391,22 +393,6 @@ abstract class AbstractMapper implements MapperInterface
         $recordSet = $this->newRecordSet($records);
         $this->relationships->stitchIntoRecordSet($recordSet, $with);
         return $recordSet;
-    }
-
-    protected function newInsert(RecordInterface $record)
-    {
-        $insert = $this->queryFactory->newInsert();
-        $insert->into($this->table->getName());
-
-        $row = $record->getRow();
-        $cols = $row->getArrayCopy();
-        if ($this->table->getAutoinc()) {
-            unset($cols[$this->table->getPrimaryKey()]);
-        }
-        $insert->cols($cols);
-
-        $this->plugin->modifyInsert($this, $record, $insert);
-        return $insert;
     }
 
     protected function newUpdate(RecordInterface $record)
