@@ -122,13 +122,11 @@ abstract class AbstractMapper implements MapperInterface
 
     public function fetchRecord($primaryVal, array $with = [])
     {
-        $row = $this->gateway->getIdentifiedRow($primaryVal);
-        if ($row) {
-            return $this->newRecordFromRow($row, $with);
+        $row = $this->gateway->selectRowByPrimary($this->select(), $primaryVal);
+        if (! $row) {
+            return false;
         }
-
-        $primaryIdentity = $this->gateway->getPrimaryIdentity($primaryVal);
-        return $this->fetchRecordBy($primaryIdentity, $with);
+        return $this->newRecordFromRow($row, $with);
     }
 
     public function fetchRecordBy(array $colsVals = [], array $with = [])
@@ -137,15 +135,12 @@ abstract class AbstractMapper implements MapperInterface
         if (! $row) {
             return false;
         }
-
         return $this->newRecordFromRow($row, $with);
     }
 
     public function fetchRecordSet(array $primaryVals, array $with = [])
     {
-        $rows = array_fill_keys($primaryVals, null);
-
-        $rows = $this->gateway->identifyOrSelectRows($primaryVals, $this->select());
+        $rows = $this->gateway->selectRowsByPrimary($this->select(), $primaryVals);
         if (! $rows) {
             return [];
         }

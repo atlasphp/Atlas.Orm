@@ -43,6 +43,18 @@ class Gateway
         return $this->getIdentifiedOrSelectedRow($cols);
     }
 
+    public function selectRowByPrimary(Select $select, $primaryVal)
+    {
+        $row = $this->getIdentifiedRow($primaryVal);
+        if ($row) {
+            return $row;
+        }
+
+        $primaryCol = $this->table->getPrimaryKey();
+        $select->where("{$primaryCol} = ?", $primaryVal);
+        return $this->selectRow($select);
+    }
+
     public function selectRows(Select $select)
     {
         $data = $select->cols($this->table->getColNames())->fetchAll();
@@ -199,7 +211,7 @@ class Gateway
             add row in set on ID key
         return rows
     */
-    public function identifyOrSelectRows(array $primaryVals, Select $select)
+    public function selectRowsByPrimary(Select $select, array $primaryVals)
     {
         if (! $primaryVals) {
             return [];
@@ -222,7 +234,8 @@ class Gateway
         }
 
         // fetch and retain remaining rows
-        $this->selectWhere($select, $this->table->getPrimaryKey(), $primaryVals);
+        $primaryCol = $this->table->getPrimaryKey();
+        $select->where("{$primaryCol} IN (?)", $primaryVals);
         $data = $select->cols($this->table->getColNames())->fetchAll();
         foreach ($data as $cols) {
             $row = $this->newSelectedRow($cols);
