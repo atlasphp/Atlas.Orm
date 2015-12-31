@@ -3,7 +3,7 @@ namespace Atlas\Orm\Table;
 
 use Atlas\Orm\Exception;
 
-class Row
+class Row implements RowInterface
 {
     // new instance, in memory only
     const IS_NEW = 'IS_NEW';

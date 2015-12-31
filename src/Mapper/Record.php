@@ -2,7 +2,7 @@
 namespace Atlas\Orm\Mapper;
 
 use Atlas\Orm\Exception;
-use Atlas\Orm\Table\Row;
+use Atlas\Orm\Table\RowInterface;
 
 class Record implements RecordInterface
 {
@@ -10,7 +10,7 @@ class Record implements RecordInterface
     private $related;
     private $mapperClass;
 
-    public function __construct($mapperClass, Row $row, Related $related)
+    public function __construct($mapperClass, RowInterface $row, Related $related)
     {
         $this->mapperClass = $mapperClass;
         $this->row = $row;

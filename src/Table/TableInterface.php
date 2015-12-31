@@ -58,4 +58,13 @@ interface TableInterface
      *
      */
     public function getColDefaults();
+
+    /**
+     *
+     * Returns a new Row for this table.
+     *
+     * @return RowInterface
+     *
+     */
+    public function newRow();
 }

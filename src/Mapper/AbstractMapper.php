@@ -8,9 +8,7 @@ use Atlas\Orm\Relationship\OneToMany;
 use Atlas\Orm\Relationship\OneToOne;
 use Atlas\Orm\Relationship\Relationships;
 use Atlas\Orm\Table\IdentityMap;
-use Atlas\Orm\Table\Row;
-use Atlas\Orm\Table\Primary;
-use Atlas\Orm\Table\Status;
+use Atlas\Orm\Table\RowInterface;
 use Atlas\Orm\Table\TableInterface;
 use Aura\Sql\ConnectionLocator;
 use Aura\SqlQuery\QueryFactory;
@@ -339,7 +337,7 @@ abstract class AbstractMapper implements MapperInterface
 
     public function newRecord(array $cols = [])
     {
-        $row = $this->newRow($cols);
+        $row = $this->table->newRow($cols);
         $record = $this->newRecordFromRow($row);
         $this->plugin->modifyNewRecord($record);
         return $record;
@@ -351,7 +349,7 @@ abstract class AbstractMapper implements MapperInterface
         return $this->newRecordFromRow($row, $with);
     }
 
-    protected function getRecordClass(Row $row)
+    protected function getRecordClass(RowInterface $row)
     {
         static $recordClass;
         if (! $recordClass) {
@@ -375,7 +373,7 @@ abstract class AbstractMapper implements MapperInterface
         return $recordSetClass;
     }
 
-    protected function newRecordFromRow(Row $row, array $with = [])
+    protected function newRecordFromRow(RowInterface $row, array $with = [])
     {
         $recordClass = $this->getRecordClass($row);
         $record = new $recordClass(
@@ -420,30 +418,9 @@ abstract class AbstractMapper implements MapperInterface
         return $recordSet;
     }
 
-    protected function getRowClass()
-    {
-        static $rowClass;
-        if (! $rowClass) {
-            $rowClass = substr(static::getTableClass(), 0, -5) . 'Row';
-            $rowClass = class_exists($rowClass)
-                ? $rowClass
-                : Row::CLASS;
-        }
-        return $rowClass;
-    }
-
-    protected function newRow(array $cols = [])
-    {
-        $cols = array_merge($this->table->getColDefaults(), $cols);
-        $rowPrimary = $this->newPrimary($cols);
-        $rowClass = $this->getRowClass();
-        $row = new $rowClass($this->tableClass, $rowPrimary, $cols);
-        return $row;
-    }
-
     protected function newSelectedRow(array $cols)
     {
-        $row = $this->newRow($cols);
+        $row = $this->table->newRow($cols);
         $row->setStatus($row::IS_CLEAN);
         $this->identityMap->setRow($row, $cols);
         return $row;
@@ -518,17 +495,6 @@ abstract class AbstractMapper implements MapperInterface
 
         $this->plugin->modifyDelete($this, $record, $delete);
         return $delete;
-    }
-
-    protected function newPrimary(array &$cols)
-    {
-        $primaryCol = $this->table->getPrimaryKey();
-        $primaryVal = null;
-        if (array_key_exists($primaryCol, $cols)) {
-            $primaryVal = $cols[$primaryCol];
-            unset($cols[$primaryCol]);
-        }
-        return new Primary([$primaryCol => $primaryVal]);
     }
 
     protected function getPrimaryIdentity($primaryVal)

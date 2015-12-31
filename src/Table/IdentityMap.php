@@ -28,9 +28,9 @@ class IdentityMap
     }
 
     /**
-     * @param Row $row
+     * @param RowInterface $row
      */
-    public function setRow(Row $row, array $initial)
+    public function setRow(RowInterface $row, array $initial)
     {
         if ($this->hasRow($row)) {
             throw Exception::rowAlreadyMapped();
@@ -47,10 +47,10 @@ class IdentityMap
     }
 
     /**
-     * @param Row $row
+     * @param RowInterface $row
      * @return boolean
      */
-    public function hasRow(Row $row)
+    public function hasRow(RowInterface $row)
     {
         return isset($this->rowToSerial[$row]);
     }
@@ -116,7 +116,7 @@ class IdentityMap
         return $serial;
     }
 
-    public function setInitial(Row $row)
+    public function setInitial(RowInterface $row)
     {
         if (! $this->hasRow($row)) {
             throw Exception::rowNotMapped();
@@ -125,7 +125,7 @@ class IdentityMap
         $this->initial[$row] = $row->getArrayCopy();
     }
 
-    public function getInitial(Row $row)
+    public function getInitial(RowInterface $row)
     {
         if (! $this->hasRow($row)) {
             throw Exception::rowNotMapped();
