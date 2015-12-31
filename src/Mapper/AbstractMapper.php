@@ -143,6 +143,8 @@ abstract class AbstractMapper implements MapperInterface
 
     public function fetchRecordSet(array $primaryVals, array $with = [])
     {
+        $rows = array_fill_keys($primaryVals, null);
+
         $rows = $this->gateway->identifyOrSelectRows($primaryVals, $this->select());
         if (! $rows) {
             return [];
@@ -152,20 +154,10 @@ abstract class AbstractMapper implements MapperInterface
 
     public function fetchRecordSetBy(array $colsVals = [], array $with = [])
     {
-        $data = $this
-            ->select($colsVals)
-            ->cols($this->table->getColNames())
-            ->fetchAll();
-
-        if (! $data) {
+        $rows = $this->gateway->selectRows($this->select($colsVals));
+        if (! $rows) {
             return [];
         }
-
-        $rows = [];
-        foreach ($data as $cols) {
-            $rows[] = $this->gateway->getIdentifiedOrSelectedRow($cols);
-        }
-
         return $this->newRecordSetFromRows($rows, $with);
     }
 
