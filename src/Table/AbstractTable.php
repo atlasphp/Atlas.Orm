@@ -1,6 +1,8 @@
 <?php
 namespace Atlas\Orm\Table;
 
+use Atlas\Orm\Mapper\Select;
+
 abstract class AbstractTable implements TableInterface
 {
     public function __construct(IdentityMap $identityMap)
@@ -117,7 +119,7 @@ abstract class AbstractTable implements TableInterface
             add row in set on ID key
         return rows
     */
-    public function identifyOrSelectRows($primaryVals, callable $newSelect)
+    public function identifyOrSelectRows(array $primaryVals, Select $select)
     {
         if (! $primaryVals) {
             return [];
@@ -147,7 +149,7 @@ abstract class AbstractTable implements TableInterface
 
         // fetch and retain remaining rows
         $colsVals = [$this->getPrimaryKey() => $primaryVals];
-        $select = $newSelect($colsVals);
+        $select->colsVals($this->getName(), $colsVals);
         $data = $select->cols($this->getColNames())->fetchAll();
         foreach ($data as $cols) {
             $row = $this->newSelectedRow($cols);

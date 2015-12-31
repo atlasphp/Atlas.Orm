@@ -168,7 +168,7 @@ abstract class AbstractMapper implements MapperInterface
 
     public function fetchRecordSet(array $primaryVals, array $with = [])
     {
-        $rows = $this->table->identifyOrSelectRows($primaryVals, [$this, 'select']);
+        $rows = $this->table->identifyOrSelectRows($primaryVals, $this->select());
         if (! $rows) {
             return [];
         }

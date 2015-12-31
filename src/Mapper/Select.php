@@ -199,6 +199,7 @@ class Select
         foreach ($colsVals as $col => $val) {
             $this->colVal($table, $col, $val);
         }
+        return $this;
     }
 
     protected function colVal($table, $col, $val)
