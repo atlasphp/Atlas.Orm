@@ -36,11 +36,7 @@ class IdentityMap
             throw Exception::rowAlreadyMapped();
         }
 
-        $serial = $this->getSerial(
-            $row->getTableClass(),
-            $row->getPrimary()->getKey()
-        );
-
+        $serial = $this->getSerial($row->getPrimary()->getKey());
         $this->serialToRow[$serial] = $row;
         $this->rowToSerial[$row] = $serial;
         $this->initial[$row] = $initial;
@@ -59,9 +55,9 @@ class IdentityMap
      * @param mixed $primary
      * @return boolean
      */
-    public function hasPrimary($tableClass, $primary)
+    public function hasPrimary($primary)
     {
-        $serial = $this->getSerial($tableClass, $primary);
+        $serial = $this->getSerial($primary);
         return isset($this->serialToRow[$serial]);
     }
 
@@ -69,9 +65,9 @@ class IdentityMap
      * @param mixed $primary
      * @return Row
      */
-    public function getRowByPrimary($tableClass, $primary)
+    public function getRowByPrimary($primary)
     {
-        $serial = $this->getSerial($tableClass, $primary);
+        $serial = $this->getSerial($primary);
         if (! isset($this->serialToRow[$serial])) {
             return false;
         }
@@ -93,7 +89,7 @@ class IdentityMap
      *
      * WARNING: You should sanitize your primary-key values to disallow ASCII
      * character 31 (hex 1F) to keep the lookup working properly. This is only
-     * a problem with non-integer keys
+     * a problem with non-integer keys.
      *
      * WARNING: Null, false, and empty-string key values are treated as
      * identical by this algorithm. That means these values are interchangeable
@@ -107,13 +103,10 @@ class IdentityMap
      * though the key-value pairs themselves are the same.
      *
      */
-    public function getSerial($tableClass, $primary)
+    public function getSerial($primary)
     {
-        $separator = "|\x1F"; // a pipe, and ASCII 31 ("unit separator")
-        $serial = $separator . $tableClass. $separator
-                . implode($separator, (array) $primary)
-                . $separator;
-        return $serial;
+        $sep = "|\x1F"; // a pipe, and ASCII 31 ("unit separator")
+        return $sep . implode($sep, (array) $primary). $sep;
     }
 
     public function setInitial(RowInterface $row)

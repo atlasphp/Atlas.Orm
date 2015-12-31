@@ -2,10 +2,10 @@
 namespace Atlas\Orm\Mapper;
 
 use Atlas\Orm\DataSource\Employee\EmployeeMapper;
-use Atlas\Orm\DataSource\Employee\EmployeeRecordFactory;
 use Atlas\Orm\DataSource\Employee\EmployeeTable;
 use Atlas\Orm\Relationship\Relationships;
 use Atlas\Orm\SqliteFixture;
+use Atlas\Orm\Table\Gateway;
 use Atlas\Orm\Table\IdentityMap;
 use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
@@ -29,8 +29,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
                 return new ExtendedPdo('sqlite::memory:');
             }),
             new QueryFactory('sqlite'),
-            $identityMap,
-            new EmployeeTable($identityMap),
+            new Gateway(new EmployeeTable(), new IdentityMap()),
             new Plugin(),
             new Relationships(new MapperLocator())
         );

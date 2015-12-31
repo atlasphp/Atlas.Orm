@@ -5,8 +5,6 @@ use Atlas\Orm\Exception;
 
 interface RowInterface
 {
-    public function getTableClass();
-
     public function has($col);
 
     public function getArrayCopy();

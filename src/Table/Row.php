@@ -34,9 +34,8 @@ class Row implements RowInterface
 
     private $status;
 
-    public function __construct($tableClass, Primary $primary, array $cols)
+    public function __construct(Primary $primary, array $cols)
     {
-        $this->tableClass = $tableClass;
         $this->primary = $primary;
         $this->cols = array_fill_keys(array_keys($cols), null);
         foreach ($cols as $col => $val) {
@@ -106,11 +105,6 @@ class Row implements RowInterface
         if (! $this->has($col)) {
             throw Exception::propertyDoesNotExist($this, $col);
         }
-    }
-
-    public function getTableClass()
-    {
-        return $this->tableClass;
     }
 
     public function has($col)

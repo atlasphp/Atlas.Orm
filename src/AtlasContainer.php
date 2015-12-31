@@ -4,18 +4,18 @@ namespace Atlas\Orm;
 use Atlas\Orm\Mapper\MapperLocator;
 use Atlas\Orm\Mapper\Plugin;
 use Atlas\Orm\Relationship\Relationships;
+use Atlas\Orm\Table\Gateway;
+use Atlas\Orm\Table\GatewayLocator;
 use Atlas\Orm\Table\IdentityMap;
 use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\QueryFactory;
-use ReflectionMethod;
 
 class AtlasContainer
 {
     protected $atlas;
     protected $connectionLocator;
     protected $factories;
-    protected $identityMap;
     protected $mapperLocator;
     protected $queryFactory;
 
@@ -28,10 +28,8 @@ class AtlasContainer
     ) {
         $this->setConnectionLocator(func_get_args());
         $this->setQueryFactory($dsn);
-
+        $this->gatewayLocator = new GatewayLocator();
         $this->mapperLocator = new MapperLocator();
-        $this->identityMap = new IdentityMap();
-
         $this->atlas = new Atlas(
             $this->mapperLocator,
             new Transaction($this->mapperLocator)
@@ -46,6 +44,16 @@ class AtlasContainer
         });
     }
 
+    public function getConnectionLocator()
+    {
+        return $this->connectionLocator;
+    }
+
+    public function getMapperLocator()
+    {
+        return $this->mapperLocator;
+    }
+
     protected function setQueryFactory($dsn)
     {
         $parts = explode(':', $dsn);
@@ -58,26 +66,6 @@ class AtlasContainer
         return $this->atlas;
     }
 
-    public function getConnectionLocator()
-    {
-        return $this->connectionLocator;
-    }
-
-    public function getQueryFactory()
-    {
-        return $this->queryFactory;
-    }
-
-    public function getMapperLocator()
-    {
-        return $this->mapperLocator;
-    }
-
-    public function getIdentityMap()
-    {
-        return $this->identityMap;
-    }
-
     public function setReadConnection($name, callable $callable)
     {
         $this->connectionLocator->setRead($name, $callable);
@@ -86,6 +74,13 @@ class AtlasContainer
     public function setWriteConnection($name, callable $callable)
     {
         $this->connectionLocator->setWrite($name, $callable);
+    }
+
+    public function setMappers(array $mapperClasses)
+    {
+        foreach ($mapperClasses as $mapperClass) {
+            $this->setMapper($mapperClass);
+        }
     }
 
     public function setMapper($mapperClass)
@@ -99,31 +94,41 @@ class AtlasContainer
             throw Exception::classDoesNotExist($tableClass);
         }
 
+        $this->setGateway($tableClass);
+
         $pluginClass = substr($mapperClass, 0, -6) . 'Plugin';
         $pluginClass = class_exists($pluginClass)
             ? $pluginClass
             : Plugin::CLASS;
 
-        $self = $this;
-        $mapperFactory = function () use ($self, $mapperClass, $tableClass, $pluginClass) {
+        $mapperFactory = function () use ($mapperClass, $tableClass, $pluginClass) {
             return new $mapperClass(
-                $self->getConnectionLocator(),
-                $self->getQueryFactory(),
-                $self->getIdentityMap(),
-                new $tableClass($this->identityMap),
-                $self->newInstance($pluginClass),
-                $self->newRelationships()
+                $this->connectionLocator,
+                $this->queryFactory,
+                $this->gatewayLocator->get($tableClass),
+                $this->newInstance($pluginClass),
+                new Relationships($this->getMapperLocator())
             );
         };
 
         $this->mapperLocator->set($mapperClass, $mapperFactory);
     }
 
-    public function setMappers(array $mapperClasses)
+    protected function setGateway($tableClass)
     {
-        foreach ($mapperClasses as $mapperClass) {
-            $this->setMapper($mapperClass);
-        }
+        $gatewayClass = substr($tableClass, 0, -5) . 'Gateway';
+        $gatewayClass = class_exists($gatewayClass)
+            ? $gatewayClass
+            : Gateway::CLASS;
+
+        $factory = function () use ($gatewayClass, $tableClass) {
+            return new $gatewayClass(
+                new $tableClass(),
+                new IdentityMap()
+            );
+        };
+
+        $this->gatewayLocator->set($tableClass, $factory);
     }
 
     public function setFactoryFor($class, callable $callable)
@@ -139,10 +144,5 @@ class AtlasContainer
         }
 
         return new $class();
-    }
-
-    public function newRelationships()
-    {
-        return new Relationships($this->getMapperLocator());
     }
 }

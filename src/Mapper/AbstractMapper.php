@@ -9,7 +9,7 @@ use Atlas\Orm\Relationship\OneToOne;
 use Atlas\Orm\Relationship\Relationships;
 use Atlas\Orm\Table\IdentityMap;
 use Atlas\Orm\Table\RowInterface;
-use Atlas\Orm\Table\TableInterface;
+use Atlas\Orm\Table\Gateway;
 use Aura\Sql\ConnectionLocator;
 use Aura\SqlQuery\QueryFactory;
 
@@ -60,7 +60,7 @@ abstract class AbstractMapper implements MapperInterface
 
     protected $table;
 
-    protected $identityMap;
+    protected $gateway;
 
     protected $mapperClass;
 
@@ -71,19 +71,19 @@ abstract class AbstractMapper implements MapperInterface
     public function __construct(
         ConnectionLocator $connectionLocator,
         QueryFactory $queryFactory,
-        IdentityMap $identityMap,
-        TableInterface $table,
+        Gateway $gateway,
         PluginInterface $plugin,
         Relationships $relationships
     ) {
         $this->connectionLocator = $connectionLocator;
         $this->queryFactory = $queryFactory;
-        $this->identityMap = $identityMap;
-        $this->table = $table;
+        $this->gateway = $gateway;
         $this->plugin = $plugin;
         $this->relationships = $relationships;
 
         $this->mapperClass = get_class($this);
+        $this->table = $this->gateway->getTable();
+        $this->identityMap = $this->gateway->getIdentityMap();
 
         $this->setRelated();
     }
@@ -134,12 +134,12 @@ abstract class AbstractMapper implements MapperInterface
 
     public function fetchRecord($primaryVal, array $with = [])
     {
-        $row = $this->table->getIdentifiedRow($primaryVal);
+        $row = $this->gateway->getIdentifiedRow($primaryVal);
         if ($row) {
             return $this->newRecordFromRow($row, $with);
         }
 
-        $primaryIdentity = $this->table->getPrimaryIdentity($primaryVal);
+        $primaryIdentity = $this->gateway->getPrimaryIdentity($primaryVal);
         return $this->fetchRecordBy($primaryIdentity, $with);
     }
 
@@ -154,13 +154,13 @@ abstract class AbstractMapper implements MapperInterface
             return false;
         }
 
-        $row = $this->table->getIdentifiedOrSelectedRow($cols);
+        $row = $this->gateway->getIdentifiedOrSelectedRow($cols);
         return $this->newRecordFromRow($row, $with);
     }
 
     public function fetchRecordSet(array $primaryVals, array $with = [])
     {
-        $rows = $this->table->identifyOrSelectRows($primaryVals, $this->select());
+        $rows = $this->gateway->identifyOrSelectRows($primaryVals, $this->select());
         if (! $rows) {
             return [];
         }
@@ -180,7 +180,7 @@ abstract class AbstractMapper implements MapperInterface
 
         $rows = [];
         foreach ($data as $cols) {
-            $rows[] = $this->table->getIdentifiedOrSelectedRow($cols);
+            $rows[] = $this->gateway->getIdentifiedOrSelectedRow($cols);
         }
 
         return $this->newRecordSetFromRows($rows, $with);
@@ -310,7 +310,7 @@ abstract class AbstractMapper implements MapperInterface
 
     public function newRecord(array $cols = [])
     {
-        $row = $this->table->newRow($cols);
+        $row = $this->gateway->newRow($cols);
         $record = $this->newRecordFromRow($row);
         $this->plugin->modifyNewRecord($record);
         return $record;
@@ -318,7 +318,7 @@ abstract class AbstractMapper implements MapperInterface
 
     public function getSelectedRecord(array $cols, array $with = [])
     {
-        $row = $this->table->getIdentifiedOrSelectedRow($cols);
+        $row = $this->gateway->getIdentifiedOrSelectedRow($cols);
         return $this->newRecordFromRow($row, $with);
     }
 

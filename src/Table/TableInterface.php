@@ -59,14 +59,5 @@ interface TableInterface
      */
     public function getColDefaults();
 
-    /**
-     *
-     * Returns a new Row for this table.
-     *
-     * @return RowInterface
-     *
-     */
-    public function newRow(array $cols = []);
-
-    public function newSelectedRow(array $cols);
+    public function getRowClass();
 }

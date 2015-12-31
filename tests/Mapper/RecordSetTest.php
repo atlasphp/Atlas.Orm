@@ -15,7 +15,6 @@ class RecordSetTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->row = new Row(
-            'FakeTable',
             new Primary(['id' => '1']),
             [
                 'foo' => 'bar',

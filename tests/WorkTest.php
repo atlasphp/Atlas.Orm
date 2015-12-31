@@ -11,7 +11,6 @@ class WorkTest extends \PHPUnit_Framework_TestCase
     public function test__invoke_reInvoke()
     {
         $row = new Row(
-            'FakeTable',
             new Primary(['id' => '1']),
             [
                 'foo' => 'bar',

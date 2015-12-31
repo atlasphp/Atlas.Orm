@@ -4,6 +4,12 @@
 
 - Documentation.
 
+- Move back to one IDMap per table, out "identify" methods into IDMap.
+
+- Not really happy about logic in the Table object. Go back to a generic Gateway,
+  and a GatewayLocator? (Keyed on the Table name, so I guess it's a TableLocator.)
+  Allow for custom Gateway too.
+
 ## Near-Term
 
 - Support for relation-specific joins. E.g.:
