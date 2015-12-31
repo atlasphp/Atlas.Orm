@@ -250,7 +250,9 @@ abstract class AbstractMapper implements MapperInterface
     {
         $this->plugin->beforeUpdate($this, $record);
 
-        $update = $this->newUpdate($record);
+        $row = $record->getRow();
+        $update = $this->gateway->newUpdate($row);
+        $this->plugin->modifyUpdate($this, $record, $update);
         if (! $update->hasCols()) {
             return false;
         }
@@ -269,7 +271,6 @@ abstract class AbstractMapper implements MapperInterface
         $this->plugin->afterUpdate($this, $record, $update, $pdoStatement);
 
         // mark as saved and retain updated identity-map data
-        $row = $record->getRow();
         $row->setStatus($row::IS_UPDATED);
         $this->identityMap->setInitial($row);
         return true;
@@ -288,7 +289,10 @@ abstract class AbstractMapper implements MapperInterface
     {
         $this->plugin->beforeDelete($this, $record);
 
-        $delete = $this->newDelete($record);
+        $row = $record->getRow();
+        $delete = $this->gateway->newDelete($row);
+        $this->plugin->modifyDelete($this, $record, $delete);
+
         $connection = $this->getWriteConnection();
         $pdoStatement = $connection->perform(
             $delete->getStatement(),
@@ -307,7 +311,6 @@ abstract class AbstractMapper implements MapperInterface
         $this->plugin->afterDelete($this, $record, $delete, $pdoStatement);
 
         // mark as deleted, no need to update identity map
-        $row = $record->getRow();
         $row->setStatus($row::IS_DELETED);
         return true;
     }
@@ -393,36 +396,6 @@ abstract class AbstractMapper implements MapperInterface
         $recordSet = $this->newRecordSet($records);
         $this->relationships->stitchIntoRecordSet($recordSet, $with);
         return $recordSet;
-    }
-
-    protected function newUpdate(RecordInterface $record)
-    {
-        $update = $this->queryFactory->newUpdate();
-        $update->table($this->table->getName());
-
-        $row = $record->getRow();
-        $cols = $row->getArrayDiff($this->identityMap->getInitial($row));
-        unset($cols[$this->table->getPrimaryKey()]);
-        $update->cols($cols);
-
-        $primaryCol = $this->table->getPrimaryKey();
-        $update->where("{$primaryCol} = ?", $row->getPrimary()->getVal());
-
-        $this->plugin->modifyUpdate($this, $record, $update);
-        return $update;
-    }
-
-    protected function newDelete(RecordInterface $record)
-    {
-        $delete = $this->queryFactory->newDelete();
-        $delete->from($this->table->getName());
-
-        $row = $record->getRow();
-        $primaryCol = $this->table->getPrimaryKey();
-        $delete->where("{$primaryCol} = ?", $row->getPrimary()->getVal());
-
-        $this->plugin->modifyDelete($this, $record, $delete);
-        return $delete;
     }
 
     protected function setRelated()
