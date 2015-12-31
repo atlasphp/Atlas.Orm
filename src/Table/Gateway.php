@@ -96,7 +96,7 @@ class Gateway
         $select->where("{$col} = ?", $val);
     }
 
-    public function newInsert(RowInterface $row)
+    public function newInsert(RowInterface $row, callable $modify)
     {
         $insert = $this->queryFactory->newInsert();
         $insert->into($this->table->getName());
@@ -107,10 +107,12 @@ class Gateway
         }
         $insert->cols($cols);
 
+        $modify($row, $insert);
+
         return $insert;
     }
 
-    public function newUpdate(RowInterface $row)
+    public function newUpdate(RowInterface $row, callable $modify)
     {
         $update = $this->queryFactory->newUpdate();
         $update->table($this->table->getName());
@@ -122,16 +124,20 @@ class Gateway
         $primaryCol = $this->table->getPrimaryKey();
         $update->where("{$primaryCol} = ?", $row->getPrimary()->getVal());
 
+        $modify($row, $update);
+
         return $update;
     }
 
-    public function newDelete(RowInterface $row)
+    public function newDelete(RowInterface $row, callable $modify)
     {
         $delete = $this->queryFactory->newDelete();
         $delete->from($this->table->getName());
 
         $primaryCol = $this->table->getPrimaryKey();
         $delete->where("{$primaryCol} = ?", $row->getPrimary()->getVal());
+
+        $modify($row, $delete);
 
         return $delete;
     }

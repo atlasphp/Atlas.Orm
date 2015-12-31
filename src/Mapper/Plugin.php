@@ -1,6 +1,7 @@
 <?php
 namespace Atlas\Orm\Mapper;
 
+use Atlas\Orm\Table\RowInterface;
 use Aura\SqlQuery\Common\Insert;
 use Aura\SqlQuery\Common\Update;
 use Aura\SqlQuery\Common\Delete;
@@ -18,7 +19,7 @@ class Plugin implements PluginInterface
         // do nothing
     }
 
-    public function modifyInsert(MapperInterface $mapper, RecordInterface $record, Insert $insert)
+    public function modifyInsert(RowInterface $row, Insert $insert)
     {
         // do nothing
     }
@@ -33,7 +34,7 @@ class Plugin implements PluginInterface
         // do nothing
     }
 
-    public function modifyUpdate(MapperInterface $mapper, RecordInterface $record, Update $update)
+    public function modifyUpdate(RowInterface $row, Update $update)
     {
         // do nothing
     }
@@ -48,12 +49,12 @@ class Plugin implements PluginInterface
         // do nothing
     }
 
-    public function afterDelete(MapperInterface $mapper, RecordInterface $record, Delete $delete, PDOStatement $pdoStatement)
+    public function modifyDelete(RowInterface $row, Delete $delete)
     {
         // do nothing
     }
 
-    public function modifyDelete(MapperInterface $mapper, RecordInterface $record, Delete $delete)
+    public function afterDelete(MapperInterface $mapper, RecordInterface $record, Delete $delete, PDOStatement $pdoStatement)
     {
         // do nothing
     }

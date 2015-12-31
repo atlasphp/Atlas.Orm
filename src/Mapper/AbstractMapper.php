@@ -181,8 +181,10 @@ abstract class AbstractMapper implements MapperInterface
         $this->plugin->beforeInsert($this, $record);
 
         $row = $record->getRow();
-        $insert = $this->gateway->newInsert($row);
-        $this->plugin->modifyInsert($this, $record, $insert);
+        $insert = $this->gateway->newInsert(
+            $row,
+            [$this->plugin, 'modifyInsert']
+        );
 
         $connection = $this->getWriteConnection();
         $pdoStatement = $connection->perform(
@@ -220,8 +222,12 @@ abstract class AbstractMapper implements MapperInterface
         $this->plugin->beforeUpdate($this, $record);
 
         $row = $record->getRow();
-        $update = $this->gateway->newUpdate($row);
-        $this->plugin->modifyUpdate($this, $record, $update);
+
+        $update = $this->gateway->newUpdate(
+            $row,
+            [$this->plugin, 'modifyUpdate']
+        );
+
         if (! $update->hasCols()) {
             return false;
         }
@@ -258,8 +264,10 @@ abstract class AbstractMapper implements MapperInterface
         $this->plugin->beforeDelete($this, $record);
 
         $row = $record->getRow();
-        $delete = $this->gateway->newDelete($row);
-        $this->plugin->modifyDelete($this, $record, $delete);
+        $delete = $this->gateway->newDelete(
+            $row,
+            [$this->plugin, 'modifyDelete']
+        );
 
         $connection = $this->getWriteConnection();
         $pdoStatement = $connection->perform(
