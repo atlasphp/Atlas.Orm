@@ -86,6 +86,90 @@ abstract class AbstractTable implements TableInterface
         return $row;
     }
 
+    public function getIdentifiedOrSelectedRow(array $cols)
+    {
+        $primaryVal = $cols[$this->getPrimaryKey()];
+        $primaryIdentity = $this->getPrimaryIdentity($primaryVal);
+        $row = $this->identityMap->getRowByPrimary(
+            get_class($this),
+            $primaryIdentity
+        );
+        if (! $row) {
+            $row = $this->newSelectedRow($cols);
+        }
+        return $row;
+    }
+
+    /*
+    Retrieve rows from identity map and/or database.
+
+    Rows by primary:
+        create empty rows
+        foreach primary value ...
+            add null in rows keyed on primary value to maintain place
+            if primary value in map
+                retain mapped row in set keyed on primary value
+                remove primary value from list
+        select remaining primary values
+        foreach returned one ...
+            new row object
+            retain row in map
+            add row in set on ID key
+        return rows
+    */
+    public function identifyOrSelectRows($primaryVals, callable $newSelect)
+    {
+        if (! $primaryVals) {
+            return [];
+        }
+
+        $rows = [];
+        foreach ($primaryVals as $i => $primaryVal) {
+            $rows[$primaryVal] = null;
+            $primaryIdentity = $this->getPrimaryIdentity($primaryVal);
+            $hasPrimary = $this->identityMap->hasPrimary(
+                get_class($this),
+                $primaryIdentity
+            );
+            if ($hasPrimary) {
+                $rows[$primaryVal] = $this->identityMap->getRowByPrimary(
+                    get_class($this),
+                    $primaryIdentity
+                );
+                unset($primaryVals[$i]);
+            }
+        }
+
+        // are there still rows to fetch?
+        if (! $primaryVals) {
+            return array_values($rows);
+        }
+
+        // fetch and retain remaining rows
+        $colsVals = [$this->getPrimaryKey() => $primaryVals];
+        $select = $newSelect($colsVals);
+        $data = $select->cols($this->getColNames())->fetchAll();
+        foreach ($data as $cols) {
+            $row = $this->newSelectedRow($cols);
+            $rows[$row->getPrimary()->getVal()] = $row;
+        }
+
+        // remove unfound rows
+        foreach ($rows as $key => $val) {
+            if ($val === null) {
+                unset($rows[$key]);
+            }
+        }
+
+        // done
+        return array_values($rows);
+    }
+
+    protected function getPrimaryIdentity($primaryVal)
+    {
+        return [$this->getPrimaryKey() => $primaryVal];
+    }
+
     protected function newPrimary(array &$cols)
     {
         $primaryCol = $this->getPrimaryKey();

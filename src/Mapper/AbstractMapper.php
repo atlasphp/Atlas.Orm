@@ -162,13 +162,13 @@ abstract class AbstractMapper implements MapperInterface
             return false;
         }
 
-        $row = $this->getIdentifiedOrSelectedRow($cols);
+        $row = $this->table->getIdentifiedOrSelectedRow($cols);
         return $this->newRecordFromRow($row, $with);
     }
 
     public function fetchRecordSet(array $primaryVals, array $with = [])
     {
-        $rows = $this->identifyOrFetchRows($primaryVals);
+        $rows = $this->table->identifyOrSelectRows($primaryVals, [$this, 'select']);
         if (! $rows) {
             return [];
         }
@@ -188,7 +188,7 @@ abstract class AbstractMapper implements MapperInterface
 
         $rows = [];
         foreach ($data as $cols) {
-            $rows[] = $this->getIdentifiedOrSelectedRow($cols);
+            $rows[] = $this->table->getIdentifiedOrSelectedRow($cols);
         }
 
         return $this->newRecordSetFromRows($rows, $with);
@@ -345,7 +345,7 @@ abstract class AbstractMapper implements MapperInterface
 
     public function getSelectedRecord(array $cols, array $with = [])
     {
-        $row = $this->getIdentifiedOrSelectedRow($cols);
+        $row = $this->table->getIdentifiedOrSelectedRow($cols);
         return $this->newRecordFromRow($row, $with);
     }
 
@@ -418,20 +418,6 @@ abstract class AbstractMapper implements MapperInterface
         return $recordSet;
     }
 
-    protected function getIdentifiedOrSelectedRow(array $cols)
-    {
-        $primaryVal = $cols[$this->table->getPrimaryKey()];
-        $primaryIdentity = $this->getPrimaryIdentity($primaryVal);
-        $row = $this->identityMap->getRowByPrimary(
-            $this->tableClass,
-            $primaryIdentity
-        );
-        if (! $row) {
-            $row = $this->table->newSelectedRow($cols);
-        }
-        return $row;
-    }
-
     protected function newSelect()
     {
         return new Select(
@@ -492,71 +478,6 @@ abstract class AbstractMapper implements MapperInterface
     protected function getPrimaryIdentity($primaryVal)
     {
         return [$this->table->getPrimaryKey() => $primaryVal];
-    }
-
-    /*
-    Retrieve rows from identity map and/or database.
-
-    Rows by primary:
-        create empty rows
-        foreach primary value ...
-            add null in rows keyed on primary value to maintain place
-            if primary value in map
-                retain mapped row in set keyed on primary value
-                remove primary value from list
-        select remaining primary values
-        foreach returned one ...
-            new row object
-            retain row in map
-            add row in set on ID key
-        return rows
-    */
-    protected function identifyOrFetchRows($primaryVals)
-    {
-        if (! $primaryVals) {
-            return [];
-        }
-
-        $rows = [];
-        foreach ($primaryVals as $i => $primaryVal) {
-            $rows[$primaryVal] = null;
-            $primaryIdentity = $this->getPrimaryIdentity($primaryVal);
-            $hasPrimary = $this->identityMap->hasPrimary(
-                $this->tableClass,
-                $primaryIdentity
-            );
-            if ($hasPrimary) {
-                $rows[$primaryVal] = $this->identityMap->getRowByPrimary(
-                    $this->tableClass,
-                    $primaryIdentity
-                );
-                unset($primaryVals[$i]);
-            }
-        }
-
-        // are there still rows to fetch?
-        if (! $primaryVals) {
-            return array_values($rows);
-        }
-
-        // fetch and retain remaining rows
-        $colsVals = [$this->table->getPrimaryKey() => $primaryVals];
-        $select = $this->select($colsVals);
-        $data = $select->cols($this->table->getColNames())->fetchAll();
-        foreach ($data as $cols) {
-            $row = $this->table->newSelectedRow($cols);
-            $rows[$row->getPrimary()->getVal()] = $row;
-        }
-
-        // remove unfound rows
-        foreach ($rows as $key => $val) {
-            if ($val === null) {
-                unset($rows[$key]);
-            }
-        }
-
-        // done
-        return array_values($rows);
     }
 
     protected function setRelated()
