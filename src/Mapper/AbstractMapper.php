@@ -83,7 +83,6 @@ abstract class AbstractMapper implements MapperInterface
 
         $this->mapperClass = get_class($this);
         $this->table = $this->gateway->getTable();
-        $this->identityMap = $this->gateway->getIdentityMap();
 
         $this->setRelated();
     }
@@ -232,8 +231,7 @@ abstract class AbstractMapper implements MapperInterface
         $this->plugin->afterInsert($this, $record, $insert, $pdoStatement);
 
         // mark as saved and retain in identity map
-        $row->setStatus($row::IS_INSERTED);
-        $this->identityMap->setRow($row, $row->getArrayCopy());
+        $this->gateway->inserted($row);
         return true;
     }
 
@@ -271,8 +269,7 @@ abstract class AbstractMapper implements MapperInterface
         $this->plugin->afterUpdate($this, $record, $update, $pdoStatement);
 
         // mark as saved and retain updated identity-map data
-        $row->setStatus($row::IS_UPDATED);
-        $this->identityMap->setInitial($row);
+        $this->gateway->updated($row);
         return true;
     }
 
@@ -311,7 +308,7 @@ abstract class AbstractMapper implements MapperInterface
         $this->plugin->afterDelete($this, $record, $delete, $pdoStatement);
 
         // mark as deleted, no need to update identity map
-        $row->setStatus($row::IS_DELETED);
+        $this->gateway->deleted($row);
         return true;
     }
 
