@@ -124,6 +124,7 @@ class AtlasContainer
         $factory = function () use ($gatewayClass, $tableClass) {
             return new $gatewayClass(
                 new $tableClass(),
+                $this->queryFactory,
                 new IdentityMap()
             );
         };

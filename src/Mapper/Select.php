@@ -194,31 +194,6 @@ class Select
         return $this;
     }
 
-    public function colsVals($table, array $colsVals)
-    {
-        foreach ($colsVals as $col => $val) {
-            $this->colVal($table, $col, $val);
-        }
-        return $this;
-    }
-
-    protected function colVal($table, $col, $val)
-    {
-        $col = $table . '.' . $col;
-
-        if (is_array($val)) {
-            $this->where("{$col} IN (?)", $val);
-            return;
-        }
-
-        if ($val === null) {
-            $this->where("{$col} IS NULL");
-            return;
-        }
-
-        $this->where("{$col} = ?", $val);
-    }
-
     public function fetchRecord()
     {
         $this->select->cols($this->colNames);
