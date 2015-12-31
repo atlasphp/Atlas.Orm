@@ -418,14 +418,6 @@ abstract class AbstractMapper implements MapperInterface
         return $recordSet;
     }
 
-    protected function newSelectedRow(array $cols)
-    {
-        $row = $this->table->newRow($cols);
-        $row->setStatus($row::IS_CLEAN);
-        $this->identityMap->setRow($row, $cols);
-        return $row;
-    }
-
     protected function getIdentifiedOrSelectedRow(array $cols)
     {
         $primaryVal = $cols[$this->table->getPrimaryKey()];
@@ -435,7 +427,7 @@ abstract class AbstractMapper implements MapperInterface
             $primaryIdentity
         );
         if (! $row) {
-            $row = $this->newSelectedRow($cols);
+            $row = $this->table->newSelectedRow($cols);
         }
         return $row;
     }
@@ -552,7 +544,7 @@ abstract class AbstractMapper implements MapperInterface
         $select = $this->select($colsVals);
         $data = $select->cols($this->table->getColNames())->fetchAll();
         foreach ($data as $cols) {
-            $row = $this->newSelectedRow($cols);
+            $row = $this->table->newSelectedRow($cols);
             $rows[$row->getPrimary()->getVal()] = $row;
         }
 

@@ -66,5 +66,7 @@ interface TableInterface
      * @return RowInterface
      *
      */
-    public function newRow();
+    public function newRow(array $cols = []);
+
+    public function newSelectedRow(array $cols);
 }

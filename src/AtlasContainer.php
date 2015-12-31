@@ -110,7 +110,7 @@ class AtlasContainer
                 $self->getConnectionLocator(),
                 $self->getQueryFactory(),
                 $self->getIdentityMap(),
-                $self->newInstance($tableClass),
+                new $tableClass($this->identityMap),
                 $self->newInstance($pluginClass),
                 $self->newRelationships()
             );

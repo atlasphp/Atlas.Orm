@@ -3,6 +3,11 @@ namespace Atlas\Orm\Table;
 
 abstract class AbstractTable implements TableInterface
 {
+    public function __construct(IdentityMap $identityMap)
+    {
+        $this->identityMap = $identityMap;
+    }
+
     /**
      *
      * Returns the table name.
@@ -73,13 +78,14 @@ abstract class AbstractTable implements TableInterface
         return $row;
     }
 
-    /**
-     *
-     * Returns a new Primary for a Row.
-     *
-     * @return Primary
-     *
-     */
+    public function newSelectedRow(array $cols)
+    {
+        $row = $this->newRow($cols);
+        $row->setStatus($row::IS_CLEAN);
+        $this->identityMap->setRow($row, $cols);
+        return $row;
+    }
+
     protected function newPrimary(array &$cols)
     {
         $primaryCol = $this->getPrimaryKey();
@@ -91,13 +97,6 @@ abstract class AbstractTable implements TableInterface
         return new Primary([$primaryCol => $primaryVal]);
     }
 
-    /**
-     *
-     * Returns the Row class for this table.
-     *
-     * @return string
-     *
-     */
     protected function getRowClass()
     {
         static $rowClass;
