@@ -80,6 +80,15 @@ abstract class AbstractTable implements TableInterface
         return $row;
     }
 
+    public function getIdentifiedRow($primaryVal)
+    {
+        $primaryIdentity = $this->getPrimaryIdentity($primaryVal);
+        return $this->identityMap->getRowByPrimary(
+            get_class($this),
+            $primaryIdentity
+        );
+    }
+
     public function newSelectedRow(array $cols)
     {
         $row = $this->newRow($cols);

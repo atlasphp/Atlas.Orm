@@ -62,8 +62,6 @@ abstract class AbstractMapper implements MapperInterface
 
     protected $identityMap;
 
-    protected $tableClass;
-
     protected $mapperClass;
 
     protected $relationships;
@@ -85,7 +83,6 @@ abstract class AbstractMapper implements MapperInterface
         $this->plugin = $plugin;
         $this->relationships = $relationships;
 
-        $this->tableClass = get_class($this->table);
         $this->mapperClass = get_class($this);
 
         $this->setRelated();
@@ -137,17 +134,12 @@ abstract class AbstractMapper implements MapperInterface
 
     public function fetchRecord($primaryVal, array $with = [])
     {
-        $primaryIdentity = $this->table->getPrimaryIdentity($primaryVal);
-
-        $row = $this->identityMap->getRowByPrimary(
-            $this->tableClass,
-            $primaryIdentity
-        );
-
+        $row = $this->table->getIdentifiedRow($primaryVal);
         if ($row) {
             return $this->newRecordFromRow($row, $with);
         }
 
+        $primaryIdentity = $this->table->getPrimaryIdentity($primaryVal);
         return $this->fetchRecordBy($primaryIdentity, $with);
     }
 
