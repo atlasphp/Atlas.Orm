@@ -1,6 +1,7 @@
 <?php
 namespace Atlas\Orm\Table;
 
+use Atlas\Orm\Exception;
 use Atlas\Orm\Mapper\Select;
 use Aura\SqlQuery\QueryFactory;
 use Aura\SqlQuery\Common\SelectInterface;
@@ -96,7 +97,34 @@ class Gateway
         $select->where("{$col} = ?", $val);
     }
 
-    public function newInsert(RowInterface $row, callable $modify)
+    public function insert(RowInterface $row, $connection, callable $modify, callable $after)
+    {
+        $insert = $this->newInsert($row);
+        $modify($row, $insert);
+
+        $pdoStatement = $connection->perform(
+            $insert->getStatement(),
+            $insert->getBindValues()
+        );
+
+        if (! $pdoStatement->rowCount()) {
+            throw Exception::unexpectedRowCountAffected(0);
+        }
+
+        if ($this->table->getAutoinc()) {
+            $primary = $this->table->getPrimaryKey();
+            $row->$primary = $connection->lastInsertId($primary);
+        }
+
+        $after($row, $insert, $pdoStatement);
+
+        $row->setStatus($row::IS_INSERTED);
+        $this->identityMap->setRow($row, $row->getArrayCopy());
+
+        return true;
+    }
+
+    protected function newInsert(RowInterface $row)
     {
         $insert = $this->queryFactory->newInsert();
         $insert->into($this->table->getName());
@@ -107,12 +135,37 @@ class Gateway
         }
         $insert->cols($cols);
 
-        $modify($row, $insert);
-
         return $insert;
     }
 
-    public function newUpdate(RowInterface $row, callable $modify)
+    public function update(RowInterface $row, $connection, callable $modify, callable $after)
+    {
+        $update = $this->newUpdate($row);
+        $modify($row, $update);
+
+        if (! $update->hasCols()) {
+            return false;
+        }
+
+        $pdoStatement = $connection->perform(
+            $update->getStatement(),
+            $update->getBindValues()
+        );
+
+        $rowCount = $pdoStatement->rowCount();
+        if ($rowCount != 1) {
+            throw Exception::unexpectedRowCountAffected($rowCount);
+        }
+
+        $after($row, $update, $pdoStatement);
+
+        $row->setStatus($row::IS_UPDATED);
+        $this->identityMap->setInitial($row);
+
+        return true;
+    }
+
+    protected function newUpdate(RowInterface $row)
     {
         $update = $this->queryFactory->newUpdate();
         $update->table($this->table->getName());
@@ -124,12 +177,35 @@ class Gateway
         $primaryCol = $this->table->getPrimaryKey();
         $update->where("{$primaryCol} = ?", $row->getPrimary()->getVal());
 
-        $modify($row, $update);
-
         return $update;
     }
 
-    public function newDelete(RowInterface $row, callable $modify)
+    public function delete(RowInterface $row, $connection, callable $modify, callable $after)
+    {
+        $delete = $this->newDelete($row);
+        $modify($row, $delete);
+
+        $pdoStatement = $connection->perform(
+            $delete->getStatement(),
+            $delete->getBindValues()
+        );
+
+        $rowCount = $pdoStatement->rowCount();
+        if (! $rowCount) {
+            return false;
+        }
+
+        if ($rowCount != 1) {
+            throw Exception::unexpectedRowCountAffected($rowCount);
+        }
+
+        $after($row, $delete, $pdoStatement);
+
+        $row->setStatus($row::IS_DELETED);
+        return true;
+    }
+
+    protected function newDelete(RowInterface $row)
     {
         $delete = $this->queryFactory->newDelete();
         $delete->from($this->table->getName());
@@ -137,26 +213,7 @@ class Gateway
         $primaryCol = $this->table->getPrimaryKey();
         $delete->where("{$primaryCol} = ?", $row->getPrimary()->getVal());
 
-        $modify($row, $delete);
-
         return $delete;
-    }
-
-    public function inserted(RowInterface $row)
-    {
-        $row->setStatus($row::IS_INSERTED);
-        $this->identityMap->setRow($row, $row->getArrayCopy());
-    }
-
-    public function updated(RowInterface $row)
-    {
-        $row->setStatus($row::IS_UPDATED);
-        $this->identityMap->setInitial($row);
-    }
-
-    public function deleted(RowInterface $row)
-    {
-        $row->setStatus($row::IS_DELETED);
     }
 
     /**
@@ -273,15 +330,5 @@ class Gateway
             unset($cols[$primaryCol]);
         }
         return new Primary([$primaryCol => $primaryVal]);
-    }
-
-    public function select()
-    {
-
-    }
-
-    public function insert(RowInterface $row)
-    {
-
     }
 }

@@ -15,18 +15,18 @@ interface PluginInterface
 
     public function modifyInsert(RowInterface $row, Insert $insert);
 
-    public function afterInsert(MapperInterface $mapper, RecordInterface $record, Insert $insert, PDOStatement $pdoStatement);
+    public function afterInsert(RowInterface $row, Insert $insert, PDOStatement $pdoStatement);
 
     public function beforeUpdate(MapperInterface $mapper, RecordInterface $record);
 
     public function modifyUpdate(RowInterface $row, Update $update);
 
-    public function afterUpdate(MapperInterface $mapper, RecordInterface $record, Update $update, PDOStatement $pdoStatement);
+    public function afterUpdate(RowInterface $row, Update $update, PDOStatement $pdoStatement);
 
     public function beforeDelete(MapperInterface $mapper, RecordInterface $record);
 
     public function modifyDelete(RowInterface $row, Delete $delete);
 
-    public function afterDelete(MapperInterface $mapper, RecordInterface $record, Delete $delete, PDOStatement $pdoStatement);
+    public function afterDelete(RowInterface $row, Delete $delete, PDOStatement $pdoStatement);
 
 }

@@ -24,7 +24,7 @@ class Plugin implements PluginInterface
         // do nothing
     }
 
-    public function afterInsert(MapperInterface $mapper, RecordInterface $record, Insert $insert, PDOStatement $pdoStatement)
+    public function afterInsert(RowInterface $row, Insert $insert, PDOStatement $pdoStatement)
     {
         // do nothing
     }
@@ -39,7 +39,7 @@ class Plugin implements PluginInterface
         // do nothing
     }
 
-    public function afterUpdate(MapperInterface $mapper, RecordInterface $record, Update $update, PDOStatement $pdoStatement)
+    public function afterUpdate(RowInterface $row, Update $update, PDOStatement $pdoStatement)
     {
         // do nothing
     }
@@ -54,7 +54,7 @@ class Plugin implements PluginInterface
         // do nothing
     }
 
-    public function afterDelete(MapperInterface $mapper, RecordInterface $record, Delete $delete, PDOStatement $pdoStatement)
+    public function afterDelete(RowInterface $row, Delete $delete, PDOStatement $pdoStatement)
     {
         // do nothing
     }

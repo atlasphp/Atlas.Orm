@@ -179,33 +179,12 @@ abstract class AbstractMapper implements MapperInterface
     public function insert(RecordInterface $record)
     {
         $this->plugin->beforeInsert($this, $record);
-
-        $row = $record->getRow();
-        $insert = $this->gateway->newInsert(
-            $row,
-            [$this->plugin, 'modifyInsert']
+        return $this->gateway->insert(
+            $record->getRow(),
+            $this->getWriteConnection(),
+            [$this->plugin, 'modifyInsert'],
+            [$this->plugin, 'afterInsert']
         );
-
-        $connection = $this->getWriteConnection();
-        $pdoStatement = $connection->perform(
-            $insert->getStatement(),
-            $insert->getBindValues()
-        );
-
-        if (! $pdoStatement->rowCount()) {
-            throw Exception::unexpectedRowCountAffected(0);
-        }
-
-        if ($this->table->getAutoinc()) {
-            $primary = $this->table->getPrimaryKey();
-            $record->$primary = $connection->lastInsertId($primary);
-        }
-
-        $this->plugin->afterInsert($this, $record, $insert, $pdoStatement);
-
-        // mark as saved and retain in identity map
-        $this->gateway->inserted($row);
-        return true;
     }
 
     /**
@@ -220,34 +199,12 @@ abstract class AbstractMapper implements MapperInterface
     public function update(RecordInterface $record)
     {
         $this->plugin->beforeUpdate($this, $record);
-
-        $row = $record->getRow();
-
-        $update = $this->gateway->newUpdate(
-            $row,
-            [$this->plugin, 'modifyUpdate']
+        return $this->gateway->update(
+            $record->getRow(),
+            $this->getWriteConnection(),
+            [$this->plugin, 'modifyUpdate'],
+            [$this->plugin, 'afterUpdate']
         );
-
-        if (! $update->hasCols()) {
-            return false;
-        }
-
-        $connection = $this->getWriteConnection();
-        $pdoStatement = $connection->perform(
-            $update->getStatement(),
-            $update->getBindValues()
-        );
-
-        $rowCount = $pdoStatement->rowCount();
-        if ($rowCount != 1) {
-            throw Exception::unexpectedRowCountAffected($rowCount);
-        }
-
-        $this->plugin->afterUpdate($this, $record, $update, $pdoStatement);
-
-        // mark as saved and retain updated identity-map data
-        $this->gateway->updated($row);
-        return true;
     }
 
     /**
@@ -262,33 +219,12 @@ abstract class AbstractMapper implements MapperInterface
     public function delete(RecordInterface $record)
     {
         $this->plugin->beforeDelete($this, $record);
-
-        $row = $record->getRow();
-        $delete = $this->gateway->newDelete(
-            $row,
-            [$this->plugin, 'modifyDelete']
+        return $this->gateway->delete(
+            $record->getRow(),
+            $this->getWriteConnection(),
+            [$this->plugin, 'modifyDelete'],
+            [$this->plugin, 'afterDelete']
         );
-
-        $connection = $this->getWriteConnection();
-        $pdoStatement = $connection->perform(
-            $delete->getStatement(),
-            $delete->getBindValues()
-        );
-
-        $rowCount = $pdoStatement->rowCount();
-        if (! $rowCount) {
-            return false;
-        }
-
-        if ($rowCount != 1) {
-            throw Exception::unexpectedRowCountAffected($rowCount);
-        }
-
-        $this->plugin->afterDelete($this, $record, $delete, $pdoStatement);
-
-        // mark as deleted, no need to update identity map
-        $this->gateway->deleted($row);
-        return true;
     }
 
     public function newRecord(array $cols = [])
