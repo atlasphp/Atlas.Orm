@@ -199,27 +199,8 @@ abstract class AbstractMapper implements MapperInterface
         $select = $this->newSelect();
         $table = $this->table->getName();
         $select->from($table);
-        foreach ($colsVals as $col => $val) {
-            $this->selectWhere($select, $table, $col, $val);
-        }
+        $select->colsVals($table, $colsVals);
         return $select;
-    }
-
-    protected function selectWhere(Select $select, $table, $col, $val)
-    {
-        $col = $table . '.' . $col;
-
-        if (is_array($val)) {
-            $select->where("{$col} IN (?)", $val);
-            return;
-        }
-
-        if ($val === null) {
-            $select->where("{$col} IS NULL");
-            return;
-        }
-
-        $select->where("{$col} = ?", $val);
     }
 
     /**
