@@ -33,15 +33,6 @@ abstract class AbstractMapper implements MapperInterface
 
     /**
      *
-     * A factory to create query statements.
-     *
-     * @var QueryFactory
-     *
-     */
-    protected $queryFactory;
-
-    /**
-     *
      * A read connection drawn from the connection locator.
      *
      * @var ExtendedPdoInterface
@@ -70,13 +61,11 @@ abstract class AbstractMapper implements MapperInterface
 
     public function __construct(
         ConnectionLocator $connectionLocator,
-        QueryFactory $queryFactory,
         Gateway $gateway,
         PluginInterface $plugin,
         Relationships $relationships
     ) {
         $this->connectionLocator = $connectionLocator;
-        $this->queryFactory = $queryFactory;
         $this->gateway = $gateway;
         $this->plugin = $plugin;
         $this->relationships = $relationships;
@@ -144,16 +133,11 @@ abstract class AbstractMapper implements MapperInterface
 
     public function fetchRecordBy(array $colsVals = [], array $with = [])
     {
-        $cols = $this
-            ->select($colsVals)
-            ->cols($this->table->getColNames())
-            ->fetchOne();
-
-        if (! $cols) {
+        $row = $this->gateway->selectRow($this->select($colsVals));
+        if (! $row) {
             return false;
         }
 
-        $row = $this->gateway->getIdentifiedOrSelectedRow($cols);
         return $this->newRecordFromRow($row, $with);
     }
 

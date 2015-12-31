@@ -104,7 +104,6 @@ class AtlasContainer
         $mapperFactory = function () use ($mapperClass, $tableClass, $pluginClass) {
             return new $mapperClass(
                 $this->connectionLocator,
-                $this->queryFactory,
                 $this->gatewayLocator->get($tableClass),
                 $this->newInstance($pluginClass),
                 new Relationships($this->getMapperLocator())
