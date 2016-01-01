@@ -62,201 +62,6 @@ class Gateway
         return $this->writeConnection;
     }
 
-    public function selectRow(GatewaySelect $select)
-    {
-        $cols = $select->cols($this->table->getColNames())->fetchOne();
-        if (! $cols) {
-            return false;
-        }
-        return $this->getSelectedRow($cols);
-    }
-
-    public function selectRows(GatewaySelect $select)
-    {
-        $data = $select->cols($this->table->getColNames())->fetchAll();
-        if (! $data) {
-            return [];
-        }
-
-        $rows = [];
-        foreach ($data as $cols) {
-            $rows[] = $this->getSelectedRow($cols);
-        }
-
-        return $rows;
-    }
-
-    public function select(array $colsVals = [])
-    {
-        return new GatewaySelect(
-            $this->newSelect($colsVals),
-            $this->getReadConnection(),
-            $this->table->getColNames()
-        );
-    }
-
-    public function insert(RowInterface $row, callable $modify, callable $after)
-    {
-        $insert = $this->newInsert($row);
-        $modify($this, $row, $insert);
-
-        $connection = $this->getWriteConnection();
-        $pdoStatement = $connection->perform(
-            $insert->getStatement(),
-            $insert->getBindValues()
-        );
-
-        if (! $pdoStatement->rowCount()) {
-            throw Exception::unexpectedRowCountAffected(0);
-        }
-
-        if ($this->table->getAutoinc()) {
-            $primary = $this->table->getPrimaryKey();
-            $row->$primary = $connection->lastInsertId($primary);
-        }
-
-        $after($this, $row, $insert, $pdoStatement);
-
-        $row->setStatus($row::IS_INSERTED);
-        $this->identityMap->setRow($row, $row->getArrayCopy());
-
-        return true;
-    }
-
-    protected function newInsert(RowInterface $row)
-    {
-        $insert = $this->queryFactory->newInsert();
-        $insert->into($this->table->getName());
-
-        $cols = $row->getArrayCopy();
-        if ($this->table->getAutoinc()) {
-            unset($cols[$this->table->getPrimaryKey()]);
-        }
-        $insert->cols($cols);
-
-        return $insert;
-    }
-
-    public function update(RowInterface $row, callable $modify, callable $after)
-    {
-        $update = $this->newUpdate($row);
-        $modify($this, $row, $update);
-
-        if (! $update->hasCols()) {
-            return false;
-        }
-
-        $connection = $this->getWriteConnection();
-        $pdoStatement = $connection->perform(
-            $update->getStatement(),
-            $update->getBindValues()
-        );
-
-        $rowCount = $pdoStatement->rowCount();
-        if ($rowCount != 1) {
-            throw Exception::unexpectedRowCountAffected($rowCount);
-        }
-
-        $after($this, $row, $update, $pdoStatement);
-
-        $row->setStatus($row::IS_UPDATED);
-        $this->identityMap->setInitial($row);
-
-        return true;
-    }
-
-    protected function newUpdate(RowInterface $row)
-    {
-        $update = $this->queryFactory->newUpdate();
-        $update->table($this->table->getName());
-
-        $cols = $row->getArrayDiff($this->identityMap->getInitial($row));
-        unset($cols[$this->table->getPrimaryKey()]);
-        $update->cols($cols);
-
-        $primaryCol = $this->table->getPrimaryKey();
-        $update->where("{$primaryCol} = ?", $row->getPrimary()->getVal());
-
-        return $update;
-    }
-
-    public function delete(RowInterface $row, callable $modify, callable $after)
-    {
-        $delete = $this->newDelete($row);
-        $modify($this, $row, $delete);
-
-        $connection = $this->getWriteConnection();
-        $pdoStatement = $connection->perform(
-            $delete->getStatement(),
-            $delete->getBindValues()
-        );
-
-        $rowCount = $pdoStatement->rowCount();
-        if (! $rowCount) {
-            return false;
-        }
-
-        if ($rowCount != 1) {
-            throw Exception::unexpectedRowCountAffected($rowCount);
-        }
-
-        $after($this, $row, $delete, $pdoStatement);
-
-        $row->setStatus($row::IS_DELETED);
-        return true;
-    }
-
-    protected function newDelete(RowInterface $row)
-    {
-        $delete = $this->queryFactory->newDelete();
-        $delete->from($this->table->getName());
-
-        $primaryCol = $this->table->getPrimaryKey();
-        $delete->where("{$primaryCol} = ?", $row->getPrimary()->getVal());
-
-        return $delete;
-    }
-
-    /**
-     *
-     * Returns a new Row for the table.
-     *
-     * @return RowInterface
-     *
-     */
-    public function newRow(array $cols = [])
-    {
-        $cols = array_merge($this->table->getColDefaults(), $cols);
-        $primary = $this->newPrimary($cols);
-        $rowClass = $this->table->getRowClass();
-        $row = new $rowClass($primary, $cols);
-        return $row;
-    }
-
-    protected function getIdentifiedRow($primaryVal)
-    {
-        $primary = [$this->table->getPrimaryKey() => $primaryVal];
-        return $this->identityMap->getRowByPrimary($primary);
-    }
-
-    public function newSelectedRow(array $cols)
-    {
-        $row = $this->newRow($cols);
-        $row->setStatus($row::IS_CLEAN);
-        $this->identityMap->setRow($row, $cols);
-        return $row;
-    }
-
-    public function getSelectedRow(array $cols)
-    {
-        $primaryVal = $cols[$this->table->getPrimaryKey()];
-        $row = $this->getIdentifiedRow($primaryVal);
-        if (! $row) {
-            $row = $this->newSelectedRow($cols);
-        }
-        return $row;
-    }
-
     public function fetchRow($primaryVal)
     {
         $row = $this->getIdentifiedRow($primaryVal);
@@ -309,6 +114,155 @@ class Gateway
         return array_values($rows);
     }
 
+    public function select(array $colsVals = [])
+    {
+        return new GatewaySelect(
+            $this->newSelect($colsVals),
+            $this->getReadConnection(),
+            $this->table->getColNames()
+        );
+    }
+
+    public function selectRow(GatewaySelect $select)
+    {
+        $cols = $select->cols($this->table->getColNames())->fetchOne();
+        if (! $cols) {
+            return false;
+        }
+        return $this->getSelectedRow($cols);
+    }
+
+    public function selectRows(GatewaySelect $select)
+    {
+        $data = $select->cols($this->table->getColNames())->fetchAll();
+        if (! $data) {
+            return [];
+        }
+
+        $rows = [];
+        foreach ($data as $cols) {
+            $rows[] = $this->getSelectedRow($cols);
+        }
+
+        return $rows;
+    }
+
+    public function insert(RowInterface $row, callable $modify, callable $after)
+    {
+        $insert = $this->newInsert($row);
+        $modify($this, $row, $insert);
+
+        $connection = $this->getWriteConnection();
+        $pdoStatement = $connection->perform(
+            $insert->getStatement(),
+            $insert->getBindValues()
+        );
+
+        if (! $pdoStatement->rowCount()) {
+            throw Exception::unexpectedRowCountAffected(0);
+        }
+
+        if ($this->table->getAutoinc()) {
+            $primary = $this->table->getPrimaryKey();
+            $row->$primary = $connection->lastInsertId($primary);
+        }
+
+        $after($this, $row, $insert, $pdoStatement);
+
+        $row->setStatus($row::IS_INSERTED);
+        $this->identityMap->setRow($row, $row->getArrayCopy());
+
+        return true;
+    }
+
+    public function update(RowInterface $row, callable $modify, callable $after)
+    {
+        $update = $this->newUpdate($row);
+        $modify($this, $row, $update);
+
+        if (! $update->hasCols()) {
+            return false;
+        }
+
+        $connection = $this->getWriteConnection();
+        $pdoStatement = $connection->perform(
+            $update->getStatement(),
+            $update->getBindValues()
+        );
+
+        $rowCount = $pdoStatement->rowCount();
+        if ($rowCount != 1) {
+            throw Exception::unexpectedRowCountAffected($rowCount);
+        }
+
+        $after($this, $row, $update, $pdoStatement);
+
+        $row->setStatus($row::IS_UPDATED);
+        $this->identityMap->setInitial($row);
+
+        return true;
+    }
+
+    public function delete(RowInterface $row, callable $modify, callable $after)
+    {
+        $delete = $this->newDelete($row);
+        $modify($this, $row, $delete);
+
+        $connection = $this->getWriteConnection();
+        $pdoStatement = $connection->perform(
+            $delete->getStatement(),
+            $delete->getBindValues()
+        );
+
+        $rowCount = $pdoStatement->rowCount();
+        if (! $rowCount) {
+            return false;
+        }
+
+        if ($rowCount != 1) {
+            throw Exception::unexpectedRowCountAffected($rowCount);
+        }
+
+        $after($this, $row, $delete, $pdoStatement);
+
+        $row->setStatus($row::IS_DELETED);
+        return true;
+    }
+
+    /**
+     *
+     * Returns a new Row for the table.
+     *
+     * @return RowInterface
+     *
+     */
+    public function newRow(array $cols = [])
+    {
+        $cols = array_merge($this->table->getColDefaults(), $cols);
+        $primary = $this->newPrimary($cols);
+        $rowClass = $this->table->getRowClass();
+        $row = new $rowClass($primary, $cols);
+        return $row;
+    }
+
+    public function newSelectedRow(array $cols)
+    {
+        $row = $this->newRow($cols);
+        $row->setStatus($row::IS_CLEAN);
+        $this->identityMap->setRow($row, $cols);
+        return $row;
+    }
+
+    public function getSelectedRow(array $cols)
+    {
+        $primaryVal = $cols[$this->table->getPrimaryKey()];
+        $row = $this->getIdentifiedRow($primaryVal);
+        if (! $row) {
+            $row = $this->newSelectedRow($cols);
+        }
+        return $row;
+    }
+
     protected function newPrimary(array &$cols)
     {
         $primaryCol = $this->table->getPrimaryKey();
@@ -344,6 +298,52 @@ class Gateway
         }
 
         $select->where("{$col} = ?", $val);
+    }
+
+    protected function newInsert(RowInterface $row)
+    {
+        $insert = $this->queryFactory->newInsert();
+        $insert->into($this->table->getName());
+
+        $cols = $row->getArrayCopy();
+        if ($this->table->getAutoinc()) {
+            unset($cols[$this->table->getPrimaryKey()]);
+        }
+        $insert->cols($cols);
+
+        return $insert;
+    }
+
+    protected function newUpdate(RowInterface $row)
+    {
+        $update = $this->queryFactory->newUpdate();
+        $update->table($this->table->getName());
+
+        $cols = $row->getArrayDiff($this->identityMap->getInitial($row));
+        unset($cols[$this->table->getPrimaryKey()]);
+        $update->cols($cols);
+
+        $primaryCol = $this->table->getPrimaryKey();
+        $update->where("{$primaryCol} = ?", $row->getPrimary()->getVal());
+
+        return $update;
+    }
+
+    protected function newDelete(RowInterface $row)
+    {
+        $delete = $this->queryFactory->newDelete();
+        $delete->from($this->table->getName());
+
+        $primaryCol = $this->table->getPrimaryKey();
+        $delete->where("{$primaryCol} = ?", $row->getPrimary()->getVal());
+
+        return $delete;
+    }
+
+    protected function getIdentifiedRow($primaryVal)
+    {
+        $primary = [$this->table->getPrimaryKey() => $primaryVal];
+        return $this->identityMap->getRowByPrimary($primary);
     }
 
 }
