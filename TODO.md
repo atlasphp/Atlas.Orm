@@ -4,8 +4,6 @@
 
 - Documentation.
 
-- Go back to GatewaySelect and MapperSelect.
-
 - Move Plugin up to top, since it handles both Mapper and Gateway?
 
 ## Near-Term
