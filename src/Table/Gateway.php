@@ -68,7 +68,7 @@ class Gateway
         if (! $cols) {
             return false;
         }
-        return $this->getIdentifiedOrSelectedRow($cols);
+        return $this->getSelectedRow($cols);
     }
 
     public function selectRows(GatewaySelect $select)
@@ -80,7 +80,7 @@ class Gateway
 
         $rows = [];
         foreach ($data as $cols) {
-            $rows[] = $this->getIdentifiedOrSelectedRow($cols);
+            $rows[] = $this->getSelectedRow($cols);
         }
 
         return $rows;
@@ -273,11 +273,10 @@ class Gateway
         return $row;
     }
 
-    public function getIdentifiedOrSelectedRow(array $cols)
+    public function getSelectedRow(array $cols)
     {
         $primaryVal = $cols[$this->table->getPrimaryKey()];
-        $primaryIdentity = $this->getPrimaryIdentity($primaryVal);
-        $row = $this->identityMap->getRowByPrimary($primaryIdentity);
+        $row = $this->getIdentifiedRow($primaryVal);
         if (! $row) {
             $row = $this->newSelectedRow($cols);
         }

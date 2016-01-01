@@ -200,7 +200,7 @@ abstract class AbstractMapper implements MapperInterface
 
     public function getSelectedRecord(array $cols, array $with = [])
     {
-        $row = $this->gateway->getIdentifiedOrSelectedRow($cols);
+        $row = $this->gateway->getSelectedRow($cols);
         return $this->newRecordFromRow($row, $with);
     }
 
