@@ -230,9 +230,7 @@ abstract class AbstractMapper implements MapperInterface
     public function newRecord(array $cols = [])
     {
         $row = $this->gateway->newRow($cols);
-        $record = $this->newRecordFromRow($row);
-        $this->plugin->modifyNewRecord($record);
-        return $record;
+        return $this->newRecordFromRow($row);
     }
 
     public function getSelectedRecord(array $cols, array $with = [])

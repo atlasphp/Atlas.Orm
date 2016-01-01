@@ -1,6 +1,7 @@
 <?php
 namespace Atlas\Orm\Mapper;
 
+use Atlas\Orm\Table\Gateway;
 use Atlas\Orm\Table\RowInterface;
 use Aura\SqlQuery\Common\Delete;
 use Aura\SqlQuery\Common\Insert;
@@ -9,24 +10,22 @@ use PDOStatement;
 
 interface PluginInterface
 {
-    public function modifyNewRecord(RecordInterface $record);
-
     public function beforeInsert(MapperInterface $mapper, RecordInterface $record);
 
-    public function modifyInsert(RowInterface $row, Insert $insert);
+    public function modifyInsert(Gateway $gateway, RowInterface $row, Insert $insert);
 
-    public function afterInsert(RowInterface $row, Insert $insert, PDOStatement $pdoStatement);
+    public function afterInsert(Gateway $gateway, RowInterface $row, Insert $insert, PDOStatement $pdoStatement);
 
     public function beforeUpdate(MapperInterface $mapper, RecordInterface $record);
 
-    public function modifyUpdate(RowInterface $row, Update $update);
+    public function modifyUpdate(Gateway $gateway, RowInterface $row, Update $update);
 
-    public function afterUpdate(RowInterface $row, Update $update, PDOStatement $pdoStatement);
+    public function afterUpdate(Gateway $gateway, RowInterface $row, Update $update, PDOStatement $pdoStatement);
 
     public function beforeDelete(MapperInterface $mapper, RecordInterface $record);
 
-    public function modifyDelete(RowInterface $row, Delete $delete);
+    public function modifyDelete(Gateway $gateway, RowInterface $row, Delete $delete);
 
-    public function afterDelete(RowInterface $row, Delete $delete, PDOStatement $pdoStatement);
+    public function afterDelete(Gateway $gateway, RowInterface $row, Delete $delete, PDOStatement $pdoStatement);
 
 }

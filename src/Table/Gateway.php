@@ -100,7 +100,7 @@ class Gateway
     public function insert(RowInterface $row, $connection, callable $modify, callable $after)
     {
         $insert = $this->newInsert($row);
-        $modify($row, $insert);
+        $modify($this, $row, $insert);
 
         $pdoStatement = $connection->perform(
             $insert->getStatement(),
@@ -116,7 +116,7 @@ class Gateway
             $row->$primary = $connection->lastInsertId($primary);
         }
 
-        $after($row, $insert, $pdoStatement);
+        $after($this, $row, $insert, $pdoStatement);
 
         $row->setStatus($row::IS_INSERTED);
         $this->identityMap->setRow($row, $row->getArrayCopy());
@@ -141,7 +141,7 @@ class Gateway
     public function update(RowInterface $row, $connection, callable $modify, callable $after)
     {
         $update = $this->newUpdate($row);
-        $modify($row, $update);
+        $modify($this, $row, $update);
 
         if (! $update->hasCols()) {
             return false;
@@ -157,7 +157,7 @@ class Gateway
             throw Exception::unexpectedRowCountAffected($rowCount);
         }
 
-        $after($row, $update, $pdoStatement);
+        $after($this, $row, $update, $pdoStatement);
 
         $row->setStatus($row::IS_UPDATED);
         $this->identityMap->setInitial($row);
@@ -183,7 +183,7 @@ class Gateway
     public function delete(RowInterface $row, $connection, callable $modify, callable $after)
     {
         $delete = $this->newDelete($row);
-        $modify($row, $delete);
+        $modify($this, $row, $delete);
 
         $pdoStatement = $connection->perform(
             $delete->getStatement(),
@@ -199,7 +199,7 @@ class Gateway
             throw Exception::unexpectedRowCountAffected($rowCount);
         }
 
-        $after($row, $delete, $pdoStatement);
+        $after($this, $row, $delete, $pdoStatement);
 
         $row->setStatus($row::IS_DELETED);
         return true;
