@@ -92,7 +92,7 @@ abstract class AbstractMapper implements MapperInterface
 
     public function fetchRecord($primaryVal, array $with = [])
     {
-        $row = $this->gateway->selectRowByPrimary($this->select(), $primaryVal);
+        $row = $this->gateway->fetchRow($primaryVal);
         if (! $row) {
             return false;
         }
@@ -101,7 +101,7 @@ abstract class AbstractMapper implements MapperInterface
 
     public function fetchRecordBy(array $colsVals = [], array $with = [])
     {
-        $row = $this->gateway->selectRow($this->select($colsVals));
+        $row = $this->gateway->selectRow($this->gateway->select($colsVals));
         if (! $row) {
             return false;
         }
@@ -110,7 +110,7 @@ abstract class AbstractMapper implements MapperInterface
 
     public function fetchRecordSet(array $primaryVals, array $with = [])
     {
-        $rows = $this->gateway->selectRowsByPrimary($this->select(), $primaryVals);
+        $rows = $this->gateway->fetchRows($primaryVals);
         if (! $rows) {
             return [];
         }
@@ -119,7 +119,7 @@ abstract class AbstractMapper implements MapperInterface
 
     public function fetchRecordSetBy(array $colsVals = [], array $with = [])
     {
-        $rows = $this->gateway->selectRows($this->select($colsVals));
+        $rows = $this->gateway->selectRows($this->gateway->select($colsVals));
         if (! $rows) {
             return [];
         }
@@ -128,10 +128,8 @@ abstract class AbstractMapper implements MapperInterface
 
     public function select(array $colsVals = [])
     {
-        return new Select(
-            $this->gateway->newSelect($colsVals),
-            $this->gateway->getReadConnection(),
-            $this->table->getColNames(),
+        return new MapperSelect(
+            $this->gateway->select($colsVals),
             [$this, 'getSelectedRecord'],
             [$this, 'getSelectedRecordSet']
         );

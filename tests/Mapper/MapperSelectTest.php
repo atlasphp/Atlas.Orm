@@ -3,6 +3,7 @@ namespace Atlas\Orm\Mapper;
 
 use Atlas\Orm\Assertions;
 use Atlas\Orm\SqliteFixture;
+use Atlas\Orm\Table\GatewaySelect;
 use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\QueryFactory;
 
@@ -20,11 +21,16 @@ class SelectTest extends \PHPUnit_Framework_TestCase
         $fixture->exec();
 
         $queryFactory = new QueryFactory('sqlite');
+        $select = $queryFactory->newSelect();
 
-        $this->select = new Select(
-            $queryFactory->newSelect(),
+        $gatewaySelect = new GatewaySelect(
+            $select,
             $connection,
-            ['id', 'name', 'building', 'floor'],
+            ['id', 'name', 'building', 'floor']
+        );
+
+        $this->select = new MapperSelect(
+            $gatewaySelect,
             function () { },
             function () { }
         );

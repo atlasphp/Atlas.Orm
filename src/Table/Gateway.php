@@ -2,7 +2,6 @@
 namespace Atlas\Orm\Table;
 
 use Atlas\Orm\Exception;
-use Atlas\Orm\Mapper\Select;
 use Aura\Sql\ConnectionLocator;
 use Aura\SqlQuery\QueryFactory;
 use Aura\SqlQuery\Common\SelectInterface;
@@ -63,7 +62,7 @@ class Gateway
         return $this->writeConnection;
     }
 
-    public function selectRow(Select $select)
+    public function selectRow(GatewaySelect $select)
     {
         $cols = $select->cols($this->table->getColNames())->fetchOne();
         if (! $cols) {
@@ -72,19 +71,7 @@ class Gateway
         return $this->getIdentifiedOrSelectedRow($cols);
     }
 
-    public function selectRowByPrimary(Select $select, $primaryVal)
-    {
-        $row = $this->getIdentifiedRow($primaryVal);
-        if ($row) {
-            return $row;
-        }
-
-        $primaryCol = $this->table->getPrimaryKey();
-        $select->where("{$primaryCol} = ?", $primaryVal);
-        return $this->selectRow($select);
-    }
-
-    public function selectRows(Select $select)
+    public function selectRows(GatewaySelect $select)
     {
         $data = $select->cols($this->table->getColNames())->fetchAll();
         if (! $data) {
@@ -99,7 +86,16 @@ class Gateway
         return $rows;
     }
 
-    public function newSelect(array $colsVals = [])
+    public function select(array $colsVals = [])
+    {
+        return new GatewaySelect(
+            $this->newSelect($colsVals),
+            $this->getReadConnection(),
+            $this->table->getColNames()
+        );
+    }
+
+    protected function newSelect(array $colsVals = [])
     {
         $select = $this->queryFactory->newSelect();
         $table = $this->table->getName();
@@ -288,6 +284,17 @@ class Gateway
         return $row;
     }
 
+    public function fetchRow($primaryVal)
+    {
+        $row = $this->getIdentifiedRow($primaryVal);
+        if ($row) {
+            return $row;
+        }
+
+        $select = $this->select([$this->table->getPrimaryKey() => $primaryVal]);
+        return $this->selectRow($select);
+    }
+
     /*
     Retrieve rows from identity map and/or database.
 
@@ -305,7 +312,7 @@ class Gateway
             add row in set on ID key
         return rows
     */
-    public function selectRowsByPrimary(Select $select, array $primaryVals)
+    public function fetchRows(array $primaryVals)
     {
         if (! $primaryVals) {
             return [];
@@ -328,8 +335,7 @@ class Gateway
         }
 
         // fetch and retain remaining rows
-        $primaryCol = $this->table->getPrimaryKey();
-        $select->where("{$primaryCol} IN (?)", $primaryVals);
+        $select = $this->select([$this->table->getPrimaryKey() => $primaryVals]);
         $data = $select->cols($this->table->getColNames())->fetchAll();
         foreach ($data as $cols) {
             $row = $this->newSelectedRow($cols);

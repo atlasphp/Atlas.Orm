@@ -1,11 +1,11 @@
 <?php
-namespace Atlas\Orm\Mapper;
+namespace Atlas\Orm\Table;
 
 use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\Common\SelectInterface;
 use Aura\SqlQuery\Common\SubselectInterface;
 
-class Select
+class GatewaySelect implements SubselectInterface
 {
     /**
      *
@@ -20,24 +20,16 @@ class Select
 
     protected $colNames;
 
-    protected $getSelectedRecord;
-
-    protected $getSelectedRecordSet;
-
     protected $with = [];
 
     public function __construct(
         SelectInterface $select,
         ExtendedPdo $connection,
-        array $colNames,
-        callable $getSelectedRecord,
-        callable $getSelectedRecordSet
+        array $colNames
     ) {
         $this->select = $select;
         $this->connection = $connection;
         $this->colNames = $colNames;
-        $this->getSelectedRecord = $getSelectedRecord;
-        $this->getSelectedRecordSet = $getSelectedRecordSet;
     }
 
     /**
@@ -72,9 +64,9 @@ class Select
         return ($result === $this->select) ? $this : $result;
     }
 
-    public function getSelect()
+    public function getColNames()
     {
-        return $this->select;
+        return $this->colNames;
     }
 
     // subselect interface
@@ -186,34 +178,5 @@ class Select
             $this->select->getStatement(),
             $this->select->getBindValues()
         );
-    }
-
-    public function with(array $with)
-    {
-        $this->with = $with;
-        return $this;
-    }
-
-    public function fetchRecord()
-    {
-        $this->select->cols($this->colNames);
-        $cols = $this->fetchOne();
-        if (! $cols) {
-            return false;
-        }
-
-        return call_user_func($this->getSelectedRecord, $cols, $this->with);
-    }
-
-    public function fetchRecordSet()
-    {
-        $this->select->cols($this->colNames);
-
-        $data = $this->fetchAll();
-        if (! $data) {
-            return [];
-        }
-
-        return call_user_func($this->getSelectedRecordSet, $data, $this->with);
     }
 }
