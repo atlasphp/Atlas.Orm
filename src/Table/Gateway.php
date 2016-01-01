@@ -6,7 +6,7 @@ use Aura\Sql\ConnectionLocator;
 use Aura\SqlQuery\QueryFactory;
 use Aura\SqlQuery\Common\SelectInterface;
 
-class Gateway
+class Gateway implements GatewayInterface
 {
     protected $connectionLocator;
     protected $table;

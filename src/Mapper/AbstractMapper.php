@@ -9,7 +9,7 @@ use Atlas\Orm\Relationship\OneToOne;
 use Atlas\Orm\Relationship\Relationships;
 use Atlas\Orm\Table\IdentityMap;
 use Atlas\Orm\Table\RowInterface;
-use Atlas\Orm\Table\Gateway;
+use Atlas\Orm\Table\GatewayInterface;
 use Aura\Sql\ConnectionLocator;
 use Aura\SqlQuery\QueryFactory;
 
@@ -29,7 +29,7 @@ abstract class AbstractMapper implements MapperInterface
     protected $plugin;
 
     public function __construct(
-        Gateway $gateway,
+        GatewayInterface $gateway,
         PluginInterface $plugin,
         Relationships $relationships
     ) {
