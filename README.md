@@ -142,7 +142,7 @@ use App\DataSource\Tagging\TaggingMapper;
 use App\DataSource\Tag\TagMapper;
 use Atlas\Orm\Mapper\Mapper;
 
-class ThreadMapper extends Mapper
+class ThreadMapper extends AbstractMapper
 {
     protected function setRelated()
     {
