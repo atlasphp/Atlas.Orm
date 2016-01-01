@@ -103,7 +103,6 @@ class AtlasContainer
 
         $mapperFactory = function () use ($mapperClass, $tableClass, $pluginClass) {
             return new $mapperClass(
-                $this->connectionLocator,
                 $this->gatewayLocator->get($tableClass),
                 $this->newInstance($pluginClass),
                 new Relationships($this->getMapperLocator())
@@ -122,8 +121,9 @@ class AtlasContainer
 
         $factory = function () use ($gatewayClass, $tableClass) {
             return new $gatewayClass(
-                new $tableClass(),
+                $this->connectionLocator,
                 $this->queryFactory,
+                new $tableClass(),
                 new IdentityMap()
             );
         };

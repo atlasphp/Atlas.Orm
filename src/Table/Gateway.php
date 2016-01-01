@@ -3,25 +3,28 @@ namespace Atlas\Orm\Table;
 
 use Atlas\Orm\Exception;
 use Atlas\Orm\Mapper\Select;
+use Aura\Sql\ConnectionLocator;
 use Aura\SqlQuery\QueryFactory;
 use Aura\SqlQuery\Common\SelectInterface;
 
-/**
- * Not so much a gateway as a secretary.
- */
 class Gateway
 {
+    protected $connectionLocator;
     protected $table;
     protected $queryFactory;
     protected $identityMap;
+    protected $readConnection;
+    protected $writeConnection;
 
     public function __construct(
-        TableInterface $table,
+        ConnectionLocator $connectionLocator,
         QueryFactory $queryFactory,
+        TableInterface $table,
         IdentityMap $identityMap
     ) {
-        $this->table = $table;
+        $this->connectionLocator = $connectionLocator;
         $this->queryFactory = $queryFactory;
+        $this->table = $table;
         $this->identityMap = $identityMap;
     }
 
@@ -30,9 +33,34 @@ class Gateway
         return $this->table;
     }
 
-    public function getIdentityMap()
+    /**
+     *
+     * Returns the database read connection.
+     *
+     * @return ExtendedPdoInterface
+     *
+     */
+    public function getReadConnection()
     {
-        return $this->identityMap;
+        if (! $this->readConnection) {
+            $this->readConnection = $this->connectionLocator->getRead();
+        }
+        return $this->readConnection;
+    }
+
+    /**
+     *
+     * Returns the database write connection.
+     *
+     * @return ExtendedPdoInterface
+     *
+     */
+    public function getWriteConnection()
+    {
+        if (! $this->writeConnection) {
+            $this->writeConnection = $this->connectionLocator->getWrite();
+        }
+        return $this->writeConnection;
     }
 
     public function selectRow(Select $select)
@@ -97,11 +125,12 @@ class Gateway
         $select->where("{$col} = ?", $val);
     }
 
-    public function insert(RowInterface $row, $connection, callable $modify, callable $after)
+    public function insert(RowInterface $row, callable $modify, callable $after)
     {
         $insert = $this->newInsert($row);
         $modify($this, $row, $insert);
 
+        $connection = $this->getWriteConnection();
         $pdoStatement = $connection->perform(
             $insert->getStatement(),
             $insert->getBindValues()
@@ -138,7 +167,7 @@ class Gateway
         return $insert;
     }
 
-    public function update(RowInterface $row, $connection, callable $modify, callable $after)
+    public function update(RowInterface $row, callable $modify, callable $after)
     {
         $update = $this->newUpdate($row);
         $modify($this, $row, $update);
@@ -147,6 +176,7 @@ class Gateway
             return false;
         }
 
+        $connection = $this->getWriteConnection();
         $pdoStatement = $connection->perform(
             $update->getStatement(),
             $update->getBindValues()
@@ -180,11 +210,12 @@ class Gateway
         return $update;
     }
 
-    public function delete(RowInterface $row, $connection, callable $modify, callable $after)
+    public function delete(RowInterface $row, callable $modify, callable $after)
     {
         $delete = $this->newDelete($row);
         $modify($this, $row, $delete);
 
+        $connection = $this->getWriteConnection();
         $pdoStatement = $connection->perform(
             $delete->getStatement(),
             $delete->getBindValues()

@@ -14,10 +14,6 @@ interface MapperInterface
 
     public function getTable();
 
-    public function getReadConnection();
-
-    public function getWriteConnection();
-
     public function fetchRecord($primaryVal, array $with = []);
 
     public function fetchRecordBy(array $colsVals = [], array $with = []);

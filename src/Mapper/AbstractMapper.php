@@ -22,33 +22,6 @@ use Aura\SqlQuery\QueryFactory;
  */
 abstract class AbstractMapper implements MapperInterface
 {
-    /**
-     *
-     * A database connection locator.
-     *
-     * @var ConnectionLocator
-     *
-     */
-    protected $connectionLocator;
-
-    /**
-     *
-     * A read connection drawn from the connection locator.
-     *
-     * @var ExtendedPdoInterface
-     *
-     */
-    protected $readConnection;
-
-    /**
-     *
-     * A write connection drawn from the connection locator.
-     *
-     * @var ExtendedPdoInterface
-     *
-     */
-    protected $writeConnection;
-
     protected $table;
 
     protected $gateway;
@@ -60,12 +33,10 @@ abstract class AbstractMapper implements MapperInterface
     protected $plugin;
 
     public function __construct(
-        ConnectionLocator $connectionLocator,
         Gateway $gateway,
         PluginInterface $plugin,
         Relationships $relationships
     ) {
-        $this->connectionLocator = $connectionLocator;
         $this->gateway = $gateway;
         $this->plugin = $plugin;
         $this->relationships = $relationships;
@@ -92,32 +63,26 @@ abstract class AbstractMapper implements MapperInterface
 
     /**
      *
-     * Returns the database read connection.
+     * Returns the Gateway read connection.
      *
      * @return ExtendedPdoInterface
      *
      */
     public function getReadConnection()
     {
-        if (! $this->readConnection) {
-            $this->readConnection = $this->connectionLocator->getRead();
-        }
-        return $this->readConnection;
+        return $this->gateway->getReadConnection();
     }
 
     /**
      *
-     * Returns the database write connection.
+     * Returns the Gateway write connection.
      *
      * @return ExtendedPdoInterface
      *
      */
     public function getWriteConnection()
     {
-        if (! $this->writeConnection) {
-            $this->writeConnection = $this->connectionLocator->getWrite();
-        }
-        return $this->writeConnection;
+        return $this->gateway->getWriteConnection();
     }
 
     public function fetchRecord($primaryVal, array $with = [])
@@ -160,7 +125,7 @@ abstract class AbstractMapper implements MapperInterface
     {
         return new Select(
             $this->gateway->newSelect($colsVals),
-            $this->getReadConnection(),
+            $this->gateway->getReadConnection(),
             $this->table->getColNames(),
             [$this, 'getSelectedRecord'],
             [$this, 'getSelectedRecordSet']
@@ -181,7 +146,6 @@ abstract class AbstractMapper implements MapperInterface
         $this->plugin->beforeInsert($this, $record);
         return $this->gateway->insert(
             $record->getRow(),
-            $this->getWriteConnection(),
             [$this->plugin, 'modifyInsert'],
             [$this->plugin, 'afterInsert']
         );
@@ -201,7 +165,6 @@ abstract class AbstractMapper implements MapperInterface
         $this->plugin->beforeUpdate($this, $record);
         return $this->gateway->update(
             $record->getRow(),
-            $this->getWriteConnection(),
             [$this->plugin, 'modifyUpdate'],
             [$this->plugin, 'afterUpdate']
         );
@@ -221,7 +184,6 @@ abstract class AbstractMapper implements MapperInterface
         $this->plugin->beforeDelete($this, $record);
         return $this->gateway->delete(
             $record->getRow(),
-            $this->getWriteConnection(),
             [$this->plugin, 'modifyDelete'],
             [$this->plugin, 'afterDelete']
         );
