@@ -22,11 +22,7 @@ use Aura\SqlQuery\QueryFactory;
  */
 abstract class AbstractMapper implements MapperInterface
 {
-    protected $table;
-
     protected $gateway;
-
-    protected $mapperClass;
 
     protected $relationships;
 
@@ -40,10 +36,6 @@ abstract class AbstractMapper implements MapperInterface
         $this->gateway = $gateway;
         $this->plugin = $plugin;
         $this->relationships = $relationships;
-
-        $this->mapperClass = get_class($this);
-        $this->table = $this->gateway->getTable();
-
         $this->setRelated();
     }
 
@@ -58,7 +50,7 @@ abstract class AbstractMapper implements MapperInterface
 
     public function getTable()
     {
-        return $this->table;
+        return $this->gateway->getTable();
     }
 
     public function getGateway()
@@ -99,15 +91,6 @@ abstract class AbstractMapper implements MapperInterface
         return $this->newRecordFromRow($row, $with);
     }
 
-    public function fetchRecordBy(array $colsVals = [], array $with = [])
-    {
-        $row = $this->gateway->selectRow($this->gateway->select($colsVals));
-        if (! $row) {
-            return false;
-        }
-        return $this->newRecordFromRow($row, $with);
-    }
-
     public function fetchRecordSet(array $primaryVals, array $with = [])
     {
         $rows = $this->gateway->fetchRows($primaryVals);
@@ -115,6 +98,15 @@ abstract class AbstractMapper implements MapperInterface
             return [];
         }
         return $this->newRecordSetFromRows($rows, $with);
+    }
+
+    public function fetchRecordBy(array $colsVals = [], array $with = [])
+    {
+        $row = $this->gateway->selectRow($this->gateway->select($colsVals));
+        if (! $row) {
+            return false;
+        }
+        return $this->newRecordFromRow($row, $with);
     }
 
     public function fetchRecordSetBy(array $colsVals = [], array $with = [])
@@ -198,53 +190,6 @@ abstract class AbstractMapper implements MapperInterface
         return $this->newRecordFromRow($row);
     }
 
-    public function getSelectedRecord(array $cols, array $with = [])
-    {
-        $row = $this->gateway->getSelectedRow($cols);
-        return $this->newRecordFromRow($row, $with);
-    }
-
-    protected function getRecordClass(RowInterface $row)
-    {
-        static $recordClass;
-        if (! $recordClass) {
-            $recordClass = substr(get_class($this), 0, -6) . 'Record';
-            $recordClass = class_exists($recordClass)
-                ? $recordClass
-                : Record::CLASS;
-        }
-        return $recordClass;
-    }
-
-    protected function getRecordSetClass()
-    {
-        static $recordSetClass;
-        if (! $recordSetClass) {
-            $recordSetClass = substr(get_class($this), 0, -6) . 'RecordSet';
-            $recordSetClass = class_exists($recordSetClass)
-                ? $recordSetClass
-                : RecordSet::CLASS;
-        }
-        return $recordSetClass;
-    }
-
-    protected function newRecordFromRow(RowInterface $row, array $with = [])
-    {
-        $recordClass = $this->getRecordClass($row);
-        $record = new $recordClass(
-            $this->mapperClass,
-            $row,
-            $this->newRelated()
-        );
-        $this->relationships->stitchIntoRecord($record, $with);
-        return $record;
-    }
-
-    protected function newRelated()
-    {
-        return new Related($this->relationships->getFields());
-    }
-
     public function newRecordSet(array $records = [], array $with = [])
     {
         $recordSetClass = $this->getRecordSetClass();
@@ -253,13 +198,10 @@ abstract class AbstractMapper implements MapperInterface
         return $recordSet;
     }
 
-    protected function newRecordSetFromRows(array $rows, array $with = [])
+    public function getSelectedRecord(array $cols, array $with = [])
     {
-        $records = [];
-        foreach ($rows as $row) {
-            $records[] = $this->newRecordFromRow($row);
-        }
-        return $this->newRecordSet($records, $with);
+        $row = $this->gateway->getSelectedRow($cols);
+        return $this->newRecordFromRow($row, $with);
     }
 
     public function getSelectedRecordSet(array $data, array $with = [])
@@ -278,7 +220,7 @@ abstract class AbstractMapper implements MapperInterface
     protected function oneToOne($name, $foreignMapperClass)
     {
         return $this->relationships->set(
-            get_class($this),
+            static::CLASS,
             $name,
             OneToOne::CLASS,
             $foreignMapperClass
@@ -288,7 +230,7 @@ abstract class AbstractMapper implements MapperInterface
     protected function oneToMany($name, $foreignMapperClass)
     {
         return $this->relationships->set(
-            get_class($this),
+            static::CLASS,
             $name,
             OneToMany::CLASS,
             $foreignMapperClass
@@ -298,7 +240,7 @@ abstract class AbstractMapper implements MapperInterface
     protected function manyToOne($name, $foreignMapperClass)
     {
         return $this->relationships->set(
-            get_class($this),
+            static::CLASS,
             $name,
             ManyToOne::CLASS,
             $foreignMapperClass
@@ -308,11 +250,61 @@ abstract class AbstractMapper implements MapperInterface
     protected function manyToMany($name, $foreignMapperClass, $throughName)
     {
         return $this->relationships->set(
-            get_class($this),
+            static::CLASS,
             $name,
             ManyToMany::CLASS,
             $foreignMapperClass,
             $throughName
         );
+    }
+
+    protected function getRecordClass(RowInterface $row)
+    {
+        static $recordClass;
+        if (! $recordClass) {
+            $recordClass = substr(static::CLASS, 0, -6) . 'Record';
+            $recordClass = class_exists($recordClass)
+                ? $recordClass
+                : Record::CLASS;
+        }
+        return $recordClass;
+    }
+
+    protected function getRecordSetClass()
+    {
+        static $recordSetClass;
+        if (! $recordSetClass) {
+            $recordSetClass = substr(static::CLASS, 0, -6) . 'RecordSet';
+            $recordSetClass = class_exists($recordSetClass)
+                ? $recordSetClass
+                : RecordSet::CLASS;
+        }
+        return $recordSetClass;
+    }
+
+    protected function newRecordFromRow(RowInterface $row, array $with = [])
+    {
+        $recordClass = $this->getRecordClass($row);
+        $record = new $recordClass(
+            static::CLASS,
+            $row,
+            $this->newRelated()
+        );
+        $this->relationships->stitchIntoRecord($record, $with);
+        return $record;
+    }
+
+    protected function newRecordSetFromRows(array $rows, array $with = [])
+    {
+        $records = [];
+        foreach ($rows as $row) {
+            $records[] = $this->newRecordFromRow($row);
+        }
+        return $this->newRecordSet($records, $with);
+    }
+
+    protected function newRelated()
+    {
+        return new Related($this->relationships->getFields());
     }
 }
