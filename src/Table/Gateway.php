@@ -263,7 +263,7 @@ class Gateway
         return $row;
     }
 
-    public function getIdentifiedRow($primaryVal)
+    protected function getIdentifiedRow($primaryVal)
     {
         $primaryIdentity = $this->getPrimaryIdentity($primaryVal);
         return $this->identityMap->getRowByPrimary($primaryIdentity);
@@ -347,7 +347,7 @@ class Gateway
         return array_values($rows);
     }
 
-    public function getPrimaryIdentity($primaryVal)
+    protected function getPrimaryIdentity($primaryVal)
     {
         return [$this->table->getPrimaryKey() => $primaryVal];
     }
