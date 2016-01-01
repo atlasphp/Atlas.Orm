@@ -61,6 +61,11 @@ abstract class AbstractMapper implements MapperInterface
         return $this->table;
     }
 
+    public function getGateway()
+    {
+        return $this->gateway;
+    }
+
     /**
      *
      * Returns the Gateway read connection.
@@ -265,9 +270,7 @@ abstract class AbstractMapper implements MapperInterface
         foreach ($data as $cols) {
             $records[] = $this->getSelectedRecord($cols);
         }
-        $recordSet = $this->newRecordSet($records);
-        $this->relationships->stitchIntoRecordSet($recordSet, $with);
-        return $recordSet;
+        return $this->newRecordSet($records, $with);
     }
 
     protected function setRelated()

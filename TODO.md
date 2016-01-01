@@ -4,11 +4,9 @@
 
 - Documentation.
 
-- Move back to one IDMap per table, out "identify" methods into IDMap.
+- Go back to GatewaySelect and MapperSelect.
 
-- Not really happy about logic in the Table object. Go back to a generic Gateway,
-  and a GatewayLocator? (Keyed on the Table name, so I guess it's a TableLocator.)
-  Allow for custom Gateway too.
+- Move Plugin up to top, since it handles both Mapper and Gateway?
 
 ## Near-Term
 
