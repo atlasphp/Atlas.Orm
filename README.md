@@ -93,7 +93,6 @@ Create a PHP file to return an array of connection parameters suitable for PDO:
 <?php
 // /path/to/conn.php
 return ['mysql:dbname=testdb;host=localhost', 'username', 'password'];
-?>
 ```
 
 You can then invoke `atlas-skeleton` using that connection and a table name.
@@ -153,7 +152,6 @@ class ThreadMapper extends Mapper
         $this->manyToMany('tags', TagMapper::CLASS, 'taggings');
     }
 }
-?>
 ```
 
 ### Reading
@@ -168,7 +166,6 @@ $atlasContainer = new AtlasContainer(
     'username',
     'password'
 );
-?>
 ```
 
 Next, set the available mapper classes, and get back an _Atlas_ instance:
@@ -185,7 +182,6 @@ $atlasContainer->setMappers([
 ]);
 
 $atlas = $atlasContainer->getAtlas();
-?>
 ```
 
 You can then use Atlas to select a _Record_ or a _RecordSet_:
@@ -224,7 +220,6 @@ $threadRecordSet = $atlas
         'summary'
     ])
     ->fetchRecordSet();
-?>
 ```
 
 If you do not load a _Record_ "with" a related, it will be `null` in the
@@ -242,7 +237,6 @@ foreach ($thread->replies as $reply) {
     echo $reply->author->name;
     echo $reply->body;
 }
-?>
 ```
 
 Incidentally, you can also use the mapper to select non-Record values directly
@@ -268,7 +262,6 @@ $threadIdsAndTitles = $atlas
     ->fetchPairs();
 
 // etc.
-?>
 ```
 
 See [the list of `ExtendedPdo::fetch*()` methods][fetch] for more.
@@ -285,7 +278,6 @@ Make changes to the _Record_ by setting new property values.
 $thread = $atlas->newRecord(ThreadMapper::CLASS);
 $thread->title = "Thread title";
 $thread->body = "Body text for the thread";
-?>
 ```
 
 Note that the _Row_ supporting each _Record_ is identity-mapped, so a change to
@@ -297,7 +289,6 @@ _Record_ using that _Row_.
 // $reply1 and $reply2 are two different replies by the same author. the reply
 // rows are different, but the underlying author row is the same.
 $reply1->author->name = "New name"; // $reply2->author->name is now also "New name"
-?>
 ```
 
 ### Writing
@@ -330,5 +321,4 @@ if ($ok) {
     echo "Transaction failure. ";
     echo $work->getLabel() . ' threw ' . $exception->getMessage();
 }
-?>
 ```
