@@ -69,7 +69,7 @@ class Gateway implements GatewayInterface
             return $row;
         }
 
-        $primaryKey = $this->table->getPrimaryKey();
+        $primaryKey = (array) $this->table->getPrimaryKey();
         $primaryCol = $primaryKey[0];
         $select = $this->select([$primaryCol => $primaryVal]);
         return $this->selectRow($select);
@@ -96,7 +96,7 @@ class Gateway implements GatewayInterface
         }
 
         // fetch and retain remaining rows
-        $primaryKey = $this->table->getPrimaryKey();
+        $primaryKey = (array) $this->table->getPrimaryKey();
         $primaryCol = $primaryKey[0];
         $select = $this
             ->select([$primaryCol => $primaryVals])
@@ -167,7 +167,7 @@ class Gateway implements GatewayInterface
         }
 
         if ($this->table->getAutoinc()) {
-            $primaryKey = $this->table->getPrimaryKey();
+            $primaryKey = (array) $this->table->getPrimaryKey();
             $primaryCol = $primaryKey[0];
             $row->$primaryCol = $connection->lastInsertId($primaryCol);
         }
@@ -260,7 +260,7 @@ class Gateway implements GatewayInterface
 
     public function getSelectedRow(array $cols)
     {
-        $primaryKey = $this->table->getPrimaryKey();
+        $primaryKey = (array) $this->table->getPrimaryKey();
         $primaryCol = $primaryKey[0];
         $primaryVal = $cols[$primaryCol];
         $row = $this->getIdentifiedRow($primaryVal);
@@ -272,7 +272,7 @@ class Gateway implements GatewayInterface
 
     protected function newPrimary(array &$cols)
     {
-        $primaryKey = $this->table->getPrimaryKey();
+        $primaryKey = (array) $this->table->getPrimaryKey();
         $primaryCol = $primaryKey[0];
         $primaryVal = null;
         if (array_key_exists($primaryCol, $cols)) {
@@ -315,7 +315,7 @@ class Gateway implements GatewayInterface
 
         $cols = $row->getArrayCopy();
         if ($this->table->getAutoinc()) {
-            $primaryKey = $this->table->getPrimaryKey();
+            $primaryKey = (array) $this->table->getPrimaryKey();
             $primaryCol = $primaryKey[0];
             unset($cols[$primaryCol]);
         }
@@ -329,7 +329,7 @@ class Gateway implements GatewayInterface
         $update = $this->queryFactory->newUpdate();
         $update->table($this->table->getName());
 
-        $primaryKey = $this->table->getPrimaryKey();
+        $primaryKey = (array) $this->table->getPrimaryKey();
         $primaryCol = $primaryKey[0];
 
         $cols = $row->getArrayDiff($this->identityMap->getInitial($row));
@@ -346,7 +346,7 @@ class Gateway implements GatewayInterface
         $delete = $this->queryFactory->newDelete();
         $delete->from($this->table->getName());
 
-        $primaryKey = $this->table->getPrimaryKey();
+        $primaryKey = (array) $this->table->getPrimaryKey();
         $primaryCol = $primaryKey[0];
         $delete->where("{$primaryCol} = ?", $row->getPrimary()->getVal());
 
@@ -355,7 +355,7 @@ class Gateway implements GatewayInterface
 
     protected function getIdentifiedRow($primaryVal)
     {
-        $primaryKey = $this->table->getPrimaryKey();
+        $primaryKey = (array) $this->table->getPrimaryKey();
         $primaryCol = $primaryKey[0];
         $primary = [$primaryCol => $primaryVal];
         return $this->identityMap->getRowByPrimary($primary);

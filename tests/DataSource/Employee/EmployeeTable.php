@@ -80,9 +80,7 @@ class EmployeeTable extends AbstractTable
      */
     public function getPrimaryKey()
     {
-        return [
-            'id',
-        ];
+        return 'id';
     }
 
     /**

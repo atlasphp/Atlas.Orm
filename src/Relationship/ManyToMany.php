@@ -25,7 +25,7 @@ class ManyToMany extends AbstractRelationship
             return;
         }
 
-        $primaryKey = $this->nativeMapper->getTable()->getPrimaryKey();
+        $primaryKey = (array) $this->nativeMapper->getTable()->getPrimaryKey();
         $primaryCol = $primaryKey[0];
         $this->throughNativeCol($primaryCol);
     }
@@ -36,7 +36,7 @@ class ManyToMany extends AbstractRelationship
             return;
         }
 
-        $primaryKey = $this->foreignMapper->getTable()->getPrimaryKey();
+        $primaryKey = (array) $this->foreignMapper->getTable()->getPrimaryKey();
         $primaryCol = $primaryKey[0];
         $this->throughForeignCol($primaryCol);
     }
@@ -47,7 +47,7 @@ class ManyToMany extends AbstractRelationship
             return;
         }
 
-        $primaryKey = $this->foreignMapper->getTable()->getPrimaryKey();
+        $primaryKey = (array) $this->foreignMapper->getTable()->getPrimaryKey();
         $primaryCol = $primaryKey[0];
         $this->foreignCol($primaryCol);
     }
