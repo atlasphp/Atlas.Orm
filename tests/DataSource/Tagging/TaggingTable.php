@@ -69,7 +69,9 @@ class TaggingTable extends AbstractTable
      */
     public function getPrimaryKey()
     {
-        return 'tagging_id';
+        return [
+            'tagging_id',
+        ];
     }
 
     /**

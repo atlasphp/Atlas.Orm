@@ -80,7 +80,9 @@ class ReplyTable extends AbstractTable
      */
     public function getPrimaryKey()
     {
-        return 'reply_id';
+        return [
+            'reply_id',
+        ];
     }
 
     /**

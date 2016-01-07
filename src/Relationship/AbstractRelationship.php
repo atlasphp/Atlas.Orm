@@ -86,7 +86,9 @@ abstract class AbstractRelationship
             return;
         }
 
-        $this->nativeCol($this->nativeMapper->getTable()->getPrimaryKey());
+        $primaryKey = $this->nativeMapper->getTable()->getPrimaryKey();
+        $primaryCol = $primaryKey[0];
+        $this->nativeCol($primaryCol);
     }
 
     protected function fixForeignCol()
@@ -95,7 +97,9 @@ abstract class AbstractRelationship
             return;
         }
 
-        $this->foreignCol($this->nativeMapper->getTable()->getPrimaryKey());
+        $primaryKey = $this->nativeMapper->getTable()->getPrimaryKey();
+        $primaryCol = $primaryKey[0];
+        $this->foreignCol($primaryCol);
     }
 
     protected function fixThroughNativeCol()

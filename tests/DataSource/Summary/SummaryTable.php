@@ -69,7 +69,9 @@ class SummaryTable extends AbstractTable
      */
     public function getPrimaryKey()
     {
-        return 'thread_id';
+        return [
+            'thread_id',
+        ];
     }
 
     /**
