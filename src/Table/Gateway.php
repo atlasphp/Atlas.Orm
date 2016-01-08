@@ -104,7 +104,9 @@ class Gateway implements GatewayInterface
         $data = $select->fetchAll();
         foreach ($data as $cols) {
             $row = $this->newSelectedRow($cols);
-            $rows[$row->getPrimary()->getVal()] = $row;
+            $primary = $row->getPrimary()->getArrayCopy();
+            $primaryVal = current($primary);
+            $rows[$primaryVal] = $row;
         }
 
         // remove unfound rows
@@ -336,7 +338,10 @@ class Gateway implements GatewayInterface
         unset($cols[$primaryCol]);
         $update->cols($cols);
 
-        $update->where("{$primaryCol} = ?", $row->getPrimary()->getVal());
+        $primary = $row->getPrimary()->getArrayCopy();
+        $primaryCol = key($primary);
+        $primaryVal = current($primary);
+        $update->where("{$primaryCol} = ?", $primaryVal);
 
         return $update;
     }
@@ -346,9 +351,10 @@ class Gateway implements GatewayInterface
         $delete = $this->queryFactory->newDelete();
         $delete->from($this->table->getName());
 
-        $primaryKey = (array) $this->table->getPrimaryKey();
-        $primaryCol = $primaryKey[0];
-        $delete->where("{$primaryCol} = ?", $row->getPrimary()->getVal());
+        $primary = $row->getPrimary()->getArrayCopy();
+        $primaryCol = key($primary);
+        $primaryVal = current($primary);
+        $delete->where("{$primaryCol} = ?", $primaryVal);
 
         return $delete;
     }

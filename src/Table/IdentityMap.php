@@ -36,7 +36,7 @@ class IdentityMap
             throw Exception::rowAlreadyMapped();
         }
 
-        $serial = $this->getSerial($row->getPrimary()->getKey());
+        $serial = $this->getSerial($row->getPrimary()->getArrayCopy());
         $this->serialToRow[$serial] = $row;
         $this->rowToSerial[$row] = $serial;
         $this->initial[$row] = $initial;

@@ -58,7 +58,9 @@ class AuthorTable extends AbstractTable
      */
     public function getPrimaryKey()
     {
-        return 'author_id';
+        return [
+            'author_id',
+        ];
     }
 
     /**

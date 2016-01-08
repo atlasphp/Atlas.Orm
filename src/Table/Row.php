@@ -115,7 +115,7 @@ class Row implements RowInterface
 
     public function getArrayCopy()
     {
-        $array = $this->primary->getKey();
+        $array = $this->primary->getArrayCopy();
         foreach ($this->cols as $col => $val) {
             $method = $this->copierFor($col);
             if ($method) {

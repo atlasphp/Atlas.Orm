@@ -6,45 +6,45 @@ use Atlas\Orm\Exception;
 // using arrays to plan ahead for composite key
 class Primary
 {
-    private $key;
+    private $cols = [];
 
-    public function __construct(array $key)
+    public function __construct(array $cols)
     {
-        $this->key = $key;
+        $this->cols = $cols;
     }
 
     public function __get($col)
     {
         $this->assertHas($col);
-        return $this->key[$col];
+        return $this->cols[$col];
     }
 
     public function __set($col, $val)
     {
         $this->assertHas($col);
 
-        if (isset($this->key[$col])) {
+        if (isset($this->cols[$col])) {
             throw Exception::immutableOnceSet($this, $col);
         }
 
-        $this->key[$col] = $val;
+        $this->cols[$col] = $val;
     }
 
     public function __isset($col)
     {
         $this->assertHas($col);
-        return isset($this->key[$col]);
+        return isset($this->cols[$col]);
     }
 
     public function __unset($col)
     {
         $this->assertHas($col);
 
-        if (isset($this->key[$col])) {
+        if (isset($this->cols[$col])) {
             throw Exception::immutableOnceSet($this, $col);
         }
 
-        $this->key[$col] = null;
+        $this->cols[$col] = null;
     }
 
     protected function assertHas($col)
@@ -56,16 +56,11 @@ class Primary
 
     public function has($col)
     {
-        return array_key_exists($col, $this->key);
+        return array_key_exists($col, $this->cols);
     }
 
-    public function getKey()
+    public function getArrayCopy()
     {
-        return $this->key;
-    }
-
-    public function getVal()
-    {
-        return current($this->key);
+        return $this->cols;
     }
 }
