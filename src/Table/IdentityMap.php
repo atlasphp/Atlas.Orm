@@ -55,7 +55,7 @@ class IdentityMap
      * @param mixed $primary
      * @return boolean
      */
-    public function hasPrimary($primary)
+    public function hasPrimary(array $primary)
     {
         $serial = $this->getSerial($primary);
         return isset($this->serialToRow[$serial]);
@@ -65,7 +65,7 @@ class IdentityMap
      * @param mixed $primary
      * @return Row
      */
-    public function getRowByPrimary($primary)
+    public function getRowByPrimary(array $primary)
     {
         $serial = $this->getSerial($primary);
         if (! isset($this->serialToRow[$serial])) {
@@ -103,10 +103,10 @@ class IdentityMap
      * though the key-value pairs themselves are the same.
      *
      */
-    public function getSerial($primary)
+    public function getSerial(array $primary)
     {
         $sep = "|\x1F"; // a pipe, and ASCII 31 ("unit separator")
-        return $sep . implode($sep, (array) $primary). $sep;
+        return $sep . implode($sep, $primary). $sep;
     }
 
     public function setInitial(RowInterface $row)
