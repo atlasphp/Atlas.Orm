@@ -9,7 +9,7 @@ class ManyToOne extends OneToOne
             return;
         }
 
-        $primaryKey = (array) $this->foreignMapper->getTable()->getPrimaryKey();
+        $primaryKey = $this->foreignMapper->getTable()->getPrimaryKey();
         $primaryCol = $primaryKey[0];
         $this->nativeCol($primaryCol);
     }
@@ -20,7 +20,7 @@ class ManyToOne extends OneToOne
             return;
         }
 
-        $primaryKey = (array) $this->foreignMapper->getTable()->getPrimaryKey();
+        $primaryKey = $this->foreignMapper->getTable()->getPrimaryKey();
         $primaryCol = $primaryKey[0];
         $this->foreignCol($primaryCol);
     }
