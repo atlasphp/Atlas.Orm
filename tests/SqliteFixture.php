@@ -19,6 +19,7 @@ class SqliteFixture
         $this->summaries();
         $this->taggings();
         $this->replies();
+        // $this->grades();
     }
 
     protected function employee()
@@ -176,6 +177,60 @@ class SqliteFixture
                     SET reply_count = reply_count + 1
                     WHERE thread_id = {$thread_id}
                 ");
+            }
+        }
+    }
+
+    protected function grades()
+    {
+        $this->connection->query("CREATE TABLE grades (
+            subject VARCHAR(8),
+            teacher VARCHAR(50),
+            student CHAR(50),
+            grade CHAR(1),
+            PRIMARY KEY (subject, teacher, student)
+        )");
+
+        $subjects = [
+            'MATH 101',
+            'MATH 102',
+            'ENGL 101',
+            'ENGL 102',
+            'HIST 101',
+            'HIST 102',
+        ];
+
+        $teachers = [
+            'Anna',
+            'Betty',
+            'Clara',
+            'Donna',
+            'Edna',
+            'Fiona',
+        ];
+
+        $students = [
+            'Gina',
+            'Hanna',
+            'Ione',
+            'Julia',
+            'Kara',
+            'Lana',
+        ];
+
+        $grades = ['A', 'B', 'C', 'D', 'F'];
+        $stm = "INSERT INTO grades (subject, teacher, student, grade) VALUES (?, ?, ?, ?)";
+        foreach ($subjects as $subject) {
+            foreach ($teachers as $teacher) {
+                foreach ($students as $student) {
+                    $grade = $grades[array_rand($grades)];
+                    $this->connection->perform($stm, [
+                        $subject,
+                        $teacher,
+                        $student,
+                        $grade,
+                    ]);
+                }
             }
         }
     }
