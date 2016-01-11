@@ -1,13 +1,15 @@
 <?php
 namespace Atlas\Orm\Table;
 
+use Atlas\Orm\DataSource\Employee\EmployeeTable;
+
 class IdentityMapTest extends \PHPUnit_Framework_TestCase
 {
     protected $identityMap;
 
     protected function setUp()
     {
-        $this->identityMap = new IdentityMap();
+        $this->identityMap = new IdentityMap(new EmployeeTable());
     }
 
     public function testSetRow()

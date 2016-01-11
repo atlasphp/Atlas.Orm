@@ -120,11 +120,12 @@ class AtlasContainer
             : Gateway::CLASS;
 
         $factory = function () use ($gatewayClass, $tableClass) {
+            $table = new $tableClass();
             return new $gatewayClass(
                 $this->connectionLocator,
                 $this->queryFactory,
-                new $tableClass(),
-                new IdentityMap()
+                $table,
+                new IdentityMap($table)
             );
         };
 

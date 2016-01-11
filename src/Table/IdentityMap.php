@@ -21,8 +21,11 @@ class IdentityMap
      */
     protected $initial;
 
-    public function __construct()
+    protected $table;
+
+    public function __construct(TableInterface $table)
     {
+        $this->table = $table;
         $this->rowToSerial = new SplObjectStorage();
         $this->initial = new SplObjectStorage();
     }
