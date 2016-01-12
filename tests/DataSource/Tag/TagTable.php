@@ -68,7 +68,7 @@ class TagTable extends AbstractTable
      */
     public function getAutoinc()
     {
-        return true;
+        return 'tag_id';
     }
 
     /**

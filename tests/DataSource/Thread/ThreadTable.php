@@ -90,7 +90,7 @@ class ThreadTable extends AbstractTable
      */
     public function getAutoinc()
     {
-        return true;
+        return 'thread_id';
     }
 
     /**

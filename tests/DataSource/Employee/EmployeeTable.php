@@ -90,7 +90,7 @@ class EmployeeTable extends AbstractTable
      */
     public function getAutoinc()
     {
-        return true;
+        return 'id';
     }
 
     /**

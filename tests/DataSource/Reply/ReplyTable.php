@@ -90,7 +90,7 @@ class ReplyTable extends AbstractTable
      */
     public function getAutoinc()
     {
-        return true;
+        return 'reply_id';
     }
 
     /**

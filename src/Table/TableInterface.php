@@ -43,9 +43,9 @@ interface TableInterface
 
     /**
      *
-     * Does the database set the primary key value on insert by autoincrement?
+     * Returns the autoincrement column name on the table, if any.
      *
-     * @return bool
+     * @return string
      *
      */
     public function getAutoinc();

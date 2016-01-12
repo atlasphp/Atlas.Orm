@@ -168,10 +168,9 @@ class Gateway implements GatewayInterface
             throw Exception::unexpectedRowCountAffected(0);
         }
 
-        if ($this->table->getAutoinc()) {
-            $primaryKey = $this->table->getPrimaryKey();
-            $primaryCol = $primaryKey[0];
-            $row->$primaryCol = $connection->lastInsertId($primaryCol);
+        $autoinc = $this->getAutoinc();
+        if ($autoinc) {
+            $row->$autoinc = $connection->lastInsertId($autoinc);
         }
 
         $after($this, $row, $insert, $pdoStatement);
@@ -316,10 +315,9 @@ class Gateway implements GatewayInterface
         $insert->into($this->table->getName());
 
         $cols = $row->getArrayCopy();
-        if ($this->table->getAutoinc()) {
-            $primaryKey = $this->table->getPrimaryKey();
-            $primaryCol = $primaryKey[0];
-            unset($cols[$primaryCol]);
+        $autoinc = $this->getAutoinc();
+        if ($autoinc) {
+            unset($cols[$autoinc]);
         }
         $insert->cols($cols);
 
@@ -331,18 +329,15 @@ class Gateway implements GatewayInterface
         $update = $this->queryFactory->newUpdate();
         $update->table($this->table->getName());
 
-        $primaryKey = $this->table->getPrimaryKey();
-        $primaryCol = $primaryKey[0];
-
         $cols = $row->getArrayDiff($this->identityMap->getInitial($row));
-        unset($cols[$primaryCol]);
-        $update->cols($cols);
 
         $primary = $row->getPrimary()->getArrayCopy();
-        $primaryCol = key($primary);
-        $primaryVal = current($primary);
-        $update->where("{$primaryCol} = ?", $primaryVal);
+        foreach ($primary as $primaryCol => $primaryVal) {
+            $update->where("{$primaryCol} = ?", $primaryVal);
+            unset($cols[$primaryCol]);
+        }
 
+        $update->cols($cols);
         return $update;
     }
 
@@ -352,9 +347,9 @@ class Gateway implements GatewayInterface
         $delete->from($this->table->getName());
 
         $primary = $row->getPrimary()->getArrayCopy();
-        $primaryCol = key($primary);
-        $primaryVal = current($primary);
-        $delete->where("{$primaryCol} = ?", $primaryVal);
+        foreach ($primary as $primaryCol => $primaryVal) {
+            $delete->where("{$primaryCol} = ?", $primaryVal);
+        }
 
         return $delete;
     }
@@ -367,4 +362,18 @@ class Gateway implements GatewayInterface
         return $this->identityMap->getRowByPrimary($primary);
     }
 
+    // temp to allow for string *or* bool autoinc
+    protected function getAutoinc()
+    {
+        $autoinc = $this->table->getAutoinc();
+        if (is_string($autoinc)) {
+            return $autoinc;
+        }
+
+        if (! $autoinc) {
+            return false;
+        }
+
+        return current($this->table->getPrimaryKey());
+    }
 }

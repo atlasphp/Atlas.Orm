@@ -79,7 +79,7 @@ class TaggingTable extends AbstractTable
      */
     public function getAutoinc()
     {
-        return true;
+        return 'tagging_id';
     }
 
     /**
