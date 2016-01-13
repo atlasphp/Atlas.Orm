@@ -65,7 +65,7 @@ class Gateway implements GatewayInterface
     public function fetchRow($primaryVal)
     {
         $primary = $this->table->calcPrimary($primaryVal);
-        $row = $this->getIdentifiedRow($primary);
+        $row = $this->identityMap->getRowByPrimary($primary);
         if ($row) {
             return $row;
         }
@@ -82,7 +82,7 @@ class Gateway implements GatewayInterface
         foreach ($primaryVals as $i => $primaryVal) {
             $rows[$primaryVal] = null;
             $primary = $this->table->calcPrimary($primaryVal);
-            $row = $this->getIdentifiedRow($primary);
+            $row = $this->identityMap->getRowByPrimary($primary);
             if ($row) {
                 $rows[$primaryVal] = $row;
                 unset($primaryVals[$i]);
@@ -262,7 +262,7 @@ class Gateway implements GatewayInterface
     public function getSelectedRow(array $cols)
     {
         $primary = $this->table->calcPrimary($cols);
-        $row = $this->getIdentifiedRow($primary);
+        $row = $this->identityMap->getRowByPrimary($primary);
         if (! $row) {
             $row = $this->newSelectedRow($cols);
         }
@@ -351,11 +351,6 @@ class Gateway implements GatewayInterface
         }
 
         return $delete;
-    }
-
-    protected function getIdentifiedRow(array $primary)
-    {
-        return $this->identityMap->getRowByPrimary($primary);
     }
 
     // temp to allow for string *or* bool autoinc
