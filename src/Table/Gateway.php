@@ -64,14 +64,13 @@ class Gateway implements GatewayInterface
 
     public function fetchRow($primaryVal)
     {
-        $row = $this->getIdentifiedRow($primaryVal);
+        $primary = $this->table->calcPrimary($primaryVal);
+        $row = $this->getIdentifiedRow($primary);
         if ($row) {
             return $row;
         }
 
-        $primaryKey = $this->table->getPrimaryKey();
-        $primaryCol = $primaryKey[0];
-        $select = $this->select([$primaryCol => $primaryVal]);
+        $select = $this->select($primary);
         return $this->selectRow($select);
     }
 
@@ -82,7 +81,8 @@ class Gateway implements GatewayInterface
         $rows = [];
         foreach ($primaryVals as $i => $primaryVal) {
             $rows[$primaryVal] = null;
-            $row = $this->getIdentifiedRow($primaryVal);
+            $primary = $this->table->calcPrimary($primaryVal);
+            $row = $this->getIdentifiedRow($primary);
             if ($row) {
                 $rows[$primaryVal] = $row;
                 unset($primaryVals[$i]);
@@ -261,10 +261,8 @@ class Gateway implements GatewayInterface
 
     public function getSelectedRow(array $cols)
     {
-        $primaryKey = $this->table->getPrimaryKey();
-        $primaryCol = $primaryKey[0];
-        $primaryVal = $cols[$primaryCol];
-        $row = $this->getIdentifiedRow($primaryVal);
+        $primary = $this->table->calcPrimary($cols);
+        $row = $this->getIdentifiedRow($primary);
         if (! $row) {
             $row = $this->newSelectedRow($cols);
         }
@@ -273,14 +271,15 @@ class Gateway implements GatewayInterface
 
     protected function newPrimary(array &$cols)
     {
-        $primaryKey = $this->table->getPrimaryKey();
-        $primaryCol = $primaryKey[0];
-        $primaryVal = null;
-        if (array_key_exists($primaryCol, $cols)) {
-            $primaryVal = $cols[$primaryCol];
-            unset($cols[$primaryCol]);
+        $primary = [];
+        foreach ($this->table->getPrimaryKey() as $primaryCol) {
+            $primary[$primaryCol] = null;
+            if (isset($cols[$primaryCol])) {
+                $primary[$primaryCol] = $cols[$primaryCol];
+                unset($cols[$primaryCol]);
+            }
         }
-        return new Primary([$primaryCol => $primaryVal]);
+        return new Primary($primary);
     }
 
     protected function newSelect(array $colsVals = [])
@@ -354,11 +353,8 @@ class Gateway implements GatewayInterface
         return $delete;
     }
 
-    protected function getIdentifiedRow($primaryVal)
+    protected function getIdentifiedRow(array $primary)
     {
-        $primaryKey = $this->table->getPrimaryKey();
-        $primaryCol = $primaryKey[0];
-        $primary = [$primaryCol => $primaryVal];
         return $this->identityMap->getRowByPrimary($primary);
     }
 

@@ -5,6 +5,16 @@ use Atlas\Orm\Mapper\Select;
 
 abstract class AbstractTable implements TableInterface
 {
+    private $primaryKey;
+
+    public function __construct()
+    {
+        $this->primaryKey = $this->getPrimaryKey();
+        if (count($this->primaryKey) == 1) {
+            $this->primaryKey = current($this->primaryKey);
+        }
+    }
+
     /**
      *
      * Returns the table name.
@@ -76,5 +86,38 @@ abstract class AbstractTable implements TableInterface
                 : Row::CLASS;
         }
         return $rowClass;
+    }
+
+    public function calcPrimary($primaryVal)
+    {
+        if (is_array($this->primaryKey)) {
+            return $this->calcPrimaryComposite($primaryVal);
+        }
+
+        if (is_array($primaryVal) && isset($primaryVal[$this->primaryKey])) {
+            $primaryVal = $primaryVal[$this->primaryKey];
+        }
+
+        if (! is_scalar($primaryVal)) {
+            throw new Exception("Primary key value must be scalar");
+        }
+
+        return [$this->primaryKey => $primaryVal];
+    }
+
+    private function calcPrimaryComposite(array $primaryVal)
+    {
+        $primary = [];
+        foreach ($this->primaryKey as $primaryCol) {
+            $primary[$primaryCol] = null;
+            if (! isset($primaryVal[$primaryCol])) {
+                continue;
+            }
+            if (! is_scalar($primaryVal[$primaryCol])) {
+                throw new Exception("Primary key value for '$primaryCol' must be scalar");
+            }
+            $primary = $primaryVal[$primaryCol];
+        }
+        return $primary;
     }
 }
