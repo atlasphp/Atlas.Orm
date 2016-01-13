@@ -80,11 +80,12 @@ class Gateway implements GatewayInterface
         // leave open elements for non-identified rows.
         $rows = [];
         foreach ($primaryVals as $i => $primaryVal) {
-            $rows[$primaryVal] = null;
             $primary = $this->table->calcPrimary($primaryVal);
+            $serial = $this->identityMap->getSerial($primary);
+            $rows[$serial] = null;
             $row = $this->identityMap->getRowByPrimary($primary);
             if ($row) {
-                $rows[$primaryVal] = $row;
+                $rows[$serial] = $row;
                 unset($primaryVals[$i]);
             }
         }
@@ -96,17 +97,14 @@ class Gateway implements GatewayInterface
         }
 
         // fetch and retain remaining rows
-        $primaryKey = $this->table->getPrimaryKey();
-        $primaryCol = $primaryKey[0];
-        $select = $this
-            ->select([$primaryCol => $primaryVals])
-            ->cols($this->table->getColNames());
+        $select = $this->select()->cols($this->table->getColNames());
+        $this->selectWherePrimary($select, $primaryVals);
         $data = $select->fetchAll();
         foreach ($data as $cols) {
             $row = $this->newSelectedRow($cols);
-            $primary = $row->getPrimary()->getArrayCopy();
-            $primaryVal = current($primary);
-            $rows[$primaryVal] = $row;
+            $primary = $this->table->calcPrimary($cols);
+            $serial = $this->identityMap->getSerial($primary);
+            $rows[$serial] = $row;
         }
 
         // remove unfound rows
@@ -118,6 +116,26 @@ class Gateway implements GatewayInterface
 
         // done
         return array_values($rows);
+    }
+
+    protected function selectWherePrimary($select, $primaryVals)
+    {
+        $primaryKey = $this->table->getPrimaryKey();
+        if (count($primaryKey) == 1) {
+            // simple key
+            $primaryCol = current($primaryKey);
+            $select->where("$primaryCol IN (?)", $primaryVals);
+            return;
+        }
+
+        // composite key
+        foreach ($primaryVals as $primaryVal) {
+            $primary = $this->table->calcPrimary($primaryVal);
+            $cols = array_keys($primary);
+            $vals = array_values($primary);
+            $cond = implode(' = ? AND ', $cols);
+            $select->orWhere($cond, $vals);
+        }
     }
 
     public function select(array $colsVals = [])
