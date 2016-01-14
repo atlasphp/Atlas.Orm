@@ -22,16 +22,14 @@ class MapperTest extends \PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        $table = new EmployeeTable();
-
         $this->mapper = new EmployeeMapper(
             new Gateway(
                 new ConnectionLocator(function () {
                     return new ExtendedPdo('sqlite::memory:');
                 }),
                 new QueryFactory('sqlite'),
-                $table,
-                new IdentityMap($table)
+                new EmployeeTable(),
+                new IdentityMap()
             ),
             new Plugin(),
             new Relationships(new MapperLocator())
