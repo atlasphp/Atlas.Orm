@@ -7,49 +7,49 @@ use Atlas\Orm\Mapper\RecordSetInterface;
 
 class ManyToMany extends AbstractRelationship
 {
-    public function throughNativeCol($throughNativeCol)
+    public function throughNativeKey($throughNativeKey)
     {
-        $this->throughNativeCol = $throughNativeCol;
+        $this->throughNativeKey = $throughNativeKey;
         return $this;
     }
 
-    public function throughForeignCol($throughForeignCol)
+    public function throughForeignKey($throughForeignKey)
     {
-        $this->throughForeignCol = $throughForeignCol;
+        $this->throughForeignKey = $throughForeignKey;
         return $this;
     }
 
-    protected function fixThroughNativeCol()
+    protected function fixThroughNativeKey()
     {
-        if ($this->throughNativeCol) {
+        if ($this->throughNativeKey) {
             return;
         }
 
         $primaryKey = $this->nativeMapper->getTable()->getPrimaryKey();
         $primaryCol = $primaryKey[0];
-        $this->throughNativeCol($primaryCol);
+        $this->throughNativeKey($primaryCol);
     }
 
-    protected function fixThroughForeignCol()
+    protected function fixThroughForeignKey()
     {
-        if ($this->throughForeignCol) {
+        if ($this->throughForeignKey) {
             return;
         }
 
         $primaryKey = $this->foreignMapper->getTable()->getPrimaryKey();
         $primaryCol = $primaryKey[0];
-        $this->throughForeignCol($primaryCol);
+        $this->throughForeignKey($primaryCol);
     }
 
-    protected function fixForeignCol()
+    protected function fixForeignKey()
     {
-        if ($this->foreignCol) {
+        if ($this->foreignKey) {
             return;
         }
 
         $primaryKey = $this->foreignMapper->getTable()->getPrimaryKey();
         $primaryCol = $primaryKey[0];
-        $this->foreignCol($primaryCol);
+        $this->foreignKey($primaryCol);
     }
 
     public function stitchIntoRecord(
@@ -64,7 +64,7 @@ class ManyToMany extends AbstractRelationship
         }
 
         $throughRecordSet = $nativeRecord->{$this->throughName};
-        $foreignVals = $this->getUniqueVals($throughRecordSet, $this->throughForeignCol);
+        $foreignVals = $this->getUniqueVals($throughRecordSet, $this->throughForeignKey);
         $foreignRecordSet = $this->foreignSelect($foreignVals, $custom)->fetchRecordSet();
         $nativeRecord->{$this->name} = $foreignRecordSet;
     }
@@ -91,7 +91,7 @@ class ManyToMany extends AbstractRelationship
             $throughRecordSet = $nativeRecord->{$this->throughName};
             $foreignVals = array_merge(
                 $foreignVals,
-                $this->getUniqueVals($throughRecordSet, $this->throughForeignCol)
+                $this->getUniqueVals($throughRecordSet, $this->throughForeignKey)
             );
         }
         $foreignVals = array_unique($foreignVals);
@@ -100,10 +100,10 @@ class ManyToMany extends AbstractRelationship
 
         foreach ($nativeRecordSet as $nativeRecord) {
             $throughRecordSet = $nativeRecord->{$this->throughName};
-            $vals = $this->getUniqueVals($throughRecordSet, $this->throughForeignCol);
+            $vals = $this->getUniqueVals($throughRecordSet, $this->throughForeignKey);
             $nativeRecord->{$this->name} = $this->extractRecordSet(
                 $foreignRecordSet,
-                $this->foreignCol,
+                $this->foreignKey,
                 $vals
             );
         }

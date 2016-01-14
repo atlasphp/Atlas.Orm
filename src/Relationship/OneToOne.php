@@ -11,7 +11,7 @@ class OneToOne extends AbstractRelationship
         callable $custom = null
     ) {
         $this->fix();
-        $foreignVal = $nativeRecord->{$this->nativeCol};
+        $foreignVal = $nativeRecord->{$this->nativeKey};
         $foreignRecord = $this->foreignSelect($foreignVal, $custom)->fetchRecord();
         $nativeRecord->{$this->name} = $foreignRecord;
     }
@@ -22,15 +22,15 @@ class OneToOne extends AbstractRelationship
     ) {
         $this->fix();
 
-        $foreignVals = $this->getUniqueVals($nativeRecordSet, $this->nativeCol);
+        $foreignVals = $this->getUniqueVals($nativeRecordSet, $this->nativeKey);
         $foreignRecords = $this->groupRecordSets(
             $this->foreignSelect($foreignVals, $custom)->fetchRecordSet(),
-            $this->foreignCol
+            $this->foreignKey
         );
 
         foreach ($nativeRecordSet as $nativeRecord) {
             $foreignRecord = false;
-            $key = $nativeRecord->{$this->nativeCol};
+            $key = $nativeRecord->{$this->nativeKey};
             if (isset($foreignRecords[$key])) {
                 $foreignRecord = $foreignRecords[$key][0];
             }

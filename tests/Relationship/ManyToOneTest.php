@@ -15,18 +15,18 @@ class ManyToOneTest extends AbstractRelationshipTest
             AuthorMapper::CLASS
         );
 
-        $rel->nativeCol('native')
-            ->foreignCol('foreign');
+        $rel->nativeKey('native')
+            ->foreignKey('foreign');
 
         $expect = [
             'name' => 'author',
             'nativeMapperClass' => 'Atlas\\Orm\\DataSource\\Thread\\ThreadMapper',
             'foreignMapperClass' => 'Atlas\\Orm\\DataSource\\Author\\AuthorMapper',
-            'nativeCol' => 'native',
+            'nativeKey' => 'native',
             'throughName' => null,
-            'throughNativeCol' => null,
-            'throughForeignCol' => null,
-            'foreignCol' => 'foreign',
+            'throughNativeKey' => null,
+            'throughForeignKey' => null,
+            'foreignKey' => 'foreign',
         ];
 
         $actual = $rel->getSettings();

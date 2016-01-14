@@ -15,18 +15,18 @@ class OneToOneTest extends AbstractRelationshipTest
             SummaryMapper::CLASS
         );
 
-        $rel->nativeCol('native')
-            ->foreignCol('foreign');
+        $rel->nativeKey('native')
+            ->foreignKey('foreign');
 
         $expect = [
             'name' => 'summary',
             'nativeMapperClass' => 'Atlas\\Orm\\DataSource\\Thread\\ThreadMapper',
             'foreignMapperClass' => 'Atlas\\Orm\\DataSource\\Summary\\SummaryMapper',
-            'nativeCol' => 'native',
+            'nativeKey' => 'native',
             'throughName' => null,
-            'throughNativeCol' => null,
-            'throughForeignCol' => null,
-            'foreignCol' => 'foreign',
+            'throughNativeKey' => null,
+            'throughForeignKey' => null,
+            'foreignKey' => 'foreign',
         ];
 
         $actual = $rel->getSettings();

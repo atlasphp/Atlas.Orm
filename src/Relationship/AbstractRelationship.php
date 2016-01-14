@@ -17,11 +17,11 @@ abstract class AbstractRelationship
     protected $foreignMapperClass;
     protected $foreignMapper;
 
-    protected $nativeCol;
+    protected $nativeKey;
     protected $throughName;
-    protected $throughNativeCol;
-    protected $throughForeignCol;
-    protected $foreignCol;
+    protected $throughNativeKey;
+    protected $throughForeignKey;
+    protected $foreignKey;
 
     protected $fixed = false;
 
@@ -51,15 +51,15 @@ abstract class AbstractRelationship
         return $settings;
     }
 
-    public function nativeCol($nativeCol)
+    public function nativeKey($nativeKey)
     {
-        $this->nativeCol = $nativeCol;
+        $this->nativeKey = $nativeKey;
         return $this;
     }
 
-    public function foreignCol($foreignCol)
+    public function foreignKey($foreignKey)
     {
-        $this->foreignCol = $foreignCol;
+        $this->foreignKey = $foreignKey;
         return $this;
     }
 
@@ -72,47 +72,47 @@ abstract class AbstractRelationship
         $this->nativeMapper = $this->mapperLocator->get($this->nativeMapperClass);
         $this->foreignMapper = $this->mapperLocator->get($this->foreignMapperClass);
 
-        $this->fixNativeCol();
-        $this->fixThroughNativeCol();
-        $this->fixThroughForeignCol();
-        $this->fixForeignCol();
+        $this->fixNativeKey();
+        $this->fixThroughNativeKey();
+        $this->fixThroughForeignKey();
+        $this->fixForeignKey();
 
         $this->fixed = true;
     }
 
-    protected function fixNativeCol()
+    protected function fixNativeKey()
     {
-        if ($this->nativeCol) {
+        if ($this->nativeKey) {
             return;
         }
 
         $primaryKey = $this->nativeMapper->getTable()->getPrimaryKey();
         $primaryCol = $primaryKey[0];
-        $this->nativeCol($primaryCol);
+        $this->nativeKey($primaryCol);
     }
 
-    protected function fixForeignCol()
+    protected function fixForeignKey()
     {
-        if ($this->foreignCol) {
+        if ($this->foreignKey) {
             return;
         }
 
         $primaryKey = $this->nativeMapper->getTable()->getPrimaryKey();
         $primaryCol = $primaryKey[0];
-        $this->foreignCol($primaryCol);
+        $this->foreignKey($primaryCol);
     }
 
-    protected function fixThroughNativeCol()
+    protected function fixThroughNativeKey()
     {
     }
 
-    protected function fixThroughForeignCol()
+    protected function fixThroughForeignKey()
     {
     }
 
     protected function foreignSelect($foreignVal, callable $custom = null)
     {
-        $select = $this->foreignMapper->select([$this->foreignCol => $foreignVal]);
+        $select = $this->foreignMapper->select([$this->foreignKey => $foreignVal]);
         if ($custom) {
             $custom($select);
         }

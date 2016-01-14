@@ -18,20 +18,20 @@ class ManyToManyTest extends AbstractRelationshipTest
             'taggings'
         );
 
-        $rel->nativeCol('native')
-            ->throughNativeCol('through_native')
-            ->throughForeignCol('through_foreign')
-            ->foreignCol('foreign');
+        $rel->nativeKey('native')
+            ->throughNativeKey('through_native')
+            ->throughForeignKey('through_foreign')
+            ->foreignKey('foreign');
 
         $expect = [
             'name' => 'threads',
             'nativeMapperClass' => 'Atlas\\Orm\\DataSource\\Thread\\ThreadMapper',
             'foreignMapperClass' => 'Atlas\\Orm\\DataSource\\Tag\\TagMapper',
-            'nativeCol' => 'native',
+            'nativeKey' => 'native',
             'throughName' => 'taggings',
-            'throughNativeCol' => 'through_native',
-            'throughForeignCol' => 'through_foreign',
-            'foreignCol' => 'foreign',
+            'throughNativeKey' => 'through_native',
+            'throughForeignKey' => 'through_foreign',
+            'foreignKey' => 'foreign',
         ];
 
         $actual = $rel->getSettings();
