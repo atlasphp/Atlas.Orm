@@ -118,6 +118,9 @@ class Gateway implements GatewayInterface
         return array_values($rows);
     }
 
+    // need to expose this as public,
+    // and wrap in parens so that other conditions are honored.
+    // or place it on the Select itself?
     protected function selectWherePrimary($select, $primaryVals)
     {
         $primaryKey = $this->table->getPrimaryKey();
