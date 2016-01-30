@@ -110,13 +110,13 @@ abstract class AbstractRelationship
     {
     }
 
-    protected function foreignSelect($foreignVal, callable $custom = null)
+    protected function fetchForeignRecordSet($foreignVal, callable $custom = null)
     {
         $select = $this->foreignMapper->select([$this->foreignKey => $foreignVal]);
         if ($custom) {
             $custom($select);
         }
-        return $select;
+        return $select->fetchRecordSet();
     }
 
     protected function getUniqueVals(RecordSetInterface $recordSet, $col)

@@ -12,7 +12,7 @@ class OneToMany extends AbstractRelationship
     ) {
         $this->fix();
         $foreignVal = $nativeRecord->{$this->nativeKey};
-        $foreignRecordSet = $this->foreignSelect($foreignVal, $custom)->fetchRecordSet();
+        $foreignRecordSet = $this->fetchForeignRecordSet($foreignVal, $custom);
         $nativeRecord->{$this->name} = $foreignRecordSet;
     }
 
@@ -24,7 +24,7 @@ class OneToMany extends AbstractRelationship
 
         $foreignVals = $this->getUniqueVals($nativeRecordSet, $this->nativeKey);
         $foreignRecordSets = $this->groupRecordSets(
-            $this->foreignSelect($foreignVals, $custom)->fetchRecordSet(),
+            $this->fetchForeignRecordSet($foreignVals, $custom),
             $this->foreignKey
         );
 

@@ -65,7 +65,7 @@ class ManyToMany extends AbstractRelationship
 
         $throughRecordSet = $nativeRecord->{$this->throughName};
         $foreignVals = $this->getUniqueVals($throughRecordSet, $this->throughForeignKey);
-        $foreignRecordSet = $this->foreignSelect($foreignVals, $custom)->fetchRecordSet();
+        $foreignRecordSet = $this->fetchForeignRecordSet($foreignVals, $custom);
         $nativeRecord->{$this->name} = $foreignRecordSet;
     }
 
@@ -96,7 +96,7 @@ class ManyToMany extends AbstractRelationship
         }
         $foreignVals = array_unique($foreignVals);
 
-        $foreignRecordSet = $this->foreignSelect($foreignVals, $custom)->fetchRecordSet();
+        $foreignRecordSet = $this->fetchForeignRecordSet($foreignVals, $custom);
 
         foreach ($nativeRecordSet as $nativeRecord) {
             $throughRecordSet = $nativeRecord->{$this->throughName};
