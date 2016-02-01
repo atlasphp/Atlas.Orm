@@ -11,9 +11,8 @@ class OneToMany extends AbstractRelationship
         callable $custom = null
     ) {
         $this->fix();
-        $foreignVal = $nativeRecord->{$this->nativeKey};
-        $foreignRecordSet = $this->fetchForeignRecordSet($foreignVal, $custom);
-        $nativeRecord->{$this->name} = $foreignRecordSet;
+        $select = $this->selectForRecord($nativeRecord, $custom);
+        $nativeRecord->{$this->name} = $select->fetchRecordSet();
     }
 
     public function stitchIntoRecordSet(
@@ -22,19 +21,20 @@ class OneToMany extends AbstractRelationship
     ) {
         $this->fix();
 
-        $foreignVals = $this->getUniqueVals($nativeRecordSet, $this->nativeKey);
-        $foreignRecordSets = $this->groupRecordSets(
-            $this->fetchForeignRecordSet($foreignVals, $custom),
-            $this->foreignKey
-        );
+        $select = $this->selectForRecordSet($nativeRecordSet, $custom);
+        $foreignRecordsArray = $select->fetchRecordsArray();
 
         foreach ($nativeRecordSet as $nativeRecord) {
-            $foreignRecordSet = [];
-            $key = $nativeRecord->{$this->nativeKey};
-            if (isset($foreignRecordSets[$key])) {
-                $foreignRecordSet = $foreignRecordSets[$key];
+            $nativeRecord->{$this->name} = [];
+            $matches = [];
+            foreach ($foreignRecordsArray as $foreignRecord) {
+                if ($this->recordsMatch($nativeRecord, $foreignRecord)) {
+                    $matches[] = $foreignRecord;
+                }
             }
-            $nativeRecord->{$this->name} = $foreignRecordSet;
+            if ($matches) {
+                $nativeRecord->{$this->name} = $this->foreignMapper->newRecordSet($matches);
+            }
         }
     }
 }

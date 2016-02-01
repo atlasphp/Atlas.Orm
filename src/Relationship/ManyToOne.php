@@ -3,25 +3,14 @@ namespace Atlas\Orm\Relationship;
 
 class ManyToOne extends OneToOne
 {
-    protected function fixNativeKey()
+    protected function fixOn()
     {
-        if ($this->nativeKey) {
+        if ($this->on) {
             return;
         }
 
-        $primaryKey = $this->foreignMapper->getTable()->getPrimaryKey();
-        $primaryCol = $primaryKey[0];
-        $this->nativeKey($primaryCol);
-    }
-
-    protected function fixForeignKey()
-    {
-        if ($this->foreignKey) {
-            return;
+        foreach ($this->foreignMapper->getTable()->getPrimaryKey() as $col) {
+            $this->on[$col] = $col;
         }
-
-        $primaryKey = $this->foreignMapper->getTable()->getPrimaryKey();
-        $primaryCol = $primaryKey[0];
-        $this->foreignKey($primaryCol);
     }
 }

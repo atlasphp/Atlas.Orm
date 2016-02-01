@@ -17,11 +17,9 @@ abstract class AbstractRelationship
     protected $foreignMapperClass;
     protected $foreignMapper;
 
-    protected $nativeKey;
+    protected $on = array();
+
     protected $throughName;
-    protected $throughNativeKey;
-    protected $throughForeignKey;
-    protected $foreignKey;
 
     protected $fixed = false;
 
@@ -51,15 +49,9 @@ abstract class AbstractRelationship
         return $settings;
     }
 
-    public function nativeKey($nativeKey)
+    public function on(array $on)
     {
-        $this->nativeKey = $nativeKey;
-        return $this;
-    }
-
-    public function foreignKey($foreignKey)
-    {
-        $this->foreignKey = $foreignKey;
+        $this->on = $on;
         return $this;
     }
 
@@ -71,43 +63,20 @@ abstract class AbstractRelationship
 
         $this->nativeMapper = $this->mapperLocator->get($this->nativeMapperClass);
         $this->foreignMapper = $this->mapperLocator->get($this->foreignMapperClass);
-
-        $this->fixNativeKey();
-        $this->fixThroughNativeKey();
-        $this->fixThroughForeignKey();
-        $this->fixForeignKey();
+        $this->fixOn();
 
         $this->fixed = true;
     }
 
-    protected function fixNativeKey()
+    protected function fixOn()
     {
-        if ($this->nativeKey) {
+        if ($this->on) {
             return;
         }
 
-        $primaryKey = $this->nativeMapper->getTable()->getPrimaryKey();
-        $primaryCol = $primaryKey[0];
-        $this->nativeKey($primaryCol);
-    }
-
-    protected function fixForeignKey()
-    {
-        if ($this->foreignKey) {
-            return;
+        foreach ($this->nativeMapper->getTable()->getPrimaryKey() as $col) {
+            $this->on[$col] = $col;
         }
-
-        $primaryKey = $this->nativeMapper->getTable()->getPrimaryKey();
-        $primaryCol = $primaryKey[0];
-        $this->foreignKey($primaryCol);
-    }
-
-    protected function fixThroughNativeKey()
-    {
-    }
-
-    protected function fixThroughForeignKey()
-    {
     }
 
     protected function fetchForeignRecordSet($foreignVal, callable $custom = null)
@@ -117,6 +86,63 @@ abstract class AbstractRelationship
             $custom($select);
         }
         return $select->fetchRecordSet();
+    }
+
+    protected function whereCondVals(RecordInterface $nativeRecord)
+    {
+        if (count($this->on) == 1) {
+            $nativeCol = key($this->on);
+            $foreignCol = current($this->on);
+            return [
+                "$foreignCol = ?",
+                $nativeRecord->{$nativeCol},
+            ];
+        }
+
+        $cond = [];
+        $vals = [];
+        foreach ($this->on as $nativeCol => $foreignCol) {
+            $cond[] = "$foreignCol = ?";
+            $vals[] = $nativeRecord->$nativeCol;
+        }
+        $cond = '(' . implode(' AND ', $cond) . ')';
+        return [$cond, $vals];
+    }
+
+    protected function selectForRecord(RecordInterface $nativeRecord, $custom)
+    {
+        $select = $this->foreignMapper->select();
+        list($cond, $vals) = $this->whereCondVals($nativeRecord);
+        $select->where($cond, $vals);
+        if ($custom) {
+            $custom($select);
+        }
+        return $select;
+    }
+
+    protected function selectForRecordSet(RecordSetInterface $nativeRecordSet, $custom)
+    {
+        $select = $this->foreignMapper->select();
+        foreach ($nativeRecordSet as $nativeRecord) {
+            list($cond, $vals) = $this->whereCondVals($nativeRecord);
+            $select->orWhere($cond, $vals);
+        }
+        if ($custom) {
+            $custom($select);
+        }
+        return $select;
+    }
+
+    protected function recordsMatch(
+        RecordInterface $nativeRecord,
+        RecordInterface $foreignRecord
+    ) {
+        foreach ($this->on as $nativeCol => $foreignCol) {
+            if ($nativeRecord->$nativeCol != $foreignRecord->$foreignCol) {
+                return false;
+            }
+        }
+        return true;
     }
 
     protected function getUniqueVals(RecordSetInterface $recordSet, $col)

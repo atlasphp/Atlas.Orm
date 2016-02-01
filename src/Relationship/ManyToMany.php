@@ -2,54 +2,21 @@
 namespace Atlas\Orm\Relationship;
 
 use Atlas\Orm\Exception;
+use Atlas\Orm\Mapper\MapperLocator;
 use Atlas\Orm\Mapper\RecordInterface;
 use Atlas\Orm\Mapper\RecordSetInterface;
 
 class ManyToMany extends AbstractRelationship
 {
-    public function throughNativeKey($throughNativeKey)
+    protected function fixOn()
     {
-        $this->throughNativeKey = $throughNativeKey;
-        return $this;
-    }
-
-    public function throughForeignKey($throughForeignKey)
-    {
-        $this->throughForeignKey = $throughForeignKey;
-        return $this;
-    }
-
-    protected function fixThroughNativeKey()
-    {
-        if ($this->throughNativeKey) {
+        if ($this->on) {
             return;
         }
 
-        $primaryKey = $this->nativeMapper->getTable()->getPrimaryKey();
-        $primaryCol = $primaryKey[0];
-        $this->throughNativeKey($primaryCol);
-    }
-
-    protected function fixThroughForeignKey()
-    {
-        if ($this->throughForeignKey) {
-            return;
+        foreach ($this->foreignMapper->getTable()->getPrimaryKey() as $col) {
+            $this->on[$col] = $col;
         }
-
-        $primaryKey = $this->foreignMapper->getTable()->getPrimaryKey();
-        $primaryCol = $primaryKey[0];
-        $this->throughForeignKey($primaryCol);
-    }
-
-    protected function fixForeignKey()
-    {
-        if ($this->foreignKey) {
-            return;
-        }
-
-        $primaryKey = $this->foreignMapper->getTable()->getPrimaryKey();
-        $primaryCol = $primaryKey[0];
-        $this->foreignKey($primaryCol);
     }
 
     public function stitchIntoRecord(
@@ -64,9 +31,8 @@ class ManyToMany extends AbstractRelationship
         }
 
         $throughRecordSet = $nativeRecord->{$this->throughName};
-        $foreignVals = $this->getUniqueVals($throughRecordSet, $this->throughForeignKey);
-        $foreignRecordSet = $this->fetchForeignRecordSet($foreignVals, $custom);
-        $nativeRecord->{$this->name} = $foreignRecordSet;
+        $select = $this->selectForRecordSet($throughRecordSet, $custom);
+        $nativeRecord->{$this->name} = $select->fetchRecordSet();
     }
 
     public function stitchIntoRecordSet(
@@ -86,44 +52,34 @@ class ManyToMany extends AbstractRelationship
             throw Exception::throughRelationNotFetched($this->name, $this->throughName);
         }
 
-        $foreignVals = [];
+        $select = $this->foreignMapper->select();
         foreach ($nativeRecordSet as $nativeRecord) {
-            $throughRecordSet = $nativeRecord->{$this->throughName};
-            $foreignVals = array_merge(
-                $foreignVals,
-                $this->getUniqueVals($throughRecordSet, $this->throughForeignKey)
-            );
-        }
-        $foreignVals = array_unique($foreignVals);
-
-        $foreignRecordSet = $this->fetchForeignRecordSet($foreignVals, $custom);
-
-        foreach ($nativeRecordSet as $nativeRecord) {
-            $throughRecordSet = $nativeRecord->{$this->throughName};
-            $vals = $this->getUniqueVals($throughRecordSet, $this->throughForeignKey);
-            $nativeRecord->{$this->name} = $this->extractRecordSet(
-                $foreignRecordSet,
-                $this->foreignKey,
-                $vals
-            );
-        }
-    }
-
-    protected function extractRecordSet($recordSet, $field, $vals)
-    {
-        $vals = (array) $vals;
-
-        $records = [];
-        foreach ($recordSet as $record) {
-            if (in_array($record->$field, $vals)) {
-                $records[] = $record;
+            foreach ($nativeRecord->{$this->throughName} as $throughRecordSet) {
+                foreach ($throughRecordSet as $throughRecord) {
+                    list($cond, $vals) = $this->whereCondVals($throughRecord);
+                    $select->orWhere($cond, $vals);
+                }
             }
         }
-
-        if ($records) {
-            return $this->foreignMapper->newRecordSet($records);
+        if ($custom) {
+            $custom($select);
         }
 
-        return [];
+        $foreignRecordsArray = $select->fetchRecordsArray();
+
+        foreach ($nativeRecordSet as $nativeRecord) {
+            $nativeRecord->{$this->name} = [];
+            $matches = [];
+            foreach ($nativeRecord->{$this->throughName} as $throughRecord) {
+                foreach ($foreignRecordsArray as $foreignRecord) {
+                    if ($this->recordsMatch($throughRecord, $foreignRecord)) {
+                        $matches[] = $foreignRecord;
+                    }
+                }
+            }
+            if ($matches) {
+                $nativeRecord->{$this->name} = $this->foreignMapper->newRecordSet($matches);
+            }
+        }
     }
 }

@@ -105,4 +105,16 @@ class MapperSelect implements SubselectInterface
 
         return call_user_func($this->getSelectedRecordSet, $data, $this->with);
     }
+
+    public function fetchRecordsArray()
+    {
+        $this->gatewaySelect->cols($this->gatewaySelect->getColNames());
+
+        $records = [];
+        $data = $this->fetchAll();
+        foreach ($data as $cols) {
+            $records[] = call_user_func($this->getSelectedRecord, $cols, $this->with);
+        }
+        return $records;
+    }
 }
