@@ -4,6 +4,12 @@
 
 - Documentation.
 
+- Composite primary keys
+
+    - Build strategies for fetching by composite keys.
+
+    - Build strategies for stitching in foreign record with composite keys; consider allowing custom Relation classes for this.
+
 - Move Plugin up to top, since it handles both Mapper and Gateway?
 
 ## Near-Term
@@ -18,12 +24,6 @@
 ## Unknown Priority
 
 - Add `addNew()` to RecordSet to append a new Record of the proper type.
-
-- Composite primary keys
-
-    - Build strategies for fetching by composite keys.
-
-    - Build strategies for stitching in foreign record with composite keys; consider allowing custom Relation classes for this.
 
 - Writing back to the database
 
