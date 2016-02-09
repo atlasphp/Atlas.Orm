@@ -219,7 +219,7 @@ class SqliteFixture
             course_subject CHAR(4),
             course_number INT,
             title VARCHAR(20),
-            PRIMARY KEY (course_subject, course_number, title)
+            PRIMARY KEY (course_subject, course_number)
         )");
 
         $stm = "INSERT INTO courses (course_subject, course_number, title) VALUES (?, ?, ?)";
