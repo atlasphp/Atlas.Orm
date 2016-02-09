@@ -19,14 +19,16 @@ class SqliteFixture
         $this->summaries();
         $this->taggings();
         $this->replies();
-        // $this->grades();
+        $this->students();
+        $this->courses();
+        $this->enrollments();
     }
 
     protected function employee()
     {
         $this->connection->query("CREATE TABLE employee (
             id       INTEGER PRIMARY KEY AUTOINCREMENT,
-            name     VARCHAR(50) NOT NULL UNIQUE,
+            name     VARCHAR(10) NOT NULL UNIQUE,
             building INTEGER,
             floor    INTEGER
         )");
@@ -55,7 +57,7 @@ class SqliteFixture
     {
         $this->connection->query("CREATE TABLE authors (
             author_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name VARCHAR(50) NOT NULL
+            name VARCHAR(10) NOT NULL
         )");
 
         $stm = "INSERT INTO authors (name) VALUES (?)";
@@ -82,7 +84,7 @@ class SqliteFixture
     {
         $this->connection->query("CREATE TABLE tags (
             tag_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name VARCHAR(50) NOT NULL
+            name VARCHAR(10) NOT NULL
         )");
 
         $stm = "INSERT INTO tags (name) VALUES (?)";
@@ -181,56 +183,102 @@ class SqliteFixture
         }
     }
 
-    protected function grades()
+    protected function students()
     {
-        $this->connection->query("CREATE TABLE grades (
-            subject VARCHAR(8),
-            teacher VARCHAR(50),
-            student CHAR(50),
-            grade CHAR(1),
-            PRIMARY KEY (subject, teacher, student)
+        $this->connection->query("CREATE TABLE students (
+            student_fn VARCHAR(10),
+            student_ln VARCHAR(10),
+            PRIMARY KEY (student_fn, student_ln)
         )");
 
-        $subjects = [
-            'MATH 101',
-            'MATH 102',
-            'ENGL 101',
-            'ENGL 102',
-            'HIST 101',
-            'HIST 102',
+        $stm = "INSERT INTO students (student_fn, student_ln) VALUES (?, ?)";
+        $rows = [
+            ['Anna', 'Alpha'],
+            ['Betty', 'Beta'],
+            ['Clara', 'Clark'],
+            ['Donna', 'Delta'],
+            ['Edna', 'Epsilon'],
+            ['Fiona', 'Phi'],
+            ['Gina', 'Gamma'],
+            ['Hanna', 'Eta'],
+            ['Ione', 'Iota'],
+            ['Julia', 'Jones'],
+            ['Kara', 'Kappa'],
+            ['Lana', 'Lambda'],
+            ['Mara', 'Mu'],
+            ['Nina', 'Nu']
         ];
+        foreach ($rows as $row) {
+            $this->connection->perform($stm, $row);
+        }
+    }
 
-        $teachers = [
-            'Anna',
-            'Betty',
-            'Clara',
-            'Donna',
-            'Edna',
-            'Fiona',
+    protected function courses()
+    {
+        $this->connection->query("CREATE TABLE courses (
+            course_subject CHAR(4),
+            course_number INT,
+            title VARCHAR(20),
+            PRIMARY KEY (course_subject, course_number, title)
+        )");
+
+        $stm = "INSERT INTO courses (course_subject, course_number, title) VALUES (?, ?, ?)";
+        $rows = [
+            ['ENGL', 100, 'Composition'],
+            ['ENGL', 200, 'Creative Writing'],
+            ['ENGL', 300, 'Shakespeare'],
+            ['ENGL', 400, 'Dickens'],
+            ['HIST', 100, 'World History'],
+            ['HIST', 200, 'US History'],
+            ['HIST', 300, 'Victorian History'],
+            ['HIST', 400, 'Recent History'],
+            ['MATH', 100, 'Algebra'],
+            ['MATH', 200, 'Trigonometry'],
+            ['MATH', 300, 'Calculus'],
+            ['MATH', 400, 'Statistics'],
         ];
+        foreach ($rows as $row) {
+            $this->connection->perform($stm, $row);
+        }
+    }
 
-        $students = [
-            'Gina',
-            'Hanna',
-            'Ione',
-            'Julia',
-            'Kara',
-            'Lana',
-        ];
+    protected function enrollments()
+    {
+        $this->connection->query("CREATE TABLE enrollments (
+            student_fn VARCHAR(10),
+            student_ln VARCHAR(10),
+            course_subject CHAR(4),
+            course_number INT,
+            grade CHAR(1),
+            PRIMARY KEY (student_ln, student_fn, course_subject, course_number)
+        )");
 
-        $grades = ['A', 'B', 'C', 'D', 'F'];
-        $stm = "INSERT INTO grades (subject, teacher, student, grade) VALUES (?, ?, ?, ?)";
-        foreach ($subjects as $subject) {
-            foreach ($teachers as $teacher) {
-                foreach ($students as $student) {
-                    $grade = $grades[array_rand($grades)];
-                    $this->connection->perform($stm, [
-                        $subject,
-                        $teacher,
-                        $student,
-                        $grade,
-                    ]);
-                }
+        $courses = $this->connection->fetchAll('SELECT * FROM courses');
+        $students = $this->connection->fetchAll('SELECT * FROM students');
+
+        $stm = 'INSERT INTO enrollments (
+            student_fn, student_ln, course_subject, course_number, grade
+        ) VALUES (
+            :student_fn, :student_ln, :course_subject, :course_number, :grade
+        )';
+
+        foreach ($courses as $i => $course) {
+            $keys = [
+                (($i + 0) % 12),
+                (($i + 1) % 12),
+                (($i + 2) % 12),
+                (($i + 3) % 12),
+                (($i + 4) % 12),
+                (($i + 5) % 12),
+            ];
+            foreach ($keys as $key) {
+                $this->connection->perform($stm, [
+                    'student_fn' => $students[$key]['student_fn'],
+                    'student_ln' => $students[$key]['student_ln'],
+                    'course_subject' => $course['course_subject'],
+                    'course_number' => $course['course_number'],
+                    'grade' => 65 + (($key + 5) * 2),
+                ]);
             }
         }
     }
