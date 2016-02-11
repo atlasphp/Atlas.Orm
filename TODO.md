@@ -12,14 +12,14 @@
 
 - Move Plugin up to top, since it handles both Mapper and Gateway?
 
+- Look for `throws` and consolidate to Exception factory.
+
 ## Near-Term
 
 - Support for relation-specific joins. E.g.:
 
         $select = $atlas->select(Mapper::CLASS)
-            ->leftJoinWith('foo')
-            ->innerJoinWith('bar')
-            ->joinWith('OUTER', 'baz');
+            ->joinWith('baz', 'LEFT');
 
 ## Unknown Priority
 

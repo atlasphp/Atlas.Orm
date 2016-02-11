@@ -136,8 +136,8 @@ class Gateway implements GatewayInterface
             $primary = $this->table->calcPrimary($primaryVal);
             $cols = array_keys($primary);
             $vals = array_values($primary);
-            $cond = implode(' = ? AND ', $cols);
-            $select->orWhere($cond, $vals);
+            $cond = implode(' = ? AND ', $cols) . ' = ?';
+            $select->orWhere($cond, ...$vals);
         }
     }
 

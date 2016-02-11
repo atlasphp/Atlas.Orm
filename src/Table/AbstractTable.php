@@ -2,6 +2,7 @@
 namespace Atlas\Orm\Table;
 
 use Atlas\Orm\Mapper\Select;
+use Atlas\Orm\Exception;
 
 abstract class AbstractTable implements TableInterface
 {
@@ -105,18 +106,21 @@ abstract class AbstractTable implements TableInterface
         return [$this->primaryKey => $primaryVal];
     }
 
-    private function calcPrimaryComposite(array $primaryVal)
+    private function calcPrimaryComposite($primaryVal)
     {
+        if (! is_array($primaryVal)) {
+            throw new Exception('Composite primary keys must be array values.');
+        }
+
         $primary = [];
-        foreach ($this->primaryKey as $primaryCol) {
-            $primary[$primaryCol] = null;
-            if (! isset($primaryVal[$primaryCol])) {
-                continue;
+        foreach ($this->primaryKey as $col) {
+            if (! isset($primaryVal[$col])) {
+                throw new Exception("Primary key value for '$col' is missing");
             }
-            if (! is_scalar($primaryVal[$primaryCol])) {
-                throw new Exception("Primary key value for '$primaryCol' must be scalar");
+            if (! is_scalar($primaryVal[$col])) {
+                throw new Exception("Primary key value for '$col' must be scalar");
             }
-            $primary = $primaryVal[$primaryCol];
+            $primary[$col] = $primaryVal[$col];
         }
         return $primary;
     }
