@@ -1,29 +1,35 @@
 # TODO
 
-## Next Release Priority
-
-- Documentation.
-
-- Composite primary keys
-
-    - Build strategies for fetching by composite keys.
-
-    - Build strategies for stitching in foreign record with composite keys; consider allowing custom Relation classes for this.
-
-- Move Plugin up to top, since it handles both Mapper and Gateway?
-
-- OneToOne composite test
+## Immediate
 
 - Look for `throws` and consolidate to Exception factory.
 
 - With fetch*By*(), make sure the array has string keys, not numeric, to avoid "table.0" errors
+
+- Make sure that nativeToForeign() with manyToMany() works as expected.
+
+- Update README to note new nativeToForeign() method, with composite keys.
+
+- Need to wrap composite relationship WHERE in parens so that custom selects work right.
+
+- Check IN() vs WHERE ... OR ... in relationships, and elsewhere
+
+
+## Next Release Priority
+
+- Documentation.
+
+- Move Plugin up to top, since it handles both Mapper and Gateway?
 
 ## Near-Term
 
 - Support for relation-specific joins. E.g.:
 
         $select = $atlas->select(Mapper::CLASS)
-            ->joinWith('baz', 'LEFT');
+            ->joinWith('foo', 'LEFT', function ($select) {
+                $select->joinWith('bar', 'INNER');
+            })
+            ->where('bar.whatever = 9');
 
 ## Unknown Priority
 
