@@ -95,7 +95,7 @@ abstract class AbstractRelationship
             $foreignCol = current($this->on);
             return [
                 "$foreignCol = ?",
-                $nativeRecord->{$nativeCol},
+                [$nativeRecord->{$nativeCol}],
             ];
         }
 
@@ -113,7 +113,7 @@ abstract class AbstractRelationship
     {
         $select = $this->foreignMapper->select();
         list($cond, $vals) = $this->whereCondVals($nativeRecord);
-        $select->where($cond, $vals);
+        $select->where($cond, ...$vals);
         if ($custom) {
             $custom($select);
         }
@@ -125,7 +125,7 @@ abstract class AbstractRelationship
         $select = $this->foreignMapper->select();
         foreach ($nativeRecordSet as $nativeRecord) {
             list($cond, $vals) = $this->whereCondVals($nativeRecord);
-            $select->orWhere($cond, $vals);
+            $select->orWhere($cond, ...$vals);
         }
         if ($custom) {
             $custom($select);

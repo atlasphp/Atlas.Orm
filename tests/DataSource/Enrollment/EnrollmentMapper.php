@@ -1,6 +1,8 @@
 <?php
 namespace Atlas\Orm\DataSource\Enrollment;
 
+use Atlas\Orm\DataSource\Course\CourseMapper;
+use Atlas\Orm\DataSource\Student\StudentMapper;
 use Atlas\Orm\Mapper\AbstractMapper;
 
 /**
@@ -13,6 +15,7 @@ class EnrollmentMapper extends AbstractMapper
      */
     protected function setRelated()
     {
-        // no related fields
+        $this->manyToOne('course', CourseMapper::CLASS);
+        $this->manyToOne('student', StudentMapper::CLASS);
     }
 }

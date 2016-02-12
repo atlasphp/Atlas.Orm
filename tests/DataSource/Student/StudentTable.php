@@ -27,6 +27,8 @@ class StudentTable extends AbstractTable
         return [
             'student_fn',
             'student_ln',
+            'degree_type',
+            'degree_subject',
         ];
     }
 
@@ -55,6 +57,26 @@ class StudentTable extends AbstractTable
                 'default' => null,
                 'autoinc' => false,
                 'primary' => true,
+            ],
+            'degree_type' => (object) [
+                'name' => 'degree_type',
+                'type' => 'char',
+                'size' => 2,
+                'scale' => null,
+                'notnull' => false,
+                'default' => null,
+                'autoinc' => false,
+                'primary' => false,
+            ],
+            'degree_subject' => (object) [
+                'name' => 'degree_subject',
+                'type' => 'char',
+                'size' => 4,
+                'scale' => null,
+                'notnull' => false,
+                'default' => null,
+                'autoinc' => false,
+                'primary' => false,
             ],
         ];
     }
@@ -86,6 +108,8 @@ class StudentTable extends AbstractTable
         return [
             'student_fn' => null,
             'student_ln' => null,
+            'degree_type' => null,
+            'degree_subject' => null,
         ];
     }
 }

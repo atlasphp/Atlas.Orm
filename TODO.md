@@ -12,7 +12,11 @@
 
 - Move Plugin up to top, since it handles both Mapper and Gateway?
 
+- OneToOne composite test
+
 - Look for `throws` and consolidate to Exception factory.
+
+- With fetch*By*(), make sure the array has string keys, not numeric, to avoid "table.0" errors
 
 ## Near-Term
 

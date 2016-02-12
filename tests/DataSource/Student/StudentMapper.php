@@ -1,6 +1,10 @@
 <?php
 namespace Atlas\Orm\DataSource\Student;
 
+use Atlas\Orm\DataSource\Course\CourseMapper;
+use Atlas\Orm\DataSource\Degree\DegreeMapper;
+use Atlas\Orm\DataSource\Gpa\GpaMapper;
+use Atlas\Orm\DataSource\Enrollment\EnrollmentMapper;
 use Atlas\Orm\Mapper\AbstractMapper;
 
 /**
@@ -13,6 +17,9 @@ class StudentMapper extends AbstractMapper
      */
     protected function setRelated()
     {
-        // no related fields
+        $this->oneToOne('gpa', GpaMapper::CLASS);
+        $this->manyToOne('degree', DegreeMapper::CLASS);
+        $this->oneToMany('enrollments', EnrollmentMapper::CLASS);
+        $this->manyToMany('courses', CourseMapper::CLASS, 'enrollments');
     }
 }

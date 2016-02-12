@@ -30,6 +30,7 @@ class EnrollmentTable extends AbstractTable
             'course_subject',
             'course_number',
             'grade',
+            'points',
         ];
     }
 
@@ -81,8 +82,18 @@ class EnrollmentTable extends AbstractTable
             ],
             'grade' => (object) [
                 'name' => 'grade',
-                'type' => 'char',
-                'size' => 1,
+                'type' => 'int',
+                'size' => null,
+                'scale' => null,
+                'notnull' => false,
+                'default' => null,
+                'autoinc' => false,
+                'primary' => false,
+            ],
+            'points' => (object) [
+                'name' => 'points',
+                'type' => 'int',
+                'size' => null,
                 'scale' => null,
                 'notnull' => false,
                 'default' => null,
@@ -124,6 +135,7 @@ class EnrollmentTable extends AbstractTable
             'course_subject' => null,
             'course_number' => null,
             'grade' => null,
+            'points' => null,
         ];
     }
 }

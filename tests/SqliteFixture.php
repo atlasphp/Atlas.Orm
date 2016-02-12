@@ -19,9 +19,12 @@ class SqliteFixture
         $this->summaries();
         $this->taggings();
         $this->replies();
+
+        $this->degrees();
         $this->students();
         $this->courses();
         $this->enrollments();
+        $this->gpas();
     }
 
     protected function employee()
@@ -183,30 +186,45 @@ class SqliteFixture
         }
     }
 
+    protected function degrees()
+    {
+        $this->connection->query("CREATE TABLE degrees (
+            degree_type CHAR(2),
+            degree_subject CHAR(4),
+            title VARCHAR(50),
+            PRIMARY KEY (degree_type, degree_subject)
+        )");
+
+        $stm = "INSERT INTO degrees (degree_type, degree_subject, title) VALUES (?, ?, ?)";
+        $this->connection->perform($stm, ['BA', 'ENGL', 'Bachelor of Arts, English']);
+        $this->connection->perform($stm, ['MA', 'HIST', 'Master of Arts, History']);
+        $this->connection->perform($stm, ['BS', 'MATH', 'Bachelor of Science, Mathematics']);
+    }
+
     protected function students()
     {
         $this->connection->query("CREATE TABLE students (
             student_fn VARCHAR(10),
             student_ln VARCHAR(10),
+            degree_type CHAR(2),
+            degree_subject CHAR(4),
             PRIMARY KEY (student_fn, student_ln)
         )");
 
-        $stm = "INSERT INTO students (student_fn, student_ln) VALUES (?, ?)";
+        $stm = "INSERT INTO students (student_fn, student_ln, degree_type, degree_subject) VALUES (?, ?, ?, ?)";
         $rows = [
-            ['Anna', 'Alpha'],
-            ['Betty', 'Beta'],
-            ['Clara', 'Clark'],
-            ['Donna', 'Delta'],
-            ['Edna', 'Epsilon'],
-            ['Fiona', 'Phi'],
-            ['Gina', 'Gamma'],
-            ['Hanna', 'Eta'],
-            ['Ione', 'Iota'],
-            ['Julia', 'Jones'],
-            ['Kara', 'Kappa'],
-            ['Lana', 'Lambda'],
-            ['Mara', 'Mu'],
-            ['Nina', 'Nu']
+            ['Anna', 'Alpha', 'BA', 'ENGL'],
+            ['Betty', 'Beta', 'MA', 'HIST'],
+            ['Clara', 'Clark', 'BS', 'MATH'],
+            ['Donna', 'Delta', 'BA', 'ENGL'],
+            ['Edna', 'Epsilon', 'MA', 'HIST'],
+            ['Fiona', 'Phi', 'BS', 'MATH'],
+            ['Gina', 'Gamma', 'BA', 'ENGL'],
+            ['Hanna', 'Eta', 'MA', 'HIST'],
+            ['Ione', 'Iota', 'BS', 'MATH'],
+            ['Julia', 'Jones', 'BA', 'ENGL'],
+            ['Kara', 'Kappa', 'MA', 'HIST'],
+            ['Lana', 'Lambda', 'BS', 'MATH'],
         ];
         foreach ($rows as $row) {
             $this->connection->perform($stm, $row);
@@ -249,37 +267,114 @@ class SqliteFixture
             student_ln VARCHAR(10),
             course_subject CHAR(4),
             course_number INT,
-            grade CHAR(1),
+            grade INT,
+            points INT,
             PRIMARY KEY (student_ln, student_fn, course_subject, course_number)
         )");
 
-        $courses = $this->connection->fetchAll('SELECT * FROM courses');
+        $courses = $this->connection->fetchAll('SELECT * FROM courses ORDER BY course_number, course_subject');
         $students = $this->connection->fetchAll('SELECT * FROM students');
 
         $stm = 'INSERT INTO enrollments (
-            student_fn, student_ln, course_subject, course_number, grade
+            student_fn, student_ln, course_subject, course_number, grade, points
         ) VALUES (
-            :student_fn, :student_ln, :course_subject, :course_number, :grade
+            :student_fn, :student_ln, :course_subject, :course_number, :grade, :points
         )';
 
-        foreach ($courses as $i => $course) {
+        foreach ($students as $i => $student) {
             $keys = [
                 (($i + 0) % 12),
                 (($i + 1) % 12),
                 (($i + 2) % 12),
-                (($i + 3) % 12),
-                (($i + 4) % 12),
-                (($i + 5) % 12),
             ];
             foreach ($keys as $key) {
+                $grade = 65 + $key * 3;
+                switch (true) {
+                    case $grade >= 90:
+                        $points = 4;
+                        break;
+                    case $grade >= 80:
+                        $points = 3;
+                        break;
+                    case $grade >= 70:
+                        $points = 2;
+                        break;
+                    case $grade >= 60:
+                        $points = 1;
+                        break;
+                    default:
+                        $points = 0;
+                }
                 $this->connection->perform($stm, [
-                    'student_fn' => $students[$key]['student_fn'],
-                    'student_ln' => $students[$key]['student_ln'],
-                    'course_subject' => $course['course_subject'],
-                    'course_number' => $course['course_number'],
-                    'grade' => 65 + (($key + 5) * 2),
+                    'student_fn' => $student['student_fn'],
+                    'student_ln' => $student['student_ln'],
+                    'course_subject' => $courses[$key]['course_subject'],
+                    'course_number' => $courses[$key]['course_number'],
+                    'grade' => $grade,
+                    'points' => $points,
                 ]);
             }
+        }
+
+        // foreach ($courses as $i => $course) {
+        //     $keys = [
+        //         (($i + 0) % 12),
+        //         (($i + 1) % 12),
+        //         (($i + 2) % 12),
+        //         (($i + 3) % 12),
+        //         (($i + 4) % 12),
+        //         (($i + 5) % 12),
+        //     ];
+        //     foreach ($keys as $k => $key) {
+        //         $grade = 65 + (($i + $k) * 2);
+        //         switch (true) {
+        //             case $grade >= 90:
+        //                 $points = 4;
+        //                 break;
+        //             case $grade >= 80:
+        //                 $points = 3;
+        //                 break;
+        //             case $grade >= 70:
+        //                 $points = 2;
+        //                 break;
+        //             case $grade >= 60:
+        //                 $points = 1;
+        //                 break;
+        //             default:
+        //                 $points = 0;
+        //         }
+        //         $this->connection->perform($stm, [
+        //             'student_fn' => $students[$key]['student_fn'],
+        //             'student_ln' => $students[$key]['student_ln'],
+        //             'course_subject' => $course['course_subject'],
+        //             'course_number' => $course['course_number'],
+        //             'grade' => $grade,
+        //             'points' => $points,
+        //         ]);
+        //     }
+        // }
+    }
+
+    public function gpas()
+    {
+        $this->connection->query("CREATE TABLE gpas (
+            student_fn VARCHAR(10),
+            student_ln VARCHAR(10),
+            gpa DECIMAL(4,3),
+            PRIMARY KEY (student_fn, student_ln)
+        )");
+
+        $students = $this->connection->fetchAll(
+            'SELECT student_fn, student_ln, ROUND(AVG(points), 3) AS gpa FROM enrollments GROUP BY student_fn, student_ln'
+        );
+
+        $stm = 'INSERT INTO gpas (student_fn, student_ln, gpa) VALUES (?, ?, ?)';
+        foreach ($students as $student) {
+            $this->connection->perform($stm, [
+                $student['student_fn'],
+                $student['student_ln'],
+                $student['gpa']
+            ]);
         }
     }
 }
