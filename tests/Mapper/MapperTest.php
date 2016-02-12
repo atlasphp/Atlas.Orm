@@ -44,6 +44,11 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf(EmployeeTable::CLASS, $this->mapper->getTable());
     }
 
+    public function testGetGateway()
+    {
+        $this->assertInstanceOf(Gateway::CLASS, $this->mapper->getGateway());
+    }
+
     public function testFetchRecord()
     {
         $expect = [
