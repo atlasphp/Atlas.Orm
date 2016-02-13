@@ -189,7 +189,7 @@ class Gateway implements GatewayInterface
             throw Exception::unexpectedRowCountAffected(0);
         }
 
-        $autoinc = $this->getAutoinc();
+        $autoinc = $this->table->getAutoinc();
         if ($autoinc) {
             $row->$autoinc = $connection->lastInsertId($autoinc);
         }
@@ -338,7 +338,7 @@ class Gateway implements GatewayInterface
         $insert->into($this->table->getName());
 
         $cols = $row->getArrayCopy();
-        $autoinc = $this->getAutoinc();
+        $autoinc = $this->table->getAutoinc();
         if ($autoinc) {
             unset($cols[$autoinc]);
         }
@@ -375,20 +375,5 @@ class Gateway implements GatewayInterface
         }
 
         return $delete;
-    }
-
-    // temp to allow for string *or* bool autoinc
-    protected function getAutoinc()
-    {
-        $autoinc = $this->table->getAutoinc();
-        if (is_string($autoinc)) {
-            return $autoinc;
-        }
-
-        if (! $autoinc) {
-            return false;
-        }
-
-        return current($this->table->getPrimaryKey());
     }
 }

@@ -86,7 +86,7 @@ class GpaTable extends AbstractTable
      */
     public function getAutoinc()
     {
-        return false;
+        return '';
     }
 
     /**

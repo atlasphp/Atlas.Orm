@@ -121,7 +121,7 @@ class EnrollmentTable extends AbstractTable
      */
     public function getAutoinc()
     {
-        return false;
+        return '';
     }
 
     /**

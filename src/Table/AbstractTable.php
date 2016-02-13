@@ -54,9 +54,9 @@ abstract class AbstractTable implements TableInterface
 
     /**
      *
-     * Does the database set the primary key value on insert by autoincrement?
+     * Returns the name of the autoincrement column, if any.
      *
-     * @return bool
+     * @return string
      *
      */
     abstract public function getAutoinc();

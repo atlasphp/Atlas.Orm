@@ -97,7 +97,7 @@ class StudentTable extends AbstractTable
      */
     public function getAutoinc()
     {
-        return false;
+        return '';
     }
 
     /**

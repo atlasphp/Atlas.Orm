@@ -86,7 +86,7 @@ class CourseTable extends AbstractTable
      */
     public function getAutoinc()
     {
-        return false;
+        return '';
     }
 
     /**

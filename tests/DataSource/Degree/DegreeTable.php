@@ -86,7 +86,7 @@ class DegreeTable extends AbstractTable
      */
     public function getAutoinc()
     {
-        return false;
+        return '';
     }
 
     /**
