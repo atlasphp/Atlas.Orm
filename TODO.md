@@ -12,8 +12,6 @@
 
 - Need to wrap composite relationship WHERE in parens so that custom selects work right.
 
-- Check IN() vs WHERE ... OR ... in relationships, and elsewhere
-
 - In ManyToMany, uniqueify the "through" values
 
 - Un-temporize Gateway::getAutoinc()
