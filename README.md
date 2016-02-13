@@ -178,7 +178,6 @@ $this->oneToOne('author', AuthorMapper::CLASS)
         // native (threads) column => foreign (authors) column
         'author_id' => 'id',
     ]);
-
 ```
 
 Likewise, if a table uses a composite key, you can re-map the relationship on multiple columns. If table `foo` has composite primary key columns of `acol` and `bcol`, and it maps to table `bar` on `foo_acol` and `foo_bcol`, you would do this:
@@ -194,7 +193,7 @@ class FooMapper
                 // native (foo) column => foreign (bar) column
                 'acol' => 'foo_acol',
                 'bcol' => 'foo_bcol',
-            ])
+            ]);
     }
 }
 ```

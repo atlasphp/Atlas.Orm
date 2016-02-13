@@ -14,6 +14,9 @@
 
 - Check IN() vs WHERE ... OR ... in relationships, and elsewhere
 
+- In ManyToMany, uniqueify the "through" values
+
+- Un-temporize Gateway::getAutoinc()
 
 ## Next Release Priority
 

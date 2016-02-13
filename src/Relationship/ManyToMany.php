@@ -54,13 +54,13 @@ class ManyToMany extends AbstractRelationship
 
         $select = $this->foreignMapper->select();
         foreach ($nativeRecordSet as $nativeRecord) {
-            foreach ($nativeRecord->{$this->throughName} as $throughRecordSet) {
-                foreach ($throughRecordSet as $throughRecord) {
-                    list($cond, $vals) = $this->whereCondVals($throughRecord);
-                    $select->orWhere($cond, $vals);
-                }
+            $throughRecordSet = $nativeRecord->{$this->throughName};
+            foreach ($throughRecordSet as $throughRecord) {
+                list($cond, $vals) = $this->whereCondVals($throughRecord);
+                $select->orWhere($cond, ...$vals);
             }
         }
+
         if ($custom) {
             $custom($select);
         }

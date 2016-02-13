@@ -100,7 +100,7 @@ abstract class AbstractTable implements TableInterface
         }
 
         if (! is_scalar($primaryVal)) {
-            throw new Exception("Primary key value must be scalar");
+            throw new Exception('Primary key values must be scalar.');
         }
 
         return [$this->primaryKey => $primaryVal];
@@ -109,7 +109,7 @@ abstract class AbstractTable implements TableInterface
     private function calcPrimaryComposite($primaryVal)
     {
         if (! is_array($primaryVal)) {
-            throw new Exception('Composite primary keys must be array values.');
+            throw new Exception('Composite primary keys must be associative arrays.');
         }
 
         $primary = [];

@@ -119,7 +119,7 @@ class Row implements RowInterface
         foreach ($this->cols as $col => $val) {
             $method = $this->copierFor($col);
             if ($method) {
-                $array[$col] = $this->method();
+                $array[$col] = $this->$method();
             } else {
                 $array[$col] = $val;
             }

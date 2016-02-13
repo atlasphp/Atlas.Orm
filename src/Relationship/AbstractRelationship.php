@@ -79,15 +79,6 @@ abstract class AbstractRelationship
         }
     }
 
-    protected function fetchForeignRecordSet($foreignVal, callable $custom = null)
-    {
-        $select = $this->foreignMapper->select([$this->foreignKey => $foreignVal]);
-        if ($custom) {
-            $custom($select);
-        }
-        return $select->fetchRecordSet();
-    }
-
     protected function whereCondVals(RecordInterface $nativeRecord)
     {
         if (count($this->on) == 1) {
@@ -143,28 +134,6 @@ abstract class AbstractRelationship
             }
         }
         return true;
-    }
-
-    protected function getUniqueVals(RecordSetInterface $recordSet, $col)
-    {
-        $vals = [];
-        foreach ($recordSet as $record) {
-            $vals[] = $record->$col;
-        }
-        return array_unique($vals);
-    }
-
-    protected function groupRecordSets($recordSet, $field)
-    {
-        $groups = [];
-        foreach ($recordSet as $record) {
-            $key = $record->$field;
-            if (! isset($groups[$key])) {
-                $groups[$key] = $this->foreignMapper->newRecordSet([]);
-            }
-            $groups[$key][] = $record;
-        }
-        return $groups;
     }
 
     abstract public function stitchIntoRecord(
