@@ -53,19 +53,9 @@ class IdentityMap
 
     /**
      * @param mixed $primary
-     * @return boolean
-     */
-    public function hasPrimary(array $primary)
-    {
-        $serial = $this->getSerial($primary);
-        return isset($this->serialToRow[$serial]);
-    }
-
-    /**
-     * @param mixed $primary
      * @return Row
      */
-    public function getRowByPrimary(array $primary)
+    public function getRow(array $primary)
     {
         $serial = $this->getSerial($primary);
         if (! isset($this->serialToRow[$serial])) {

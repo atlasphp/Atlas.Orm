@@ -65,7 +65,7 @@ class Gateway implements GatewayInterface
     public function fetchRow($primaryVal)
     {
         $primary = $this->table->calcPrimary($primaryVal);
-        $row = $this->identityMap->getRowByPrimary($primary);
+        $row = $this->identityMap->getRow($primary);
         if ($row) {
             return $row;
         }
@@ -83,7 +83,7 @@ class Gateway implements GatewayInterface
             $primary = $this->table->calcPrimary($primaryVal);
             $serial = $this->identityMap->getSerial($primary);
             $rows[$serial] = null;
-            $row = $this->identityMap->getRowByPrimary($primary);
+            $row = $this->identityMap->getRow($primary);
             if ($row) {
                 $rows[$serial] = $row;
                 unset($primaryVals[$i]);
@@ -283,7 +283,7 @@ class Gateway implements GatewayInterface
     public function getSelectedRow(array $cols)
     {
         $primary = $this->table->calcPrimary($cols);
-        $row = $this->identityMap->getRowByPrimary($primary);
+        $row = $this->identityMap->getRow($primary);
         if (! $row) {
             $row = $this->newSelectedRow($cols);
         }
