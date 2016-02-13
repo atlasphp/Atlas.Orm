@@ -4,11 +4,7 @@
 
 - Look for `throws` and consolidate to Exception factory.
 
-- With fetch*By*(), make sure the array has string keys, not numeric, to avoid "table.0" errors
-
 - Make sure that on() with manyToMany() works as expected.
-
-- Un-temporize Gateway::getAutoinc()
 
 ## Next Release Priority
 
