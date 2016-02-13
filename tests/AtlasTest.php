@@ -237,19 +237,40 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
 
     public function testDelete()
     {
-        // fetch a record, then delete it
+        // fetch a record
         $author = $this->atlas->fetchRecordBy(
             AuthorMapper::CLASS,
             ['name' => 'Anna']
         );
-        $this->atlas->delete($author);
 
-        // did it delete?
+        // did the delete *look* successful?
+        $success = $this->atlas->delete($author);
+        $this->assertTrue($success);
+
+        // was it *actually* deleted?
         $actual = $this->atlas->fetchRecordBy(
             AuthorMapper::CLASS,
             ['name' => 'Anna']
         );
         $this->assertFalse($actual);
+    }
+
+    public function testTransactionFailure()
+    {
+        // fetch a record
+        $author = $this->atlas->fetchRecordBy(
+            AuthorMapper::CLASS,
+            ['name' => 'Anna']
+        );
+
+        // set to null, should fail update
+        $author->name = null;
+        $success = $this->atlas->update($author);
+        $this->assertFalse($success);
+
+        // get the exception
+        $e = $this->atlas->getException();
+        $this->assertInstanceOf('Exception', $e);
     }
 
     protected $expectRecord = [

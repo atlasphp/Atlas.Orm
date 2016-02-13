@@ -231,7 +231,7 @@ class Transaction
             $this->execPlan();
             $this->commit();
             return true;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->exception = $e;
             $this->rollBack();
             return false;
