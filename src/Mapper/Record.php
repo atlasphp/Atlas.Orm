@@ -20,25 +20,12 @@ class Record implements RecordInterface
     public function __get($field)
     {
         $prop = $this->assertHas($field);
-
-        $getter = $this->getterFor($field);
-        if ($getter) {
-            return $this->$getter();
-        }
-
         return $this->$prop->$field;
     }
 
     public function __set($field, $value)
     {
         $prop = $this->assertHas($field);
-
-        $setter = $this->setterFor($field);
-        if ($setter) {
-            $this->$setter($value);
-            return;
-        }
-
         $this->$prop->$field = $value;
     }
 
@@ -93,17 +80,5 @@ class Record implements RecordInterface
         }
 
         throw Exception::propertyDoesNotExist($this, $field);
-    }
-
-    protected function getterFor($field)
-    {
-        $method = "get{$field}";
-        return method_exists($this, $method) ? $method : false;
-    }
-
-    protected function setterFor($field)
-    {
-        $method = "set{$field}";
-        return method_exists($this, $method) ? $method : false;
     }
 }
