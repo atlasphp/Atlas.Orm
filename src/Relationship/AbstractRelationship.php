@@ -79,49 +79,78 @@ abstract class AbstractRelationship
         }
     }
 
-    protected function whereCondVals(RecordInterface $nativeRecord)
+    protected function selectForRecord(RecordInterface $record, $custom)
     {
-        if (count($this->on) == 1) {
-            $nativeCol = key($this->on);
-            $foreignCol = current($this->on);
-            return [
-                "$foreignCol = ?",
-                [$nativeRecord->{$nativeCol}],
-            ];
+        $select = $this->foreignMapper->select();
+        list($cond, $vals) = $this->whereForRecord($select, $record);
+        if ($custom) {
+            $custom($select);
+        }
+        return $select;
+    }
+
+    protected function whereForRecord($select, RecordInterface $record)
+    {
+        if (count($this->on) > 1) {
+            return $this->whereForRecordComposite($select, $record);
         }
 
+        $nativeCol = key($this->on);
+        $foreignCol = current($this->on);
+        $select->where("{$foreignCol} = ?", $record->{$nativeCol});
+    }
+
+    protected function whereForRecordComposite($select, RecordInterface $record)
+    {
         $cond = [];
         $vals = [];
         foreach ($this->on as $nativeCol => $foreignCol) {
-            $cond[] = "$foreignCol = ?";
-            $vals[] = $nativeRecord->$nativeCol;
+            $cond[] = "{$foreignCol} = ?";
+            $vals[] = $record->$nativeCol;
         }
         $cond = '(' . implode(' AND ', $cond) . ')';
-        return [$cond, $vals];
+        $select->where($cond, ...$vals);
     }
 
-    protected function selectForRecord(RecordInterface $nativeRecord, $custom)
+    protected function selectForRecordSet(RecordSetInterface $recordSet, $custom)
     {
         $select = $this->foreignMapper->select();
-        list($cond, $vals) = $this->whereCondVals($nativeRecord);
-        $select->where($cond, ...$vals);
+        $this->whereForRecordSet($select, $recordSet);
         if ($custom) {
             $custom($select);
         }
         return $select;
     }
 
-    protected function selectForRecordSet(RecordSetInterface $nativeRecordSet, $custom)
+    protected function whereForRecordSet($select, RecordSetInterface $recordSet)
     {
-        $select = $this->foreignMapper->select();
-        foreach ($nativeRecordSet as $nativeRecord) {
-            list($cond, $vals) = $this->whereCondVals($nativeRecord);
+        if (count($this->on) > 1) {
+            return $this->whereForRecordSetComposite($select, $recordSet);
+        }
+
+        $vals = [];
+        $nativeCol = key($this->on);
+        foreach ($recordSet as $record) {
+            $vals[] = $record->{$nativeCol};
+        }
+
+        $foreignCol = current($this->on);
+        $select->where("{$foreignCol} IN (?)", array_unique($vals));
+    }
+
+    // need to unique-ify these, *and* wrap in parens nicely
+    protected function whereForRecordSetComposite($select, RecordSetInterface $recordSet)
+    {
+        foreach ($recordSet as $record) {
+            $cond = [];
+            $vals = [];
+            foreach ($this->on as $nativeCol => $foreignCol) {
+                $cond[] = "$foreignCol = ?";
+                $vals[] = $record->$nativeCol;
+            }
+            $cond = '(' . implode(' AND ', $cond) . ')';
             $select->orWhere($cond, ...$vals);
         }
-        if ($custom) {
-            $custom($select);
-        }
-        return $select;
     }
 
     protected function recordsMatch(

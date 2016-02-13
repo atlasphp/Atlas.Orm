@@ -4,6 +4,7 @@ namespace Atlas\Orm\Relationship;
 use Atlas\Orm\Exception;
 use Atlas\Orm\Mapper\MapperLocator;
 use Atlas\Orm\Mapper\RecordInterface;
+use Atlas\Orm\Mapper\RecordSet;
 use Atlas\Orm\Mapper\RecordSetInterface;
 
 class ManyToMany extends AbstractRelationship
@@ -45,6 +46,21 @@ class ManyToMany extends AbstractRelationship
             return;
         }
 
+        $throughRecordSet = $this->throughRecordSet($nativeRecordSet);
+        $select = $this->selectForRecordSet($throughRecordSet, $custom);
+        $foreignRecordsArray = $select->fetchRecordsArray();
+
+        foreach ($nativeRecordSet as $nativeRecord) {
+            $nativeRecord->{$this->name} = [];
+            $matches = $this->getMatches($nativeRecord, $foreignRecordsArray);
+            if ($matches) {
+                $nativeRecord->{$this->name} = $this->foreignMapper->newRecordSet($matches);
+            }
+        }
+    }
+
+    protected function throughRecordSet(RecordSetInterface $nativeRecordSet)
+    {
         // this hackish. the "through" relation should be loaded for everything,
         // so if even one is loaded, all the others ought to have been too.
         $firstNative = $nativeRecordSet[0];
@@ -52,34 +68,25 @@ class ManyToMany extends AbstractRelationship
             throw Exception::throughRelationNotFetched($this->name, $this->throughName);
         }
 
-        $select = $this->foreignMapper->select();
+        $throughRecordSet = new RecordSet([]);
         foreach ($nativeRecordSet as $nativeRecord) {
-            $throughRecordSet = $nativeRecord->{$this->throughName};
-            foreach ($throughRecordSet as $throughRecord) {
-                list($cond, $vals) = $this->whereCondVals($throughRecord);
-                $select->orWhere($cond, ...$vals);
-            }
+            foreach ($nativeRecord->{$this->throughName} as $throughRecord)
+            $throughRecordSet[] = $throughRecord;
         }
 
-        if ($custom) {
-            $custom($select);
-        }
+        return $throughRecordSet;
+    }
 
-        $foreignRecordsArray = $select->fetchRecordsArray();
-
-        foreach ($nativeRecordSet as $nativeRecord) {
-            $nativeRecord->{$this->name} = [];
-            $matches = [];
-            foreach ($nativeRecord->{$this->throughName} as $throughRecord) {
-                foreach ($foreignRecordsArray as $foreignRecord) {
-                    if ($this->recordsMatch($throughRecord, $foreignRecord)) {
-                        $matches[] = $foreignRecord;
-                    }
+    protected function getMatches($nativeRecord, $foreignRecordsArray)
+    {
+        $matches = [];
+        foreach ($nativeRecord->{$this->throughName} as $throughRecord) {
+            foreach ($foreignRecordsArray as $foreignRecord) {
+                if ($this->recordsMatch($throughRecord, $foreignRecord)) {
+                    $matches[] = $foreignRecord;
                 }
             }
-            if ($matches) {
-                $nativeRecord->{$this->name} = $this->foreignMapper->newRecordSet($matches);
-            }
         }
+        return $matches;
     }
 }
