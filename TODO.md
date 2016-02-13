@@ -6,13 +6,7 @@
 
 - With fetch*By*(), make sure the array has string keys, not numeric, to avoid "table.0" errors
 
-- Make sure that nativeToForeign() with manyToMany() works as expected.
-
-- Update README to note new nativeToForeign() method, with composite keys.
-
-- Need to wrap composite relationship WHERE in parens so that custom selects work right.
-
-- In ManyToMany, uniqueify the "through" values
+- Make sure that on() with manyToMany() works as expected.
 
 - Un-temporize Gateway::getAutoinc()
 

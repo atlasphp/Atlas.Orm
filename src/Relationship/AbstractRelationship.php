@@ -138,19 +138,56 @@ abstract class AbstractRelationship
         $select->where("{$foreignCol} IN (?)", array_unique($vals));
     }
 
-    // need to unique-ify these, *and* wrap in parens nicely
     protected function whereForRecordSetComposite($select, RecordSetInterface $recordSet)
     {
+        $uniques = $this->getUniqueCompositeKeys($recordSet);
+        $cond = '(' . implode(' = ? AND ', $this->on) . '= ?)';
+
+        // get the first unique composite
+        $firstUnique = array_shift($uniques);
+        if (! $uniques) {
+            // there are no uniques left, which means this is the only one.
+            // no need to wrap in parens.
+            $select->where($cond, ...$firstUnique);
+            return;
+        }
+
+        // multiple unique conditions. retain the last unique for later.
+        $lastUnique = array_pop($uniques);
+
+        // prefix the first unique with "AND ( -- composite keys" to keep all
+        // the uniques within parens
+        $select->where(
+            '( -- composite keys' . PHP_EOL . '    ' . $cond,
+            ...$firstUnique
+        );
+
+        // OR the middle uniques within the parens
+        foreach ($uniques as $middleUnique) {
+            $select->orWhere($cond, ...$middleUnique);
+        }
+
+        // suffix the last unique with ") -- composite keys" to end the parens
+        $select->orWhere(
+            $cond . PHP_EOL . '    ) -- composite keys',
+            ...$lastUnique
+        );
+    }
+
+    protected function getUniqueCompositeKeys(RecordSetInterface $recordSet)
+    {
+        $uniques = [];
         foreach ($recordSet as $record) {
-            $cond = [];
             $vals = [];
             foreach ($this->on as $nativeCol => $foreignCol) {
-                $cond[] = "$foreignCol = ?";
                 $vals[] = $record->$nativeCol;
             }
-            $cond = '(' . implode(' AND ', $cond) . ')';
-            $select->orWhere($cond, ...$vals);
+            // a pipe, and ASCII 31 ("unit separator").
+            // identical composite values should have identical array keys.
+            $key = implode("|\x1F", $vals);
+            $uniques[$key] = $vals;
         }
+        return $uniques;
     }
 
     protected function recordsMatch(
