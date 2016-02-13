@@ -43,7 +43,7 @@ class MapperSelect implements SubselectInterface
      */
     public function __toString()
     {
-        return $this->gatewaySelect->getStatement();
+        return $this->gatewaySelect->__toString();
     }
 
     /**

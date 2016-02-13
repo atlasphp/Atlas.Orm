@@ -51,6 +51,19 @@ class SelectTest extends \PHPUnit_Framework_TestCase
         $this->assertSameSql($expect, $actual);
     }
 
+    public function test__toString()
+    {
+        $this->select->cols(['*']);
+        $expect = '
+            SELECT
+                *
+            FROM
+                "employee"
+        ';
+        $actual = $this->select->__toString();
+        $this->assertSameSql($expect, $actual);
+    }
+
     public function testGetBindValues()
     {
         $expect = ['foo' => 'bar'];

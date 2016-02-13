@@ -42,7 +42,7 @@ class GatewaySelect implements SubselectInterface
      */
     public function __toString()
     {
-        return $this->select->getStatement();
+        return $this->select->__toString();
     }
 
     /**
