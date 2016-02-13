@@ -37,21 +37,13 @@ class Row implements RowInterface
     public function __construct(Primary $primary, array $cols)
     {
         $this->primary = $primary;
-        $this->cols = array_fill_keys(array_keys($cols), null);
-        foreach ($cols as $col => $val) {
-            $this->$col = $val;
-        }
+        $this->cols = $cols;
         $this->status = static::IS_NEW;
     }
 
     public function __get($col)
     {
         $this->assertHas($col);
-
-        $method = $this->getterFor($col);
-        if ($method) {
-            return $this->$method();
-        }
 
         if ($this->primary->has($col)) {
             return $this->primary->$col;
@@ -63,11 +55,6 @@ class Row implements RowInterface
     public function __set($col, $val)
     {
         $this->assertHas($col);
-
-        $method = $this->setterFor($col);
-        if ($method) {
-            return $this->$method($val);
-        }
 
         if ($this->primary->has($col)) {
             $this->primary->$col = $val;
@@ -115,16 +102,7 @@ class Row implements RowInterface
 
     public function getArrayCopy()
     {
-        $array = $this->primary->getArrayCopy();
-        foreach ($this->cols as $col => $val) {
-            $method = $this->copierFor($col);
-            if ($method) {
-                $array[$col] = $this->$method();
-            } else {
-                $array[$col] = $val;
-            }
-        }
-        return $array;
+        return $this->primary->getArrayCopy() + $this->cols;
     }
 
     /** @todo array_key_exists($col, $init) */
@@ -185,23 +163,5 @@ class Row implements RowInterface
             throw Exception::invalidStatus($status);
         }
         $this->status = $status;
-    }
-
-    protected function getterFor($col)
-    {
-        $method = 'get' . ucfirst(str_replace('_', '', $col));
-        return method_exists($this, $method) ? $method : false;
-    }
-
-    protected function setterFor($col)
-    {
-        $method = 'set' . ucfirst(str_replace('_', '', $col));
-        return method_exists($this, $method) ? $method : false;
-    }
-
-    protected function copierFor($col)
-    {
-        $method = 'copy' . ucfirst(str_replace('_', '', $col));
-        return method_exists($this, $method) ? $method : false;
     }
 }
