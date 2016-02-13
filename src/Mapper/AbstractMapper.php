@@ -220,7 +220,7 @@ abstract class AbstractMapper implements MapperInterface
     protected function oneToOne($name, $foreignMapperClass)
     {
         return $this->relationships->set(
-            static::CLASS,
+            get_class($this),
             $name,
             OneToOne::CLASS,
             $foreignMapperClass
@@ -230,7 +230,7 @@ abstract class AbstractMapper implements MapperInterface
     protected function oneToMany($name, $foreignMapperClass)
     {
         return $this->relationships->set(
-            static::CLASS,
+            get_class($this),
             $name,
             OneToMany::CLASS,
             $foreignMapperClass
@@ -240,7 +240,7 @@ abstract class AbstractMapper implements MapperInterface
     protected function manyToOne($name, $foreignMapperClass)
     {
         return $this->relationships->set(
-            static::CLASS,
+            get_class($this),
             $name,
             ManyToOne::CLASS,
             $foreignMapperClass
@@ -250,7 +250,7 @@ abstract class AbstractMapper implements MapperInterface
     protected function manyToMany($name, $foreignMapperClass, $throughName)
     {
         return $this->relationships->set(
-            static::CLASS,
+            get_class($this),
             $name,
             ManyToMany::CLASS,
             $foreignMapperClass,
@@ -262,7 +262,7 @@ abstract class AbstractMapper implements MapperInterface
     {
         static $recordClass;
         if (! $recordClass) {
-            $recordClass = substr(static::CLASS, 0, -6) . 'Record';
+            $recordClass = substr(get_class($this), 0, -6) . 'Record';
             $recordClass = class_exists($recordClass)
                 ? $recordClass
                 : Record::CLASS;
@@ -274,7 +274,7 @@ abstract class AbstractMapper implements MapperInterface
     {
         static $recordSetClass;
         if (! $recordSetClass) {
-            $recordSetClass = substr(static::CLASS, 0, -6) . 'RecordSet';
+            $recordSetClass = substr(get_class($this), 0, -6) . 'RecordSet';
             $recordSetClass = class_exists($recordSetClass)
                 ? $recordSetClass
                 : RecordSet::CLASS;
@@ -286,7 +286,7 @@ abstract class AbstractMapper implements MapperInterface
     {
         $recordClass = $this->getRecordClass($row);
         $record = new $recordClass(
-            static::CLASS,
+            get_class($this),
             $row,
             $this->newRelated()
         );

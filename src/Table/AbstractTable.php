@@ -81,7 +81,7 @@ abstract class AbstractTable implements TableInterface
     {
         static $rowClass;
         if (! $rowClass) {
-            $rowClass = substr(static::CLASS, 0, -5) . 'Row';
+            $rowClass = substr(get_class($this), 0, -5) . 'Row';
             $rowClass = class_exists($rowClass)
                 ? $rowClass
                 : Row::CLASS;

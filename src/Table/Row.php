@@ -159,7 +159,8 @@ class Row implements RowInterface
 
     public function setStatus($status)
     {
-        if (! defined("static::{$status}")) {
+        $const = get_class($this) . '::' . $status;
+        if (! defined($const)) {
             throw Exception::invalidStatus($status);
         }
         $this->status = $status;
