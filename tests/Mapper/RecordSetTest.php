@@ -4,6 +4,7 @@ namespace Atlas\Orm\Mapper;
 use Atlas\Orm\Table\Row;
 use Atlas\Orm\Table\Primary;
 use InvalidArgumentException;
+use StdClass;
 
 class RecordSetTest extends \PHPUnit_Framework_TestCase
 {
@@ -29,8 +30,7 @@ class RecordSetTest extends \PHPUnit_Framework_TestCase
 
         $this->record = new Record('FakeMapper', $this->row, $this->related);
 
-        $this->recordSet = new RecordSet();
-        $this->recordSet[] = $this->record;
+        $this->recordSet = new RecordSet([$this->record]);
     }
 
     public function testOffsetExists()
@@ -39,10 +39,23 @@ class RecordSetTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(isset($this->recordSet[1]));
     }
 
+    public function testOffsetSet_append()
+    {
+        $this->assertCount(1, $this->recordSet);
+        $this->recordSet[] = clone($this->record);
+        $this->assertCount(2, $this->recordSet);
+    }
+
     public function testOffsetSet_nonObject()
     {
         $this->setExpectedException(InvalidArgumentException::CLASS);
-        $this->recordSet[] = Record::CLASS;
+        $this->recordSet[] = 'Foo';
+    }
+
+    public function testOffsetSet_nonRecordObject()
+    {
+        $this->setExpectedException(InvalidArgumentException::CLASS);
+        $this->recordSet[] = new StdClass();
     }
 
     public function testOffsetUnset()
