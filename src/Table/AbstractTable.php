@@ -100,7 +100,7 @@ abstract class AbstractTable implements TableInterface
         }
 
         if (! is_scalar($primaryVal)) {
-            throw new Exception('Primary key values must be scalar.');
+            throw Exception::primaryValueNotScalar($this->primaryKey, $primaryVal);
         }
 
         return [$this->primaryKey => $primaryVal];
@@ -109,16 +109,16 @@ abstract class AbstractTable implements TableInterface
     private function calcPrimaryComposite($primaryVal)
     {
         if (! is_array($primaryVal)) {
-            throw new Exception('Composite primary keys must be associative arrays.');
+            throw Exception::primaryKeyNotArray($primaryVal);
         }
 
         $primary = [];
         foreach ($this->primaryKey as $col) {
             if (! isset($primaryVal[$col])) {
-                throw new Exception("Primary key value for '$col' is missing");
+                throw Exception::primaryValueMissing($col);
             }
             if (! is_scalar($primaryVal[$col])) {
-                throw new Exception("Primary key value for '$col' must be scalar");
+                throw Exception::primaryValueNotScalar($col, $primaryVal[$col]);
             }
             $primary[$col] = $primaryVal[$col];
         }

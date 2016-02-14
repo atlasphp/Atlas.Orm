@@ -40,8 +40,8 @@ class TableTest extends \PHPUnit_Framework_TestCase
 
         // not a scalar
         $this->setExpectedException(
-            'Atlas\Orm\Exception',
-            'Primary key values must be scalar.'
+            'UnexpectedValueException',
+            "Expected scalar value for primary key 'id', got array instead."
         );
         $table->calcPrimary([1, 2, 3]);
     }
@@ -50,8 +50,8 @@ class TableTest extends \PHPUnit_Framework_TestCase
     {
         $table = new StudentTable();
         $this->setExpectedException(
-            'Atlas\Orm\Exception',
-            'Composite primary keys must be associative arrays.'
+            'UnexpectedValueException',
+            "Expected array for composite primary key, got integer instead."
         );
         $table->calcPrimary(1);
     }
@@ -60,8 +60,8 @@ class TableTest extends \PHPUnit_Framework_TestCase
     {
         $table = new StudentTable();
         $this->setExpectedException(
-            'Atlas\Orm\Exception',
-            "Primary key value for 'student_ln' is missing"
+            'UnexpectedValueException',
+            "Expected scalar value for primary key 'student_ln', value is missing instead."
         );
         $table->calcPrimary(['student_fn' => 'Anna']);
     }
@@ -70,8 +70,8 @@ class TableTest extends \PHPUnit_Framework_TestCase
     {
         $table = new StudentTable();
         $this->setExpectedException(
-            'Atlas\Orm\Exception',
-            "Primary key value for 'student_fn' must be scalar"
+            'UnexpectedValueException',
+            "Expected scalar value for primary key 'student_fn', got array instead."
         );
         $table->calcPrimary(['student_fn' => ['Anna', 'Betty', 'Clara']]);
     }

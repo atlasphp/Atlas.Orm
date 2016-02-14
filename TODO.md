@@ -2,8 +2,6 @@
 
 ## Immediate
 
-- Look for `throws` and consolidate to Exception factory.
-
 - Make sure that on() with manyToMany() works as expected.
 
 ## Next Release Priority

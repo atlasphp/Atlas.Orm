@@ -24,6 +24,7 @@ class ManyToManyTest extends AbstractRelationshipTest
             'name' => 'threads',
             'nativeMapperClass' => 'Atlas\\Orm\\DataSource\\Thread\\ThreadMapper',
             'foreignMapperClass' => 'Atlas\\Orm\\DataSource\\Tag\\TagMapper',
+            'foreignTable' => 'tags',
             'on' => ['native' => 'foreign'],
             'throughName' => 'taggings',
         ];

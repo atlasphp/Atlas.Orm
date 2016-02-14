@@ -21,6 +21,7 @@ class OneToOneTest extends AbstractRelationshipTest
             'name' => 'summary',
             'nativeMapperClass' => 'Atlas\\Orm\\DataSource\\Thread\\ThreadMapper',
             'foreignMapperClass' => 'Atlas\\Orm\\DataSource\\Summary\\SummaryMapper',
+            'foreignTable' => 'summaries',
             'on' => ['native' => 'foreign'],
             'throughName' => null,
         ];

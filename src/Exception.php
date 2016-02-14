@@ -112,4 +112,31 @@ class Exception extends \Exception
     {
         return new UnexpectedValueException("Expected valid row status, got '$status' instead.");
     }
+
+    public static function primaryValueNotScalar($col, $val)
+    {
+        $message = "Expected scalar value for primary key '{$col}', "
+            . "got " . gettype($val) . " instead.";
+        return new UnexpectedValueException($message);
+    }
+
+    public static function primaryValueMissing($col)
+    {
+        $message = "Expected scalar value for primary key '$col', "
+            . "value is missing instead.";
+        return new UnexpectedValueException($message);
+    }
+
+    public static function primaryKeyNotArray($val)
+    {
+        $message = "Expected array for composite primary key, "
+            . "got " . gettype($val) . " instead.";
+        return new UnexpectedValueException($message);
+    }
+
+    public static function numericCol($col)
+    {
+        $message = "Expected non-numeric column name, got '$col' instead.";
+        return new UnexpectedValueException($message);
+    }
 }

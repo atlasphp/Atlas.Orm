@@ -310,7 +310,7 @@ class Gateway implements GatewayInterface
         $select->from($table);
         foreach ($colsVals as $col => $val) {
             if (is_numeric($col)) {
-                throw new Exception("Col should not be numeric");
+                throw Exception::numericCol($col);
             }
             $this->selectWhere($select, "{$table}.{$col}", $val);
         }

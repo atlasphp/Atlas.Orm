@@ -21,6 +21,7 @@ class ManyToOneTest extends AbstractRelationshipTest
             'name' => 'author',
             'nativeMapperClass' => 'Atlas\\Orm\\DataSource\\Thread\\ThreadMapper',
             'foreignMapperClass' => 'Atlas\\Orm\\DataSource\\Author\\AuthorMapper',
+            'foreignTable' => 'authors',
             'on' => ['native' => 'foreign'],
             'throughName' => null,
         ];

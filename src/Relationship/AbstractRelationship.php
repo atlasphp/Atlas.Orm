@@ -16,6 +16,7 @@ abstract class AbstractRelationship
 
     protected $foreignMapperClass;
     protected $foreignMapper;
+    protected $foreignTable;
 
     protected $on = array();
 
@@ -63,6 +64,7 @@ abstract class AbstractRelationship
 
         $this->nativeMapper = $this->mapperLocator->get($this->nativeMapperClass);
         $this->foreignMapper = $this->mapperLocator->get($this->foreignMapperClass);
+        $this->foreignTable = $this->foreignMapper->getTable()->getName();
         $this->fixOn();
 
         $this->fixed = true;
@@ -97,7 +99,7 @@ abstract class AbstractRelationship
 
         $nativeCol = key($this->on);
         $foreignCol = current($this->on);
-        $select->where("{$foreignCol} = ?", $record->{$nativeCol});
+        $select->where("{$this->foreignTable}.{$foreignCol} = ?", $record->{$nativeCol});
     }
 
     protected function whereForRecordComposite($select, RecordInterface $record)
@@ -105,7 +107,7 @@ abstract class AbstractRelationship
         $cond = [];
         $vals = [];
         foreach ($this->on as $nativeCol => $foreignCol) {
-            $cond[] = "{$foreignCol} = ?";
+            $cond[] = "{$this->foreignTable}.{$foreignCol} = ?";
             $vals[] = $record->$nativeCol;
         }
         $cond = '(' . implode(' AND ', $cond) . ')';
@@ -135,7 +137,7 @@ abstract class AbstractRelationship
         }
 
         $foreignCol = current($this->on);
-        $select->where("{$foreignCol} IN (?)", array_unique($vals));
+        $select->where("{$this->foreignTable}.{$foreignCol} IN (?)", array_unique($vals));
     }
 
     protected function whereForRecordSetComposite($select, RecordSetInterface $recordSet)
