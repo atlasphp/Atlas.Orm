@@ -185,8 +185,9 @@ class Gateway implements GatewayInterface
             $insert->getBindValues()
         );
 
-        if (! $pdoStatement->rowCount()) {
-            throw Exception::unexpectedRowCountAffected(0);
+        $rowCount = $pdoStatement->rowCount();
+        if ($rowCount != 1) {
+            throw Exception::unexpectedRowCountAffected($rowCount);
         }
 
         $autoinc = $this->table->getAutoinc();
@@ -242,10 +243,6 @@ class Gateway implements GatewayInterface
         );
 
         $rowCount = $pdoStatement->rowCount();
-        if (! $rowCount) {
-            return false;
-        }
-
         if ($rowCount != 1) {
             throw Exception::unexpectedRowCountAffected($rowCount);
         }

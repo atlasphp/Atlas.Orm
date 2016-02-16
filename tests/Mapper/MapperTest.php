@@ -7,6 +7,7 @@ use Atlas\Orm\Relationship\Relationships;
 use Atlas\Orm\SqliteFixture;
 use Atlas\Orm\Table\Gateway;
 use Atlas\Orm\Table\IdentityMap;
+use Atlas\Orm\Table\Row;
 use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\QueryFactory;
@@ -332,14 +333,16 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         // try to update again, should be a no-op because there are no changes
         $this->assertFalse($this->mapper->update($record));
 
-        // // delete the record and try to update it, should fail
-        // $this->assertTrue($this->mapper->delete($record));
-        // $record->name = 'Foo';
-        // $this->setExpectedException(
-        //     UnexpectedValueException::CLASS,
-        //     "Expected 1 row affected, actual 0"
-        // );
-        // $this->mapper->update($record);
+        // delete the record and try to update it, should fail.
+        // fake the row status to force the test.
+        $this->assertTrue($this->mapper->delete($record));
+        $record->getRow()->setStatus(Row::IS_SELECTED);
+        $record->name = 'Foo';
+        $this->setExpectedException(
+            UnexpectedValueException::CLASS,
+            "Expected 1 row affected, actual 0"
+        );
+        $this->mapper->update($record);
     }
 
     public function testDelete()
@@ -357,6 +360,13 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $actual = $select->fetchAll();
         $expect = 11;
         $this->assertEquals($expect, count($actual));
+
+        // try to delete the record again
+        $this->setExpectedException(
+            UnexpectedValueException::CLASS,
+            "Expected 1 row affected, actual 0"
+        );
+        $this->mapper->delete($record);
     }
 
     protected function silenceErrors()
