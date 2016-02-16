@@ -99,16 +99,18 @@ abstract class AbstractRelationship
 
         $nativeCol = key($this->on);
         $foreignCol = current($this->on);
-        $select->where("{$this->foreignTable}.{$foreignCol} = ?", $record->{$nativeCol});
+        $row = $record->getRow();
+        $select->where("{$this->foreignTable}.{$foreignCol} = ?", $row->$nativeCol);
     }
 
     protected function whereForRecordComposite($select, RecordInterface $record)
     {
         $cond = [];
         $vals = [];
+        $row = $record->getRow();
         foreach ($this->on as $nativeCol => $foreignCol) {
             $cond[] = "{$this->foreignTable}.{$foreignCol} = ?";
-            $vals[] = $record->$nativeCol;
+            $vals[] = $row->$nativeCol;
         }
         $cond = '(' . implode(' AND ', $cond) . ')';
         $select->where($cond, ...$vals);
@@ -133,7 +135,8 @@ abstract class AbstractRelationship
         $vals = [];
         $nativeCol = key($this->on);
         foreach ($recordSet as $record) {
-            $vals[] = $record->{$nativeCol};
+            $row = $record->getRow();
+            $vals[] = $row->$nativeCol;
         }
 
         $foreignCol = current($this->on);
@@ -180,9 +183,10 @@ abstract class AbstractRelationship
     {
         $uniques = [];
         foreach ($recordSet as $record) {
+            $row = $record->getRow();
             $vals = [];
             foreach ($this->on as $nativeCol => $foreignCol) {
-                $vals[] = $record->$nativeCol;
+                $vals[] = $row->$nativeCol;
             }
             // a pipe, and ASCII 31 ("unit separator").
             // identical composite values should have identical array keys.
@@ -196,8 +200,10 @@ abstract class AbstractRelationship
         RecordInterface $nativeRecord,
         RecordInterface $foreignRecord
     ) {
+        $nativeRow = $nativeRecord->getRow();
+        $foreignRow = $foreignRecord->getRow();
         foreach ($this->on as $nativeCol => $foreignCol) {
-            if ($nativeRecord->$nativeCol != $foreignRecord->$foreignCol) {
+            if ($nativeRow->$nativeCol != $foreignRow->$foreignCol) {
                 return false;
             }
         }
