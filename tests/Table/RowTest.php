@@ -69,4 +69,36 @@ class RowTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('Atlas\Orm\Exception');
         unset($row->id);
     }
+
+    public function testStatus()
+    {
+        $row = new Row(new Primary(['id' => '1']), ['foo' => 'bar']);
+        $this->assertSame($row::IS_NEW, $row->getStatus());
+
+        $row->setStatus($row::IS_SELECTED);
+        $this->assertSame($row::IS_SELECTED, $row->getStatus());
+
+        $this->assertTrue($row->hasStatus([
+            $row::IS_SELECTED,
+            $row::IS_MODIFIED,
+        ]));
+
+        $this->setExpectedException(
+            'UnexpectedValueException',
+            "Expected valid row status, got 'No Such Status' instead."
+        );
+        $row->setStatus('No Such Status');
+    }
+
+    public function testCannotModifyAfterDelete()
+    {
+        $row = new Row(new Primary(['id' => '1']), ['foo' => 'bar']);
+        $row->setStatus($row::IS_DELETED);
+
+        $this->setExpectedException(
+            'Atlas\Orm\Exception',
+            'Row::$foo is immutable once deleted.'
+        );
+        $row->foo = 'zim';
+    }
 }

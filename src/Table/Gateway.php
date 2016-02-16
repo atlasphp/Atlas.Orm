@@ -275,7 +275,7 @@ class Gateway implements GatewayInterface
     public function newSelectedRow(array $cols)
     {
         $row = $this->newRow($cols);
-        $row->setStatus($row::IS_CLEAN);
+        $row->setStatus($row::IS_SELECTED);
         $this->identityMap->setRow($row, $cols);
         return $row;
     }

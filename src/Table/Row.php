@@ -9,10 +9,10 @@ class Row implements RowInterface
     const IS_NEW = 'IS_NEW';
 
     // selected, and not yet modified in memory
-    const IS_CLEAN = 'IS_CLEAN';
+    const IS_SELECTED = 'IS_SELECTED';
 
     // selected/inserted/updated, then modified in memory
-    const IS_DIRTY = 'IS_DIRTY';
+    const IS_MODIFIED = 'IS_MODIFIED';
 
     // marked for deletion but not deleted, modification in memory allowed
     const IS_TRASH = 'IS_TRASH';
@@ -128,7 +128,7 @@ class Row implements RowInterface
             throw Exception::immutableOnceDeleted($this, $col);
         }
 
-        if ($this->status == static::IS_NEW || $this->status == static::IS_TRASH) {
+        if ($this->status == static::IS_NEW) {
             $this->cols[$col] = $new;
             return;
         }
@@ -136,7 +136,7 @@ class Row implements RowInterface
         $old = $this->cols[$col];
         $this->cols[$col] = $new;
         if (! $this->isSameValue($old, $new)) {
-            $this->setStatus(static::IS_DIRTY);
+            $this->setStatus(static::IS_MODIFIED);
         }
     }
 
