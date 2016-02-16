@@ -4,6 +4,12 @@
 
 - Make sure that on() with manyToMany() works as expected.
 
+- Have relationships work through the *Rows* not the *Records*.
+
+- Have Rows force everything to scalars, or at least not objects, because
+  the Row represents the data as it is at the database. It is the Record that
+  might be allowed to do trivial modifications for the domain.
+
 ## Next Release Priority
 
 - Documentation.
