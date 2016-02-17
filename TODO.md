@@ -6,16 +6,9 @@
 
 - Move Plugin up to top, since it handles both Mapper and Gateway? Or split (again) between Row and Record?
 
-- Add back Row and Record factories?
-
-- Move calcPrimary() from Table to Gateway
-
-- Move getRowClass() from Table to Gateway
-
-- Get rid of custom Row entirely?
-
-
 ## Near-Term
+
+- Add back Record factory?
 
 - ??? Have Rows force everything to scalars, or at least not objects, because
   the Row represents the data as it is at the database. It is the Record that

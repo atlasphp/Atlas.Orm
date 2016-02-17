@@ -270,9 +270,7 @@ class Gateway implements GatewayInterface
     {
         $cols = array_merge($this->table->getColDefaults(), $cols);
         $primary = $this->newPrimary($cols);
-        $rowClass = $this->table->getRowClass();
-        $row = new $rowClass($primary, $cols);
-        return $row;
+        return new Row($primary, $cols);
     }
 
     public function newSelectedRow(array $cols)

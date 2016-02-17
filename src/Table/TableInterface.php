@@ -58,13 +58,4 @@ interface TableInterface
      *
      */
     public function getColDefaults();
-
-    /**
-     *
-     * Returns the Row class for this Table.
-     *
-     * @return string
-     *
-     */
-    public function getRowClass();
 }

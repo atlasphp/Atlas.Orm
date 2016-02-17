@@ -1,9 +1,6 @@
 <?php
 namespace Atlas\Orm\Table;
 
-use Atlas\Orm\Mapper\Select;
-use Atlas\Orm\Exception;
-
 abstract class AbstractTable implements TableInterface
 {
     /**
@@ -59,23 +56,4 @@ abstract class AbstractTable implements TableInterface
      *
      */
     abstract public function getColDefaults();
-
-    /**
-     *
-     * Returns the Row class for this Table.
-     *
-     * @return string
-     *
-     */
-    public function getRowClass()
-    {
-        static $rowClass;
-        if (! $rowClass) {
-            $rowClass = substr(get_class($this), 0, -5) . 'Row';
-            $rowClass = class_exists($rowClass)
-                ? $rowClass
-                : Row::CLASS;
-        }
-        return $rowClass;
-    }
 }
