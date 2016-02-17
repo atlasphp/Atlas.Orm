@@ -1,7 +1,5 @@
 # TODO
 
-## Immediate
-
 ## Next Release Priority
 
 - Documentation.
@@ -10,17 +8,21 @@
 
 ## Near-Term
 
-- (???) Have Rows force everything to scalars, or at least not objects, because
+- ??? Have Rows force everything to scalars, or at least not objects, because
   the Row represents the data as it is at the database. It is the Record that
   might be allowed to do trivial modifications for the domain.
 
-- Support for relation-specific joins. E.g.:
+- ??? Support for relation-specific joins. E.g.:
 
         $select = $atlas->select(Mapper::CLASS)
             ->joinWith('foo', 'LEFT', function ($select) {
                 $select->joinWith('bar', 'INNER');
             })
             ->where('bar.whatever = 9');
+
+- ??? Need a way to specify self-join table aliases in relationship definitions?
+
+- ??? Need a way to add custom conditions to relationship definitions?
 
 ## Unknown Priority
 
