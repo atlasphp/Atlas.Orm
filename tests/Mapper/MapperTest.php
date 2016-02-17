@@ -1,6 +1,7 @@
 <?php
 namespace Atlas\Orm\Mapper;
 
+use Atlas\Orm\Assertions;
 use Atlas\Orm\DataSource\Employee\EmployeeMapper;
 use Atlas\Orm\DataSource\Employee\EmployeeTable;
 use Atlas\Orm\Relationship\Relationships;
@@ -16,6 +17,8 @@ use UnexpectedValueException;
 
 class MapperTest extends \PHPUnit_Framework_TestCase
 {
+    use Assertions;
+
     protected $table;
     protected $mapper;
 
@@ -367,6 +370,29 @@ class MapperTest extends \PHPUnit_Framework_TestCase
             "Expected 1 row affected, actual 0"
         );
         $this->mapper->delete($record);
+    }
+
+    public function testSelect_numericCol()
+    {
+        $this->setExpectedException(
+            UnexpectedValueException::CLASS,
+            "Expected non-numeric column name, got '0' instead."
+        );
+        $this->mapper->select(['foo']);
+    }
+
+    public function testSelect_null()
+    {
+        $select = $this->mapper->select(['foo' => null])->cols(['foo']);
+        $expect = 'SELECT
+                foo
+            FROM
+                "employee"
+            WHERE
+                "employee"."foo" IS NULL
+        ';
+        $actual = $select->__toString();
+        $this->assertSameSql($expect, $actual);
     }
 
     protected function silenceErrors()

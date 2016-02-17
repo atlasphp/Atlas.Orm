@@ -4,6 +4,7 @@ namespace Atlas\Orm;
 use Atlas\Orm\DataSource\Employee\EmployeeMapper;
 use Atlas\Orm\Mapper\Record;
 use Aura\Sql\ExtendedPdo;
+use PDOException;
 
 class TransactionTest extends \PHPUnit_Framework_TestCase
 {
@@ -162,13 +163,18 @@ class TransactionTest extends \PHPUnit_Framework_TestCase
 
     public function testExec_reExec()
     {
-        $this->markTestIncomplete();
+        $mapper = $this->atlas->mapper(EmployeeMapper::CLASS);
+        $employee = $mapper->fetchRecordBy(['name' => 'Anna']);
 
+        // add delete to the transaction plan
         $transaction = $this->atlas->newTransaction();
-        $transaction->plan('no-op', function () { });
+        $transaction->delete($employee);
+
+        // execute the transaction
         $result = $transaction->exec();
         $this->assertTrue($result);
 
+        // try it again, should fail
         $this->setExpectedException(
             'Atlas\Orm\Exception',
             'Cannot re-execute a prior transaction.'
@@ -178,29 +184,29 @@ class TransactionTest extends \PHPUnit_Framework_TestCase
 
     public function testExec_rollBack()
     {
-        $this->markTestIncomplete();
-
         $transaction = $this->atlas->newTransaction();
-
-        // throw an exception
-        $transaction->plan('throw', function () {
-            throw new Exception();
-        });
-
-        // should never get this far
         $mapper = $this->atlas->mapper(EmployeeMapper::CLASS);
-        $employee = $mapper->newRecord([
+
+        // create a bad record for insertion
+        $transaction->insert($mapper->newRecord([
+            'name' => null,
+            'building' => -1,
+            'floor' => -1,
+        ]));
+
+        // create a good record, but should not get this far
+        $transaction->insert($mapper->newRecord([
             'name' => 'Mona',
             'building' => 10,
             'floor' => 99,
-        ]);
-        $transaction->insert($employee);
+        ]));
 
         // transaction should fail
         $result = $transaction->exec();
         $this->assertFalse($result);
 
-        $this->assertInstanceOf(Exception::CLASS, $transaction->getException());
+        // should have failed on the first (number zero) insertion via PDO
+        $this->assertInstanceOf(PDOException::CLASS, $transaction->getException());
         $actual = $transaction->getFailure();
         $expect = $transaction->getPlan()[0];
         $this->assertSame($expect, $actual);

@@ -140,6 +140,34 @@ class AtlasCompositeTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    public function testSingleRelatedInRecordSet()
+    {
+        $degree = $this->atlas->fetchRecordBy(
+            DegreeMapper::CLASS,
+            [
+                'degree_type' => 'BS',
+                'degree_subject' => 'MATH',
+            ]
+        );
+        $expect = $degree->getRow();
+
+        $students = $this->atlas->fetchRecordSetBy(
+            StudentMapper::CLASS,
+            [
+                'degree_type' => 'BS',
+                'degree_subject' => 'MATH',
+            ],
+            [
+                'degree',
+            ]
+        );
+
+        foreach ($students as $student) {
+            $actual = $student->degree->getRow();
+            $this->assertSame($expect, $actual);
+        }
+    }
+
     protected $expectRecord = [
         'student_fn' => 'Anna',
         'student_ln' => 'Alpha',
