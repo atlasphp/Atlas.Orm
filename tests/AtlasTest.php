@@ -273,6 +273,28 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Exception', $e);
     }
 
+    public function testCalcPrimary()
+    {
+        // plain old primary value
+        $actual = $this->atlas->fetchRecord(AuthorMapper::CLASS, 1);
+        $this->assertSame('1', $actual->author_id);
+
+        // primary embedded in array
+        $actual = $this->atlas->fetchRecord(AuthorMapper::CLASS, [
+            'author_id' => 2,
+            'foo' => 'bar',
+            'baz' => 'dib'
+        ]);
+        $this->assertSame('2', $actual->author_id);
+
+        // not a scalar
+        $this->setExpectedException(
+            'UnexpectedValueException',
+            "Expected scalar value for primary key 'author_id', got array instead."
+        );
+        $this->atlas->fetchRecord(AuthorMapper::CLASS, [1, 2, 3]);
+    }
+
     protected $expectRecord = [
         'thread_id' => '1',
         'author_id' => '1',

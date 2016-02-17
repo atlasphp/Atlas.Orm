@@ -4,7 +4,16 @@
 
 - Documentation.
 
-- Move Plugin up to top, since it handles both Mapper and Gateway?
+- Move Plugin up to top, since it handles both Mapper and Gateway? Or split (again) between Row and Record?
+
+- Add back Row and Record factories?
+
+- Move calcPrimary() from Table to Gateway
+
+- Move getRowClass() from Table to Gateway
+
+- Get rid of custom Row entirely?
+
 
 ## Near-Term
 

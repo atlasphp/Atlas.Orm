@@ -14,6 +14,7 @@ class Gateway implements GatewayInterface
     protected $identityMap;
     protected $readConnection;
     protected $writeConnection;
+    protected $primaryKey;
 
     public function __construct(
         ConnectionLocator $connectionLocator,
@@ -25,6 +26,11 @@ class Gateway implements GatewayInterface
         $this->queryFactory = $queryFactory;
         $this->table = $table;
         $this->identityMap = $identityMap;
+
+        $this->primaryKey = $this->table->getPrimaryKey();
+        if (count($this->primaryKey) == 1) {
+            $this->primaryKey = current($this->primaryKey);
+        }
     }
 
     public function getTable()
@@ -64,7 +70,7 @@ class Gateway implements GatewayInterface
 
     public function fetchRow($primaryVal)
     {
-        $primary = $this->table->calcPrimary($primaryVal);
+        $primary = $this->calcPrimary($primaryVal);
         $row = $this->identityMap->getRow($primary);
         if ($row) {
             return $row;
@@ -80,7 +86,7 @@ class Gateway implements GatewayInterface
         // leave open elements for non-identified rows.
         $rows = [];
         foreach ($primaryVals as $i => $primaryVal) {
-            $primary = $this->table->calcPrimary($primaryVal);
+            $primary = $this->calcPrimary($primaryVal);
             $serial = $this->identityMap->getSerial($primary);
             $rows[$serial] = null;
             $row = $this->identityMap->getRow($primary);
@@ -102,7 +108,7 @@ class Gateway implements GatewayInterface
         $data = $select->fetchAll();
         foreach ($data as $cols) {
             $row = $this->newSelectedRow($cols);
-            $primary = $this->table->calcPrimary($cols);
+            $primary = $this->calcPrimary($cols);
             $serial = $this->identityMap->getSerial($primary);
             $rows[$serial] = $row;
         }
@@ -133,7 +139,7 @@ class Gateway implements GatewayInterface
 
         // composite key
         foreach ($primaryVals as $primaryVal) {
-            $primary = $this->table->calcPrimary($primaryVal);
+            $primary = $this->calcPrimary($primaryVal);
             $cols = array_keys($primary);
             $vals = array_values($primary);
             $cond = implode(' = ? AND ', $cols) . ' = ?';
@@ -279,7 +285,7 @@ class Gateway implements GatewayInterface
 
     public function getSelectedRow(array $cols)
     {
-        $primary = $this->table->calcPrimary($cols);
+        $primary = $this->calcPrimary($cols);
         $row = $this->identityMap->getRow($primary);
         if (! $row) {
             $row = $this->newSelectedRow($cols);
@@ -372,5 +378,41 @@ class Gateway implements GatewayInterface
         }
 
         return $delete;
+    }
+
+    protected function calcPrimary($primaryVal)
+    {
+        if (is_array($this->primaryKey)) {
+            return $this->calcPrimaryComposite($primaryVal);
+        }
+
+        if (is_array($primaryVal) && isset($primaryVal[$this->primaryKey])) {
+            $primaryVal = $primaryVal[$this->primaryKey];
+        }
+
+        if (! is_scalar($primaryVal)) {
+            throw Exception::primaryValueNotScalar($this->primaryKey, $primaryVal);
+        }
+
+        return [$this->primaryKey => $primaryVal];
+    }
+
+    protected function calcPrimaryComposite($primaryVal)
+    {
+        if (! is_array($primaryVal)) {
+            throw Exception::primaryKeyNotArray($primaryVal);
+        }
+
+        $primary = [];
+        foreach ($this->primaryKey as $col) {
+            if (! isset($primaryVal[$col])) {
+                throw Exception::primaryValueMissing($col);
+            }
+            if (! is_scalar($primaryVal[$col])) {
+                throw Exception::primaryValueNotScalar($col, $primaryVal[$col]);
+            }
+            $primary[$col] = $primaryVal[$col];
+        }
+        return $primary;
     }
 }

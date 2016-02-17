@@ -168,6 +168,52 @@ class AtlasCompositeTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    public function testCalcPrimaryComposite_notArray()
+    {
+        $this->setExpectedException(
+            'UnexpectedValueException',
+            "Expected array for composite primary key, got integer instead."
+        );
+        $this->atlas->fetchRecord(StudentMapper::CLASS, 1);
+    }
+
+    public function testCalcPrimaryComposite_missingKey()
+    {
+        $this->setExpectedException(
+            'UnexpectedValueException',
+            "Expected scalar value for primary key 'student_ln', value is missing instead."
+        );
+        $this->atlas->fetchRecord(StudentMapper::CLASS, ['student_fn' => 'Anna']);
+    }
+
+    public function testCalcPrimaryComposite_nonScalar()
+    {
+        $this->setExpectedException(
+            'UnexpectedValueException',
+            "Expected scalar value for primary key 'student_fn', got array instead."
+        );
+        $this->atlas->fetchRecord(
+            StudentMapper::CLASS,
+            ['student_fn' => ['Anna', 'Betty', 'Clara']]
+        );
+    }
+
+    public function testCalcPrimaryComposite()
+    {
+        $actual = $this->atlas->fetchRecord(
+            StudentMapper::CLASS,
+            [
+                'foo' => 'bar',
+                'student_fn' => 'Anna',
+                'student_ln' => 'Alpha',
+                'baz' => 'dib',
+            ]
+        );
+
+        $this->assertSame('Anna', $actual->student_fn);
+        $this->assertSame('Alpha', $actual->student_ln);
+    }
+
     protected $expectRecord = [
         'student_fn' => 'Anna',
         'student_ln' => 'Alpha',
