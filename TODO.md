@@ -6,6 +6,11 @@
 
 ## Near-Term
 
+- Reduce the RecordInterface to just what Atlas uses itself: getMapperClass(),
+  getRow(), getRelated(). Continue to presume access via properties.
+
+- Does RecordSetInterface currently make sense?
+
 - ??? Add back Record factory?
 
 - ??? Have Rows force everything to scalars, or at least not objects, because
@@ -30,8 +35,24 @@
 
 - Writing back to the database
 
-    - A strategy to save a record and all of its relateds recursively. Auto-set foreign key values. Use a Transaction under the hood.
+    - A strategy to save a record and all of its relateds recursively. Auto-set
+      foreign key values. Use a Transaction under the hood.
 
 - Docs
 
+    - Compare and contrast with:
+
+        - Analogue
+        - Doctrine
+        - Flourish
+        - Idiorm
+        - NotORM
+        - Paris
+        - Propel
+        - RedBean
+        - Spot2
+        - Zend_Db_Table
+        - http://www.gajotres.net/best-available-php-orm-libraries-part-1/
+
     - Add examples on how to properly wrap a Record in the Domain.
+
