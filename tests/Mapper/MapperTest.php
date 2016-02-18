@@ -6,7 +6,7 @@ use Atlas\Orm\DataSource\Employee\EmployeeMapper;
 use Atlas\Orm\DataSource\Employee\EmployeeTable;
 use Atlas\Orm\Relationship\Relationships;
 use Atlas\Orm\SqliteFixture;
-use Atlas\Orm\Table\Gateway;
+use Atlas\Orm\Table\Table;
 use Atlas\Orm\Table\IdentityMap;
 use Atlas\Orm\Table\Row;
 use Aura\Sql\ConnectionLocator;
@@ -27,12 +27,11 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         parent::setUp();
 
         $this->mapper = new EmployeeMapper(
-            new Gateway(
+            new EmployeeTable(
                 new ConnectionLocator(function () {
                     return new ExtendedPdo('sqlite::memory:');
                 }),
                 new QueryFactory('sqlite'),
-                new EmployeeTable(),
                 new IdentityMap()
             ),
             new Plugin(),
@@ -46,11 +45,6 @@ class MapperTest extends \PHPUnit_Framework_TestCase
     public function testGetTable()
     {
         $this->assertInstanceOf(EmployeeTable::CLASS, $this->mapper->getTable());
-    }
-
-    public function testGetGateway()
-    {
-        $this->assertInstanceOf(Gateway::CLASS, $this->mapper->getGateway());
     }
 
     public function testFetchRecord()

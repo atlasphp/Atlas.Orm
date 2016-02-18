@@ -1,7 +1,7 @@
 <?php
 namespace Atlas\Orm\Mapper;
 
-use Atlas\Orm\Table\GatewayInterface;
+use Atlas\Orm\Table\TableInterface;
 use Atlas\Orm\Table\RowInterface;
 use Aura\SqlQuery\Common\Insert;
 use Aura\SqlQuery\Common\Update;
@@ -15,12 +15,12 @@ class Plugin implements PluginInterface
         // do nothing
     }
 
-    public function modifyInsert(GatewayInterface $gateway, RowInterface $row, Insert $insert)
+    public function modifyInsert(TableInterface $table, RowInterface $row, Insert $insert)
     {
         // do nothing
     }
 
-    public function afterInsert(GatewayInterface $gateway, RowInterface $row, Insert $insert, PDOStatement $pdoStatement)
+    public function afterInsert(TableInterface $table, RowInterface $row, Insert $insert, PDOStatement $pdoStatement)
     {
         // do nothing
     }
@@ -30,12 +30,12 @@ class Plugin implements PluginInterface
         // do nothing
     }
 
-    public function modifyUpdate(GatewayInterface $gateway, RowInterface $row, Update $update)
+    public function modifyUpdate(TableInterface $table, RowInterface $row, Update $update)
     {
         // do nothing
     }
 
-    public function afterUpdate(GatewayInterface $gateway, RowInterface $row, Update $update, PDOStatement $pdoStatement)
+    public function afterUpdate(TableInterface $table, RowInterface $row, Update $update, PDOStatement $pdoStatement)
     {
         // do nothing
     }
@@ -45,12 +45,12 @@ class Plugin implements PluginInterface
         // do nothing
     }
 
-    public function modifyDelete(GatewayInterface $gateway, RowInterface $row, Delete $delete)
+    public function modifyDelete(TableInterface $table, RowInterface $row, Delete $delete)
     {
         // do nothing
     }
 
-    public function afterDelete(GatewayInterface $gateway, RowInterface $row, Delete $delete, PDOStatement $pdoStatement)
+    public function afterDelete(TableInterface $table, RowInterface $row, Delete $delete, PDOStatement $pdoStatement)
     {
         // do nothing
     }

@@ -1,7 +1,7 @@
 <?php
 namespace Atlas\Orm\Mapper;
 
-use Atlas\Orm\Table\GatewaySelect;
+use Atlas\Orm\Table\TableSelect;
 use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\Common\SelectInterface;
 use Aura\SqlQuery\Common\SubselectInterface;
@@ -10,12 +10,12 @@ class MapperSelect implements SubselectInterface
 {
     /**
      *
-     * The GatewaySelect being decorated.
+     * The TableSelect being decorated.
      *
-     * @var GatewaySelect
+     * @var TableSelect
      *
      */
-    protected $gatewaySelect;
+    protected $tableSelect;
 
     protected $getSelectedRecord;
 
@@ -24,11 +24,11 @@ class MapperSelect implements SubselectInterface
     protected $with = [];
 
     public function __construct(
-        GatewaySelect $gatewaySelect,
+        TableSelect $tableSelect,
         callable $getSelectedRecord,
         callable $getSelectedRecordSet
     ) {
-        $this->gatewaySelect = $gatewaySelect;
+        $this->tableSelect = $tableSelect;
         $this->getSelectedRecord = $getSelectedRecord;
         $this->getSelectedRecordSet = $getSelectedRecordSet;
     }
@@ -43,7 +43,7 @@ class MapperSelect implements SubselectInterface
      */
     public function __toString()
     {
-        return $this->gatewaySelect->__toString();
+        return $this->tableSelect->__toString();
     }
 
     /**
@@ -61,20 +61,20 @@ class MapperSelect implements SubselectInterface
      */
     public function __call($method, $params)
     {
-        $result = call_user_func_array([$this->gatewaySelect, $method], $params);
-        return ($result === $this->gatewaySelect) ? $this : $result;
+        $result = call_user_func_array([$this->tableSelect, $method], $params);
+        return ($result === $this->tableSelect) ? $this : $result;
     }
 
     // subselect interface
     public function getStatement()
     {
-        return $this->gatewaySelect->getStatement();
+        return $this->tableSelect->getStatement();
     }
 
     // subselect interface
     public function getBindValues()
     {
-        return $this->gatewaySelect->getBindValues();
+        return $this->tableSelect->getBindValues();
     }
 
     public function with(array $with)
@@ -85,7 +85,7 @@ class MapperSelect implements SubselectInterface
 
     public function fetchRecord()
     {
-        $this->gatewaySelect->cols($this->gatewaySelect->getColNames());
+        $this->tableSelect->cols($this->tableSelect->getColNames());
         $cols = $this->fetchOne();
         if (! $cols) {
             return false;
@@ -96,7 +96,7 @@ class MapperSelect implements SubselectInterface
 
     public function fetchRecordSet()
     {
-        $this->gatewaySelect->cols($this->gatewaySelect->getColNames());
+        $this->tableSelect->cols($this->tableSelect->getColNames());
 
         $data = $this->fetchAll();
         if (! $data) {
@@ -108,7 +108,7 @@ class MapperSelect implements SubselectInterface
 
     public function fetchRecordsArray()
     {
-        $this->gatewaySelect->cols($this->gatewaySelect->getColNames());
+        $this->tableSelect->cols($this->tableSelect->getColNames());
 
         $records = [];
         $data = $this->fetchAll();

@@ -59,9 +59,9 @@ class Exception extends \Exception
         return new Exception("{$class} not found in mapper locator.");
     }
 
-    public static function gatewayNotFound($class)
+    public static function tableNotFound($class)
     {
-        return new Exception("{$class} not found in gateway locator.");
+        return new Exception("{$class} not found in table locator.");
     }
 
     public static function invalidType($expect, $actual)

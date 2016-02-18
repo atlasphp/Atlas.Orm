@@ -9,7 +9,7 @@ use Atlas\Orm\Relationship\OneToOne;
 use Atlas\Orm\Relationship\Relationships;
 use Atlas\Orm\Table\IdentityMap;
 use Atlas\Orm\Table\RowInterface;
-use Atlas\Orm\Table\GatewayInterface;
+use Atlas\Orm\Table\TableInterface;
 use Aura\Sql\ConnectionLocator;
 use Aura\SqlQuery\QueryFactory;
 
@@ -22,18 +22,18 @@ use Aura\SqlQuery\QueryFactory;
  */
 abstract class AbstractMapper implements MapperInterface
 {
-    protected $gateway;
+    protected $table;
 
     protected $relationships;
 
     protected $plugin;
 
     public function __construct(
-        GatewayInterface $gateway,
+        TableInterface $table,
         PluginInterface $plugin,
         Relationships $relationships
     ) {
-        $this->gateway = $gateway;
+        $this->table = $table;
         $this->plugin = $plugin;
         $this->relationships = $relationships;
         $this->setRelated();
@@ -50,41 +50,36 @@ abstract class AbstractMapper implements MapperInterface
 
     public function getTable()
     {
-        return $this->gateway->getTable();
-    }
-
-    public function getGateway()
-    {
-        return $this->gateway;
+        return $this->table;
     }
 
     /**
      *
-     * Returns the Gateway read connection.
+     * Returns the Table read connection.
      *
      * @return ExtendedPdoInterface
      *
      */
     public function getReadConnection()
     {
-        return $this->gateway->getReadConnection();
+        return $this->table->getReadConnection();
     }
 
     /**
      *
-     * Returns the Gateway write connection.
+     * Returns the Table write connection.
      *
      * @return ExtendedPdoInterface
      *
      */
     public function getWriteConnection()
     {
-        return $this->gateway->getWriteConnection();
+        return $this->table->getWriteConnection();
     }
 
     public function fetchRecord($primaryVal, array $with = [])
     {
-        $row = $this->gateway->fetchRow($primaryVal);
+        $row = $this->table->fetchRow($primaryVal);
         if (! $row) {
             return false;
         }
@@ -93,7 +88,7 @@ abstract class AbstractMapper implements MapperInterface
 
     public function fetchRecordSet(array $primaryVals, array $with = [])
     {
-        $rows = $this->gateway->fetchRows($primaryVals);
+        $rows = $this->table->fetchRows($primaryVals);
         if (! $rows) {
             return [];
         }
@@ -102,7 +97,7 @@ abstract class AbstractMapper implements MapperInterface
 
     public function fetchRecordBy(array $colsVals = [], array $with = [])
     {
-        $row = $this->gateway->selectRow($this->gateway->select($colsVals));
+        $row = $this->table->selectRow($this->table->select($colsVals));
         if (! $row) {
             return false;
         }
@@ -111,7 +106,7 @@ abstract class AbstractMapper implements MapperInterface
 
     public function fetchRecordSetBy(array $colsVals = [], array $with = [])
     {
-        $rows = $this->gateway->selectRows($this->gateway->select($colsVals));
+        $rows = $this->table->selectRows($this->table->select($colsVals));
         if (! $rows) {
             return [];
         }
@@ -121,7 +116,7 @@ abstract class AbstractMapper implements MapperInterface
     public function select(array $colsVals = [])
     {
         return new MapperSelect(
-            $this->gateway->select($colsVals),
+            $this->table->select($colsVals),
             [$this, 'getSelectedRecord'],
             [$this, 'getSelectedRecordSet']
         );
@@ -139,7 +134,7 @@ abstract class AbstractMapper implements MapperInterface
     public function insert(RecordInterface $record)
     {
         $this->plugin->beforeInsert($this, $record);
-        return $this->gateway->insert(
+        return $this->table->insert(
             $record->getRow(),
             [$this->plugin, 'modifyInsert'],
             [$this->plugin, 'afterInsert']
@@ -158,7 +153,7 @@ abstract class AbstractMapper implements MapperInterface
     public function update(RecordInterface $record)
     {
         $this->plugin->beforeUpdate($this, $record);
-        return $this->gateway->update(
+        return $this->table->update(
             $record->getRow(),
             [$this->plugin, 'modifyUpdate'],
             [$this->plugin, 'afterUpdate']
@@ -177,7 +172,7 @@ abstract class AbstractMapper implements MapperInterface
     public function delete(RecordInterface $record)
     {
         $this->plugin->beforeDelete($this, $record);
-        return $this->gateway->delete(
+        return $this->table->delete(
             $record->getRow(),
             [$this->plugin, 'modifyDelete'],
             [$this->plugin, 'afterDelete']
@@ -186,7 +181,7 @@ abstract class AbstractMapper implements MapperInterface
 
     public function newRecord(array $cols = [])
     {
-        $row = $this->gateway->newRow($cols);
+        $row = $this->table->newRow($cols);
         return $this->newRecordFromRow($row);
     }
 
@@ -200,7 +195,7 @@ abstract class AbstractMapper implements MapperInterface
 
     public function getSelectedRecord(array $cols, array $with = [])
     {
-        $row = $this->gateway->getSelectedRow($cols);
+        $row = $this->table->getSelectedRow($cols);
         return $this->newRecordFromRow($row, $with);
     }
 

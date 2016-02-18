@@ -5,7 +5,7 @@ use Atlas\Orm\DataSource\Course\CourseMapper;
 use Atlas\Orm\DataSource\Course\CourseTable;
 use Atlas\Orm\Relationship\Relationships;
 use Atlas\Orm\SqliteFixture;
-use Atlas\Orm\Table\Gateway;
+use Atlas\Orm\Table\Table;
 use Atlas\Orm\Table\IdentityMap;
 use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
@@ -23,12 +23,11 @@ class MapperCompositeTest extends \PHPUnit_Framework_TestCase
         parent::setUp();
 
         $this->mapper = new CourseMapper(
-            new Gateway(
+            new CourseTable(
                 new ConnectionLocator(function () {
                     return new ExtendedPdo('sqlite::memory:');
                 }),
                 new QueryFactory('sqlite'),
-                new CourseTable(),
                 new IdentityMap()
             ),
             new Plugin(),

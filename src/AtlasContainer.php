@@ -4,8 +4,7 @@ namespace Atlas\Orm;
 use Atlas\Orm\Mapper\MapperLocator;
 use Atlas\Orm\Mapper\Plugin;
 use Atlas\Orm\Relationship\Relationships;
-use Atlas\Orm\Table\Gateway;
-use Atlas\Orm\Table\GatewayLocator;
+use Atlas\Orm\Table\TableLocator;
 use Atlas\Orm\Table\IdentityMap;
 use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
@@ -28,7 +27,7 @@ class AtlasContainer
     ) {
         $this->setConnectionLocator(func_get_args());
         $this->setQueryFactory($dsn);
-        $this->gatewayLocator = new GatewayLocator();
+        $this->tableLocator = new TableLocator();
         $this->mapperLocator = new MapperLocator();
         $this->atlas = new Atlas(
             $this->mapperLocator,
@@ -94,7 +93,7 @@ class AtlasContainer
             throw Exception::classDoesNotExist($tableClass);
         }
 
-        $this->setGateway($tableClass);
+        $this->setTable($tableClass);
 
         $pluginClass = substr($mapperClass, 0, -6) . 'Plugin';
         $pluginClass = class_exists($pluginClass)
@@ -103,7 +102,7 @@ class AtlasContainer
 
         $mapperFactory = function () use ($mapperClass, $tableClass, $pluginClass) {
             return new $mapperClass(
-                $this->gatewayLocator->get($tableClass),
+                $this->tableLocator->get($tableClass),
                 $this->newInstance($pluginClass),
                 new Relationships($this->getMapperLocator())
             );
@@ -112,23 +111,17 @@ class AtlasContainer
         $this->mapperLocator->set($mapperClass, $mapperFactory);
     }
 
-    protected function setGateway($tableClass)
+    protected function setTable($tableClass)
     {
-        $gatewayClass = substr($tableClass, 0, -5) . 'Gateway';
-        $gatewayClass = class_exists($gatewayClass)
-            ? $gatewayClass
-            : Gateway::CLASS;
-
-        $factory = function () use ($gatewayClass, $tableClass) {
-            return new $gatewayClass(
+        $factory = function () use ($tableClass) {
+            return new $tableClass(
                 $this->connectionLocator,
                 $this->queryFactory,
-                new $tableClass(),
                 new IdentityMap()
             );
         };
 
-        $this->gatewayLocator->set($tableClass, $factory);
+        $this->tableLocator->set($tableClass, $factory);
     }
 
     public function setFactoryFor($class, callable $callable)

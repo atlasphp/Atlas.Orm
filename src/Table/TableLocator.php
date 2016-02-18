@@ -5,16 +5,16 @@ use Atlas\Orm\Exception;
 
 /**
  *
- * A ServiceLocator implementation for creating and retaining Gateway objects.
+ * A ServiceLocator implementation for creating and retaining Table objects.
  *
  * @package Atlas.Atlas
  *
  */
-class GatewayLocator
+class TableLocator
 {
     /**
      *
-     * A registry of callable factories to create Gateway instances.
+     * A registry of callable factories to create Table instances.
      *
      * @var array
      *
@@ -23,7 +23,7 @@ class GatewayLocator
 
     /**
      *
-     * A registry of Gateway instances created by the factories.
+     * A registry of Table instances created by the factories.
      *
      * @var array
      *
@@ -42,20 +42,20 @@ class GatewayLocator
 
     /**
      *
-     * Gets a Gateway instance by class; if it has not been created yet, its
+     * Gets a Table instance by class; if it has not been created yet, its
      * callable factory will be invoked and the instance will be retained.
      *
-     * @param string $tableClass The class of the Gateway instance to retrieve.
+     * @param string $tableClass The class of the Table instance to retrieve.
      *
-     * @return Gateway A Gateway instance.
+     * @return Table A Table instance.
      *
-     * @throws Exception When a Gateway instance is not found.
+     * @throws Exception When a Table instance is not found.
      *
      */
     public function get($tableClass)
     {
         if (! isset($this->factories[$tableClass])) {
-            throw Exception::gatewayNotFound($tableClass);
+            throw Exception::tableNotFound($tableClass);
         }
 
         if (! isset($this->instances[$tableClass])) {

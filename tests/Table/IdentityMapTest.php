@@ -9,7 +9,7 @@ class IdentityMapTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->identityMap = new IdentityMap(new EmployeeTable());
+        $this->identityMap = new IdentityMap();
     }
 
     public function testSetRow()

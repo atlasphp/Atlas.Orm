@@ -3,7 +3,6 @@ namespace Atlas\Orm\Table;
 
 use Atlas\Orm\Exception;
 
-// using arrays to plan ahead for composite key
 class Primary
 {
     private $cols = [];
