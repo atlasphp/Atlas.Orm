@@ -4,11 +4,9 @@
 
 - Documentation.
 
-- Move Plugin up to top, since it handles both Mapper and Gateway? Or split (again) between Row and Record?
-
 ## Near-Term
 
-- Add back Record factory?
+- ??? Add back Record factory?
 
 - ??? Have Rows force everything to scalars, or at least not objects, because
   the Row represents the data as it is at the database. It is the Record that
