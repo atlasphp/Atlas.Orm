@@ -73,14 +73,14 @@ class RowTest extends \PHPUnit_Framework_TestCase
     public function testStatus()
     {
         $row = new Row(new Primary(['id' => '1']), ['foo' => 'bar']);
-        $this->assertSame($row::IS_NEW, $row->getStatus());
+        $this->assertSame($row::FOR_INSERT, $row->getStatus());
 
-        $row->setStatus($row::IS_SELECTED);
-        $this->assertSame($row::IS_SELECTED, $row->getStatus());
+        $row->setStatus($row::SELECTED);
+        $this->assertSame($row::SELECTED, $row->getStatus());
 
         $this->assertTrue($row->hasStatus([
-            $row::IS_SELECTED,
-            $row::IS_MODIFIED,
+            $row::SELECTED,
+            $row::MODIFIED,
         ]));
 
         $this->setExpectedException(
@@ -93,7 +93,7 @@ class RowTest extends \PHPUnit_Framework_TestCase
     public function testCannotModifyAfterDelete()
     {
         $row = new Row(new Primary(['id' => '1']), ['foo' => 'bar']);
-        $row->setStatus($row::IS_DELETED);
+        $row->setStatus($row::DELETED);
 
         $this->setExpectedException(
             'Atlas\Orm\Exception',

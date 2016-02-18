@@ -203,7 +203,7 @@ class Gateway implements GatewayInterface
 
         $after($this, $row, $insert, $pdoStatement);
 
-        $row->setStatus($row::IS_INSERTED);
+        $row->setStatus($row::INSERTED);
         $this->identityMap->setRow($row, $row->getArrayCopy());
 
         return true;
@@ -231,7 +231,7 @@ class Gateway implements GatewayInterface
 
         $after($this, $row, $update, $pdoStatement);
 
-        $row->setStatus($row::IS_UPDATED);
+        $row->setStatus($row::UPDATED);
         $this->identityMap->setInitial($row);
 
         return true;
@@ -255,7 +255,7 @@ class Gateway implements GatewayInterface
 
         $after($this, $row, $delete, $pdoStatement);
 
-        $row->setStatus($row::IS_DELETED);
+        $row->setStatus($row::DELETED);
         return true;
     }
 
@@ -276,7 +276,7 @@ class Gateway implements GatewayInterface
     public function newSelectedRow(array $cols)
     {
         $row = $this->newRow($cols);
-        $row->setStatus($row::IS_SELECTED);
+        $row->setStatus($row::SELECTED);
         $this->identityMap->setRow($row, $cols);
         return $row;
     }

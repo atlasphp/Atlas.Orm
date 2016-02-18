@@ -6,27 +6,25 @@ use Atlas\Orm\Exception;
 class Row implements RowInterface
 {
     // new instance, in memory only
-    const IS_NEW = 'IS_NEW';
+    const FOR_INSERT = 'FOR_INSERT';
 
     // selected, and not yet modified in memory
-    const IS_SELECTED = 'IS_SELECTED';
+    const SELECTED = 'SELECTED';
 
     // selected/inserted/updated, then modified in memory
-    const IS_MODIFIED = 'IS_MODIFIED';
+    const MODIFIED = 'MODIFIED';
 
     // marked for deletion but not deleted, modification in memory allowed
-    const IS_TRASH = 'IS_TRASH';
+    const FOR_DELETE = 'FOR_DELETE';
 
     // inserted, and not again modified in memory
-    const IS_INSERTED = 'IS_INSERTED';
+    const INSERTED = 'INSERTED';
 
     // updated, and not again modified in memory
-    const IS_UPDATED = 'IS_UPDATED';
+    const UPDATED = 'UPDATED';
 
     // deleted, modification in memory not allowed
-    const IS_DELETED = 'IS_DELETED';
-
-    private $tableClass;
+    const DELETED = 'DELETED';
 
     private $primary;
 
@@ -38,7 +36,7 @@ class Row implements RowInterface
     {
         $this->primary = $primary;
         $this->cols = $cols;
-        $this->status = static::IS_NEW;
+        $this->status = static::FOR_INSERT;
     }
 
     public function __get($col)
@@ -124,11 +122,11 @@ class Row implements RowInterface
 
     protected function modify($col, $new)
     {
-        if ($this->status == static::IS_DELETED) {
+        if ($this->status == static::DELETED) {
             throw Exception::immutableOnceDeleted($this, $col);
         }
 
-        if ($this->status == static::IS_NEW) {
+        if ($this->status == static::FOR_INSERT) {
             $this->cols[$col] = $new;
             return;
         }
@@ -136,7 +134,7 @@ class Row implements RowInterface
         $old = $this->cols[$col];
         $this->cols[$col] = $new;
         if (! $this->isSameValue($old, $new)) {
-            $this->setStatus(static::IS_MODIFIED);
+            $this->setStatus(static::MODIFIED);
         }
     }
 

@@ -339,7 +339,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         // delete the record and try to update it, should fail.
         // fake the row status to force the test.
         $this->assertTrue($this->mapper->delete($record));
-        $record->getRow()->setStatus(Row::IS_SELECTED);
+        $record->getRow()->setStatus(Row::SELECTED);
         $record->name = 'Foo';
         $this->setExpectedException(
             UnexpectedValueException::CLASS,
