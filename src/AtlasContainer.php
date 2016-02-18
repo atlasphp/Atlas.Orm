@@ -2,8 +2,9 @@
 namespace Atlas\Orm;
 
 use Atlas\Orm\Mapper\MapperLocator;
-use Atlas\Orm\Mapper\Plugin;
+use Atlas\Orm\Mapper\MapperEvents;
 use Atlas\Orm\Relationship\Relationships;
+use Atlas\Orm\Table\TableEvents;
 use Atlas\Orm\Table\TableLocator;
 use Atlas\Orm\Table\IdentityMap;
 use Aura\Sql\ConnectionLocator;
@@ -92,19 +93,18 @@ class AtlasContainer
         if (! class_exists($tableClass)) {
             throw Exception::classDoesNotExist($tableClass);
         }
-
         $this->setTable($tableClass);
 
-        $pluginClass = substr($mapperClass, 0, -6) . 'Plugin';
-        $pluginClass = class_exists($pluginClass)
-            ? $pluginClass
-            : Plugin::CLASS;
+        $eventsClass = $mapperClass . 'Events';
+        $eventsClass = class_exists($eventsClass)
+            ? $eventsClass
+            : MapperEvents::CLASS;
 
-        $mapperFactory = function () use ($mapperClass, $tableClass, $pluginClass) {
+        $mapperFactory = function () use ($mapperClass, $tableClass, $eventsClass) {
             return new $mapperClass(
                 $this->tableLocator->get($tableClass),
-                $this->newInstance($pluginClass),
-                new Relationships($this->getMapperLocator())
+                new Relationships($this->getMapperLocator()),
+                $this->newInstance($eventsClass)
             );
         };
 
@@ -113,11 +113,16 @@ class AtlasContainer
 
     protected function setTable($tableClass)
     {
-        $factory = function () use ($tableClass) {
+        $eventsClass = $tableClass . 'Events';
+        $eventsClass = class_exists($eventsClass)
+            ? $eventsClass
+            : TableEvents::CLASS;
+        $factory = function () use ($tableClass, $eventsClass) {
             return new $tableClass(
                 $this->connectionLocator,
                 $this->queryFactory,
-                new IdentityMap()
+                new IdentityMap(),
+                $this->newInstance($eventsClass)
             );
         };
 

@@ -18,11 +18,13 @@ abstract class AbstractTable implements TableInterface
     public function __construct(
         ConnectionLocator $connectionLocator,
         QueryFactory $queryFactory,
-        IdentityMap $identityMap
+        IdentityMap $identityMap,
+        TableEventsInterface $events
     ) {
         $this->connectionLocator = $connectionLocator;
         $this->queryFactory = $queryFactory;
         $this->identityMap = $identityMap;
+        $this->events = $events;
 
         $this->primaryKey = $this->getPrimaryKey();
         if (count($this->primaryKey) == 1) {
@@ -172,10 +174,11 @@ abstract class AbstractTable implements TableInterface
         return $rows;
     }
 
-    public function insert(RowInterface $row, callable $modify, callable $after)
+    public function insert(RowInterface $row)
     {
+        $this->events->beforeInsert($this, $row);
         $insert = $this->newInsert($row);
-        $modify($this, $row, $insert);
+        $this->events->modifyInsert($this, $row, $insert);
 
         $connection = $this->getWriteConnection();
         $pdoStatement = $connection->perform(
@@ -193,7 +196,7 @@ abstract class AbstractTable implements TableInterface
             $row->$autoinc = $connection->lastInsertId($autoinc);
         }
 
-        $after($this, $row, $insert, $pdoStatement);
+        $this->events->afterInsert($this, $row, $insert, $pdoStatement);
 
         $row->setStatus($row::INSERTED);
         $this->identityMap->setRow($row, $row->getArrayCopy());
@@ -201,10 +204,11 @@ abstract class AbstractTable implements TableInterface
         return true;
     }
 
-    public function update(RowInterface $row, callable $modify, callable $after)
+    public function update(RowInterface $row)
     {
+        $this->events->beforeUpdate($this, $row);
         $update = $this->newUpdate($row);
-        $modify($this, $row, $update);
+        $this->events->modifyUpdate($this, $row, $update);
 
         if (! $update->hasCols()) {
             return false;
@@ -221,7 +225,7 @@ abstract class AbstractTable implements TableInterface
             throw Exception::unexpectedRowCountAffected($rowCount);
         }
 
-        $after($this, $row, $update, $pdoStatement);
+        $this->events->afterUpdate($this, $row, $update, $pdoStatement);
 
         $row->setStatus($row::UPDATED);
         $this->identityMap->setInitial($row);
@@ -229,10 +233,11 @@ abstract class AbstractTable implements TableInterface
         return true;
     }
 
-    public function delete(RowInterface $row, callable $modify, callable $after)
+    public function delete(RowInterface $row)
     {
+        $this->events->beforeDelete($this, $row);
         $delete = $this->newDelete($row);
-        $modify($this, $row, $delete);
+        $this->events->modifyDelete($this, $row, $delete);
 
         $connection = $this->getWriteConnection();
         $pdoStatement = $connection->perform(
@@ -245,7 +250,7 @@ abstract class AbstractTable implements TableInterface
             throw Exception::unexpectedRowCountAffected($rowCount);
         }
 
-        $after($this, $row, $delete, $pdoStatement);
+        $this->events->afterDelete($this, $row, $delete, $pdoStatement);
 
         $row->setStatus($row::DELETED);
         return true;

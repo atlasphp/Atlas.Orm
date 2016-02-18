@@ -26,16 +26,16 @@ abstract class AbstractMapper implements MapperInterface
 
     protected $relationships;
 
-    protected $plugin;
+    protected $events;
 
     public function __construct(
         TableInterface $table,
-        PluginInterface $plugin,
-        Relationships $relationships
+        Relationships $relationships,
+        MapperEventsInterface $events
     ) {
         $this->table = $table;
-        $this->plugin = $plugin;
         $this->relationships = $relationships;
+        $this->events = $events;
         $this->setRelated();
     }
 
@@ -128,17 +128,15 @@ abstract class AbstractMapper implements MapperInterface
      *
      * @param RecordInterface $record Insert the Row for this Record.
      *
-     * @return bool
+     * @return mixed
      *
      */
     public function insert(RecordInterface $record)
     {
-        $this->plugin->beforeInsert($this, $record);
-        return $this->table->insert(
-            $record->getRow(),
-            [$this->plugin, 'modifyInsert'],
-            [$this->plugin, 'afterInsert']
-        );
+        $this->events->beforeInsert($this, $record);
+        $result = $this->table->insert($record->getRow());
+        $this->events->afterInsert($this, $record, $result);
+        return $result;
     }
 
     /**
@@ -147,17 +145,15 @@ abstract class AbstractMapper implements MapperInterface
      *
      * @param RecordInterface $record Update the Row for this Record.
      *
-     * @return bool
+     * @return mixed
      *
      */
     public function update(RecordInterface $record)
     {
-        $this->plugin->beforeUpdate($this, $record);
-        return $this->table->update(
-            $record->getRow(),
-            [$this->plugin, 'modifyUpdate'],
-            [$this->plugin, 'afterUpdate']
-        );
+        $this->events->beforeUpdate($this, $record);
+        $result = $this->table->update($record->getRow());
+        $this->events->afterUpdate($this, $record, $result);
+        return $result;
     }
 
     /**
@@ -166,17 +162,15 @@ abstract class AbstractMapper implements MapperInterface
      *
      * @param RecordInterface $record Delete the Row for this Record.
      *
-     * @return bool
+     * @return mixed
      *
      */
     public function delete(RecordInterface $record)
     {
-        $this->plugin->beforeDelete($this, $record);
-        return $this->table->delete(
-            $record->getRow(),
-            [$this->plugin, 'modifyDelete'],
-            [$this->plugin, 'afterDelete']
-        );
+        $this->events->beforeDelete($this, $record);
+        $result = $this->table->delete($record->getRow());
+        $this->events->afterDelete($this, $record, $result);
+        return $result;
     }
 
     public function newRecord(array $cols = [])

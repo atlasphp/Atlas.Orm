@@ -5,7 +5,7 @@ use Atlas\Orm\DataSource\Course\CourseMapper;
 use Atlas\Orm\DataSource\Course\CourseTable;
 use Atlas\Orm\Relationship\Relationships;
 use Atlas\Orm\SqliteFixture;
-use Atlas\Orm\Table\Table;
+use Atlas\Orm\Table\TableEvents;
 use Atlas\Orm\Table\IdentityMap;
 use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
@@ -28,10 +28,11 @@ class MapperCompositeTest extends \PHPUnit_Framework_TestCase
                     return new ExtendedPdo('sqlite::memory:');
                 }),
                 new QueryFactory('sqlite'),
-                new IdentityMap()
+                new IdentityMap(),
+                new TableEvents()
             ),
-            new Plugin(),
-            new Relationships(new MapperLocator())
+            new Relationships(new MapperLocator()),
+            new MapperEvents()
         );
 
         $fixture = new SqliteFixture($this->mapper->getWriteConnection());

@@ -6,7 +6,7 @@ use Atlas\Orm\DataSource\Employee\EmployeeMapper;
 use Atlas\Orm\DataSource\Employee\EmployeeTable;
 use Atlas\Orm\Relationship\Relationships;
 use Atlas\Orm\SqliteFixture;
-use Atlas\Orm\Table\Table;
+use Atlas\Orm\Table\TableEvents;
 use Atlas\Orm\Table\IdentityMap;
 use Atlas\Orm\Table\Row;
 use Aura\Sql\ConnectionLocator;
@@ -32,10 +32,11 @@ class MapperTest extends \PHPUnit_Framework_TestCase
                     return new ExtendedPdo('sqlite::memory:');
                 }),
                 new QueryFactory('sqlite'),
-                new IdentityMap()
+                new IdentityMap(),
+                new TableEvents()
             ),
-            new Plugin(),
-            new Relationships(new MapperLocator())
+            new Relationships(new MapperLocator()),
+            new MapperEvents()
         );
 
         $fixture = new SqliteFixture($this->mapper->getWriteConnection());

@@ -1,28 +1,26 @@
 <?php
-namespace Atlas\Orm\Mapper;
+namespace Atlas\Orm\Table;
 
-use Atlas\Orm\Table\TableInterface;
-use Atlas\Orm\Table\RowInterface;
 use Aura\SqlQuery\Common\Delete;
 use Aura\SqlQuery\Common\Insert;
 use Aura\SqlQuery\Common\Update;
 use PDOStatement;
 
-interface PluginInterface
+interface TableEventsInterface
 {
-    public function beforeInsert(MapperInterface $mapper, RecordInterface $record);
+    public function beforeInsert(TableInterface $table, RowInterface $row);
 
     public function modifyInsert(TableInterface $table, RowInterface $row, Insert $insert);
 
     public function afterInsert(TableInterface $table, RowInterface $row, Insert $insert, PDOStatement $pdoStatement);
 
-    public function beforeUpdate(MapperInterface $mapper, RecordInterface $record);
+    public function beforeUpdate(TableInterface $table, RowInterface $row);
 
     public function modifyUpdate(TableInterface $table, RowInterface $row, Update $update);
 
     public function afterUpdate(TableInterface $table, RowInterface $row, Update $update, PDOStatement $pdoStatement);
 
-    public function beforeDelete(MapperInterface $mapper, RecordInterface $record);
+    public function beforeDelete(TableInterface $table, RowInterface $row);
 
     public function modifyDelete(TableInterface $table, RowInterface $row, Delete $delete);
 

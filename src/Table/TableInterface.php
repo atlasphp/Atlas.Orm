@@ -33,11 +33,11 @@ interface TableInterface
 
     public function selectRows(TableSelect $select);
 
-    public function insert(RowInterface $row, callable $modify, callable $after);
+    public function insert(RowInterface $row);
 
-    public function update(RowInterface $row, callable $modify, callable $after);
+    public function update(RowInterface $row);
 
-    public function delete(RowInterface $row, callable $modify, callable $after);
+    public function delete(RowInterface $row);
 
     /**
      *
