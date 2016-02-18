@@ -53,6 +53,7 @@
         - Spot2
         - Zend_Db_Table
         - http://www.gajotres.net/best-available-php-orm-libraries-part-1/
+        - http://www.gajotres.net/best-available-php-orm-libraries-part-2/
 
     - Add examples on how to properly wrap a Record in the Domain.
 
