@@ -4,6 +4,8 @@
 
 - Documentation.
 
+- In Table::selectWherePrimary(), wrap entire condition in parens.
+
 ## Near-Term
 
 - Reduce the RecordInterface to just what Atlas uses itself: getMapperClass(),
