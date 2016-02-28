@@ -30,13 +30,18 @@ class IdentityMap
     /**
      * @param RowInterface $row
      */
-    public function setRow(RowInterface $row, array $initial)
+    public function setRow(RowInterface $row, array $initial, array $primaryKey)
     {
         if ($this->hasRow($row)) {
             throw Exception::rowAlreadyMapped();
         }
 
-        $serial = $this->getSerial($row->getPrimary()->getArrayCopy());
+        $primary = [];
+        foreach ($primaryKey as $primaryCol) {
+            $primary[$primaryCol] = $row->$primaryCol;
+        }
+
+        $serial = $this->getSerial($primary);
         $this->serialToRow[$serial] = $row;
         $this->rowToSerial[$row] = $serial;
         $this->initial[$row] = $initial;

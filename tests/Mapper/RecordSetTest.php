@@ -15,13 +15,11 @@ class RecordSetTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->row = new Row(
-            new Primary(['id' => '1']),
-            [
-                'foo' => 'bar',
-                'baz' => 'dib',
-            ]
-        );
+        $this->row = new Row([
+            'id' => '1',
+            'foo' => 'bar',
+            'baz' => 'dib',
+        ]);
 
         $this->related = new Related([
             'zim' => 'gir',

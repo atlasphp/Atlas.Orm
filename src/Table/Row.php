@@ -32,9 +32,8 @@ class Row implements RowInterface
 
     private $status;
 
-    public function __construct(Primary $primary, array $cols)
+    public function __construct(array $cols)
     {
-        $this->primary = $primary;
         $this->cols = $cols;
         $this->status = static::FOR_INSERT;
     }
@@ -42,46 +41,24 @@ class Row implements RowInterface
     public function __get($col)
     {
         $this->assertHas($col);
-
-        if ($this->primary->has($col)) {
-            return $this->primary->$col;
-        }
-
         return $this->cols[$col];
     }
 
     public function __set($col, $val)
     {
         $this->assertHas($col);
-
-        if ($this->primary->has($col)) {
-            $this->primary->$col = $val;
-            return;
-        }
-
         $this->modify($col, $val);
     }
 
     public function __isset($col)
     {
         $this->assertHas($col);
-
-        if ($this->primary->has($col)) {
-            return isset($this->primary->$col);
-        }
-
         return isset($this->cols[$col]);
     }
 
     public function __unset($col)
     {
         $this->assertHas($col);
-
-        if ($this->primary->has($col)) {
-            unset($this->primary->$col);
-            return;
-        }
-
         $this->modify($col, null);
     }
 
@@ -94,13 +71,12 @@ class Row implements RowInterface
 
     public function has($col)
     {
-        return array_key_exists($col, $this->cols)
-            || $this->primary->has($col);
+        return array_key_exists($col, $this->cols);
     }
 
     public function getArrayCopy()
     {
-        return $this->primary->getArrayCopy() + $this->cols;
+        return $this->cols;
     }
 
     /** @todo array_key_exists($col, $init) */
@@ -113,11 +89,6 @@ class Row implements RowInterface
             }
         }
         return $diff;
-    }
-
-    public function getPrimary()
-    {
-        return $this->primary;
     }
 
     protected function modify($col, $new)

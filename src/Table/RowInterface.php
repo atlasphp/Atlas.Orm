@@ -11,8 +11,6 @@ interface RowInterface
 
     public function getArrayDiff(array $init);
 
-    public function getPrimary();
-
     public function hasStatus($status);
 
     public function getStatus();

@@ -10,13 +10,11 @@ class WorkTest extends \PHPUnit_Framework_TestCase
 {
     public function test__invoke_reInvoke()
     {
-        $row = new Row(
-            new Primary(['id' => '1']),
-            [
-                'foo' => 'bar',
-                'baz' => 'dib',
-            ]
-        );
+        $row = new Row([
+            'id' => '1',
+            'foo' => 'bar',
+            'baz' => 'dib',
+        ]);
 
         $related = new Related([
             'zim' => 'gir',

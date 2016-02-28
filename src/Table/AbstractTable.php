@@ -199,7 +199,7 @@ abstract class AbstractTable implements TableInterface
         $this->events->afterInsert($this, $row, $insert, $pdoStatement);
 
         $row->setStatus($row::INSERTED);
-        $this->identityMap->setRow($row, $row->getArrayCopy());
+        $this->identityMap->setRow($row, $row->getArrayCopy(), $this->getPrimaryKey());
 
         return true;
     }
@@ -266,15 +266,14 @@ abstract class AbstractTable implements TableInterface
     public function newRow(array $cols = [])
     {
         $cols = array_merge($this->getColDefaults(), $cols);
-        $primary = $this->newPrimary($cols);
-        return new Row($primary, $cols);
+        return new Row($cols);
     }
 
     public function newSelectedRow(array $cols)
     {
         $row = $this->newRow($cols);
         $row->setStatus($row::SELECTED);
-        $this->identityMap->setRow($row, $cols);
+        $this->identityMap->setRow($row, $cols, $this->getPrimaryKey());
         return $row;
     }
 
@@ -286,19 +285,6 @@ abstract class AbstractTable implements TableInterface
             $row = $this->newSelectedRow($cols);
         }
         return $row;
-    }
-
-    protected function newPrimary(array &$cols)
-    {
-        $primary = [];
-        foreach ($this->getPrimaryKey() as $primaryCol) {
-            $primary[$primaryCol] = null;
-            if (isset($cols[$primaryCol])) {
-                $primary[$primaryCol] = $cols[$primaryCol];
-                unset($cols[$primaryCol]);
-            }
-        }
-        return new Primary($primary);
     }
 
     protected function newSelect(array $colsVals = [])
@@ -350,11 +336,16 @@ abstract class AbstractTable implements TableInterface
         $update = $this->queryFactory->newUpdate();
         $update->table($this->getName());
 
-        $cols = $row->getArrayDiff($this->identityMap->getInitial($row));
-
-        $primary = $row->getPrimary()->getArrayCopy();
-        foreach ($primary as $primaryCol => $primaryVal) {
-            $update->where("{$primaryCol} = ?", $primaryVal);
+        $init = $this->identityMap->getInitial($row);
+        $cols = $row->getArrayDiff($init);
+        foreach ($this->getPrimaryKey() as $primaryCol) {
+            if (array_key_exists($primaryCol, $cols)) {
+                $message = "Primary key value for '$primaryCol' "
+                    . "changed from '$init[$primaryCol]' "
+                    . "to '$cols[$primaryCol]'.";
+                throw new Exception($message);
+            }
+            $update->where("{$primaryCol} = ?", $row->$primaryCol);
             unset($cols[$primaryCol]);
         }
 
@@ -367,9 +358,8 @@ abstract class AbstractTable implements TableInterface
         $delete = $this->queryFactory->newDelete();
         $delete->from($this->getName());
 
-        $primary = $row->getPrimary()->getArrayCopy();
-        foreach ($primary as $primaryCol => $primaryVal) {
-            $delete->where("{$primaryCol} = ?", $primaryVal);
+        foreach ($this->getPrimaryKey() as $primaryCol) {
+            $delete->where("{$primaryCol} = ?", $row->$primaryCol);
         }
 
         return $delete;
