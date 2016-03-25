@@ -86,6 +86,8 @@ Performance in these cases is sure to be slower, but it is in fact supported.
 This package is installable and autoloadable via [Composer](https://getcomposer.org/)
 as [atlas/orm](https://packagist.org/packages/atlas/orm).
 
+To get the `atlas-skeleton` command-line tool, you should also `require` or `require-dev` [atlas/cli](https://packagist.org/packages/atlas/cli) in `composer.json`.
+
 Make sure your project it set up to [autoload Composer-installed packages](https://getcomposer.org/doc/00-intro.md#autoloading).
 
 
@@ -112,7 +114,7 @@ Specify a target directory for the skeleton files if you like, and pass the
 namespace name for the data source classes.
 
 ```bash
-./bin/atlas-skeleton.php \
+./vendor/bin/atlas-skeleton.php \
     --dir=./src/App/DataSource \
     --conn=/path/to/conn.php \
     --table=threads \
