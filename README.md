@@ -88,6 +88,8 @@ as [atlas/orm](https://packagist.org/packages/atlas/orm).
 
 To get the `atlas-skeleton` command-line tool, you should also `require` or `require-dev` [atlas/cli](https://packagist.org/packages/atlas/cli) in `composer.json`.
 
+Finally, because Atlas is not stable, you will need to set `"minimum-stability": "dev"` in `composer.json`.
+
 Make sure your project it set up to [autoload Composer-installed packages](https://getcomposer.org/doc/00-intro.md#autoloading).
 
 
