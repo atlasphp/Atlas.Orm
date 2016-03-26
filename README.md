@@ -86,12 +86,44 @@ Performance in these cases is sure to be slower, but it is in fact supported.
 This package is installable and autoloadable via [Composer](https://getcomposer.org/)
 as [atlas/orm](https://packagist.org/packages/atlas/orm).
 
-To get the `atlas-skeleton` command-line tool, you should also `require` or `require-dev` [atlas/cli](https://packagist.org/packages/atlas/cli) in `composer.json`.
+Atlas.Orm is still in development and there are possibilities that the api may break.
+So it is recommended that you lock your `composer.json` to the [appropriate release](https://github.com/atlasphp/Atlas.Orm/releases)
+as below.
 
-Because Atlas is not yet stable, you will need to set `"minimum-stability": "dev"` in `composer.json`.
+```json
+{
+    "require": {
+        "atlas/orm": "0.3.*@alpha"
+    }
+}
+```
+
+If you are interested in playing with the latest bleeding edge branch, you can do as
+
+```json
+{
+    "require": {
+        "atlas/orm": "@dev"
+    }
+}
+```
+
+For the ease of development you can add [atlas/cli](https://packagist.org/packages/atlas/cli)
+in the `require-dev` section of `composer.json` in the root of project which
+provide `atlas-skeleton` command-line tool.
+
+```json
+{
+    "require": {
+        "atlas/orm": "@dev"
+    },
+    "require-dev": {
+        "atlas/cli": "@dev"
+    }
+}
+```
 
 Make sure your project it set up to [autoload Composer-installed packages](https://getcomposer.org/doc/00-intro.md#autoloading).
-
 
 ## Basic Usage
 
