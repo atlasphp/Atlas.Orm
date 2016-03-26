@@ -29,5 +29,8 @@
             "Atlas\\Orm\\": "tests/"
         }
     },
+    "suggest": {
+        "atlas/cli": "0.x command-line interface for atlas for development use"
+    },
     "minimum-stability": "dev"
 }
