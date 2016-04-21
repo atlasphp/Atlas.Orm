@@ -43,6 +43,8 @@ class MapperSelect implements SubselectInterface
      */
     public function __toString()
     {
+        $this->tableColumns();
+
         return $this->tableSelect->__toString();
     }
 
@@ -68,6 +70,8 @@ class MapperSelect implements SubselectInterface
     // subselect interface
     public function getStatement()
     {
+        $this->tableColumns();
+
         return $this->tableSelect->getStatement();
     }
 
@@ -85,7 +89,7 @@ class MapperSelect implements SubselectInterface
 
     public function fetchRecord()
     {
-        $this->tableSelect->cols($this->tableSelect->getColNames());
+        $this->tableColumns();
         $cols = $this->fetchOne();
         if (! $cols) {
             return false;
@@ -96,7 +100,7 @@ class MapperSelect implements SubselectInterface
 
     public function fetchRecordSet()
     {
-        $this->tableSelect->cols($this->tableSelect->getColNames());
+        $this->tableColumns();
 
         $data = $this->fetchAll();
         if (! $data) {
@@ -108,7 +112,7 @@ class MapperSelect implements SubselectInterface
 
     public function fetchRecordsArray()
     {
-        $this->tableSelect->cols($this->tableSelect->getColNames());
+        $this->tableColumns();
 
         $records = [];
         $data = $this->fetchAll();
@@ -117,4 +121,12 @@ class MapperSelect implements SubselectInterface
         }
         return $records;
     }
+
+    protected function tableColumns()
+    {
+        if (! $this->tableSelect->hasCols()) {
+            $this->tableSelect->cols($this->tableSelect->getColNames());
+        }
+    }
+
 }
