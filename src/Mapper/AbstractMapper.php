@@ -167,7 +167,6 @@ abstract class AbstractMapper implements MapperInterface
                 $record->{$col} = $val;
             }
         }
-
         return $record;
     }
 
