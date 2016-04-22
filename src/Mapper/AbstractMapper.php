@@ -157,6 +157,21 @@ abstract class AbstractMapper implements MapperInterface
     }
 
     /**
+     * Patch record with data array
+     */
+    public function patch(RecordInterface $record, array $colsVals = [])
+    {
+        $col_names = $this->getTable()->getColNames();
+        foreach ($colsVals as $col=>$val) {
+            if (in_array($col, $col_names)) {
+                $record->{$col} = $val;
+            }
+        }
+
+        return $record;
+    }
+
+    /**
      *
      * Deletes the Row for a Record.
      *
