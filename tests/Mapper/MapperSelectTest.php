@@ -51,12 +51,42 @@ class SelectTest extends \PHPUnit_Framework_TestCase
         $this->assertSameSql($expect, $actual);
     }
 
+    public function testGetStatementWithOutColumnsPassed()
+    {
+        $expect = '
+            SELECT
+                id,
+                name,
+                building,
+                floor
+            FROM
+                "employee"
+        ';
+        $actual = $this->select->getStatement();
+        $this->assertSameSql($expect, $actual);
+    }
+
     public function test__toString()
     {
         $this->select->cols(['*']);
         $expect = '
             SELECT
                 *
+            FROM
+                "employee"
+        ';
+        $actual = $this->select->__toString();
+        $this->assertSameSql($expect, $actual);
+    }
+
+    public function testWithOutColumnsPassed__toString()
+    {
+        $expect = '
+            SELECT
+                id,
+                name,
+                building,
+                floor
             FROM
                 "employee"
         ';
@@ -140,5 +170,23 @@ class SelectTest extends \PHPUnit_Framework_TestCase
             ->fetchValue();
 
         $this->assertSame($expect, $actual);
+    }
+
+    public function testFetchRecordGetStatement()
+    {
+        $expect = '
+            SELECT
+                name
+            FROM
+                "employee"
+        ';
+
+        $this->select
+            ->cols(['name'])
+            ->fetchRecord();
+
+        $actual = $this->select->__toString();
+
+        $this->assertSameSql($expect, $actual);
     }
 }
