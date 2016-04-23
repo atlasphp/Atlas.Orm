@@ -263,10 +263,16 @@ abstract class AbstractTable implements TableInterface
      * @return RowInterface
      *
      */
-    public function newRow(array $cols = [])
+    public function newRow(array $colsVals = [])
     {
-        $cols = array_merge($this->getColDefaults(), $cols);
-        return new Row($cols);
+        $colNames = $this->getColNames();
+        foreach ($colsVals as $col => $val) {
+            if (! in_array($col, $colNames)) {
+                unset($colsVals[$col]);
+            }
+        }
+        $colsVals = array_merge($this->getColDefaults(), $colsVals);
+        return new Row($colsVals);
     }
 
     public function newSelectedRow(array $cols)
