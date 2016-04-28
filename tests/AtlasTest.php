@@ -728,41 +728,8 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
                 ],
             ],
             'taggings' => [
-                0 => [
-                    'tagging_id' => '7',
-                    'thread_id' => '3',
-                    'tag_id' => '3',
-                ],
-                1 => [
-                    'tagging_id' => '8',
-                    'thread_id' => '3',
-                    'tag_id' => '4',
-                ],
-                2 => [
-                    'tagging_id' => '9',
-                    'thread_id' => '3',
-                    'tag_id' => '5',
-                ],
             ],
             'tags' => [
-                0 => [
-                    'tag_id' => '3',
-                    'name' => 'baz',
-                    'taggings' => null,
-                    'threads' => null,
-                ],
-                1 => [
-                    'tag_id' => '4',
-                    'name' => 'dib',
-                    'taggings' => null,
-                    'threads' => null,
-                ],
-                2 => [
-                    'tag_id' => '5',
-                    'name' => 'zim',
-                    'taggings' => null,
-                    'threads' => null,
-                ],
             ],
         ],
     ];

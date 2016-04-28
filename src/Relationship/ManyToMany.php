@@ -32,8 +32,13 @@ class ManyToMany extends AbstractRelationship
         }
 
         $throughRecordSet = $nativeRecord->{$this->throughName};
-        $select = $this->selectForRecordSet($throughRecordSet, $custom);
-        $nativeRecord->{$this->name} = $select->fetchRecordSet();
+        $result = [];
+        if ($throughRecordSet instanceof RecordSetInterface) {
+            $select = $this->selectForRecordSet($throughRecordSet, $custom);
+            $result = $select->fetchRecordSet();
+        }
+
+        $nativeRecord->{$this->name} = $result;
     }
 
     public function stitchIntoRecordSet(
