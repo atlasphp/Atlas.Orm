@@ -145,10 +145,13 @@ class SqliteFixture
             tag_id INTEGER NOT NULL
         )");
 
-        // add 3 tags to each thread
+        // add 3 tags to each thread except thread #3
         $stm = "INSERT INTO taggings (thread_id, tag_id) VALUES (?, ?)";
         for ($i = 0; $i < 20; $i ++) {
             $thread_id = $i + 1;
+            if($thread_id == 3) {
+                continue;
+            }
             $tags = [
                 (($i + 0) % 5) + 1,
                 (($i + 1) % 5) + 1,
