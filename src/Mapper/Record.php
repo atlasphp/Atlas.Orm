@@ -44,7 +44,7 @@ class Record implements RecordInterface
     public function set(array $colsVals = [])
     {
         $this->row->set($colsVals);
-        $this->related->set($colsVals);
+        //$this->related->set($colsVals);
     }
 
     public function getMapperClass()
