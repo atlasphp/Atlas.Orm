@@ -24,11 +24,6 @@ class Atlas
         return $this->mapperLocator->get($mapperClass);
     }
 
-    public function patch(RecordInterface $record, array $colsVals = [])
-    {
-        return $this->mapper($record->getMapperClass())->patch($record, $colsVals);
-    }
-
     public function newRecord($mapperClass, array $cols = [])
     {
         return $this->mapper($mapperClass)->newRecord($cols);

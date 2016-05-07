@@ -157,16 +157,6 @@ abstract class AbstractMapper implements MapperInterface
     }
 
     /**
-     * Patch record with data array
-     * because patch doesn't persist data to storage, it doesn't have anything events
-     */
-    public function patch(RecordInterface $record, array $colsVals = [])
-    {
-        $record = $record->set($colsVals);
-        return $record;
-    }
-
-    /**
      *
      * Deletes the Row for a Record.
      *

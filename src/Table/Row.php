@@ -62,24 +62,11 @@ class Row implements RowInterface
         $this->modify($col, null);
     }
 
-    public function set($colsVals, $val = NULL)
+    public function set(array $colsVals = [])
     {
-        if (is_string($colsVals))
-        {
-            $this->colsVals = $val;
-        }
-        elseif (is_array($colsVals))
-        {
-            $colsVals = array_intersect_key($colsVals, $this->cols);
-
-            foreach($colsVals as $col => $val)
-            {
-                $this->$col = $val;
-            }
-        }
-        else
-        {
-            //throw new Exception("Invalid set parameters: ".__METHOD__);
+        $colsVals = array_intersect_key($colsVals, $this->cols);
+        foreach ($colsVals as $col => $val) {
+            $this->$col = $val;
         }
     }
 

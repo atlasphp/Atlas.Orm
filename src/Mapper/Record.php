@@ -41,23 +41,10 @@ class Record implements RecordInterface
         unset($this->$prop->$field);
     }
 
-    public function set($colsVals, $val = NULL)
+    public function set(array $colsVals = [])
     {
-        if (is_string($colsVals))
-        {
-            $this->$colsVals = $val;
-        }
-        elseif (is_array($colsVals))
-        {
-            $this->row->set($colsVals);
-            $this->related->set($colsVals);
-        }
-        else
-        {
-            //throw new Exception("Invalid set parameters: ".__METHOD__);
-        }
-
-        return $this;
+        $this->row->set($colsVals);
+        $this->related->set($colsVals);
     }
 
     public function getMapperClass()
