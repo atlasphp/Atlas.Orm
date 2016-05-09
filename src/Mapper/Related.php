@@ -36,6 +36,14 @@ class Related
         $this->fields[$name] = null;
     }
 
+    public function set(array $colsVals = [])
+    {
+        $colsVals = array_intersect_key($colsVals, $this->fields);
+        foreach ($colsVals as $col => $val) {
+            $this->$col = $val;
+        }
+    }
+
     protected function assertHas($name)
     {
         if (! $this->has($name)) {
