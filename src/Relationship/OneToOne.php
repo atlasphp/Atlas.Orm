@@ -6,7 +6,7 @@ use Atlas\Orm\Mapper\RecordSetInterface;
 
 class OneToOne extends AbstractRelationship
 {
-    public function stitchIntoRecord(
+    protected function stitchIntoRecord(
         RecordInterface $nativeRecord,
         callable $custom = null
     ) {
@@ -15,7 +15,7 @@ class OneToOne extends AbstractRelationship
         $nativeRecord->{$this->name} = $select->fetchRecord();
     }
 
-    public function stitchIntoRecordSet(
+    protected function stitchIntoRecordSet(
         RecordSetInterface $nativeRecordSet,
         callable $custom = null
     ) {

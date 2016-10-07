@@ -20,7 +20,7 @@ class ManyToMany extends AbstractRelationship
         }
     }
 
-    public function stitchIntoRecord(
+    protected function stitchIntoRecord(
         RecordInterface $nativeRecord,
         callable $custom = null
     ) {
@@ -41,7 +41,7 @@ class ManyToMany extends AbstractRelationship
         $nativeRecord->{$this->name} = $result;
     }
 
-    public function stitchIntoRecordSet(
+    protected function stitchIntoRecordSet(
         RecordSetInterface $nativeRecordSet,
         callable $custom = null
     ) {

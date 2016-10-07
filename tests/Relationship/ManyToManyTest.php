@@ -53,7 +53,7 @@ class ManyToManyTest extends AbstractRelationshipTest
             Exception::CLASS,
             "Cannot fetch 'tags' relation without 'taggings'"
         );
-        $rel->stitchIntoRecord($thread);
+        $rel->stitchIntoRecords([$thread]);
     }
 
     public function testStitchIntoRecordSet_emptyNativeRecordSet()
@@ -67,7 +67,7 @@ class ManyToManyTest extends AbstractRelationshipTest
         );
 
         $threads = $this->mapperLocator->get(ThreadMapper::CLASS)->newRecordSet();
-        $rel->stitchIntoRecordSet($threads);
+        $rel->stitchIntoRecords($threads);
 
         $this->assertTrue($threads->isEmpty());
     }
@@ -90,7 +90,7 @@ class ManyToManyTest extends AbstractRelationshipTest
             Exception::CLASS,
             "Cannot fetch 'tags' relation without 'taggings'"
         );
-        $rel->stitchIntoRecordSet($threads);
+        $rel->stitchIntoRecords($threads);
     }
 
     public function testStitchIntoRecordSet_emptyThrough()
@@ -111,7 +111,7 @@ class ManyToManyTest extends AbstractRelationshipTest
 
         $threads = $threadMapper->newRecordSet([$thread]);
 
-        $rel->stitchIntoRecordSet($threads);
+        $rel->stitchIntoRecords($threads);
 
         $this->assertSame([], $thread->tags);
     }

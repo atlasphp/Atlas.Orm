@@ -67,26 +67,6 @@ class Relationships
         );
     }
 
-    protected function stitchIntoRecord(RecordInterface $record, array $with = [])
-    {
-        foreach ($this->fixWith($with) as $name => $custom) {
-            $this->defs[$name]->stitchIntoRecord(
-                $record,
-                $custom
-            );
-        }
-    }
-
-    protected function stitchIntoRecordSet(RecordSetInterface $recordSet, array $with = [])
-    {
-        foreach ($this->fixWith($with) as $name => $custom) {
-            $this->defs[$name]->stitchIntoRecordSet(
-                $recordSet,
-                $custom
-            );
-        }
-    }
-
     protected function fixWith($spec)
     {
         $with = [];
@@ -104,10 +84,11 @@ class Relationships
         /*traversable*/ $records,
         array $with = []
     ) {
-        if ($records instanceof RecordSetInterface) {
-            $this->stitchIntoRecordSet($records, $with);
-        } else {
-            $this->stitchIntoRecord($records[0], $with);
+        foreach ($this->fixWith($with) as $name => $custom) {
+            $this->defs[$name]->stitchIntoRecords(
+                $records,
+                $custom
+            );
         }
     }
 }

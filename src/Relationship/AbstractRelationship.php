@@ -210,13 +210,24 @@ abstract class AbstractRelationship
         return true;
     }
 
-    abstract public function stitchIntoRecord(
+    abstract protected function stitchIntoRecord(
         RecordInterface $nativeRecord,
         callable $custom = null
     );
 
-    abstract public function stitchIntoRecordSet(
+    abstract protected function stitchIntoRecordSet(
         RecordSetInterface $nativeRecordSet,
         callable $custom = null
     );
+
+    public function stitchIntoRecords(
+        /* traversable */ $records,
+        callable $custom = null
+    ) {
+        if ($records instanceof RecordSetInterface) {
+            $this->stitchIntoRecordSet($records, $custom);
+        } else {
+            $this->stitchIntoRecord($records[0], $custom);
+        }
+    }
 }
