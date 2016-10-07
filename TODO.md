@@ -27,11 +27,45 @@
             })
             ->where('bar.whatever = 9');
 
+  This gets tricky when a with-with-with has the same name as something else;
+  no reasonable way to alias it. Also tricky when the related has the same name
+  as an actual table already in the query.
+
 - ??? Need a way to specify self-join table aliases in relationship definitions?
 
 - ??? Need a way to add custom conditions to relationship definitions?
 
 ## Unknown Priority
+
+- Fetching with a to-one related, with a subsquent to-one related, reintroduces
+  N+1 at that deeper layer. (Maybe also if with a subsequent to-many related?)
+
+  Need a way to collect the series of native keys and pass into the subsequent
+  related, then loop through the single records to stitch in each related
+  records.
+
+  Given ...
+
+        Foo oneToMany Bar
+            Bar manyToOne Baz
+                Baz manyToOne Dib
+
+  ... then this fetch ...
+
+        $atlas->fetchRecordSet('foo')->with([
+            'bar' => function ($bar) {
+                $bar->with([
+                    'baz' => function ($baz) {
+                        $baz->with([
+                            'dib'
+                        ]);
+                    },
+                ]);
+            },
+        ]);
+
+  ... goes N+1 when it fetches the 'dib' for each 'baz'. What you would need to
+  do is have all 'baz' in hand, get all their 'dib' IDs, fetch all 'dib'
 
 - Add `addNew()` to RecordSet to append a new Record of the proper type.
 
