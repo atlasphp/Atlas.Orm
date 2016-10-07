@@ -179,4 +179,73 @@ class TableSelect implements SubselectInterface
             $this->select->getBindValues()
         );
     }
+
+    /**
+     *
+     * Yields a sequential array of rows from the database; the rows
+     * are represented as associative arrays.
+     *
+     * @return Iterator
+     *
+     */
+    public function yieldAll()
+    {
+        return $this->connection->yieldAll(
+            $this->select->getStatement(),
+            $this->select->getBindValues()
+        );
+    }
+
+    /**
+     *
+     * Yields an associative array of rows from the database; the rows
+     * are represented as associative arrays. The array of rows is keyed
+     * on the first column of each row.
+     *
+     * N.b.: if multiple rows have the same first column value, the last
+     * row with that value will override earlier rows.
+     *
+     * @return Iterator
+     *
+     */
+    public function yieldAssoc()
+    {
+        return $this->connection->yieldAssoc(
+            $this->select->getStatement(),
+            $this->select->getBindValues()
+        );
+    }
+
+    /**
+     *
+     * Yields the first column of rows as a sequential array.
+     *
+     * @return array
+     *
+     */
+    public function yieldCol()
+    {
+        return $this->connection->yieldCol(
+            $this->select->getStatement(),
+            $this->select->getBindValues()
+        );
+    }
+
+    /**
+     *
+     * Yields an associative array of rows as key-value pairs (first
+     * column is the key, second column is the value).
+     *
+     * @param array $values Values to bind to the query.
+     *
+     * @return array
+     *
+     */
+    public function yieldPairs()
+    {
+        return $this->connection->yieldPairs(
+            $this->select->getStatement(),
+            $this->select->getBindValues()
+        );
+    }
 }
