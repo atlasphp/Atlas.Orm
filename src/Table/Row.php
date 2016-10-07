@@ -62,6 +62,14 @@ class Row implements RowInterface
         $this->modify($col, null);
     }
 
+    public function set(array $colsVals = [])
+    {
+        $colsVals = array_intersect_key($colsVals, $this->cols);
+        foreach ($colsVals as $col => $val) {
+            $this->$col = $val;
+        }
+    }
+
     protected function assertHas($col)
     {
         if (! $this->has($col)) {

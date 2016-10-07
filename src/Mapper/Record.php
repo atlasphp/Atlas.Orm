@@ -41,6 +41,12 @@ class Record implements RecordInterface
         unset($this->$prop->$field);
     }
 
+    public function set(array $colsVals = [])
+    {
+        $this->row->set($colsVals);
+        //$this->related->set($colsVals);
+    }
+
     public function getMapperClass()
     {
         return $this->mapperClass;
