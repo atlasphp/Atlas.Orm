@@ -183,7 +183,7 @@ abstract class AbstractMapper implements MapperInterface
     {
         $recordSetClass = $this->getRecordSetClass();
         $recordSet = new $recordSetClass($records);
-        $this->relationships->stitchIntoRecordSet($recordSet, $with);
+        $this->relationships->stitchIntoRecords($recordSet, $with);
         return $recordSet;
     }
 
@@ -279,7 +279,7 @@ abstract class AbstractMapper implements MapperInterface
             $row,
             $this->newRelated()
         );
-        $this->relationships->stitchIntoRecord($record, $with);
+        $this->relationships->stitchIntoRecords([$record], $with);
         return $record;
     }
 

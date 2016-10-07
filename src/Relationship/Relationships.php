@@ -67,7 +67,7 @@ class Relationships
         );
     }
 
-    public function stitchIntoRecord(RecordInterface $record, array $with = [])
+    protected function stitchIntoRecord(RecordInterface $record, array $with = [])
     {
         foreach ($this->fixWith($with) as $name => $custom) {
             $this->defs[$name]->stitchIntoRecord(
@@ -77,7 +77,7 @@ class Relationships
         }
     }
 
-    public function stitchIntoRecordSet(RecordSetInterface $recordSet, array $with = [])
+    protected function stitchIntoRecordSet(RecordSetInterface $recordSet, array $with = [])
     {
         foreach ($this->fixWith($with) as $name => $custom) {
             $this->defs[$name]->stitchIntoRecordSet(
@@ -98,5 +98,16 @@ class Relationships
             }
         }
         return $with;
+    }
+
+    public function stitchIntoRecords(
+        /*traversable*/ $records,
+        array $with = []
+    ) {
+        if ($records instanceof RecordSetInterface) {
+            $this->stitchIntoRecordSet($records, $with);
+        } else {
+            $this->stitchIntoRecord($records[0], $with);
+        }
     }
 }
