@@ -181,9 +181,9 @@ abstract class AbstractMapper implements MapperInterface
 
     public function newRecordSet(array $records = [], array $with = [])
     {
+        $this->relationships->stitchIntoRecords($records, $with);
         $recordSetClass = $this->getRecordSetClass();
         $recordSet = new $recordSetClass($records);
-        $this->relationships->stitchIntoRecords($recordSet, $with);
         return $recordSet;
     }
 
