@@ -7,7 +7,7 @@ use Atlas\Orm\Exception;
 use Countable;
 use IteratorAggregate;
 
-class RecordSet implements ArrayAccess, Countable, IteratorAggregate, RecordSetInterface
+class RecordSet implements RecordSetInterface
 {
     private $records = [];
 
