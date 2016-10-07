@@ -6,22 +6,13 @@ use Atlas\Orm\Mapper\RecordSetInterface;
 
 class OneToOne extends AbstractRelationship
 {
-    protected function stitchIntoRecord(
-        RecordInterface $nativeRecord,
-        callable $custom = null
-    ) {
-        $this->fix();
-        $select = $this->selectForRecord($nativeRecord, $custom);
-        $nativeRecord->{$this->name} = $select->fetchRecord();
-    }
-
-    protected function stitchIntoRecordSet(
-        RecordSetInterface $nativeRecordSet,
+    public function stitchIntoRecords(
+        /* traversable */ $nativeRecordSet,
         callable $custom = null
     ) {
         $this->fix();
 
-        $select = $this->selectForRecordSet($nativeRecordSet, $custom);
+        $select = $this->selectForRecords($nativeRecordSet, $custom);
         $foreignRecordsArray = $select->fetchRecordsArray();
 
         foreach ($nativeRecordSet as $nativeRecord) {

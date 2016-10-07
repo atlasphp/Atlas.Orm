@@ -81,60 +81,60 @@ abstract class AbstractRelationship
         }
     }
 
-    protected function selectForRecord(RecordInterface $record, $custom)
+    // protected function selectForRecord(RecordInterface $record, $custom)
+    // {
+    //     $select = $this->foreignMapper->select();
+    //     list($cond, $vals) = $this->whereForRecord($select, $record);
+    //     if ($custom) {
+    //         $custom($select);
+    //     }
+    //     return $select;
+    // }
+
+    // protected function whereForRecord($select, RecordInterface $record)
+    // {
+    //     if (count($this->on) > 1) {
+    //         return $this->whereForRecordComposite($select, $record);
+    //     }
+
+    //     $nativeCol = key($this->on);
+    //     $foreignCol = current($this->on);
+    //     $row = $record->getRow();
+    //     $select->where("{$this->foreignTable}.{$foreignCol} = ?", $row->$nativeCol);
+    // }
+
+    // protected function whereForRecordComposite($select, RecordInterface $record)
+    // {
+    //     $cond = [];
+    //     $vals = [];
+    //     $row = $record->getRow();
+    //     foreach ($this->on as $nativeCol => $foreignCol) {
+    //         $cond[] = "{$this->foreignTable}.{$foreignCol} = ?";
+    //         $vals[] = $row->$nativeCol;
+    //     }
+    //     $cond = '(' . implode(' AND ', $cond) . ')';
+    //     $select->where($cond, ...$vals);
+    // }
+
+    protected function selectForRecords(/* traversable */ $records, $custom)
     {
         $select = $this->foreignMapper->select();
-        list($cond, $vals) = $this->whereForRecord($select, $record);
+        $this->whereForRecords($select, $records);
         if ($custom) {
             $custom($select);
         }
         return $select;
     }
 
-    protected function whereForRecord($select, RecordInterface $record)
+    protected function whereForRecords($select, /* traversable */ $records)
     {
         if (count($this->on) > 1) {
-            return $this->whereForRecordComposite($select, $record);
-        }
-
-        $nativeCol = key($this->on);
-        $foreignCol = current($this->on);
-        $row = $record->getRow();
-        $select->where("{$this->foreignTable}.{$foreignCol} = ?", $row->$nativeCol);
-    }
-
-    protected function whereForRecordComposite($select, RecordInterface $record)
-    {
-        $cond = [];
-        $vals = [];
-        $row = $record->getRow();
-        foreach ($this->on as $nativeCol => $foreignCol) {
-            $cond[] = "{$this->foreignTable}.{$foreignCol} = ?";
-            $vals[] = $row->$nativeCol;
-        }
-        $cond = '(' . implode(' AND ', $cond) . ')';
-        $select->where($cond, ...$vals);
-    }
-
-    protected function selectForRecordSet(RecordSetInterface $recordSet, $custom)
-    {
-        $select = $this->foreignMapper->select();
-        $this->whereForRecordSet($select, $recordSet);
-        if ($custom) {
-            $custom($select);
-        }
-        return $select;
-    }
-
-    protected function whereForRecordSet($select, RecordSetInterface $recordSet)
-    {
-        if (count($this->on) > 1) {
-            return $this->whereForRecordSetComposite($select, $recordSet);
+            return $this->whereForRecordsComposite($select, $records);
         }
 
         $vals = [];
         $nativeCol = key($this->on);
-        foreach ($recordSet as $record) {
+        foreach ($records as $record) {
             $row = $record->getRow();
             $vals[] = $row->$nativeCol;
         }
@@ -143,9 +143,9 @@ abstract class AbstractRelationship
         $select->where("{$this->foreignTable}.{$foreignCol} IN (?)", array_unique($vals));
     }
 
-    protected function whereForRecordSetComposite($select, RecordSetInterface $recordSet)
+    protected function whereForRecordsComposite($select, /* traversable */ $records)
     {
-        $uniques = $this->getUniqueCompositeKeys($recordSet);
+        $uniques = $this->getUniqueCompositeKeys($records);
         $cond = '(' . implode(' = ? AND ', $this->on) . '= ?)';
 
         // get the first unique composite
@@ -179,10 +179,10 @@ abstract class AbstractRelationship
         );
     }
 
-    protected function getUniqueCompositeKeys(RecordSetInterface $recordSet)
+    protected function getUniqueCompositeKeys(/* traversable */ $records)
     {
         $uniques = [];
-        foreach ($recordSet as $record) {
+        foreach ($records as $record) {
             $row = $record->getRow();
             $vals = [];
             foreach ($this->on as $nativeCol => $foreignCol) {
@@ -210,24 +210,8 @@ abstract class AbstractRelationship
         return true;
     }
 
-    abstract protected function stitchIntoRecord(
-        RecordInterface $nativeRecord,
-        callable $custom = null
-    );
-
-    abstract protected function stitchIntoRecordSet(
-        RecordSetInterface $nativeRecordSet,
-        callable $custom = null
-    );
-
-    public function stitchIntoRecords(
+    abstract function stitchIntoRecords(
         /* traversable */ $records,
         callable $custom = null
-    ) {
-        if ($records instanceof RecordSetInterface) {
-            $this->stitchIntoRecordSet($records, $custom);
-        } else {
-            $this->stitchIntoRecord($records[0], $custom);
-        }
-    }
+    );
 }

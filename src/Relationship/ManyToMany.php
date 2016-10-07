@@ -20,39 +20,21 @@ class ManyToMany extends AbstractRelationship
         }
     }
 
-    protected function stitchIntoRecord(
-        RecordInterface $nativeRecord,
+    public function stitchIntoRecords(
+        /* traversable */ $nativeRecordSet,
         callable $custom = null
     ) {
         $this->fix();
 
-        // make sure the "through" relation is loaded already
-        if (! isset($nativeRecord->{$this->throughName})) {
-            throw Exception::throughRelationNotFetched($this->name, $this->throughName);
-        }
+        $empty = (is_array($nativeRecordSet) && empty($nativeRecordSet))
+            || (($nativeRecordSet instanceof RecordSetInterface) && $nativeRecordSet->isEmpty());
 
-        $throughRecordSet = $nativeRecord->{$this->throughName};
-        $result = [];
-        if ($throughRecordSet instanceof RecordSetInterface) {
-            $select = $this->selectForRecordSet($throughRecordSet, $custom);
-            $result = $select->fetchRecordSet();
-        }
-
-        $nativeRecord->{$this->name} = $result;
-    }
-
-    protected function stitchIntoRecordSet(
-        RecordSetInterface $nativeRecordSet,
-        callable $custom = null
-    ) {
-        $this->fix();
-
-        if ($nativeRecordSet->isEmpty()) {
+        if ($empty) {
             return;
         }
 
-        $throughRecordSet = $this->throughRecordSet($nativeRecordSet);
-        $select = $this->selectForRecordSet($throughRecordSet, $custom);
+        $throughRecordSet = $this->throughRecords($nativeRecordSet);
+        $select = $this->selectForRecords($throughRecordSet, $custom);
         $foreignRecordsArray = $select->fetchRecordsArray();
 
         foreach ($nativeRecordSet as $nativeRecord) {
@@ -64,7 +46,7 @@ class ManyToMany extends AbstractRelationship
         }
     }
 
-    protected function throughRecordSet(RecordSetInterface $nativeRecordSet)
+    protected function throughRecords(/* traversable */ $nativeRecordSet)
     {
         // this hackish. the "through" relation should be loaded for everything,
         // so if even one is loaded, all the others ought to have been too.
