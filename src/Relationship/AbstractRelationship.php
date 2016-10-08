@@ -66,6 +66,7 @@ abstract class AbstractRelationship
         $this->foreignMapper = $this->mapperLocator->get($this->foreignMapperClass);
         $this->foreignTable = $this->foreignMapper->getTable()->getName();
         $this->fixOn();
+        reset($this->on);
 
         $this->fixed = true;
     }
