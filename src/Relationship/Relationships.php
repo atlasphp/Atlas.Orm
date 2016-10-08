@@ -81,7 +81,7 @@ class Relationships
     }
 
     public function stitchIntoRecords(
-        /*traversable*/ $records,
+        /* traversable */ $records,
         array $with = []
     ) {
         foreach ($this->fixWith($with) as $name => $custom) {
