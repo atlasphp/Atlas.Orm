@@ -4,8 +4,6 @@ namespace Atlas\Orm\Relationship;
 use Atlas\Orm\Exception;
 use Atlas\Orm\Mapper\MapperLocator;
 use Atlas\Orm\Mapper\RecordInterface;
-use Atlas\Orm\Mapper\RecordSet;
-use Atlas\Orm\Mapper\RecordSetInterface;
 
 class ManyToMany extends AbstractRelationship
 {
@@ -21,23 +19,20 @@ class ManyToMany extends AbstractRelationship
     }
 
     public function stitchIntoRecords(
-        /* traversable */ $nativeRecordSet,
+        array $nativeRecords,
         callable $custom = null
     ) {
         $this->fix();
 
-        $empty = (is_array($nativeRecordSet) && empty($nativeRecordSet))
-            || (($nativeRecordSet instanceof RecordSetInterface) && $nativeRecordSet->isEmpty());
-
-        if ($empty) {
+        if (empty($nativeRecords)) {
             return;
         }
 
-        $throughRecordSet = $this->throughRecords($nativeRecordSet);
-        $select = $this->selectForRecords($throughRecordSet, $custom);
+        $throughRecords = $this->throughRecords($nativeRecords);
+        $select = $this->selectForRecords($throughRecords, $custom);
         $foreignRecordsArray = $select->fetchRecordsArray();
 
-        foreach ($nativeRecordSet as $nativeRecord) {
+        foreach ($nativeRecords as $nativeRecord) {
             $nativeRecord->{$this->name} = [];
             $matches = $this->getMatches($nativeRecord, $foreignRecordsArray);
             if ($matches) {
@@ -46,22 +41,22 @@ class ManyToMany extends AbstractRelationship
         }
     }
 
-    protected function throughRecords(/* traversable */ $nativeRecordSet)
+    protected function throughRecords(array $nativeRecords)
     {
         // this hackish. the "through" relation should be loaded for everything,
         // so if even one is loaded, all the others ought to have been too.
-        $firstNative = $nativeRecordSet[0];
+        $firstNative = $nativeRecords[0];
         if (! isset($firstNative->{$this->throughName})) {
             throw Exception::throughRelationNotFetched($this->name, $this->throughName);
         }
 
-        $throughRecordSet = new RecordSet([]);
-        foreach ($nativeRecordSet as $nativeRecord) {
+        $throughRecords = [];
+        foreach ($nativeRecords as $nativeRecord) {
             foreach ($nativeRecord->{$this->throughName} as $throughRecord)
-            $throughRecordSet[] = $throughRecord;
+            $throughRecords[] = $throughRecord;
         }
 
-        return $throughRecordSet;
+        return $throughRecords;
     }
 
     protected function getMatches($nativeRecord, $foreignRecordsArray)

@@ -11,10 +11,14 @@ use Atlas\Orm\DataSource\Thread\ThreadMapper;
 use Atlas\Orm\DataSource\Thread\ThreadRecord;
 use Atlas\Orm\DataSource\Thread\ThreadRecordSet;
 use Aura\Sql\ExtendedPdo;
+use Aura\Sql\Profiler;
+use Atlas\Orm\Mapper\Record;
+use Atlas\Orm\Mapper\RecordSet;
 
 class AtlasTest extends \PHPUnit_Framework_TestCase
 {
     protected $atlas;
+    protected $profiler;
 
     // The $expect* properties are at the end, because they are so long
 
@@ -33,6 +37,9 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
         $connection = $atlasContainer->getConnectionLocator()->getDefault();
         $fixture = new SqliteFixture($connection);
         $fixture->exec();
+
+        $this->profiler = new Profiler();
+        $connection->setProfiler($this->profiler);
 
         $this->atlas = $atlasContainer->getAtlas();
     }
@@ -64,6 +71,12 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
                 'tags', // manyToMany
             ]
         );
+
+        $this->assertInstanceOf(Record::CLASS, $actual->author);
+        $this->assertInstanceOf(Record::CLASS, $actual->summary);
+        $this->assertInstanceOf(RecordSet::CLASS, $actual->replies);
+        $this->assertInstanceOf(RecordSet::CLASS, $actual->taggings);
+        $this->assertInstanceOf(RecordSet::CLASS, $actual->tags);
 
         $this->assertSame($this->expectRecord, $actual->getArrayCopy());
     }
@@ -110,6 +123,8 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
 
     public function testFetchRecordSetBy()
     {
+        $this->profiler->setActive(true);
+
         $actual = $this->atlas->fetchRecordSetBy(
             ThreadMapper::CLASS,
             ['thread_id' => [1, 2, 3]],
@@ -117,7 +132,7 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
                 'author', // manyToOne
                 'summary', // oneToOne
                 'replies' => function ($select) {
-                    $select->with(['author']);
+                    $select->with(['author']); // oneToOne
                 }, // oneToMany
                 'taggings', // oneToMany,
                 'tags', // manyToMany
@@ -127,6 +142,9 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
         foreach ($this->expectRecordSet as $i => $expect) {
             $this->assertSame($expect, $actual[$i], "record $i not the same");
         }
+
+        // $profiles = $this->profiler->getProfiles();
+        // var_export($profiles);
     }
 
     public function testSelect_fetchRecord()

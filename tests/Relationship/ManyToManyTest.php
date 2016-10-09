@@ -56,7 +56,7 @@ class ManyToManyTest extends AbstractRelationshipTest
         $rel->stitchIntoRecords([$thread]);
     }
 
-    public function testStitchIntoRecordSet_emptyNativeRecordSet()
+    public function testStitchIntoRecords_emptyNativeRecords()
     {
         $rel = new ManyToMany(
             $this->mapperLocator,
@@ -66,13 +66,13 @@ class ManyToManyTest extends AbstractRelationshipTest
             'taggings'
         );
 
-        $threads = $this->mapperLocator->get(ThreadMapper::CLASS)->newRecordSet();
+        $threads = [];
         $rel->stitchIntoRecords($threads);
 
-        $this->assertTrue($threads->isEmpty());
+        $this->assertTrue(empty($threads));
     }
 
-    public function testStitchIntoRecordSet_missingThrough()
+    public function testStitchIntoRecords_missingThrough()
     {
         $rel = new ManyToMany(
             $this->mapperLocator,
@@ -84,7 +84,7 @@ class ManyToManyTest extends AbstractRelationshipTest
 
         $threadMapper = $this->mapperLocator->get(ThreadMapper::CLASS);
         $thread = $threadMapper->newRecord();
-        $threads = $threadMapper->newRecordSet([$thread]);
+        $threads = [$thread];
 
         $this->setExpectedException(
             Exception::CLASS,
@@ -93,7 +93,7 @@ class ManyToManyTest extends AbstractRelationshipTest
         $rel->stitchIntoRecords($threads);
     }
 
-    public function testStitchIntoRecordSet_emptyThrough()
+    public function testStitchIntoRecords_emptyThrough()
     {
         $rel = new ManyToMany(
             $this->mapperLocator,
@@ -109,7 +109,7 @@ class ManyToManyTest extends AbstractRelationshipTest
         $taggingMapper = $this->mapperLocator->get(TaggingMapper::CLASS);
         $thread->taggings = $taggingMapper->newRecordSet();
 
-        $threads = $threadMapper->newRecordSet([$thread]);
+        $threads = [$thread];
 
         $rel->stitchIntoRecords($threads);
 

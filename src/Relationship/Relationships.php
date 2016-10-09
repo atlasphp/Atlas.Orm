@@ -4,7 +4,6 @@ namespace Atlas\Orm\Relationship;
 use Atlas\Orm\Exception;
 use Atlas\Orm\Mapper\MapperLocator;
 use Atlas\Orm\Mapper\RecordInterface;
-use Atlas\Orm\Mapper\RecordSetInterface;
 
 class Relationships
 {
@@ -81,7 +80,7 @@ class Relationships
     }
 
     public function stitchIntoRecords(
-        /* traversable */ $records,
+        array $records,
         array $with = []
     ) {
         foreach ($this->fixWith($with) as $name => $custom) {

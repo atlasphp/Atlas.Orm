@@ -66,7 +66,6 @@ abstract class AbstractRelationship
         $this->foreignMapper = $this->mapperLocator->get($this->foreignMapperClass);
         $this->foreignTable = $this->foreignMapper->getTable()->getName();
         $this->fixOn();
-        reset($this->on);
 
         $this->fixed = true;
     }
@@ -82,42 +81,7 @@ abstract class AbstractRelationship
         }
     }
 
-    // protected function selectForRecord(RecordInterface $record, $custom)
-    // {
-    //     $select = $this->foreignMapper->select();
-    //     list($cond, $vals) = $this->whereForRecord($select, $record);
-    //     if ($custom) {
-    //         $custom($select);
-    //     }
-    //     return $select;
-    // }
-
-    // protected function whereForRecord($select, RecordInterface $record)
-    // {
-    //     if (count($this->on) > 1) {
-    //         return $this->whereForRecordComposite($select, $record);
-    //     }
-
-    //     $nativeCol = key($this->on);
-    //     $foreignCol = current($this->on);
-    //     $row = $record->getRow();
-    //     $select->where("{$this->foreignTable}.{$foreignCol} = ?", $row->$nativeCol);
-    // }
-
-    // protected function whereForRecordComposite($select, RecordInterface $record)
-    // {
-    //     $cond = [];
-    //     $vals = [];
-    //     $row = $record->getRow();
-    //     foreach ($this->on as $nativeCol => $foreignCol) {
-    //         $cond[] = "{$this->foreignTable}.{$foreignCol} = ?";
-    //         $vals[] = $row->$nativeCol;
-    //     }
-    //     $cond = '(' . implode(' AND ', $cond) . ')';
-    //     $select->where($cond, ...$vals);
-    // }
-
-    protected function selectForRecords(/* traversable */ $records, $custom)
+    protected function selectForRecords(array $records, $custom)
     {
         $select = $this->foreignMapper->select();
         $this->whereForRecords($select, $records);
@@ -127,7 +91,7 @@ abstract class AbstractRelationship
         return $select;
     }
 
-    protected function whereForRecords($select, /* traversable */ $records)
+    protected function whereForRecords($select, array $records)
     {
         if (count($this->on) > 1) {
             return $this->whereForRecordsComposite($select, $records);
@@ -144,7 +108,7 @@ abstract class AbstractRelationship
         $select->where("{$this->foreignTable}.{$foreignCol} IN (?)", array_unique($vals));
     }
 
-    protected function whereForRecordsComposite($select, /* traversable */ $records)
+    protected function whereForRecordsComposite($select, array $records)
     {
         $uniques = $this->getUniqueCompositeKeys($records);
         $cond = '(' . implode(' = ? AND ', $this->on) . '= ?)';
@@ -180,7 +144,7 @@ abstract class AbstractRelationship
         );
     }
 
-    protected function getUniqueCompositeKeys(/* traversable */ $records)
+    protected function getUniqueCompositeKeys(array $records)
     {
         $uniques = [];
         foreach ($records as $record) {
@@ -212,7 +176,7 @@ abstract class AbstractRelationship
     }
 
     abstract function stitchIntoRecords(
-        /* traversable */ $records,
+        array $records,
         callable $custom = null
     );
 }

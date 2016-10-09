@@ -110,6 +110,7 @@ class MapperSelect implements SubselectInterface
         return call_user_func($this->getSelectedRecordSet, $data, $this->with);
     }
 
+    /* THIS IS THE N+1 PROBLEM */
     public function fetchRecordsArray()
     {
         $this->tableColumns();
