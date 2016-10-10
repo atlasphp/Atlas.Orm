@@ -37,9 +37,63 @@ class Relationships
         return $this->fields;
     }
 
-    public function set(
-        $nativeMapperClass,
+    public function oneToOne(
         $name,
+        $nativeMapperClass,
+        $foreignMapperClass
+    ) {
+        return $this->set(
+            $name,
+            $nativeMapperClass,
+            OneToOne::CLASS,
+            $foreignMapperClass
+        );
+    }
+
+    public function oneToMany(
+        $name,
+        $nativeMapperClass,
+        $foreignMapperClass
+    ) {
+        return $this->set(
+            $name,
+            $nativeMapperClass,
+            OneToMany::CLASS,
+            $foreignMapperClass
+        );
+    }
+
+    public function manyToOne(
+        $name,
+        $nativeMapperClass,
+        $foreignMapperClass
+    ) {
+        return $this->set(
+            $name,
+            $nativeMapperClass,
+            ManyToOne::CLASS,
+            $foreignMapperClass
+        );
+    }
+
+    public function manyToMany(
+        $name,
+        $nativeMapperClass,
+        $foreignMapperClass,
+        $throughName
+    ) {
+        return $this->set(
+            $name,
+            $nativeMapperClass,
+            ManyToMany::CLASS,
+            $foreignMapperClass,
+            $throughName
+        );
+    }
+
+    protected function set(
+        $name,
+        $nativeMapperClass,
         $relationClass,
         $foreignMapperClass,
         $throughName = null

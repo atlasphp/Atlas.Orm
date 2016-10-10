@@ -23,33 +23,31 @@ class RelationshipsTest extends \PHPUnit_Framework_TestCase
         $this->relationships = new FakeRelationships($mapperLocator);
     }
 
-    public function testSet_manyToMany_noThroughName()
+    public function testManyToMany_noThroughName()
     {
         $this->setExpectedException(
             Exception::CLASS,
             "Relation 'foo' does not exist"
         );
 
-        $this->relationships->set(
-            EmployeeMapper::CLASS,
+        $this->relationships->manyToMany(
             'bar',
-            'ManyToMany',
+            EmployeeMapper::CLASS,
             EmployeeMapper::CLASS,
             'foo'
         );
     }
 
-    public function testSet_noForeignMapper()
+    public function test_noForeignMapper()
     {
         $this->setExpectedException(
             Exception::CLASS,
             "NoSuchMapper does not exist"
         );
 
-        $this->relationships->set(
-            EmployeeMapper::CLASS,
+        $this->relationships->oneToOne(
             'bar',
-            'OneToOne',
+            EmployeeMapper::CLASS,
             NoSuchMapper::CLASS
         );
     }

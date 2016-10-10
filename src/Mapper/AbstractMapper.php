@@ -9,16 +9,9 @@
 namespace Atlas\Orm\Mapper;
 
 use Atlas\Orm\Exception;
-use Atlas\Orm\Relationship\ManyToMany;
-use Atlas\Orm\Relationship\ManyToOne;
-use Atlas\Orm\Relationship\OneToMany;
-use Atlas\Orm\Relationship\OneToOne;
 use Atlas\Orm\Relationship\Relationships;
-use Atlas\Orm\Table\IdentityMap;
 use Atlas\Orm\Table\RowInterface;
 use Atlas\Orm\Table\TableInterface;
-use Aura\Sql\ConnectionLocator;
-use Aura\SqlQuery\QueryFactory;
 
 /**
  *
@@ -428,10 +421,9 @@ abstract class AbstractMapper implements MapperInterface
      */
     protected function oneToOne($name, $foreignMapperClass)
     {
-        return $this->relationships->set(
-            get_class($this),
+        return $this->relationships->oneToOne(
             $name,
-            OneToOne::CLASS,
+            get_class($this),
             $foreignMapperClass
         );
     }
@@ -450,10 +442,9 @@ abstract class AbstractMapper implements MapperInterface
      */
     protected function oneToMany($name, $foreignMapperClass)
     {
-        return $this->relationships->set(
-            get_class($this),
+        return $this->relationships->oneToMany(
             $name,
-            OneToMany::CLASS,
+            get_class($this),
             $foreignMapperClass
         );
     }
@@ -472,10 +463,9 @@ abstract class AbstractMapper implements MapperInterface
      */
     protected function manyToOne($name, $foreignMapperClass)
     {
-        return $this->relationships->set(
-            get_class($this),
+        return $this->relationships->manyToOne(
             $name,
-            ManyToOne::CLASS,
+            get_class($this),
             $foreignMapperClass
         );
     }
@@ -497,10 +487,9 @@ abstract class AbstractMapper implements MapperInterface
      */
     protected function manyToMany($name, $foreignMapperClass, $throughName)
     {
-        return $this->relationships->set(
-            get_class($this),
+        return $this->relationships->manyToMany(
             $name,
-            ManyToMany::CLASS,
+            get_class($this),
             $foreignMapperClass,
             $throughName
         );
