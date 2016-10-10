@@ -1,4 +1,13 @@
 <?php
+/**
+ *
+ * This file is part of Atlas for PHP.
+ *
+ * @package atlas/orm
+ *
+ * @license http://opensource.org/licenses/MIT MIT
+ *
+ */
 namespace Atlas\Orm\Table;
 
 use Atlas\Orm\Exception;
@@ -7,7 +16,7 @@ use Atlas\Orm\Exception;
  *
  * A ServiceLocator implementation for creating and retaining Table objects.
  *
- * @package Atlas.Atlas
+ * @package atlas/orm
  *
  */
 class TableLocator

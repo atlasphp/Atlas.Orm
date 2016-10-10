@@ -3,7 +3,7 @@
  *
  * This file is part of Atlas for PHP.
  *
- * @package Atlas.Atlas
+ * @package atlas/orm
  *
  * @license http://opensource.org/licenses/MIT MIT
  *
@@ -18,7 +18,7 @@ use UnexpectedValueException;
  *
  * Base exception class, with factory methods.
  *
- * @package Atlas.Atlas
+ * @package atlas/orm
  *
  */
 class Exception extends \Exception

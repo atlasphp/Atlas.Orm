@@ -1,11 +1,20 @@
 <?php
+/**
+ *
+ * This file is part of Atlas for PHP.
+ *
+ * @package atlas/orm
+ *
+ * @license http://opensource.org/licenses/MIT MIT
+ *
+ */
 namespace Atlas\Orm\Mapper;
 
 /**
  *
  * A data source mapper that returns Record and RecordSet objects.
  *
- * @package Atlas.Atlas
+ * @package atlas/orm
  *
  */
 interface MapperInterface

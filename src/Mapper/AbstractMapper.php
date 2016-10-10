@@ -1,4 +1,13 @@
 <?php
+/**
+ *
+ * This file is part of Atlas for PHP.
+ *
+ * @package atlas/orm
+ *
+ * @license http://opensource.org/licenses/MIT MIT
+ *
+ */
 namespace Atlas\Orm\Mapper;
 
 use Atlas\Orm\Exception;
@@ -17,7 +26,7 @@ use Aura\SqlQuery\QueryFactory;
  *
  * A data source mapper that returns Record and RecordSet objects.
  *
- * @package Atlas.Atlas
+ * @package atlas/orm
  *
  */
 abstract class AbstractMapper implements MapperInterface
