@@ -32,6 +32,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase
         $this->select = new MapperSelect(
             $tableSelect,
             function () { },
+            function () { },
             function () { }
         );
 

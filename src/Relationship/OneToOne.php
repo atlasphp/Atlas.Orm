@@ -12,7 +12,7 @@ class OneToOne extends AbstractRelationship
         $this->fix();
 
         $select = $this->selectForRecords($nativeRecords, $custom);
-        $foreignRecordsArray = $select->fetchRecordsArray();
+        $foreignRecordsArray = $select->fetchRecords();
 
         foreach ($nativeRecords as $nativeRecord) {
             $nativeRecord->{$this->name} = false;

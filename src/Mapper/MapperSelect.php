@@ -19,6 +19,8 @@ class MapperSelect implements SubselectInterface
 
     protected $getSelectedRecord;
 
+    protected $getSelectedRecords;
+
     protected $getSelectedRecordSet;
 
     protected $with = [];
@@ -26,10 +28,12 @@ class MapperSelect implements SubselectInterface
     public function __construct(
         TableSelect $tableSelect,
         callable $getSelectedRecord,
+        callable $getSelectedRecords,
         callable $getSelectedRecordSet
     ) {
         $this->tableSelect = $tableSelect;
         $this->getSelectedRecord = $getSelectedRecord;
+        $this->getSelectedRecords = $getSelectedRecords;
         $this->getSelectedRecordSet = $getSelectedRecordSet;
     }
 
@@ -90,6 +94,7 @@ class MapperSelect implements SubselectInterface
     public function fetchRecord()
     {
         $this->tableColumns();
+
         $cols = $this->fetchOne();
         if (! $cols) {
             return false;
@@ -110,17 +115,16 @@ class MapperSelect implements SubselectInterface
         return call_user_func($this->getSelectedRecordSet, $data, $this->with);
     }
 
-    /* THIS IS THE N+1 PROBLEM */
-    public function fetchRecordsArray()
+    public function fetchRecords()
     {
         $this->tableColumns();
 
-        $records = [];
         $data = $this->fetchAll();
-        foreach ($data as $cols) {
-            $records[] = call_user_func($this->getSelectedRecord, $cols, $this->with);
+        if (! $data) {
+            return [];
         }
-        return $records;
+
+        return call_user_func($this->getSelectedRecords, $data, $this->with);
     }
 
     protected function tableColumns()

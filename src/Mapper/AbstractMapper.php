@@ -118,6 +118,7 @@ abstract class AbstractMapper implements MapperInterface
         return new MapperSelect(
             $this->table->select($colsVals),
             [$this, 'getSelectedRecord'],
+            [$this, 'getSelectedRecords'],
             [$this, 'getSelectedRecordSet']
         );
     }
@@ -191,6 +192,16 @@ abstract class AbstractMapper implements MapperInterface
     {
         $row = $this->table->getSelectedRow($cols);
         return $this->newRecordFromRow($row, $with);
+    }
+
+    public function getSelectedRecords(array $data, array $with = [])
+    {
+        $records = [];
+        foreach ($data as $cols) {
+            $records[] = $this->getSelectedRecord($cols);
+        }
+        $this->relationships->stitchIntoRecords($records, $with);
+        return $records;
     }
 
     public function getSelectedRecordSet(array $data, array $with = [])

@@ -143,8 +143,9 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
             $this->assertSame($expect, $actual[$i], "record $i not the same");
         }
 
-        // $profiles = $this->profiler->getProfiles();
-        // var_export($profiles);
+        // N+1 avoidance check
+        $profiles = $this->profiler->getProfiles();
+        $this->assertCount(7, $profiles);
     }
 
     public function testSelect_fetchRecord()

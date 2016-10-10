@@ -30,7 +30,7 @@ class ManyToMany extends AbstractRelationship
 
         $throughRecords = $this->throughRecords($nativeRecords);
         $select = $this->selectForRecords($throughRecords, $custom);
-        $foreignRecordsArray = $select->fetchRecordsArray();
+        $foreignRecordsArray = $select->fetchRecords();
 
         foreach ($nativeRecords as $nativeRecord) {
             $nativeRecord->{$this->name} = [];
