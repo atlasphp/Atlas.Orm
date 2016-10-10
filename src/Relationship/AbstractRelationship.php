@@ -189,7 +189,6 @@ abstract class AbstractRelationship
         foreach ($nativeRecords as $nativeRecord) {
             $this->stitchIntoRecord($nativeRecord, $foreignRecords);
         }
-
     }
 
     abstract protected function stitchIntoRecord(

@@ -28,7 +28,7 @@ class ManyToMany extends AbstractRelationship
 
         $this->fix();
 
-        $throughRecords = $this->throughRecords($nativeRecords);
+        $throughRecords = $this->getThroughRecords($nativeRecords);
         $foreignRecords = $this->fetchForeignRecords($throughRecords, $custom);
         foreach ($nativeRecords as $nativeRecord) {
             $this->stitchIntoRecord($nativeRecord, $foreignRecords);
@@ -46,7 +46,7 @@ class ManyToMany extends AbstractRelationship
         }
     }
 
-    protected function throughRecords(array $nativeRecords)
+    protected function getThroughRecords(array $nativeRecords)
     {
         // this hackish. the "through" relation should be loaded for everything,
         // so if even one is loaded, all the others ought to have been too.
