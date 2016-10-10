@@ -3,8 +3,6 @@
  *
  * This file is part of Atlas for PHP.
  *
- * @package atlas/orm
- *
  * @license http://opensource.org/licenses/MIT MIT
  *
  */
@@ -15,6 +13,13 @@ use Atlas\Orm\Mapper\RecordInterface;
 use Atlas\Orm\Mapper\MapperLocator;
 use SplObjectStorage;
 
+/**
+ *
+ * __________
+ *
+ * @package atlas/orm
+ *
+ */
 class Transaction
 {
     /**

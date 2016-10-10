@@ -3,8 +3,6 @@
  *
  * This file is part of Atlas for PHP.
  *
- * @package atlas/orm
- *
  * @license http://opensource.org/licenses/MIT MIT
  *
  */
@@ -16,6 +14,13 @@ use Atlas\Orm\Exception;
 use Countable;
 use IteratorAggregate;
 
+/**
+ *
+ * __________
+ *
+ * @package atlas/orm
+ *
+ */
 class RecordSet implements RecordSetInterface
 {
     private $records = [];

@@ -3,8 +3,6 @@
  *
  * This file is part of Atlas for PHP.
  *
- * @package atlas/orm
- *
  * @license http://opensource.org/licenses/MIT MIT
  *
  */
@@ -13,6 +11,13 @@ namespace Atlas\Orm\Mapper;
 use Atlas\Orm\Exception;
 use Atlas\Orm\Table\RowInterface;
 
+/**
+ *
+ * __________
+ *
+ * @package atlas/orm
+ *
+ */
 class Record implements RecordInterface
 {
     private $row;

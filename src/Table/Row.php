@@ -3,8 +3,6 @@
  *
  * This file is part of Atlas for PHP.
  *
- * @package atlas/orm
- *
  * @license http://opensource.org/licenses/MIT MIT
  *
  */
@@ -12,6 +10,13 @@ namespace Atlas\Orm\Table;
 
 use Atlas\Orm\Exception;
 
+/**
+ *
+ * __________
+ *
+ * @package atlas/orm
+ *
+ */
 class Row implements RowInterface
 {
     // new instance, in memory only

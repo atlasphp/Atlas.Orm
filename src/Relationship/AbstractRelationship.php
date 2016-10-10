@@ -3,8 +3,6 @@
  *
  * This file is part of Atlas for PHP.
  *
- * @package atlas/orm
- *
  * @license http://opensource.org/licenses/MIT MIT
  *
  */
@@ -14,6 +12,13 @@ use Atlas\Orm\Mapper\MapperLocator;
 use Atlas\Orm\Mapper\RecordInterface;
 use Atlas\Orm\Mapper\RecordSetInterface;
 
+/**
+ *
+ * __________
+ *
+ * @package atlas/orm
+ *
+ */
 abstract class AbstractRelationship
 {
     protected $mapperLocator;

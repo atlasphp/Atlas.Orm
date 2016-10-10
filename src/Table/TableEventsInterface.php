@@ -3,8 +3,6 @@
  *
  * This file is part of Atlas for PHP.
  *
- * @package atlas/orm
- *
  * @license http://opensource.org/licenses/MIT MIT
  *
  */
@@ -15,6 +13,13 @@ use Aura\SqlQuery\Common\Insert;
 use Aura\SqlQuery\Common\Update;
 use PDOStatement;
 
+/**
+ *
+ * __________
+ *
+ * @package atlas/orm
+ *
+ */
 interface TableEventsInterface
 {
     public function beforeInsert(TableInterface $table, RowInterface $row);

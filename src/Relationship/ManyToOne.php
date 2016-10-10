@@ -3,13 +3,18 @@
  *
  * This file is part of Atlas for PHP.
  *
- * @package atlas/orm
- *
  * @license http://opensource.org/licenses/MIT MIT
  *
  */
 namespace Atlas\Orm\Relationship;
 
+/**
+ *
+ * __________
+ *
+ * @package atlas/orm
+ *
+ */
 class ManyToOne extends OneToOne
 {
     protected function fixOn()

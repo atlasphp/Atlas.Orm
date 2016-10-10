@@ -3,8 +3,6 @@
  *
  * This file is part of Atlas for PHP.
  *
- * @package atlas/orm
- *
  * @license http://opensource.org/licenses/MIT MIT
  *
  */
@@ -20,6 +18,13 @@ use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\QueryFactory;
 
+/**
+ *
+ * __________
+ *
+ * @package atlas/orm
+ *
+ */
 class AtlasContainer
 {
     protected $atlas;

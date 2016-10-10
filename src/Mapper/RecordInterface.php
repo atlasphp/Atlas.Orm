@@ -3,13 +3,18 @@
  *
  * This file is part of Atlas for PHP.
  *
- * @package atlas/orm
- *
  * @license http://opensource.org/licenses/MIT MIT
  *
  */
 namespace Atlas\Orm\Mapper;
 
+/**
+ *
+ * __________
+ *
+ * @package atlas/orm
+ *
+ */
 interface RecordInterface
 {
     public function getMapperClass();

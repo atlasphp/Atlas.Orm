@@ -3,8 +3,6 @@
  *
  * This file is part of Atlas for PHP.
  *
- * @package atlas/orm
- *
  * @license http://opensource.org/licenses/MIT MIT
  *
  */
@@ -14,6 +12,13 @@ use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\Common\SelectInterface;
 use Aura\SqlQuery\Common\SubselectInterface;
 
+/**
+ *
+ * __________
+ *
+ * @package atlas/orm
+ *
+ */
 class TableSelect implements SubselectInterface
 {
     /**
