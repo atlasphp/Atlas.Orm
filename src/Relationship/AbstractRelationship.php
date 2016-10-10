@@ -32,7 +32,7 @@ abstract class AbstractRelationship
     protected $foreignMapper;
     protected $foreignTable;
 
-    protected $on = array();
+    protected $on = [];
 
     protected $throughName;
 
@@ -60,7 +60,6 @@ abstract class AbstractRelationship
         unset($settings['mapperLocator']);
         unset($settings['nativeMapper']);
         unset($settings['foreignMapper']);
-        unset($settings['mapperLocator']);
         return $settings;
     }
 
@@ -97,20 +96,28 @@ abstract class AbstractRelationship
 
     protected function fetchForeignRecords(array $records, $custom)
     {
-        $select = $this->foreignMapper->select();
-        $this->selectForeignWhere($select, $records);
+        $select = $this->foreignSelect($records);
         if ($custom) {
             $custom($select);
         }
         return $select->fetchRecords();
     }
 
-    protected function selectForeignWhere($select, array $records)
+    protected function foreignSelect(array $records)
     {
+        $select = $this->foreignMapper->select();
+
         if (count($this->on) > 1) {
-            return $this->selectForeignWhereComposite($select, $records);
+            $this->foreignSelectComposite($select, $records);
+            return $select;
         }
 
+        $this->foreignSelectSimple($select, $records);
+        return $select;
+    }
+
+    protected function foreignSelectSimple($select, $records)
+    {
         $vals = [];
         $nativeCol = key($this->on);
         foreach ($records as $record) {
@@ -122,7 +129,7 @@ abstract class AbstractRelationship
         $select->where("{$this->foreignTable}.{$foreignCol} IN (?)", array_unique($vals));
     }
 
-    protected function selectForeignWhereComposite($select, array $records)
+    protected function foreignSelectComposite($select, array $records)
     {
         $uniques = $this->getUniqueCompositeKeys($records);
         $cond = '(' . implode(' = ? AND ', $this->on) . '= ?)';
