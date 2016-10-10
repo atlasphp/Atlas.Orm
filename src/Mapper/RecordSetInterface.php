@@ -14,14 +14,28 @@ use IteratorAggregate;
 
 /**
  *
- * __________
+ * An interface for RecordSet objects.
  *
  * @package atlas/orm
  *
  */
 interface RecordSetInterface extends ArrayAccess, Countable, IteratorAggregate
 {
+    /**
+     *
+     * Is the RecordSet empty?
+     *
+     * @return bool
+     *
+     */
     public function isEmpty();
 
+    /**
+     *
+     * Returns an array copy of the Record objects in the RecordSet.
+     *
+     * @return array
+     *
+     */
     public function getArrayCopy();
 }

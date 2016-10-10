@@ -16,15 +16,29 @@ use IteratorAggregate;
 
 /**
  *
- * __________
+ * A generic RecordSet.
  *
  * @package atlas/orm
  *
  */
 class RecordSet implements RecordSetInterface
 {
+    /**
+     *
+     * The Record objects in this set.
+     *
+     * @var array
+     *
+     */
     private $records = [];
 
+    /**
+     *
+     * Constructor.
+     *
+     * @param array $records The Record objects in this set.
+     *
+     */
     public function __construct(array $records = [])
     {
         foreach ($records as $key => $record) {
@@ -32,24 +46,51 @@ class RecordSet implements RecordSetInterface
         }
     }
 
+    /**
+     *
+     * Implements ArrayAccess::offsetExists().
+     *
+     * @param mixed $offset An offset to check for.
+     *
+     * @return bool
+     *
+     */
     public function offsetExists($offset)
     {
         return isset($this->records[$offset]);
     }
 
+    /**
+     *
+     * Implements ArrayAccess::offsetGet().
+     *
+     * @param mixed $offset The offset to retrieve.
+     *
+     * @return RecordInterface
+     *
+     */
     public function offsetGet($offset)
     {
         return $this->records[$offset];
     }
 
+    /**
+     *
+     * Implements ArrayAccess::offsetSet().
+     *
+     * @param mixed $offset The offset to assign the Record to.
+     *
+     * @param RecordInterface $value The Record to set.
+     *
+     */
     public function offsetSet($offset, $value)
     {
         if (! is_object($value)) {
-            throw Exception::invalidType(Record::CLASS, gettype($value));
+            throw Exception::invalidType(RecordInterface::CLASS, gettype($value));
         }
 
-        if (! $value instanceof Record) {
-            throw Exception::invalidType(Record::CLASS, $value);
+        if (! $value instanceof RecordInterface) {
+            throw Exception::invalidType(RecordInterface::CLASS, $value);
         }
 
         if ($offset === null) {
@@ -60,26 +101,61 @@ class RecordSet implements RecordSetInterface
         $this->records[$offset] = $value;
     }
 
+    /**
+     *
+     * Implements ArrayAccess::offsetUnset().
+     *
+     * @param mixed $offset The offset to unset.
+     *
+     */
     public function offsetUnset($offset)
     {
         unset($this->records[$offset]);
     }
 
+    /**
+     *
+     * Implements Countable::count().
+     *
+     * @return int The number of Record objects in the RecordSet.
+     *
+     */
     public function count()
     {
         return count($this->records);
     }
 
+    /**
+     *
+     * Implements IteratorAggregate::getIterator().
+     *
+     * @return ArrayIterator
+     *
+     */
     public function getIterator()
     {
         return new ArrayIterator($this->records);
     }
 
+    /**
+     *
+     * Is the RecordSet empty?
+     *
+     * @return bool
+     *
+     */
     public function isEmpty()
     {
         return ! $this->records;
     }
 
+    /**
+     *
+     * Returns an array copy of the Record objects in the RecordSet.
+     *
+     * @return array
+     *
+     */
     public function getArrayCopy()
     {
         $array = [];
