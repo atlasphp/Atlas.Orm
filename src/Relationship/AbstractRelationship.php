@@ -81,20 +81,20 @@ abstract class AbstractRelationship
         }
     }
 
-    protected function selectForRecords(array $records, $custom)
+    protected function fetchForeignRecords(array $records, $custom)
     {
         $select = $this->foreignMapper->select();
-        $this->whereForRecords($select, $records);
+        $this->selectForeignWhere($select, $records);
         if ($custom) {
             $custom($select);
         }
-        return $select;
+        return $select->fetchRecords();
     }
 
-    protected function whereForRecords($select, array $records)
+    protected function selectForeignWhere($select, array $records)
     {
         if (count($this->on) > 1) {
-            return $this->whereForRecordsComposite($select, $records);
+            return $this->selectForeignWhereComposite($select, $records);
         }
 
         $vals = [];
@@ -108,7 +108,7 @@ abstract class AbstractRelationship
         $select->where("{$this->foreignTable}.{$foreignCol} IN (?)", array_unique($vals));
     }
 
-    protected function whereForRecordsComposite($select, array $records)
+    protected function selectForeignWhereComposite($select, array $records)
     {
         $uniques = $this->getUniqueCompositeKeys($records);
         $cond = '(' . implode(' = ? AND ', $this->on) . '= ?)';
@@ -175,8 +175,25 @@ abstract class AbstractRelationship
         return true;
     }
 
-    abstract function stitchIntoRecords(
-        array $records,
+    public function stitchIntoRecords(
+        array $nativeRecords,
         callable $custom = null
+    ) {
+        if (! $nativeRecords) {
+            return;
+        }
+
+        $this->fix();
+
+        $foreignRecords = $this->fetchForeignRecords($nativeRecords, $custom);
+        foreach ($nativeRecords as $nativeRecord) {
+            $this->stitchIntoRecord($nativeRecord, $foreignRecords);
+        }
+
+    }
+
+    abstract protected function stitchIntoRecord(
+        RecordInterface $nativeRecord,
+        array $foreignRecords
     );
 }

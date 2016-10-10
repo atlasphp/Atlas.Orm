@@ -5,26 +5,19 @@ use Atlas\Orm\Mapper\RecordInterface;
 
 class OneToMany extends AbstractRelationship
 {
-    public function stitchIntoRecords(
-        array $nativeRecords,
-        callable $custom = null
+    protected function stitchIntoRecord(
+        RecordInterface $nativeRecord,
+        array $foreignRecords
     ) {
-        $this->fix();
-
-        $select = $this->selectForRecords($nativeRecords, $custom);
-        $foreignRecordsArray = $select->fetchRecords();
-
-        foreach ($nativeRecords as $nativeRecord) {
-            $nativeRecord->{$this->name} = [];
-            $matches = [];
-            foreach ($foreignRecordsArray as $foreignRecord) {
-                if ($this->recordsMatch($nativeRecord, $foreignRecord)) {
-                    $matches[] = $foreignRecord;
-                }
+        $nativeRecord->{$this->name} = [];
+        $matches = [];
+        foreach ($foreignRecords as $foreignRecord) {
+            if ($this->recordsMatch($nativeRecord, $foreignRecord)) {
+                $matches[] = $foreignRecord;
             }
-            if ($matches) {
-                $nativeRecord->{$this->name} = $this->foreignMapper->newRecordSet($matches);
-            }
+        }
+        if ($matches) {
+            $nativeRecord->{$this->name} = $this->foreignMapper->newRecordSet($matches);
         }
     }
 }

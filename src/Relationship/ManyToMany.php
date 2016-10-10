@@ -22,22 +22,27 @@ class ManyToMany extends AbstractRelationship
         array $nativeRecords,
         callable $custom = null
     ) {
-        $this->fix();
-
-        if (empty($nativeRecords)) {
+        if (! $nativeRecords) {
             return;
         }
 
-        $throughRecords = $this->throughRecords($nativeRecords);
-        $select = $this->selectForRecords($throughRecords, $custom);
-        $foreignRecordsArray = $select->fetchRecords();
+        $this->fix();
 
+        $throughRecords = $this->throughRecords($nativeRecords);
+        $foreignRecords = $this->fetchForeignRecords($throughRecords, $custom);
         foreach ($nativeRecords as $nativeRecord) {
-            $nativeRecord->{$this->name} = [];
-            $matches = $this->getMatches($nativeRecord, $foreignRecordsArray);
-            if ($matches) {
-                $nativeRecord->{$this->name} = $this->foreignMapper->newRecordSet($matches);
-            }
+            $this->stitchIntoRecord($nativeRecord, $foreignRecords);
+        }
+    }
+
+    protected function stitchIntoRecord(
+        RecordInterface $nativeRecord,
+        array $foreignRecords
+    ) {
+        $nativeRecord->{$this->name} = [];
+        $matches = $this->getMatches($nativeRecord, $foreignRecords);
+        if ($matches) {
+            $nativeRecord->{$this->name} = $this->foreignMapper->newRecordSet($matches);
         }
     }
 
@@ -59,11 +64,11 @@ class ManyToMany extends AbstractRelationship
         return $throughRecords;
     }
 
-    protected function getMatches($nativeRecord, $foreignRecordsArray)
+    protected function getMatches($nativeRecord, $foreignRecords)
     {
         $matches = [];
         foreach ($nativeRecord->{$this->throughName} as $throughRecord) {
-            foreach ($foreignRecordsArray as $foreignRecord) {
+            foreach ($foreignRecords as $foreignRecord) {
                 if ($this->recordsMatch($throughRecord, $foreignRecord)) {
                     $matches[] = $foreignRecord;
                 }
