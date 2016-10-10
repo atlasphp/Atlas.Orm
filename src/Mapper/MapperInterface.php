@@ -16,11 +16,11 @@ interface MapperInterface
 
     public function fetchRecord($primaryVal, array $with = []);
 
-    public function fetchRecordBy(array $colsVals = [], array $with = []);
+    public function fetchRecordBy(array $colsVals, array $with = []);
 
     public function fetchRecordSet(array $primaryVals, array $with = []);
 
-    public function fetchRecordSetBy(array $colsVals = [], array $with = []);
+    public function fetchRecordSetBy(array $colsVals, array $with = []);
 
     public function select(array $colsVals = []);
 

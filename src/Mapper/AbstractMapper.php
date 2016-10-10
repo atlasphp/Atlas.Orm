@@ -22,12 +22,45 @@ use Aura\SqlQuery\QueryFactory;
  */
 abstract class AbstractMapper implements MapperInterface
 {
+    /**
+     *
+     * The underlying table object for this mapper.
+     *
+     * @var TableInterface
+     *
+     */
     protected $table;
 
+    /**
+     *
+     * The relationships to other mappers.
+     *
+     * @var Relationships
+     *
+     */
     protected $relationships;
 
+    /**
+     *
+     * Events to invoke during mapper operations.
+     *
+     * @var MapperEventsInterface
+     *
+     */
     protected $events;
 
+    /**
+     *
+     * Constructor.
+     *
+     * @param TableInterface $table The underlying table object for this mapper.
+     *
+     * @param Relationships $relationships The relationships to other mappers.
+     *
+     * @param MapperEventsInterface $events Events to invoke during mapper
+     * operations.
+     *
+     */
     public function __construct(
         TableInterface $table,
         Relationships $relationships,
@@ -39,6 +72,16 @@ abstract class AbstractMapper implements MapperInterface
         $this->setRelated();
     }
 
+    /**
+     *
+     * Returns the name of the table class to use when constructing this mapper.
+     *
+     * By default, it is the same name as the mapper class, but suffixed with
+     * 'Table' instead of 'Mapper'.
+     *
+     * @return string
+     *
+     */
     static public function getTableClass()
     {
         static $tableClass;
@@ -48,6 +91,13 @@ abstract class AbstractMapper implements MapperInterface
         return $tableClass;
     }
 
+    /**
+     *
+     * Returns the underlying table object.
+     *
+     * @return TableInterface
+     *
+     */
     public function getTable()
     {
         return $this->table;
@@ -77,15 +127,71 @@ abstract class AbstractMapper implements MapperInterface
         return $this->table->getWriteConnection();
     }
 
+    /**
+     *
+     * Fetches one Record by its primary key value, optionally with relateds.
+     *
+     * @param mixed $primaryVal The primary key value; a scalar in the case of
+     * simple keys, or an array of key-value pairs for composite keys.
+     *
+     * @param array $with Return the Record with these relateds stitched in.
+     *
+     * @return RecordInterface|false A Record on success, or `false` on failure.
+     * (If a Mapper-specific Record class is defined, that will be returned on
+     * success instead of a generic Record.)
+     *
+     */
     public function fetchRecord($primaryVal, array $with = [])
     {
         $row = $this->table->fetchRow($primaryVal);
         if (! $row) {
             return false;
         }
-        return $this->newRecordFromRow($row, $with);
+
+        $record = $this->newRecordFromRow($row);
+        $this->relationships->stitchIntoRecords([$record], $with);
+        return $record;
     }
 
+    /**
+     *
+     * Fetches one Record by column-value equality pairs, optionally with
+     * relateds.
+     *
+     * @param array $colsVals The column-value equality pairs.
+     *
+     * @return RecordInterface|false A Record on success, or `false` on failure.
+     * (If a Mapper-specific Record class is defined, that will be returned on
+     * success instead of a generic Record.)
+     *
+     */
+    public function fetchRecordBy(array $colsVals, array $with = [])
+    {
+        $row = $this->table->selectRow($this->table->select($colsVals));
+        if (! $row) {
+            return false;
+        }
+
+        $record = $this->newRecordFromRow($row);
+        $this->relationships->stitchIntoRecords([$record], $with);
+        return $record;
+    }
+
+    /**
+     *
+     * Fetches a RecordSet by primary key values, optionally with relateds.
+     *
+     * @param array $primaryVal The primary key values. Each element in the
+     * array is a scalar in the case of simple keys, or an array of key-value
+     * pairs for composite keys.
+     *
+     * @param array $with Return each Record with these relateds stitched in.
+     *
+     * @return RecordSetInterface|array A RecordSet on success, or an empty
+     * array on failure. (If a mapper-specific RecordSet class is defined, that
+     * will be returned instead of a generic RecordSet.)
+     *
+     */
     public function fetchRecordSet(array $primaryVals, array $with = [])
     {
         $rows = $this->table->fetchRows($primaryVals);
@@ -95,16 +201,21 @@ abstract class AbstractMapper implements MapperInterface
         return $this->newRecordSetFromRows($rows, $with);
     }
 
-    public function fetchRecordBy(array $colsVals = [], array $with = [])
-    {
-        $row = $this->table->selectRow($this->table->select($colsVals));
-        if (! $row) {
-            return false;
-        }
-        return $this->newRecordFromRow($row, $with);
-    }
-
-    public function fetchRecordSetBy(array $colsVals = [], array $with = [])
+    /**
+     *
+     * Fetches a RecordSet by column-value equality pairs, optionally with
+     * relateds.
+     *
+     * @param array $colsVals The column-value equality pairs.
+     *
+     * @param array $with Return each Record with these relateds stitched in.
+     *
+     * @return RecordSetInterface|array A RecordSet on success, or an empty
+     * array on failure. (If a mapper-specific RecordSet class is defined, that
+     * will be returned instead of a generic RecordSet.)
+     *
+     */
+    public function fetchRecordSetBy(array $colsVals, array $with = [])
     {
         $rows = $this->table->selectRows($this->table->select($colsVals));
         if (! $rows) {
@@ -113,6 +224,16 @@ abstract class AbstractMapper implements MapperInterface
         return $this->newRecordSetFromRows($rows, $with);
     }
 
+    /**
+     *
+     * Returns a new MapperSelect object.
+     *
+     * @param array $colsVals A series of column-value equality pairs for the
+     * WHERE clause.
+     *
+     * @return MapperSelect
+     *
+     */
     public function select(array $colsVals = [])
     {
         return new MapperSelect(
@@ -174,12 +295,32 @@ abstract class AbstractMapper implements MapperInterface
         return $result;
     }
 
+    /**
+     *
+     * Returns a new Record object.
+     *
+     * @param array $cols Populate the underlying Row fields with these values.
+     *
+     * @return RecordInterface If a Mapper-specific Record class is defined,
+     * that will be returned instead of a generic Record.
+     *
+     */
     public function newRecord(array $cols = [])
     {
         $row = $this->table->newRow($cols);
         return $this->newRecordFromRow($row);
     }
 
+    /**
+     *
+     * Returns a new RecordSet object.
+     *
+     * @param array $records Populate RecordSet with these Record objects.
+     *
+     * @return RecordSetInterface If a Mapper-specific RecordSet class is
+     * defined, that will be returned instead of a generic RecordSet.
+     *
+     */
     public function newRecordSet(array $records = [])
     {
         $recordSetClass = $this->getRecordSetClass();
@@ -187,12 +328,42 @@ abstract class AbstractMapper implements MapperInterface
         return $recordSet;
     }
 
+    /**
+     *
+     * Given an array of selected column data, return a new Record, optionally
+     * with relateds.
+     *
+     * @param array $cols An array of selected column data for a Row.
+     *
+     * @param array $with Return the Record with these relateds stitched in.
+     *
+     * @return RecordInterface If a Mapper-specific Record class is defined,
+     * that will be returned instead of a generic Record.
+     *
+     */
     public function getSelectedRecord(array $cols, array $with = [])
     {
         $row = $this->table->getSelectedRow($cols);
-        return $this->newRecordFromRow($row, $with);
+        $record = $this->newRecordFromRow($row);
+        $this->relationships->stitchIntoRecords([$record], $with);
+        return $record;
     }
 
+    /**
+     *
+     * Given an array of selected row data, return an array of Record objects,
+     * optionally with relateds. Note that this is an *array of Record objects*
+     * and not a RecordSet. Generally used only by the MapperSelect class.
+     *
+     * @param array $data An array of selected data for Record objects.
+     *
+     * @param array $with Return each Record with these relateds stitched in.
+     *
+     * @return array An array of Record objects. If a Mapper-specific Record
+     * class is defined, those will be returned in the array instead of generic
+     * Record objects.
+     *
+     */
     public function getSelectedRecords(array $data, array $with = [])
     {
         $records = [];
@@ -203,6 +374,19 @@ abstract class AbstractMapper implements MapperInterface
         return $records;
     }
 
+    /**
+     *
+     * Given an array of selected row data, returns a RecordSet object,
+     * optionally with relateds. Generally used only by the MapperSelect class.
+     *
+     * @param array $data An array of selected data for Record objects.
+     *
+     * @param array $with Return each Record with these relateds stitched in.
+     *
+     * @return RecordSet If a Mapper-specific RecordSet class is defined, that
+     * will be returned of a generic RecordSet object.
+     *
+     */
     public function getSelectedRecordSet(array $data, array $with = [])
     {
         $records = [];
@@ -213,10 +397,29 @@ abstract class AbstractMapper implements MapperInterface
         return $this->newRecordSet($records);
     }
 
+    /**
+     *
+     * Use this in extended Mapper classes to set the relationships.
+     *
+     * @return void
+     *
+     */
     protected function setRelated()
     {
     }
 
+    /**
+     *
+     * Sets a one-to-one relationship to another mapper.
+     *
+     * @param string $name The field name to use in the Record for the related
+     * foreign Record.
+     *
+     * @param string $foreignMapperClass The class name of the foreign mapper.
+     *
+     * @return AbstractRelationship
+     *
+     */
     protected function oneToOne($name, $foreignMapperClass)
     {
         return $this->relationships->set(
@@ -227,6 +430,18 @@ abstract class AbstractMapper implements MapperInterface
         );
     }
 
+    /**
+     *
+     * Sets a one-to-many relationship to another mapper.
+     *
+     * @param string $name The field name to use in the Record for the related
+     * foreign RecordSet.
+     *
+     * @param string $foreignMapperClass The class name of the foreign mapper.
+     *
+     * @return AbstractRelationship
+     *
+     */
     protected function oneToMany($name, $foreignMapperClass)
     {
         return $this->relationships->set(
@@ -237,6 +452,18 @@ abstract class AbstractMapper implements MapperInterface
         );
     }
 
+    /**
+     *
+     * Sets a many-to-one relationship to another mapper.
+     *
+     * @param string $name The field name to use in the Record for the related
+     * foreign Record.
+     *
+     * @param string $foreignMapperClass The class name of the foreign mapper.
+     *
+     * @return AbstractRelationship
+     *
+     */
     protected function manyToOne($name, $foreignMapperClass)
     {
         return $this->relationships->set(
@@ -247,6 +474,21 @@ abstract class AbstractMapper implements MapperInterface
         );
     }
 
+    /**
+     *
+     * Sets a many-to-many relationship to another mapper.
+     *
+     * @param string $name The field name to use in the Record for the related
+     * foreign RecordSet.
+     *
+     * @param string $foreignMapperClass The class name of the foreign mapper.
+     *
+     * @param string $throughName Relate to the foreign mapper through this
+     * native Record field name.
+     *
+     * @return AbstractRelationship
+     *
+     */
     protected function manyToMany($name, $foreignMapperClass, $throughName)
     {
         return $this->relationships->set(
@@ -258,6 +500,21 @@ abstract class AbstractMapper implements MapperInterface
         );
     }
 
+    /**
+     *
+     * Returns the name of the Record class to use for a particular Row.
+     *
+     * By default, this method returns the Record class specific to this Mapper
+     * if one exists; otherwise it returns the generic Record class name.
+     *
+     * Override this method to implement single-table inheritance so that
+     * different Record class names can be returned based on a Row column value.
+     *
+     * @param RowInterface $row Return a Record class name for this Row.
+     *
+     * @return string
+     *
+     */
     protected function getRecordClass(RowInterface $row)
     {
         static $recordClass;
@@ -270,6 +527,17 @@ abstract class AbstractMapper implements MapperInterface
         return $recordClass;
     }
 
+    /**
+     *
+     * Returns the name of the RecordSet class to use with this Mapper.
+     *
+     * By default, this method returns the RecordSet class specific to this
+     * Mapper if one exists; otherwise it returns the generic RecordSet class
+     * name.
+     *
+     * @return string
+     *
+     */
     protected function getRecordSetClass()
     {
         static $recordSetClass;
@@ -282,18 +550,37 @@ abstract class AbstractMapper implements MapperInterface
         return $recordSetClass;
     }
 
-    protected function newRecordFromRow(RowInterface $row, array $with = [])
+    /**
+     *
+     * Given a Row object, returns a new Record.
+     *
+     * @param RowInterface $row The Row for the Record.
+     *
+     * @return RecordInterface
+     *
+     */
+    protected function newRecordFromRow(RowInterface $row)
     {
         $recordClass = $this->getRecordClass($row);
-        $record = new $recordClass(
+        return new $recordClass(
             get_class($this),
             $row,
             $this->newRelated()
         );
-        $this->relationships->stitchIntoRecords([$record], $with);
-        return $record;
     }
 
+    /**
+     *
+     * Given an array of Row objects, returns a new RecordSet, optionally with
+     * relateds.
+     *
+     * @param array $rows An array of Row objects.
+     *
+     * @param array $with Return each Record with these relateds stitched in.
+     *
+     * @return RecordSetInterface
+     *
+     */
     protected function newRecordSetFromRows(array $rows, array $with = [])
     {
         $records = [];
@@ -304,6 +591,13 @@ abstract class AbstractMapper implements MapperInterface
         return $this->newRecordSet($records);
     }
 
+    /**
+     *
+     * Returns a new Related object for related fields on a Record.
+     *
+     * @return Related
+     *
+     */
     protected function newRelated()
     {
         return new Related($this->relationships->getFields());
