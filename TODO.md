@@ -4,12 +4,7 @@
 
 - Documentation.
 
-- In Table::selectWherePrimary(), wrap entire condition in parens.
-
 ## Near-Term
-
-- Reduce the RecordInterface to just what Atlas uses itself: getMapperClass(),
-  getRow(), getRelated(). Continue to presume access via properties.
 
 - ??? Add back Record factory?
 
