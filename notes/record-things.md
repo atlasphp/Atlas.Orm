@@ -12,4 +12,5 @@ Things that happen when interacting with a record:
 
 - check the database for presence/nonpresence of values (uniqueness)
 
-- single-table inheritance.
+- single-table inheritance
+
