@@ -68,8 +68,7 @@ class MapperLocator
         }
 
         if (! isset($this->instances[$class])) {
-            $factory = $this->factories[$class];
-            $this->instances[$class] = call_user_func($factory);
+            $this->instances[$class] = call_user_func($this->factories[$class]);
         }
 
         return $this->instances[$class];

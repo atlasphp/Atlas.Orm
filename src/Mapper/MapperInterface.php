@@ -23,6 +23,10 @@ interface MapperInterface
 
     public function getTable();
 
+    public function getReadConnection();
+
+    public function getWriteConnection();
+
     public function fetchRecord($primaryVal, array $with = []);
 
     public function fetchRecordBy(array $colsVals, array $with = []);
@@ -44,6 +48,8 @@ interface MapperInterface
     public function newRecordSet(array $records = []);
 
     public function getSelectedRecord(array $cols, array $with = []);
+
+    public function getSelectedRecords(array $data, array $with = []);
 
     public function getSelectedRecordSet(array $data, array $with = []);
 }

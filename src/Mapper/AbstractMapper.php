@@ -333,8 +333,7 @@ abstract class AbstractMapper implements MapperInterface
     public function newRecordSet(array $records = [])
     {
         $recordSetClass = $this->getRecordSetClass();
-        $recordSet = new $recordSetClass($records);
-        return $recordSet;
+        return new $recordSetClass($records);
     }
 
     /**

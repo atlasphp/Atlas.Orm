@@ -39,14 +39,14 @@ class TableLocator
      */
     protected $instances = [];
 
-    public function set($tableClass, callable $factory)
+    public function set($class, callable $factory)
     {
-        $this->factories[$tableClass] = $factory;
+        $this->factories[$class] = $factory;
     }
 
-    public function has($tableClass)
+    public function has($class)
     {
-        return isset($this->factories[$tableClass]);
+        return isset($this->factories[$class]);
     }
 
     /**
@@ -54,24 +54,23 @@ class TableLocator
      * Gets a Table instance by class; if it has not been created yet, its
      * callable factory will be invoked and the instance will be retained.
      *
-     * @param string $tableClass The class of the Table instance to retrieve.
+     * @param string $class The class of the Table instance to retrieve.
      *
      * @return Table A Table instance.
      *
      * @throws Exception When a Table instance is not found.
      *
      */
-    public function get($tableClass)
+    public function get($class)
     {
-        if (! isset($this->factories[$tableClass])) {
-            throw Exception::tableNotFound($tableClass);
+        if (! isset($this->factories[$class])) {
+            throw Exception::tableNotFound($class);
         }
 
-        if (! isset($this->instances[$tableClass])) {
-            $factory = $this->factories[$tableClass];
-            $this->instances[$tableClass] = call_user_func($factory);
+        if (! isset($this->instances[$class])) {
+            $this->instances[$class] = call_user_func($this->factories[$class]);
         }
 
-        return $this->instances[$tableClass];
+        return $this->instances[$class];
     }
 }
