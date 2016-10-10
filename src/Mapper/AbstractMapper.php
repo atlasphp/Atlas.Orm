@@ -180,9 +180,8 @@ abstract class AbstractMapper implements MapperInterface
         return $this->newRecordFromRow($row);
     }
 
-    public function newRecordSet(array $records = [], array $with = [])
+    public function newRecordSet(array $records = [])
     {
-        $this->relationships->stitchIntoRecords($records, $with);
         $recordSetClass = $this->getRecordSetClass();
         $recordSet = new $recordSetClass($records);
         return $recordSet;
@@ -210,7 +209,8 @@ abstract class AbstractMapper implements MapperInterface
         foreach ($data as $cols) {
             $records[] = $this->getSelectedRecord($cols);
         }
-        return $this->newRecordSet($records, $with);
+        $this->relationships->stitchIntoRecords($records, $with);
+        return $this->newRecordSet($records);
     }
 
     protected function setRelated()
@@ -300,7 +300,8 @@ abstract class AbstractMapper implements MapperInterface
         foreach ($rows as $row) {
             $records[] = $this->newRecordFromRow($row);
         }
-        return $this->newRecordSet($records, $with);
+        $this->relationships->stitchIntoRecords($records, $with);
+        return $this->newRecordSet($records);
     }
 
     protected function newRelated()

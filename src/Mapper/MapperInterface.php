@@ -32,7 +32,7 @@ interface MapperInterface
 
     public function newRecord(array $cols = []);
 
-    public function newRecordSet(array $records = [], array $with = []);
+    public function newRecordSet(array $records = []);
 
     public function getSelectedRecord(array $cols, array $with = []);
 
