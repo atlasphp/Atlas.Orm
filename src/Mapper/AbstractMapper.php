@@ -74,7 +74,7 @@ abstract class AbstractMapper implements MapperInterface
 
     /**
      *
-     * Returns the name of the table class to use when constructing this mapper.
+     * Returns the name of the Table class to use when constructing the Mapper.
      *
      * By default, it is the same name as the mapper class, but suffixed with
      * 'Table' instead of 'Mapper'.
@@ -93,7 +93,7 @@ abstract class AbstractMapper implements MapperInterface
 
     /**
      *
-     * Returns the underlying table object.
+     * Returns the underlying Table object.
      *
      * @return TableInterface
      *
