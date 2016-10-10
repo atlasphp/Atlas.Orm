@@ -70,6 +70,11 @@ class ManyToMany extends AbstractRelationship
      * Given an array of native Record objects, finds all the association table
      * (join table) Records in their "through" fields.
      *
+     * @param array $nativeRecords Find the "through" Record objects on these
+     * native Record objects.
+     *
+     * @return array
+     *
      */
     protected function getThroughRecords(array $nativeRecords)
     {
@@ -101,7 +106,7 @@ class ManyToMany extends AbstractRelationship
      * @param array $foreignRecords The array of candidate foreign Record
      * matches.
      *
-     * @return array An array of matching Foreign record objects.
+     * @return array An array of matching foreign Record objects.
      *
      */
     protected function getMatches(RecordInterface $nativeRecord, array $foreignRecords)

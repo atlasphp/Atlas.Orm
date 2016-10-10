@@ -14,29 +14,78 @@ use Atlas\Orm\Mapper\RecordInterface;
 
 /**
  *
- * __________
+ * The defined relationships between Mapper objects.
  *
  * @package atlas/orm
  *
  */
 class Relationships
 {
+    /**
+     *
+     * The locator with all Mapper objects.
+     *
+     * @var MapperLocator
+     *
+     */
     protected $mapperLocator;
 
+    /**
+     *
+     * The various relationship definition objects.
+     *
+     * @array
+     *
+     */
     protected $defs = [];
 
+    /**
+     *
+     * The fields for the Related to be populated by these Relationships.
+     *
+     * @var array
+     *
+     */
     protected $fields = [];
 
+    /**
+     *
+     * Constructor.
+     *
+     * @param MapperLocator The locator with all Mapper objects.
+     *
+     */
     public function __construct(MapperLocator $mapperLocator)
     {
         $this->mapperLocator = $mapperLocator;
     }
 
+    /**
+     *
+     * Returns the array of fields for the Related that will be populated by
+     * these Relationships.
+     *
+     * @return array
+     *
+     */
     public function getFields()
     {
         return $this->fields;
     }
 
+    /**
+     *
+     * Defines a one-to-one relationship between Mapper objects.
+     *
+     * @param string $name The Related field name.
+     *
+     * @param string $nativeMapperClass The native Mapper class name.
+     *
+     * @param string $foreignMapperClass The foreign Mapper class name.
+     *
+     * @return RelationshipInterface
+     *
+     */
     public function oneToOne(
         $name,
         $nativeMapperClass,
@@ -50,6 +99,19 @@ class Relationships
         );
     }
 
+    /**
+     *
+     * Defines a one-to-many relationship between Mapper objects.
+     *
+     * @param string $name The Related field name.
+     *
+     * @param string $nativeMapperClass The native Mapper class name.
+     *
+     * @param string $foreignMapperClass The foreign Mapper class name.
+     *
+     * @return RelationshipInterface
+     *
+     */
     public function oneToMany(
         $name,
         $nativeMapperClass,
@@ -63,6 +125,19 @@ class Relationships
         );
     }
 
+    /**
+     *
+     * Defines a many-to-one relationship between Mapper objects.
+     *
+     * @param string $name The Related field name.
+     *
+     * @param string $nativeMapperClass The native Mapper class name.
+     *
+     * @param string $foreignMapperClass The foreign Mapper class name.
+     *
+     * @return RelationshipInterface
+     *
+     */
     public function manyToOne(
         $name,
         $nativeMapperClass,
@@ -76,6 +151,22 @@ class Relationships
         );
     }
 
+    /**
+     *
+     * Defines a many-to-many relationship between Mapper objects.
+     *
+     * @param string $name The Related field name.
+     *
+     * @param string $nativeMapperClass The native Mapper class name.
+     *
+     * @param string $foreignMapperClass The foreign Mapper class name.
+     *
+     * @param string $throughName The name of the Related field that holds
+     * the association table (join table) values.
+     *
+     * @return RelationshipInterface
+     *
+     */
     public function manyToMany(
         $name,
         $nativeMapperClass,
@@ -91,6 +182,47 @@ class Relationships
         );
     }
 
+    /**
+     *
+     * Given an array of native Record objects, stitches the specified foreign
+     * Relationship results into them.
+     *
+     * @param array $nativeRecords The native Record objects.
+     *
+     * @param array $with Stitch these named relationship results into the
+     * native Record objects.
+     *
+     */
+    public function stitchIntoRecords(
+        array $nativeRecords,
+        array $with = []
+    ) {
+        foreach ($this->fixWith($with) as $name => $custom) {
+            $this->defs[$name]->stitchIntoRecords(
+                $nativeRecords,
+                $custom
+            );
+        }
+    }
+
+    /**
+     *
+     * Sets a relationship definition.
+     *
+     * @param string $name The Related field name.
+     *
+     * @param string $relationClass The relationship class name.
+     *
+     * @param string $nativeMapperClass The native Mapper class name.
+     *
+     * @param string $foreignMapperClass The foreign Mapper class name.
+     *
+     * @param string $throughName The name of the Related field that holds
+     * the association table (join table) values.
+     *
+     * @return RelationshipInterface
+     *
+     */
     protected function set(
         $name,
         $relationClass,
@@ -118,6 +250,24 @@ class Relationships
         return $this->defs[$name];
     }
 
+    /**
+     *
+     * Returns a new relationship definition object.
+     *
+     * @param string $relationClass The relationship class name.
+     *
+     * @param string $name The Related field name.
+     *
+     * @param string $nativeMapperClass The native Mapper class name.
+     *
+     * @param string $foreignMapperClass The foreign Mapper class name.
+     *
+     * @param string $throughName The name of the Related field that holds
+     * the association table (join table) values.
+     *
+     * @return RelationshipInterface
+     *
+     */
     protected function newRelation(
         $relationClass,
         $name,
@@ -134,6 +284,13 @@ class Relationships
         );
     }
 
+    /**
+     *
+     * Normalizes a `$with` specification.
+     *
+     * @return array
+     *
+     */
     protected function fixWith($spec)
     {
         $with = [];
@@ -145,17 +302,5 @@ class Relationships
             }
         }
         return $with;
-    }
-
-    public function stitchIntoRecords(
-        array $records,
-        array $with = []
-    ) {
-        foreach ($this->fixWith($with) as $name => $custom) {
-            $this->defs[$name]->stitchIntoRecords(
-                $records,
-                $custom
-            );
-        }
     }
 }
