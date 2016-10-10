@@ -11,8 +11,6 @@
 - Reduce the RecordInterface to just what Atlas uses itself: getMapperClass(),
   getRow(), getRelated(). Continue to presume access via properties.
 
-- Does RecordSetInterface currently make sense?
-
 - ??? Add back Record factory?
 
 - ??? Have Rows force everything to scalars, or at least not objects, because
