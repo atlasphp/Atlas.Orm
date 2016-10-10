@@ -10,19 +10,18 @@ namespace Atlas\Orm\Relationship;
 
 /**
  *
- * __________
+ * Defines a one-to-one relationship.
  *
  * @package atlas/orm
  *
  */
 class ManyToOne extends OneToOne
 {
-    protected function fixOn()
+    /**
+     * @inheritdoc
+     */
+    protected function initializeOn()
     {
-        if ($this->on) {
-            return;
-        }
-
         foreach ($this->foreignMapper->getTable()->getPrimaryKey() as $col) {
             $this->on[$col] = $col;
         }

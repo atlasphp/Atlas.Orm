@@ -14,24 +14,26 @@ use Atlas\Orm\Mapper\RecordInterface;
 
 /**
  *
- * __________
+ * Defines a many-to-many relationship.
  *
  * @package atlas/orm
  *
  */
 class ManyToMany extends AbstractRelationship
 {
-    protected function fixOn()
+    /**
+     * @inheritdoc
+     */
+    protected function initializeOn()
     {
-        if ($this->on) {
-            return;
-        }
-
         foreach ($this->foreignMapper->getTable()->getPrimaryKey() as $col) {
             $this->on[$col] = $col;
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     public function stitchIntoRecords(
         array $nativeRecords,
         callable $custom = null
@@ -40,7 +42,7 @@ class ManyToMany extends AbstractRelationship
             return;
         }
 
-        $this->fix();
+        $this->initialize();
 
         $throughRecords = $this->getThroughRecords($nativeRecords);
         $foreignRecords = $this->fetchForeignRecords($throughRecords, $custom);
@@ -49,6 +51,9 @@ class ManyToMany extends AbstractRelationship
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function stitchIntoRecord(
         RecordInterface $nativeRecord,
         array $foreignRecords
@@ -60,6 +65,12 @@ class ManyToMany extends AbstractRelationship
         }
     }
 
+    /**
+     *
+     * Given an array of native Record objects, finds all the association table
+     * (join table) Records in their "through" fields.
+     *
+     */
     protected function getThroughRecords(array $nativeRecords)
     {
         // this hackish. the "through" relation should be loaded for everything,
@@ -71,14 +82,29 @@ class ManyToMany extends AbstractRelationship
 
         $throughRecords = [];
         foreach ($nativeRecords as $nativeRecord) {
-            foreach ($nativeRecord->{$this->throughName} as $throughRecord)
-            $throughRecords[] = $throughRecord;
+            foreach ($nativeRecord->{$this->throughName} as $throughRecord) {
+                $throughRecords[] = $throughRecord;
+            }
         }
 
         return $throughRecords;
     }
 
-    protected function getMatches($nativeRecord, $foreignRecords)
+    /**
+     *
+     * Given a native Record and an array of foreign Record objects, finds
+     * which foreign Record objects match the native, using the "through"
+     * RecordSet on the native Record.
+     *
+     * @param RecordInterface $nativeRecord The native Record.
+     *
+     * @param array $foreignRecords The array of candidate foreign Record
+     * matches.
+     *
+     * @return array An array of matching Foreign record objects.
+     *
+     */
+    protected function getMatches(RecordInterface $nativeRecord, array $foreignRecords)
     {
         $matches = [];
         foreach ($nativeRecord->{$this->throughName} as $throughRecord) {

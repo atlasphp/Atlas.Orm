@@ -44,8 +44,8 @@ class Relationships
     ) {
         return $this->set(
             $name,
-            $nativeMapperClass,
             OneToOne::CLASS,
+            $nativeMapperClass,
             $foreignMapperClass
         );
     }
@@ -57,8 +57,8 @@ class Relationships
     ) {
         return $this->set(
             $name,
-            $nativeMapperClass,
             OneToMany::CLASS,
+            $nativeMapperClass,
             $foreignMapperClass
         );
     }
@@ -70,8 +70,8 @@ class Relationships
     ) {
         return $this->set(
             $name,
-            $nativeMapperClass,
             ManyToOne::CLASS,
+            $nativeMapperClass,
             $foreignMapperClass
         );
     }
@@ -84,8 +84,8 @@ class Relationships
     ) {
         return $this->set(
             $name,
-            $nativeMapperClass,
             ManyToMany::CLASS,
+            $nativeMapperClass,
             $foreignMapperClass,
             $throughName
         );
@@ -93,8 +93,8 @@ class Relationships
 
     protected function set(
         $name,
-        $nativeMapperClass,
         $relationClass,
+        $nativeMapperClass,
         $foreignMapperClass,
         $throughName = null
     ) {
@@ -108,9 +108,9 @@ class Relationships
 
         $this->fields[$name] = null;
         $this->defs[$name] = $this->newRelation(
-            $nativeMapperClass,
-            $name,
             $relationClass,
+            $name,
+            $nativeMapperClass,
             $foreignMapperClass,
             $throughName
         );
@@ -119,16 +119,16 @@ class Relationships
     }
 
     protected function newRelation(
-        $nativeMapperClass,
-        $name,
         $relationClass,
+        $name,
+        $nativeMapperClass,
         $foreignMapperClass,
         $throughName = null
     ) {
         return new $relationClass(
+            $name,
             $this->mapperLocator,
             $nativeMapperClass,
-            $name,
             $foreignMapperClass,
             $throughName
         );

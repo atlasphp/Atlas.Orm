@@ -9,9 +9,9 @@ class OneToOneTest extends AbstractRelationshipTest
     public function testCustomSettings()
     {
         $rel = new OneToOne(
+            'summary',
             $this->mapperLocator,
             ThreadMapper::CLASS,
-            'summary',
             SummaryMapper::CLASS
         );
 
@@ -21,7 +21,7 @@ class OneToOneTest extends AbstractRelationshipTest
             'name' => 'summary',
             'nativeMapperClass' => 'Atlas\\Orm\\DataSource\\Thread\\ThreadMapper',
             'foreignMapperClass' => 'Atlas\\Orm\\DataSource\\Summary\\SummaryMapper',
-            'foreignTable' => 'summaries',
+            'foreignTableName' => 'summaries',
             'on' => ['native' => 'foreign'],
             'throughName' => null,
         ];

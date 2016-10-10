@@ -12,13 +12,16 @@ use Atlas\Orm\Mapper\RecordInterface;
 
 /**
  *
- * __________
+ * Defines a one-to-one relationship.
  *
  * @package atlas/orm
  *
  */
 class OneToOne extends AbstractRelationship
 {
+    /**
+     * @inheritdoc
+     */
     protected function stitchIntoRecord(
         RecordInterface $nativeRecord,
         array $foreignRecords

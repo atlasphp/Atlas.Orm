@@ -9,9 +9,9 @@ class ManyToOneTest extends AbstractRelationshipTest
     public function testCustomSettings()
     {
         $rel = new ManyToOne(
+            'author',
             $this->mapperLocator,
             ThreadMapper::CLASS,
-            'author',
             AuthorMapper::CLASS
         );
 
@@ -21,7 +21,7 @@ class ManyToOneTest extends AbstractRelationshipTest
             'name' => 'author',
             'nativeMapperClass' => 'Atlas\\Orm\\DataSource\\Thread\\ThreadMapper',
             'foreignMapperClass' => 'Atlas\\Orm\\DataSource\\Author\\AuthorMapper',
-            'foreignTable' => 'authors',
+            'foreignTableName' => 'authors',
             'on' => ['native' => 'foreign'],
             'throughName' => null,
         ];

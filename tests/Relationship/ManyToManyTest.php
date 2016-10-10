@@ -11,9 +11,9 @@ class ManyToManyTest extends AbstractRelationshipTest
     public function testCustomSettings()
     {
         $rel = new ManyToMany(
+            'threads',
             $this->mapperLocator,
             ThreadMapper::CLASS,
-            'threads',
             TagMapper::CLASS,
             'taggings'
         );
@@ -24,7 +24,7 @@ class ManyToManyTest extends AbstractRelationshipTest
             'name' => 'threads',
             'nativeMapperClass' => 'Atlas\\Orm\\DataSource\\Thread\\ThreadMapper',
             'foreignMapperClass' => 'Atlas\\Orm\\DataSource\\Tag\\TagMapper',
-            'foreignTable' => 'tags',
+            'foreignTableName' => 'tags',
             'on' => ['through_foreign' => 'foreign'],
             'throughName' => 'taggings',
         ];
@@ -40,9 +40,9 @@ class ManyToManyTest extends AbstractRelationshipTest
     public function testStitchIntoRecord_missingThrough()
     {
         $rel = new ManyToMany(
+            'tags',
             $this->mapperLocator,
             TagMapper::CLASS,
-            'tags',
             TagMapper::CLASS,
             'taggings'
         );
@@ -59,9 +59,9 @@ class ManyToManyTest extends AbstractRelationshipTest
     public function testStitchIntoRecords_emptyNativeRecords()
     {
         $rel = new ManyToMany(
+            'tags',
             $this->mapperLocator,
             TagMapper::CLASS,
-            'tags',
             TagMapper::CLASS,
             'taggings'
         );
@@ -75,9 +75,9 @@ class ManyToManyTest extends AbstractRelationshipTest
     public function testStitchIntoRecords_missingThrough()
     {
         $rel = new ManyToMany(
+            'tags',
             $this->mapperLocator,
             TagMapper::CLASS,
-            'tags',
             TagMapper::CLASS,
             'taggings'
         );
@@ -96,9 +96,9 @@ class ManyToManyTest extends AbstractRelationshipTest
     public function testStitchIntoRecords_emptyThrough()
     {
         $rel = new ManyToMany(
+            'tags',
             $this->mapperLocator,
             TagMapper::CLASS,
-            'tags',
             TagMapper::CLASS,
             'taggings'
         );
