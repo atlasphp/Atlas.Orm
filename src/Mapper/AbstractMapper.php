@@ -33,7 +33,7 @@ abstract class AbstractMapper implements MapperInterface
 
     /**
      *
-     * The relationships to other mappers.
+     * The relationships to other Mapper objects.
      *
      * @var Relationships
      *
@@ -42,7 +42,7 @@ abstract class AbstractMapper implements MapperInterface
 
     /**
      *
-     * Events to invoke during mapper operations.
+     * Events to invoke during Mapper operations.
      *
      * @var MapperEventsInterface
      *

@@ -15,20 +15,91 @@ use Aura\SqlQuery\Common\SelectInterface;
 
 /**
  *
- * __________
+ * A table data gateway to return Row objects.
  *
  * @package atlas/orm
  *
  */
 abstract class AbstractTable implements TableInterface
 {
+    /**
+     *
+     * A locator for database connections.
+     *
+     * @var ConnectionLocator
+     *
+     */
     protected $connectionLocator;
+
+    /**
+     *
+     * A factory for SQL query objects.
+     *
+     * @var QueryFactory
+     *
+     */
     protected $queryFactory;
+
+    /**
+     *
+     * An identity map for Row objects from this table.
+     *
+     * @var IdentityMap
+     *
+     */
     protected $identityMap;
+
+    /**
+     *
+     * The "read" database connection.
+     *
+     * @var ExtendedPdoInterface
+     *
+     */
     protected $readConnection;
+
+    /**
+     *
+     * The "write" database connection.
+     *
+     * @var ExtendedPdoInterface
+     *
+     */
     protected $writeConnection;
+
+    /**
+     *
+     * Primary key definition on the table.
+     *
+     * @var mixed
+     *
+     */
     protected $primaryKey;
 
+    /**
+     *
+     * Events to invoke during Table operations.
+     *
+     * @var TableEventsInterface
+     *
+     */
+    protected $events;
+
+    /**
+     *
+     * Constructor.
+     *
+     * @param ConnectionLocator $connectionLocator A locator for database
+     * connections.
+     *
+     * @param QueryFactory $queryFactory A factory for SQL query objects.
+     *
+     * @param IdentityMap $identityMap An identity map of Row objects.
+     *
+     * @param TableEventsInterface $events Events to invoke during Table
+     * operations.
+     *
+     */
     public function __construct(
         ConnectionLocator $connectionLocator,
         QueryFactory $queryFactory,
@@ -76,6 +147,17 @@ abstract class AbstractTable implements TableInterface
         return $this->writeConnection;
     }
 
+    /**
+     *
+     * Fetches one Row based on a primary-key value, from the identity map if
+     * present, or from the database if not.
+     *
+     * @param mixed $primaryVal A scalar for a simple primary key, or an array
+     * of column => value pairs for a composite primary key.
+     *
+     * @return Row|false Returns a Row on success, or `false` on failure.
+     *
+     */
     public function fetchRow($primaryVal)
     {
         $primary = $this->calcPrimary($primaryVal);
@@ -88,6 +170,18 @@ abstract class AbstractTable implements TableInterface
         return $this->selectRow($select);
     }
 
+    /**
+     *
+     * Fetches an array of Row objects based on primary-key values, from the
+     * identity map as available, and from the database when not.
+     *
+     * @param mixed $primaryVals An array of primary-key values; each value is
+     * scalar for a simple primary key, or an array of column => value pairs for
+     * a composite primary key.
+     *
+     * @return array
+     *
+     */
     public function fetchRows(array $primaryVals)
     {
         // find identified rows, in the order of the primary values.
@@ -132,7 +226,16 @@ abstract class AbstractTable implements TableInterface
         return array_values($rows);
     }
 
-    protected function selectWherePrimary($select, $primaryVals)
+    /**
+     *
+     * Adds the primary-key WHERE conditions to a TableSelect.
+     *
+     * @param TableSelect $select Add the conditions to this TableSelect.
+     *
+     * @param array $primaryVals Use these primary-key values.
+     *
+     */
+    protected function selectWherePrimary(TableSelect $select, array $primaryVals)
     {
         $primaryKey = $this->getPrimaryKey();
         if (count($primaryKey) == 1) {
@@ -152,6 +255,16 @@ abstract class AbstractTable implements TableInterface
         }
     }
 
+    /**
+     *
+     * Returns a new TableSelect.
+     *
+     * @param array $colsVals An array of column-value equality pairs for the
+     * WHERE clause.
+     *
+     * @return TableSelect
+     *
+     */
     public function select(array $colsVals = [])
     {
         return new TableSelect(
