@@ -160,7 +160,7 @@ abstract class AbstractTable implements TableInterface
      */
     public function fetchRow($primaryVal)
     {
-        $primary = $this->calcPrimary($primaryVal);
+        $primary = $this->calcIdentity($primaryVal);
         $row = $this->identityMap->getRow($primary);
         if ($row) {
             return $row;
@@ -187,7 +187,7 @@ abstract class AbstractTable implements TableInterface
         // leave open elements for non-identified rows.
         $rows = [];
         foreach ($primaryVals as $i => $primaryVal) {
-            $primary = $this->calcPrimary($primaryVal);
+            $primary = $this->calcIdentity($primaryVal);
             $serial = $this->identityMap->getSerial($primary);
             $rows[$serial] = null;
             $row = $this->identityMap->getRow($primary);
@@ -208,8 +208,8 @@ abstract class AbstractTable implements TableInterface
         $this->selectWherePrimary($select, $primaryVals);
         $data = $select->fetchAll();
         foreach ($data as $cols) {
-            $row = $this->newSelectedRow($cols);
-            $primary = $this->calcPrimary($cols);
+            $row = $this->getSelectedRow($cols);
+            $primary = $this->calcIdentity($cols);
             $serial = $this->identityMap->getSerial($primary);
             $rows[$serial] = $row;
         }
@@ -246,7 +246,7 @@ abstract class AbstractTable implements TableInterface
 
         // composite key
         foreach ($primaryVals as $primaryVal) {
-            $primary = $this->calcPrimary($primaryVal);
+            $primary = $this->calcIdentity($primaryVal);
             $cols = array_keys($primary);
             $vals = array_values($primary);
             $cond = implode(' = ? AND ', $cols) . ' = ?';
@@ -274,6 +274,13 @@ abstract class AbstractTable implements TableInterface
         );
     }
 
+    /**
+     *
+     * Inserts a Row into the table.
+     *
+     * @param RowInterface $row The row to insert.
+     *
+     */
     public function insert(RowInterface $row)
     {
         $this->events->beforeInsert($this, $row);
@@ -304,6 +311,13 @@ abstract class AbstractTable implements TableInterface
         return true;
     }
 
+    /**
+     *
+     * Updates a Row in the table.
+     *
+     * @param RowInterface $row The row to update.
+     *
+     */
     public function update(RowInterface $row)
     {
         $this->events->beforeUpdate($this, $row);
@@ -333,6 +347,13 @@ abstract class AbstractTable implements TableInterface
         return true;
     }
 
+    /**
+     *
+     * Deletes a Row from the table.
+     *
+     * @param RowInterface $row The row to delete.
+     *
+     */
     public function delete(RowInterface $row)
     {
         $this->events->beforeDelete($this, $row);
@@ -358,41 +379,57 @@ abstract class AbstractTable implements TableInterface
 
     /**
      *
-     * Returns a new Row for the table.
+     * Returns a new in-memory Row, not identity-mapped.
+     *
+     * @param array $cols Column values for the Row.
      *
      * @return RowInterface
      *
      */
-    public function newRow(array $colsVals = [])
+    public function newRow(array $cols = [])
     {
         $colNames = $this->getColNames();
-        foreach ($colsVals as $col => $val) {
+        foreach ($cols as $col => $val) {
             if (! in_array($col, $colNames)) {
-                unset($colsVals[$col]);
+                unset($cols[$col]);
             }
         }
-        $colsVals = array_merge($this->getColDefaults(), $colsVals);
-        return new Row($colsVals);
+        $cols = array_merge($this->getColDefaults(), $cols);
+        return new Row($cols);
     }
 
-    public function newSelectedRow(array $cols)
-    {
-        $row = $this->newRow($cols);
-        $row->setStatus($row::SELECTED);
-        $this->identityMap->setRow($row, $cols, $this->getPrimaryKey());
-        return $row;
-    }
-
+    /**
+     *
+     * Returns a selected Row: if identity mapped already, returns the mapped
+     * Row, otherwise returns a new Row and maps it.
+     *
+     * @param array $cols Column values for the Row.
+     *
+     * @return RowInterface
+     *
+     */
     public function getSelectedRow(array $cols)
     {
-        $primary = $this->calcPrimary($cols);
+        $primary = $this->calcIdentity($cols);
         $row = $this->identityMap->getRow($primary);
         if (! $row) {
-            $row = $this->newSelectedRow($cols);
+            $row = $this->newRow($cols);
+            $row->setStatus($row::SELECTED);
+            $this->identityMap->setRow($row, $cols, $this->getPrimaryKey());
         }
         return $row;
     }
 
+    /**
+     *
+     * Returns a new Select.
+     *
+     * @param array $colsVals An array of column-value equality pairs for the
+     * WHERE clause.
+     *
+     * @return SelectInterface
+     *
+     */
     protected function newSelect(array $colsVals = [])
     {
         $select = $this->queryFactory->newSelect();
@@ -407,7 +444,18 @@ abstract class AbstractTable implements TableInterface
         return $select;
     }
 
-    protected function selectWhere($select, $col, $val)
+    /**
+     *
+     * Adds a WHERE condition to a select.
+     *
+     * @param SelectInterface $select The query object.
+     *
+     * @param string $col The column name.
+     *
+     * @param mixed $val The column value.
+     *
+     */
+    protected function selectWhere(SelectInterface $select, $col, $val)
     {
         if (is_array($val)) {
             $select->where("{$col} IN (?)", $val);
@@ -422,6 +470,15 @@ abstract class AbstractTable implements TableInterface
         $select->where("{$col} = ?", $val);
     }
 
+    /**
+     *
+     * Returns a new Insert object for a Row.
+     *
+     * @param RowInterface $row The row to insert.
+     *
+     * @return Insert
+     *
+     */
     protected function newInsert(RowInterface $row)
     {
         $insert = $this->queryFactory->newInsert();
@@ -437,6 +494,15 @@ abstract class AbstractTable implements TableInterface
         return $insert;
     }
 
+    /**
+     *
+     * Returns a new Update object for a Row.
+     *
+     * @param RowInterface $row The row to update.
+     *
+     * @return Update
+     *
+     */
     protected function newUpdate(RowInterface $row)
     {
         $update = $this->queryFactory->newUpdate();
@@ -459,6 +525,15 @@ abstract class AbstractTable implements TableInterface
         return $update;
     }
 
+    /**
+     *
+     * Returns a new Delete object for a Row.
+     *
+     * @param RowInterface $row The row to delete.
+     *
+     * @return Delete
+     *
+     */
     protected function newDelete(RowInterface $row)
     {
         $delete = $this->queryFactory->newDelete();
@@ -471,10 +546,19 @@ abstract class AbstractTable implements TableInterface
         return $delete;
     }
 
-    protected function calcPrimary($primaryVal)
+    /**
+     *
+     * Calculate the identity key for the identity map.
+     *
+     * @param mixed $primaryVal The primary-key value.
+     *
+     * @return array
+     *
+     */
+    protected function calcIdentity($primaryVal)
     {
         if (is_array($this->primaryKey)) {
-            return $this->calcPrimaryComposite($primaryVal);
+            return $this->calcIdentityComposite($primaryVal);
         }
 
         if (is_array($primaryVal) && isset($primaryVal[$this->primaryKey])) {
@@ -488,12 +572,17 @@ abstract class AbstractTable implements TableInterface
         return [$this->primaryKey => $primaryVal];
     }
 
-    protected function calcPrimaryComposite($primaryVal)
+    /**
+     *
+     * Calculate a composite identity key for the identity map.
+     *
+     * @param array $primaryVal The primary-key value.
+     *
+     * @return array
+     *
+     */
+    protected function calcIdentityComposite(array $primaryVal)
     {
-        if (! is_array($primaryVal)) {
-            throw Exception::primaryKeyNotArray($primaryVal);
-        }
-
         $primary = [];
         foreach ($this->primaryKey as $col) {
             if (! isset($primaryVal[$col])) {

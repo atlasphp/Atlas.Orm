@@ -58,8 +58,6 @@ interface TableInterface
      */
     public function newRow(array $cols = []);
 
-    public function newSelectedRow(array $cols);
-
     public function getSelectedRow(array $cols);
 
     /**

@@ -168,15 +168,6 @@ class AtlasCompositeTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public function testCalcPrimaryComposite_notArray()
-    {
-        $this->setExpectedException(
-            'UnexpectedValueException',
-            "Expected array for composite primary key, got integer instead."
-        );
-        $this->atlas->fetchRecord(StudentMapper::CLASS, 1);
-    }
-
     public function testCalcPrimaryComposite_missingKey()
     {
         $this->setExpectedException(
