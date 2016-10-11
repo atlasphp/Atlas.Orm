@@ -332,7 +332,7 @@ abstract class AbstractMapper implements MapperInterface
      * Given an array of selected column data, return a new Record, optionally
      * with relateds.
      *
-     * @param array $cols An array of selected column data for a Row.
+     * @param RowInterface $row A selected Row.
      *
      * @param array $with Return the Record with these relateds stitched in.
      *
@@ -340,9 +340,8 @@ abstract class AbstractMapper implements MapperInterface
      * that will be returned instead of a generic Record.
      *
      */
-    public function getSelectedRecord(array $cols, array $with = [])
+    public function getSelectedRecord(RowInterface $row, array $with = [])
     {
-        $row = $this->table->getSelectedRow($cols);
         $record = $this->newRecordFromRow($row);
         $this->relationships->stitchIntoRecords([$record], $with);
         return $record;
@@ -354,7 +353,7 @@ abstract class AbstractMapper implements MapperInterface
      * optionally with relateds. Note that this is an *array of Record objects*
      * and not a RecordSet. Generally used only by the MapperSelect class.
      *
-     * @param array $data An array of selected data for Record objects.
+     * @param array $rows An array of selected Row objects.
      *
      * @param array $with Return each Record with these relateds stitched in.
      *
@@ -363,11 +362,11 @@ abstract class AbstractMapper implements MapperInterface
      * Record objects.
      *
      */
-    public function getSelectedRecords(array $data, array $with = [])
+    public function getSelectedRecords(array $rows, array $with = [])
     {
         $records = [];
-        foreach ($data as $cols) {
-            $records[] = $this->getSelectedRecord($cols);
+        foreach ($rows as $row) {
+            $records[] = $this->newRecordFromRow($row);
         }
         $this->relationships->stitchIntoRecords($records, $with);
         return $records;
@@ -378,7 +377,7 @@ abstract class AbstractMapper implements MapperInterface
      * Given an array of selected row data, returns a RecordSet object,
      * optionally with relateds. Generally used only by the MapperSelect class.
      *
-     * @param array $data An array of selected data for Record objects.
+     * @param array $rows An array of selected Row objects.
      *
      * @param array $with Return each Record with these relateds stitched in.
      *
@@ -386,13 +385,9 @@ abstract class AbstractMapper implements MapperInterface
      * will be returned of a generic RecordSet object.
      *
      */
-    public function getSelectedRecordSet(array $data, array $with = [])
+    public function getSelectedRecordSet(array $rows, array $with = [])
     {
-        $records = [];
-        foreach ($data as $cols) {
-            $records[] = $this->getSelectedRecord($cols);
-        }
-        $this->relationships->stitchIntoRecords($records, $with);
+        $records = $this->getSelectedRecords($rows, $with);
         return $this->newRecordSet($records);
     }
 

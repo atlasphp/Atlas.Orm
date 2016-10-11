@@ -58,6 +58,7 @@ class TableSelect implements SubselectInterface
      */
     public function __toString()
     {
+        $this->addColNames();
         return $this->select->__toString();
     }
 
@@ -80,14 +81,10 @@ class TableSelect implements SubselectInterface
         return ($result === $this->select) ? $this : $result;
     }
 
-    public function getColNames()
-    {
-        return $this->colNames;
-    }
-
     // subselect interface
     public function getStatement()
     {
+        $this->addColNames();
         return $this->select->getStatement();
     }
 
@@ -265,9 +262,16 @@ class TableSelect implements SubselectInterface
         );
     }
 
+    /**
+     *
+     * Fetches a single Row object.
+     *
+     * @return RowInterface|false A Row on success, or false on failure.
+     *
+     */
     public function fetchRow()
     {
-        $this->tableColumns();
+        $this->addColNames();
 
         $cols = $this->fetchOne();
         if (! $cols) {
@@ -276,9 +280,16 @@ class TableSelect implements SubselectInterface
         return call_user_func($this->getSelectedRow, $cols);
     }
 
+    /**
+     *
+     * Fetches an array of Row objects.
+     *
+     * @return array
+     *
+     */
     public function fetchRows()
     {
-        $this->tableColumns();
+        $this->addColNames();
 
         $rows = [];
         foreach ($this->yieldAll() as $cols) {
@@ -294,7 +305,7 @@ class TableSelect implements SubselectInterface
      * @return void
      *
      */
-    public function tableColumns()
+    protected function addColNames()
     {
         if (! $this->select->hasCols()) {
             $this->select->cols($this->colNames);

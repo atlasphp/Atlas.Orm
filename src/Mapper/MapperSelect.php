@@ -105,7 +105,6 @@ class MapperSelect implements SubselectInterface
      */
     public function __toString()
     {
-        $this->tableColumns();
         return $this->tableSelect->__toString();
     }
 
@@ -137,7 +136,6 @@ class MapperSelect implements SubselectInterface
      */
     public function getStatement()
     {
-        $this->tableColumns();
         return $this->tableSelect->getStatement();
     }
 
@@ -177,14 +175,12 @@ class MapperSelect implements SubselectInterface
      */
     public function fetchRecord()
     {
-        $this->tableColumns();
-
-        $cols = $this->fetchOne();
-        if (! $cols) {
+        $row = $this->fetchRow();
+        if (! $row) {
             return false;
         }
 
-        return call_user_func($this->getSelectedRecord, $cols, $this->with);
+        return call_user_func($this->getSelectedRecord, $row, $this->with);
     }
 
     /**
@@ -196,14 +192,12 @@ class MapperSelect implements SubselectInterface
      */
     public function fetchRecords()
     {
-        $this->tableColumns();
-
-        $data = $this->fetchAll();
-        if (! $data) {
+        $rows = $this->fetchRows();
+        if (! $rows) {
             return [];
         }
 
-        return call_user_func($this->getSelectedRecords, $data, $this->with);
+        return call_user_func($this->getSelectedRecords, $rows, $this->with);
     }
 
     /**
@@ -216,13 +210,11 @@ class MapperSelect implements SubselectInterface
      */
     public function fetchRecordSet()
     {
-        $this->tableColumns();
-
-        $data = $this->fetchAll();
-        if (! $data) {
+        $rows = $this->fetchRows();
+        if (! $rows) {
             return [];
         }
 
-        return call_user_func($this->getSelectedRecordSet, $data, $this->with);
+        return call_user_func($this->getSelectedRecordSet, $rows, $this->with);
     }
 }
