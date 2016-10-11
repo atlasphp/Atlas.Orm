@@ -26,7 +26,8 @@ class SelectTest extends \PHPUnit_Framework_TestCase
         $tableSelect = new TableSelect(
             $select,
             $connection,
-            ['id', 'name', 'building', 'floor']
+            ['id', 'name', 'building', 'floor'],
+            function () { }
         );
 
         $this->select = new MapperSelect(

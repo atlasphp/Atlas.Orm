@@ -166,8 +166,7 @@ abstract class AbstractTable implements TableInterface
             return $row;
         }
 
-        $select = $this->select($primary);
-        return $this->selectRow($select);
+        return $this->select($primary)->fetchRow();
     }
 
     /**
@@ -270,32 +269,9 @@ abstract class AbstractTable implements TableInterface
         return new TableSelect(
             $this->newSelect($colsVals),
             $this->getReadConnection(),
-            $this->getColNames()
+            $this->getColNames(),
+            [$this, 'getSelectedRow']
         );
-    }
-
-    public function selectRow(TableSelect $select)
-    {
-        $cols = $select->cols($this->getColNames())->fetchOne();
-        if (! $cols) {
-            return false;
-        }
-        return $this->getSelectedRow($cols);
-    }
-
-    public function selectRows(TableSelect $select)
-    {
-        $data = $select->cols($this->getColNames())->fetchAll();
-        if (! $data) {
-            return [];
-        }
-
-        $rows = [];
-        foreach ($data as $cols) {
-            $rows[] = $this->getSelectedRow($cols);
-        }
-
-        return $rows;
     }
 
     public function insert(RowInterface $row)

@@ -225,18 +225,4 @@ class MapperSelect implements SubselectInterface
 
         return call_user_func($this->getSelectedRecordSet, $data, $this->with);
     }
-
-    /**
-     *
-     * Sets all table columns on the SELECT if no columns are present.
-     *
-     * @return void
-     *
-     */
-    protected function tableColumns()
-    {
-        if (! $this->tableSelect->hasCols()) {
-            $this->tableSelect->cols($this->tableSelect->getColNames());
-        }
-    }
 }

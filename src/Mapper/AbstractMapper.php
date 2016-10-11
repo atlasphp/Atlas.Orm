@@ -167,7 +167,7 @@ abstract class AbstractMapper implements MapperInterface
      */
     public function fetchRecordBy(array $colsVals, array $with = [])
     {
-        $row = $this->table->selectRow($this->table->select($colsVals));
+        $row = $this->table->select($colsVals)->fetchRow();
         if (! $row) {
             return false;
         }
@@ -217,7 +217,7 @@ abstract class AbstractMapper implements MapperInterface
      */
     public function fetchRecordSetBy(array $colsVals, array $with = [])
     {
-        $rows = $this->table->selectRows($this->table->select($colsVals));
+        $rows = $this->table->select($colsVals)->fetchRows();
         if (! $rows) {
             return [];
         }

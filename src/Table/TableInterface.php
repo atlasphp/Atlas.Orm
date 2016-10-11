@@ -43,10 +43,6 @@ interface TableInterface
 
     public function select(array $colsVals = []);
 
-    public function selectRow(TableSelect $select);
-
-    public function selectRows(TableSelect $select);
-
     public function insert(RowInterface $row);
 
     public function update(RowInterface $row);

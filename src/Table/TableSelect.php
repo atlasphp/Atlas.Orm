@@ -34,16 +34,18 @@ class TableSelect implements SubselectInterface
 
     protected $colNames;
 
-    protected $with = [];
+    protected $getSelectedRow;
 
     public function __construct(
         SelectInterface $select,
         ExtendedPdo $connection,
-        array $colNames
+        array $colNames,
+        callable $getSelectedRow
     ) {
         $this->select = $select;
         $this->connection = $connection;
         $this->colNames = $colNames;
+        $this->getSelectedRow = $getSelectedRow;
     }
 
     /**
@@ -261,5 +263,41 @@ class TableSelect implements SubselectInterface
             $this->select->getStatement(),
             $this->select->getBindValues()
         );
+    }
+
+    public function fetchRow()
+    {
+        $this->tableColumns();
+
+        $cols = $this->fetchOne();
+        if (! $cols) {
+            return false;
+        }
+        return call_user_func($this->getSelectedRow, $cols);
+    }
+
+    public function fetchRows()
+    {
+        $this->tableColumns();
+
+        $rows = [];
+        foreach ($this->yieldAll() as $cols) {
+            $rows[] = call_user_func($this->getSelectedRow, $cols);
+        }
+        return $rows;
+    }
+
+    /**
+     *
+     * Sets all table columns on the SELECT if no columns are present.
+     *
+     * @return void
+     *
+     */
+    public function tableColumns()
+    {
+        if (! $this->select->hasCols()) {
+            $this->select->cols($this->colNames);
+        }
     }
 }
