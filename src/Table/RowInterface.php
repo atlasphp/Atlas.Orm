@@ -12,22 +12,85 @@ use Atlas\Orm\Exception;
 
 /**
  *
- * __________
+ * Interface for Row objects.
  *
  * @package atlas/orm
  *
  */
 interface RowInterface
 {
+    /**
+     *
+     * Sets multiple column values at once.
+     *
+     * @param array $cols The columns and their corresponding values.
+     *
+     * @throws Exception when a column does not exist.
+     *
+     */
+    public function set(array $cols);
+
+    /**
+     *
+     * Does the row have a particular column?
+     *
+     * @param string $col Check for the existence of this column.
+     *
+     * @return bool
+     *
+     */
     public function has($col);
 
+    /**
+     *
+     * Returns an array copy of this row.
+     *
+     * @return array
+     *
+     */
     public function getArrayCopy();
 
+    /**
+     *
+     * Given an array of "initial" values, returns an array of the different
+     * values on this row.
+     *
+     * @param array $init Initial values to compare to.
+     *
+     * @return array The different values on this row.
+     *
+     */
     public function getArrayDiff(array $init);
 
+    /**
+     *
+     * Does the row have a particular status?
+     *
+     * @param string|array $status One or more status values.
+     *
+     * @return bool True if the row matches any of the $status values, false
+     * if not.
+     *
+     */
     public function hasStatus($status);
 
+    /**
+     *
+     * Returns the row status.
+     *
+     * @return string
+     *
+     */
     public function getStatus();
 
+    /**
+     *
+     * Forces the row to a particular status.
+     *
+     * @param string $status The new status for the row.
+     *
+     * @throws Exception when the status is invalid.
+     *
+     */
     public function setStatus($status);
 }

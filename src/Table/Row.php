@@ -12,107 +12,268 @@ use Atlas\Orm\Exception;
 
 /**
  *
- * __________
+ * Represents a single row in a table.
  *
  * @package atlas/orm
  *
  */
 class Row implements RowInterface
 {
-    // new instance, in memory only
-    const FOR_INSERT = 'FOR_INSERT';
-
-    // selected, and not yet modified in memory
-    const SELECTED = 'SELECTED';
-
-    // selected/inserted/updated, then modified in memory
-    const MODIFIED = 'MODIFIED';
-
-    // marked for deletion but not deleted, modification in memory allowed
-    const FOR_DELETE = 'FOR_DELETE';
-
-    // inserted, and not again modified in memory
-    const INSERTED = 'INSERTED';
-
-    // updated, and not again modified in memory
-    const UPDATED = 'UPDATED';
-
-    // deleted, modification in memory not allowed
+    /**
+     * The row has been deleted from the table; modification is not allowed.
+     */
     const DELETED = 'DELETED';
 
-    private $primary;
+    /**
+     * The row was selected/inserted/updated, and has been modified.
+     */
+    const MODIFIED = 'MODIFIED';
 
+    /**
+     * The row is in memory only and not in the table.
+     */
+    const FOR_INSERT = 'FOR_INSERT';
+
+    /**
+     * The row is marked for later deletion; modification is allowed.
+     */
+    const FOR_DELETE = 'FOR_DELETE';
+
+    /**
+     * The row was inserted into the table, and is unmodified.
+     */
+    const INSERTED = 'INSERTED';
+
+    /**
+     * The row was selected from the table, and is unmodified.
+     */
+    const SELECTED = 'SELECTED';
+
+    /**
+     * The row was updated in the table, and is unmodified.
+     */
+    const UPDATED = 'UPDATED';
+
+    /**
+     *
+     * Row columns and their corresponding values.
+     *
+     * @var array
+     *
+     */
     private $cols = [];
 
+    /**
+     *
+     * The status of this Row.
+     *
+     * @var string
+     *
+     */
     private $status;
 
+    /**
+     *
+     * Constructor.
+     *
+     * @param array $cols The row columns and their corresponding values.
+     *
+     */
     public function __construct(array $cols)
     {
         $this->cols = $cols;
         $this->status = static::FOR_INSERT;
     }
 
+    /**
+     *
+     * Allows read access to column values as properties.
+     *
+     * @param string $col The column name.
+     *
+     * @return mixed The column value.
+     *
+     * @throws Exception when the column does not exist.
+     *
+     */
     public function __get($col)
     {
         $this->assertHas($col);
         return $this->cols[$col];
     }
 
+    /**
+     *
+     * Allows write access to column values as properties.
+     *
+     * @param string $col The column name.
+     *
+     * @param mixed $val The column value.
+     *
+     * @throws Exception when the column does not exist.
+     *
+     */
     public function __set($col, $val)
     {
         $this->assertHas($col);
         $this->modify($col, $val);
     }
 
+    /**
+     *
+     * Allows isset() access to column values as properties.
+     *
+     * @param string $col The column name.
+     *
+     * @throws Exception when the column does not exist.
+     *
+     * @return bool
+     *
+     */
     public function __isset($col)
     {
         $this->assertHas($col);
         return isset($this->cols[$col]);
     }
 
+    /**
+     *
+     * Allows unset() access to column values as properties.
+     *
+     * @param string $col The column name.
+     *
+     * @throws Exception when the column does not exist.
+     *
+     */
     public function __unset($col)
     {
         $this->assertHas($col);
         $this->modify($col, null);
     }
 
-    public function set(array $colsVals = [])
+    /**
+     *
+     * Sets multiple column values at once.
+     *
+     * @param array $cols The columns and their corresponding values.
+     *
+     * @throws Exception when a column does not exist.
+     *
+     */
+    public function set(array $cols = [])
     {
-        $colsVals = array_intersect_key($colsVals, $this->cols);
-        foreach ($colsVals as $col => $val) {
-            $this->$col = $val;
+        foreach ($cols as $col => $val) {
+            $this->assertHas($col);
+            $this->cols[$col] = $val;
         }
     }
 
-    protected function assertHas($col)
-    {
-        if (! $this->has($col)) {
-            throw Exception::propertyDoesNotExist($this, $col);
-        }
-    }
-
+    /**
+     *
+     * Does the row have a particular column?
+     *
+     * @param string $col Check for the existence of this column.
+     *
+     * @return bool
+     *
+     */
     public function has($col)
     {
         return array_key_exists($col, $this->cols);
     }
 
+    /**
+     *
+     * Returns an array copy of this row.
+     *
+     * @return array
+     *
+     */
     public function getArrayCopy()
     {
         return $this->cols;
     }
 
-    /** @todo array_key_exists($col, $init) */
+    /**
+     *
+     * Given an array of "initial" values, returns an array of the different
+     * values on this row.
+     *
+     * @param array $init Initial values to compare to.
+     *
+     * @return array The different values on this row.
+     *
+     */
     public function getArrayDiff(array $init)
     {
         $diff = $this->getArrayCopy();
         foreach ($diff as $col => $val) {
-            if ($this->isSameValue($init[$col], $diff[$col])) {
+            $same = array_key_exists($col, $init)
+                && $this->isEquivalent($init[$col], $diff[$col]);
+            if ($same) {
                 unset($diff[$col]);
             }
         }
         return $diff;
     }
 
+    /**
+     *
+     * Does the row have a particular status?
+     *
+     * @param string|array $status One or more status values.
+     *
+     * @return bool True if the row matches any of the $status values, false
+     * if not.
+     *
+     */
+    public function hasStatus($status)
+    {
+        return in_array($this->status, (array) $status);
+    }
+
+    /**
+     *
+     * Returns the row status.
+     *
+     * @return string
+     *
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     *
+     * Forces the row to a particular status.
+     *
+     * @param string $status The new status for the row.
+     *
+     * @throws Exception when the status is invalid.
+     *
+     */
+    public function setStatus($status)
+    {
+        $const = get_class($this) . '::' . $status;
+        if (! defined($const)) {
+            throw Exception::invalidStatus($status);
+        }
+        $this->status = $status;
+    }
+
+    /**
+     *
+     * Protects the row against disallowed modifications, and sets the row
+     * status to MODIFIED as appropriate.
+     *
+     * @param string $col The column name.
+     *
+     * @param mixed $new The new column value.
+     *
+     * @throws Exception when modification is not allowed.
+     *
+     */
     protected function modify($col, $new)
     {
         if ($this->status == static::DELETED) {
@@ -126,34 +287,41 @@ class Row implements RowInterface
 
         $old = $this->cols[$col];
         $this->cols[$col] = $new;
-        if (! $this->isSameValue($old, $new)) {
+        if (! $this->isEquivalent($old, $new)) {
             $this->setStatus(static::MODIFIED);
         }
     }
 
-    protected function isSameValue($old, $new)
+    /**
+     *
+     * Asserts that a column exists.
+     *
+     * @throws Exception when the column does not exist.
+     *
+     */
+    protected function assertHas($col)
+    {
+        if (! $this->has($col)) {
+            throw Exception::propertyDoesNotExist($this, $col);
+        }
+    }
+
+    /**
+     *
+     * Are two values equivalent to each other? Compares numeric values loosely,
+     * and non-numeric values strictly.
+     *
+     * @param mixed $old The old value.
+     *
+     * @param mixed $new The new value.
+     *
+     * @return bool
+     *
+     */
+    protected function isEquivalent($old, $new)
     {
         return (is_numeric($old) && is_numeric($new))
             ? $old == $new // numeric, compare loosely
             : $old === $new; // not numeric, compare strictly
-    }
-
-    public function hasStatus($status)
-    {
-        return in_array($this->status, (array) $status);
-    }
-
-    public function getStatus()
-    {
-        return $this->status;
-    }
-
-    public function setStatus($status)
-    {
-        $const = get_class($this) . '::' . $status;
-        if (! defined($const)) {
-            throw Exception::invalidStatus($status);
-        }
-        $this->status = $status;
     }
 }

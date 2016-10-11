@@ -12,6 +12,8 @@
 
 ## Near-Term
 
+- ??? Restrict Row values to scalar and null only?
+
 - ??? Add back Record factory?
 
 - ??? Have Rows force everything to scalars, or at least not objects, because
