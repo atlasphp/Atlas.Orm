@@ -69,12 +69,12 @@ abstract class AbstractTable implements TableInterface
 
     /**
      *
-     * Primary key definition on the table.
+     * A memo of the primary key column(s) for calculating identities.
      *
-     * @var mixed
+     * @var string|array A string for simple keys; an array for composite keys.
      *
      */
-    protected $primaryKey;
+    protected $identityKey;
 
     /**
      *
@@ -111,9 +111,9 @@ abstract class AbstractTable implements TableInterface
         $this->identityMap = $identityMap;
         $this->events = $events;
 
-        $this->primaryKey = $this->getPrimaryKey();
-        if (count($this->primaryKey) == 1) {
-            $this->primaryKey = current($this->primaryKey);
+        $this->identityKey = $this->getPrimaryKey();
+        if (count($this->identityKey) == 1) {
+            $this->identityKey = current($this->identityKey);
         }
     }
 
@@ -557,19 +557,19 @@ abstract class AbstractTable implements TableInterface
      */
     protected function calcIdentity($primaryVal)
     {
-        if (is_array($this->primaryKey)) {
+        if (is_array($this->identityKey)) {
             return $this->calcIdentityComposite($primaryVal);
         }
 
-        if (is_array($primaryVal) && isset($primaryVal[$this->primaryKey])) {
-            $primaryVal = $primaryVal[$this->primaryKey];
+        if (is_array($primaryVal) && isset($primaryVal[$this->identityKey])) {
+            $primaryVal = $primaryVal[$this->identityKey];
         }
 
         if (! is_scalar($primaryVal)) {
-            throw Exception::primaryValueNotScalar($this->primaryKey, $primaryVal);
+            throw Exception::primaryValueNotScalar($this->identityKey, $primaryVal);
         }
 
-        return [$this->primaryKey => $primaryVal];
+        return [$this->identityKey => $primaryVal];
     }
 
     /**
@@ -584,7 +584,7 @@ abstract class AbstractTable implements TableInterface
     protected function calcIdentityComposite(array $primaryVal)
     {
         $primary = [];
-        foreach ($this->primaryKey as $col) {
+        foreach ($this->identityKey as $col) {
             if (! isset($primaryVal[$col])) {
                 throw Exception::primaryValueMissing($col);
             }
