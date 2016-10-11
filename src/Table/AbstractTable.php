@@ -342,7 +342,7 @@ abstract class AbstractTable implements TableInterface
         $this->events->afterUpdate($this, $row, $update, $pdoStatement);
 
         $row->setStatus($row::UPDATED);
-        $this->identityMap->setInitial($row);
+        $this->identityMap->resetInitial($row);
 
         return true;
     }

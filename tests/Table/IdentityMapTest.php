@@ -20,11 +20,11 @@ class IdentityMapTest extends \PHPUnit_Framework_TestCase
         $this->identityMap->setRow($row, ['id' => '1'], ['id']);
     }
 
-    public function testSetInitial_missingRow()
+    public function testResetInitial_missingRow()
     {
         $row = new Row(['id' => '1']);
         $this->setExpectedException('Atlas\Orm\Exception');
-        $this->identityMap->setInitial($row);
+        $this->identityMap->resetInitial($row);
     }
 
     public function testGetInitial_missingRow()

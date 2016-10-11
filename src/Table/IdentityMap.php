@@ -13,7 +13,7 @@ use SplObjectStorage;
 
 /**
  *
- * __________
+ * A Table-specific identity map for Row objects.
  *
  * @package atlas/orm
  *
@@ -21,20 +21,37 @@ use SplObjectStorage;
 class IdentityMap
 {
     /**
+     *
+     * Map of serialized identities to Row objects.
+     *
      * @var array
+     *
      */
     protected $serialToRow = [];
 
     /**
+     *
+     * Map of Row objects to serialized identities.
+     *
      * @var SplObjectStorage
+     *
      */
     protected $rowToSerial;
 
     /**
+     *
+     * Initial values in Row objects; use for difference comparisons.
+     *
      * @var SplObjectStorage
+     *
      */
     protected $initial;
 
+    /**
+     *
+     * Constructor.
+     *
+     */
     public function __construct()
     {
         $this->rowToSerial = new SplObjectStorage();
@@ -42,7 +59,15 @@ class IdentityMap
     }
 
     /**
-     * @param RowInterface $row
+     *
+     * Sets a Row into the identity map.
+     *
+     * @param RowInterface $row The Row object.
+     *
+     * @param array $initial The initial values on the Row.
+     *
+     * @param array $primaryKey The columns in the primary key.
+     *
      */
     public function setRow(RowInterface $row, array $initial, array $primaryKey)
     {
@@ -62,8 +87,13 @@ class IdentityMap
     }
 
     /**
-     * @param RowInterface $row
+     *
+     * Does a Row already exist in the map?
+     *
+     * @param RowInterface $row The Row to look for.
+     *
      * @return boolean
+     *
      */
     public function hasRow(RowInterface $row)
     {
@@ -71,8 +101,13 @@ class IdentityMap
     }
 
     /**
-     * @param mixed $primary
-     * @return Row
+     *
+     * Returns a mapped Row by its primary-key value.
+     *
+     * @param array $primary Primary-key column-value pairs.
+     *
+     * @return Row|false The mapped Row on success, or false on failure.
+     *
      */
     public function getRow(array $primary)
     {
@@ -111,6 +146,10 @@ class IdentityMap
      * will result in a different serial than `['bar' => 2, 'foo' => 1]`, even
      * though the key-value pairs themselves are the same.
      *
+     * @param array $primary Primary-key column-value pairs.
+     *
+     * @return string The serialized identity value.
+     *
      */
     public function getSerial(array $primary)
     {
@@ -118,7 +157,16 @@ class IdentityMap
         return $sep . implode($sep, $primary). $sep;
     }
 
-    public function setInitial(RowInterface $row)
+    /**
+     *
+     * Resets the initial values for a Row to its current values.
+     *
+     * @param RowInterface $row Reset the initial values for this Row.
+     *
+     * @throws Exception when the Row is not mapped.
+     *
+     */
+    public function resetInitial(RowInterface $row)
     {
         if (! $this->hasRow($row)) {
             throw Exception::rowNotMapped();
@@ -127,6 +175,17 @@ class IdentityMap
         $this->initial[$row] = $row->getArrayCopy();
     }
 
+    /**
+     *
+     * Gets the initial values for Row.
+     *
+     * @param RowInterface $row The Row to get initial values for.
+     *
+     * @return array The array of initial values.
+     *
+     * @throws Exception when the Row is not mapped.
+     *
+     */
     public function getInitial(RowInterface $row)
     {
         if (! $this->hasRow($row)) {
