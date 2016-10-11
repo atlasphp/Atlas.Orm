@@ -205,7 +205,7 @@ interface MapperInterface
      *
      * Given an array of Row objects, return an array of Record objects,
      * optionally with relateds. Note that this is an *array of Record objects*
-     * and not a RecordSet. Generally used only by the MapperSelect class.
+     * and not a RecordSet.
      *
      * @param array $rows An array of selected Row objects.
      *
@@ -221,7 +221,7 @@ interface MapperInterface
     /**
      *
      * Given an array of Row objects, returns a RecordSet object,
-     * optionally with relateds. Generally used only by the MapperSelect class.
+     * optionally with relateds.
      *
      * @param array $rows An array of selected Row objects.
      *
