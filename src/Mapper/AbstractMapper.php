@@ -148,9 +148,7 @@ abstract class AbstractMapper implements MapperInterface
             return false;
         }
 
-        $record = $this->newRecordFromRow($row);
-        $this->relationships->stitchIntoRecords([$record], $with);
-        return $record;
+        return $this->getSelectedRecord($row, $with);
     }
 
     /**
@@ -172,9 +170,7 @@ abstract class AbstractMapper implements MapperInterface
             return false;
         }
 
-        $record = $this->newRecordFromRow($row);
-        $this->relationships->stitchIntoRecords([$record], $with);
-        return $record;
+        return $this->getSelectedRecord($row, $with);
     }
 
     /**
@@ -198,7 +194,7 @@ abstract class AbstractMapper implements MapperInterface
         if (! $rows) {
             return [];
         }
-        return $this->newRecordSetFromRows($rows, $with);
+        return $this->getSelectedRecordSet($rows, $with);
     }
 
     /**
@@ -221,7 +217,7 @@ abstract class AbstractMapper implements MapperInterface
         if (! $rows) {
             return [];
         }
-        return $this->newRecordSetFromRows($rows, $with);
+        return $this->getSelectedRecordSet($rows, $with);
     }
 
     /**
@@ -329,8 +325,7 @@ abstract class AbstractMapper implements MapperInterface
 
     /**
      *
-     * Given an array of selected column data, return a new Record, optionally
-     * with relateds.
+     * Given a Row, return a new Record, optionally with relateds.
      *
      * @param RowInterface $row A selected Row.
      *
@@ -349,7 +344,7 @@ abstract class AbstractMapper implements MapperInterface
 
     /**
      *
-     * Given an array of selected row data, return an array of Record objects,
+     * Given an array of Row objects, return an array of Record objects,
      * optionally with relateds. Note that this is an *array of Record objects*
      * and not a RecordSet. Generally used only by the MapperSelect class.
      *
@@ -374,7 +369,7 @@ abstract class AbstractMapper implements MapperInterface
 
     /**
      *
-     * Given an array of selected row data, returns a RecordSet object,
+     * Given an array of Row objects, returns a RecordSet object,
      * optionally with relateds. Generally used only by the MapperSelect class.
      *
      * @param array $rows An array of selected Row objects.
@@ -557,28 +552,6 @@ abstract class AbstractMapper implements MapperInterface
             $row,
             $this->newRelated()
         );
-    }
-
-    /**
-     *
-     * Given an array of Row objects, returns a new RecordSet, optionally with
-     * relateds.
-     *
-     * @param array $rows An array of Row objects.
-     *
-     * @param array $with Return each Record with these relateds stitched in.
-     *
-     * @return RecordSetInterface
-     *
-     */
-    protected function newRecordSetFromRows(array $rows, array $with = [])
-    {
-        $records = [];
-        foreach ($rows as $row) {
-            $records[] = $this->newRecordFromRow($row);
-        }
-        $this->relationships->stitchIntoRecords($records, $with);
-        return $this->newRecordSet($records);
     }
 
     /**

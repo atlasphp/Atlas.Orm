@@ -189,8 +189,7 @@ interface MapperInterface
 
     /**
      *
-     * Given an array of selected column data, return a new Record, optionally
-     * with relateds.
+     * Given a Row, return a new Record, optionally with relateds.
      *
      * @param RowInterface $row A selected Row.
      *
@@ -204,7 +203,7 @@ interface MapperInterface
 
     /**
      *
-     * Given an array of selected row data, return an array of Record objects,
+     * Given an array of Row objects, return an array of Record objects,
      * optionally with relateds. Note that this is an *array of Record objects*
      * and not a RecordSet. Generally used only by the MapperSelect class.
      *
@@ -221,7 +220,7 @@ interface MapperInterface
 
     /**
      *
-     * Given an array of selected row data, returns a RecordSet object,
+     * Given an array of Row objects, returns a RecordSet object,
      * optionally with relateds. Generally used only by the MapperSelect class.
      *
      * @param array $rows An array of selected Row objects.
