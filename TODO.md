@@ -4,6 +4,12 @@
 
 - Documentation.
 
+- Rename $colsVals to something reminiscent of "this column equals this value".
+  $equals? Not $matching/$matches, used elsewhere.
+
+- Rename getSelectedRecord() et al. to something more like "rowIntoRecord()".
+  get*() should be getters, not converters.
+
 ## Near-Term
 
 - ??? Add back Record factory?
