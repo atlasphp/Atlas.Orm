@@ -199,7 +199,7 @@ interface MapperInterface
      * that will be returned instead of a generic Record.
      *
      */
-    public function getSelectedRecord(RowInterface $row, array $with = []);
+    public function turnRowIntoRecord(RowInterface $row, array $with = []);
 
     /**
      *
@@ -216,7 +216,7 @@ interface MapperInterface
      * Record objects.
      *
      */
-    public function getSelectedRecords(array $rows, array $with = []);
+    public function turnRowsIntoRecords(array $rows, array $with = []);
 
     /**
      *
@@ -231,5 +231,5 @@ interface MapperInterface
      * will be returned of a generic RecordSet object.
      *
      */
-    public function getSelectedRecordSet(array $rows, array $with = []);
+    public function turnRowsIntoRecordSet(array $rows, array $with = []);
 }

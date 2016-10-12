@@ -33,30 +33,30 @@ class MapperSelect implements SubselectInterface
 
     /**
      *
-     * A callable back to the Mapper-specific getSelectedRecord() method.
+     * A callable back to the Mapper-specific turnRowIntoRecord() method.
      *
      * @var callable
      *
      */
-    protected $getSelectedRecord;
+    protected $turnRowIntoRecord;
 
     /**
      *
-     * A callable back to the Mapper-specific getSelectedRecords() method.
+     * A callable back to the Mapper-specific turnRowsIntoRecords() method.
      *
      * @var callable
      *
      */
-    protected $getSelectedRecords;
+    protected $turnRowsIntoRecords;
 
     /**
      *
-     * A callable back to the Mapper-specific getSelectedRecordSet() method.
+     * A callable back to the Mapper-specific turnRowsIntoRecordSet() method.
      *
      * @var callable
      *
      */
-    protected $getSelectedRecordSet;
+    protected $turnRowsIntoRecordSet;
 
     /**
      *
@@ -73,26 +73,26 @@ class MapperSelect implements SubselectInterface
      *
      * @param TableSelect $tableSelect The TableSelect instance being decorated.
      *
-     * @param callable $getSelectedRecord A callable back to the Mapper-specific
-     * getSelectedRecord() method.
+     * @param callable $turnRowIntoRecord A callable back to the Mapper-specific
+     * turnRowIntoRecord() method.
      *
-     * @param callable $getSelectedRecords A callable back to the Mapper-specific
-     * getSelectedRecords() method.
+     * @param callable $turnRowsIntoRecords A callable back to the Mapper-specific
+     * turnRowsIntoRecords() method.
      *
-     * @param callable $getSelectedRecordSet A callable back to the Mapper-specific
-     * getSelectedRecordSet() method.
+     * @param callable $turnRowsIntoRecordSet A callable back to the Mapper-specific
+     * turnRowsIntoRecordSet() method.
      *
      */
     public function __construct(
         TableSelect $tableSelect,
-        callable $getSelectedRecord,
-        callable $getSelectedRecords,
-        callable $getSelectedRecordSet
+        callable $turnRowIntoRecord,
+        callable $turnRowsIntoRecords,
+        callable $turnRowsIntoRecordSet
     ) {
         $this->tableSelect = $tableSelect;
-        $this->getSelectedRecord = $getSelectedRecord;
-        $this->getSelectedRecords = $getSelectedRecords;
-        $this->getSelectedRecordSet = $getSelectedRecordSet;
+        $this->turnRowIntoRecord = $turnRowIntoRecord;
+        $this->turnRowsIntoRecords = $turnRowsIntoRecords;
+        $this->turnRowsIntoRecordSet = $turnRowsIntoRecordSet;
     }
 
     /**
@@ -180,7 +180,7 @@ class MapperSelect implements SubselectInterface
             return false;
         }
 
-        return call_user_func($this->getSelectedRecord, $row, $this->with);
+        return call_user_func($this->turnRowIntoRecord, $row, $this->with);
     }
 
     /**
@@ -197,7 +197,7 @@ class MapperSelect implements SubselectInterface
             return [];
         }
 
-        return call_user_func($this->getSelectedRecords, $rows, $this->with);
+        return call_user_func($this->turnRowsIntoRecords, $rows, $this->with);
     }
 
     /**
@@ -215,6 +215,6 @@ class MapperSelect implements SubselectInterface
             return [];
         }
 
-        return call_user_func($this->getSelectedRecordSet, $rows, $this->with);
+        return call_user_func($this->turnRowsIntoRecordSet, $rows, $this->with);
     }
 }

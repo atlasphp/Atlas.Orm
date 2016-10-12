@@ -148,7 +148,7 @@ abstract class AbstractMapper implements MapperInterface
             return false;
         }
 
-        return $this->getSelectedRecord($row, $with);
+        return $this->turnRowIntoRecord($row, $with);
     }
 
     /**
@@ -170,7 +170,7 @@ abstract class AbstractMapper implements MapperInterface
             return false;
         }
 
-        return $this->getSelectedRecord($row, $with);
+        return $this->turnRowIntoRecord($row, $with);
     }
 
     /**
@@ -194,7 +194,7 @@ abstract class AbstractMapper implements MapperInterface
         if (! $rows) {
             return [];
         }
-        return $this->getSelectedRecordSet($rows, $with);
+        return $this->turnRowsIntoRecordSet($rows, $with);
     }
 
     /**
@@ -217,7 +217,7 @@ abstract class AbstractMapper implements MapperInterface
         if (! $rows) {
             return [];
         }
-        return $this->getSelectedRecordSet($rows, $with);
+        return $this->turnRowsIntoRecordSet($rows, $with);
     }
 
     /**
@@ -234,9 +234,9 @@ abstract class AbstractMapper implements MapperInterface
     {
         return new MapperSelect(
             $this->table->select($whereEquals),
-            [$this, 'getSelectedRecord'],
-            [$this, 'getSelectedRecords'],
-            [$this, 'getSelectedRecordSet']
+            [$this, 'turnRowIntoRecord'],
+            [$this, 'turnRowsIntoRecords'],
+            [$this, 'turnRowsIntoRecordSet']
         );
     }
 
@@ -335,7 +335,7 @@ abstract class AbstractMapper implements MapperInterface
      * that will be returned instead of a generic Record.
      *
      */
-    public function getSelectedRecord(RowInterface $row, array $with = [])
+    public function turnRowIntoRecord(RowInterface $row, array $with = [])
     {
         $record = $this->newRecordFromRow($row);
         $this->relationships->stitchIntoRecords([$record], $with);
@@ -357,7 +357,7 @@ abstract class AbstractMapper implements MapperInterface
      * Record objects.
      *
      */
-    public function getSelectedRecords(array $rows, array $with = [])
+    public function turnRowsIntoRecords(array $rows, array $with = [])
     {
         $records = [];
         foreach ($rows as $row) {
@@ -380,9 +380,9 @@ abstract class AbstractMapper implements MapperInterface
      * will be returned of a generic RecordSet object.
      *
      */
-    public function getSelectedRecordSet(array $rows, array $with = [])
+    public function turnRowsIntoRecordSet(array $rows, array $with = [])
     {
-        $records = $this->getSelectedRecords($rows, $with);
+        $records = $this->turnRowsIntoRecords($rows, $with);
         return $this->newRecordSet($records);
     }
 
