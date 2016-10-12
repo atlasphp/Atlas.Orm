@@ -15,7 +15,7 @@ use Aura\SqlQuery\Common\SubselectInterface;
 
 /**
  *
- * A SELECT object for Mapper queries.
+ * A Select object for Mapper queries.
  *
  * @package atlas/orm
  *

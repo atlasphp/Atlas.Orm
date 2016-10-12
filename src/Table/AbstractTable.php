@@ -227,35 +227,6 @@ abstract class AbstractTable implements TableInterface
 
     /**
      *
-     * Adds the primary-key WHERE conditions to a TableSelect.
-     *
-     * @param TableSelect $select Add the conditions to this TableSelect.
-     *
-     * @param array $primaryVals Use these primary-key values.
-     *
-     */
-    protected function selectWherePrimary(TableSelect $select, array $primaryVals)
-    {
-        $primaryKey = $this->getPrimaryKey();
-        if (count($primaryKey) == 1) {
-            // simple key
-            $primaryCol = current($primaryKey);
-            $select->where("$primaryCol IN (?)", $primaryVals);
-            return;
-        }
-
-        // composite key
-        foreach ($primaryVals as $primaryVal) {
-            $primary = $this->calcIdentity($primaryVal);
-            $cols = array_keys($primary);
-            $vals = array_values($primary);
-            $cond = implode(' = ? AND ', $cols) . ' = ?';
-            $select->orWhere($cond, ...$vals);
-        }
-    }
-
-    /**
-     *
      * Returns a new TableSelect.
      *
      * @param array $colsVals An array of column-value equality pairs for the
@@ -418,6 +389,89 @@ abstract class AbstractTable implements TableInterface
             $this->identityMap->setRow($row, $cols, $this->getPrimaryKey());
         }
         return $row;
+    }
+
+    /**
+     *
+     * Returns the table name.
+     *
+     * @return string
+     *
+     */
+    abstract public function getName();
+
+    /**
+     *
+     * Returns the table column names.
+     *
+     * @return array
+     *
+     */
+    abstract public function getColNames();
+
+    /**
+     *
+     * Returns the table column information.
+     *
+     * @return array
+     *
+     */
+    abstract public function getCols();
+
+    /**
+     *
+     * Returns the primary key column names on the table.
+     *
+     * @return array The primary key column names.
+     *
+     */
+    abstract public function getPrimaryKey();
+
+    /**
+     *
+     * Returns the name of the autoincrement column, if any.
+     *
+     * @return string
+     *
+     */
+    abstract public function getAutoinc();
+
+    /**
+     *
+     * Returns the default values for a new row.
+     *
+     * @return array
+     *
+     */
+    abstract public function getColDefaults();
+
+    /**
+     *
+     * Adds the primary-key WHERE conditions to a TableSelect.
+     *
+     * @param TableSelect $select Add the conditions to this TableSelect.
+     *
+     * @param array $primaryVals Use these primary-key values.
+     *
+     */
+    protected function selectWherePrimary(TableSelect $select, array $primaryVals)
+    {
+        $primaryKey = $this->getPrimaryKey();
+        if (count($primaryKey) == 1) {
+            // simple key
+            $primaryCol = current($primaryKey);
+            $select->where("$primaryCol IN (?)", $primaryVals);
+            return;
+        }
+
+        // composite key
+        foreach ($primaryVals as $primaryVal) {
+            $primary = $this->calcIdentity($primaryVal);
+            $cols = array_keys($primary);
+            $vals = array_values($primary);
+            $cond = implode(' = ? AND ', $cols) . ' = ?';
+            $select->orWhere($cond, ...$vals);
+        }
     }
 
     /**
@@ -595,58 +649,4 @@ abstract class AbstractTable implements TableInterface
         }
         return $primary;
     }
-
-    /**
-     *
-     * Returns the table name.
-     *
-     * @return string
-     *
-     */
-    abstract public function getName();
-
-    /**
-     *
-     * Returns the table column names.
-     *
-     * @return array
-     *
-     */
-    abstract public function getColNames();
-
-    /**
-     *
-     * Returns the table column information.
-     *
-     * @return array
-     *
-     */
-    abstract public function getCols();
-
-    /**
-     *
-     * Returns the primary key column names on the table.
-     *
-     * @return array The primary key column names.
-     *
-     */
-    abstract public function getPrimaryKey();
-
-    /**
-     *
-     * Returns the name of the autoincrement column, if any.
-     *
-     * @return string
-     *
-     */
-    abstract public function getAutoinc();
-
-    /**
-     *
-     * Returns the default values for a new row.
-     *
-     * @return array
-     *
-     */
-    abstract public function getColDefaults();
 }

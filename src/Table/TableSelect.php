@@ -14,7 +14,7 @@ use Aura\SqlQuery\Common\SubselectInterface;
 
 /**
  *
- * __________
+ * A Select object for Table queries.
  *
  * @package atlas/orm
  *
@@ -23,19 +23,54 @@ class TableSelect implements SubselectInterface
 {
     /**
      *
-     * The SelectInterface being decorated.
+     * The underlying Select object being decorated.
      *
-     * @var mixed
+     * @var SelectInterface
      *
      */
     protected $select;
 
+    /**
+     *
+     * A database read connection.
+     *
+     * @var ExtendedPdo
+     *
+     */
     protected $connection;
 
+    /**
+     *
+     * The column names in the Table.
+     *
+     * @var array
+     *
+     */
     protected $colNames;
 
+    /**
+     *
+     * A callable to create a Row from the select results.
+     *
+     * @var callable
+     *
+     */
     protected $getSelectedRow;
 
+    /**
+     *
+     * Constructor.
+     *
+     * @param SelectInterface The underlying Select object being decorated.
+     *
+     * @param ExtendedPdo $connection A database read connection.
+     *
+     * @param array $colNames The column names in the Table.
+     *
+     * @param callable $getSelectedRow A callable to create a Row from the
+     * select results.
+     *
+     */
     public function __construct(
         SelectInterface $select,
         ExtendedPdo $connection,
@@ -81,14 +116,26 @@ class TableSelect implements SubselectInterface
         return ($result === $this->select) ? $this : $result;
     }
 
-    // subselect interface
+    /**
+     *
+     * Implements the SubSelect::getStatement() interface.
+     *
+     * @return string
+     *
+     */
     public function getStatement()
     {
         $this->addColNames();
         return $this->select->getStatement();
     }
 
-    // subselect interface
+    /**
+     *
+     * Implements the SubSelect::getBindValues() interface.
+     *
+     * @return array
+     *
+     */
     public function getBindValues()
     {
         return $this->select->getBindValues();
@@ -233,7 +280,7 @@ class TableSelect implements SubselectInterface
      *
      * Yields the first column of rows as a sequential array.
      *
-     * @return array
+     * @return Iterator
      *
      */
     public function yieldCol()
@@ -251,7 +298,7 @@ class TableSelect implements SubselectInterface
      *
      * @param array $values Values to bind to the query.
      *
-     * @return array
+     * @return Iterator
      *
      */
     public function yieldPairs()
@@ -300,7 +347,7 @@ class TableSelect implements SubselectInterface
 
     /**
      *
-     * Sets all table columns on the SELECT if no columns are present.
+     * Adds all table columns to the SELECT if it has no columns yet.
      *
      * @return void
      *

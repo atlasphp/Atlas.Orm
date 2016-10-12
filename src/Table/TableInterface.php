@@ -37,27 +37,93 @@ interface TableInterface
      */
     public function getWriteConnection();
 
+    /**
+     *
+     * Fetches one Row based on a primary-key value, from the identity map if
+     * present, or from the database if not.
+     *
+     * @param mixed $primaryVal A scalar for a simple primary key, or an array
+     * of column => value pairs for a composite primary key.
+     *
+     * @return Row|false Returns a Row on success, or `false` on failure.
+     *
+     */
     public function fetchRow($primaryVal);
 
+    /**
+     *
+     * Fetches an array of Row objects based on primary-key values, from the
+     * identity map as available, and from the database when not.
+     *
+     * @param mixed $primaryVals An array of primary-key values; each value is
+     * scalar for a simple primary key, or an array of column => value pairs for
+     * a composite primary key.
+     *
+     * @return array
+     *
+     */
     public function fetchRows(array $primaryVals);
 
+    /**
+     *
+     * Returns a new TableSelect.
+     *
+     * @param array $colsVals An array of column-value equality pairs for the
+     * WHERE clause.
+     *
+     * @return TableSelect
+     *
+     */
     public function select(array $colsVals = []);
 
+    /**
+     *
+     * Inserts a Row into the table.
+     *
+     * @param RowInterface $row The row to insert.
+     *
+     */
     public function insert(RowInterface $row);
 
+    /**
+     *
+     * Updates a Row in the table.
+     *
+     * @param RowInterface $row The row to update.
+     *
+     */
     public function update(RowInterface $row);
 
+    /**
+     *
+     * Deletes a Row from the table.
+     *
+     * @param RowInterface $row The row to delete.
+     *
+     */
     public function delete(RowInterface $row);
 
     /**
      *
-     * Returns a new Row for the table.
+     * Returns a new in-memory Row, not identity-mapped.
+     *
+     * @param array $cols Column values for the Row.
      *
      * @return RowInterface
      *
      */
     public function newRow(array $cols = []);
 
+    /**
+     *
+     * Returns a selected Row: if identity mapped already, returns the mapped
+     * Row, otherwise returns a new Row and maps it.
+     *
+     * @param array $cols Column values for the Row.
+     *
+     * @return RowInterface
+     *
+     */
     public function getSelectedRow(array $cols);
 
     /**
