@@ -15,7 +15,7 @@ use SplObjectStorage;
 
 /**
  *
- * __________
+ * A transaction to perform a unit-of-work.
  *
  * @package atlas/orm
  *
@@ -24,7 +24,7 @@ class Transaction
 {
     /**
      *
-     * A MapperLocator to insert, update, and delete records.
+     * A MapperLocator to insert, update, and delete different records.
      *
      * @var MapperLocator
      *
@@ -143,7 +143,7 @@ class Transaction
      *
      * @param RecordInterface $record The record to insert.
      *
-     * @return self
+     * @return $this
      *
      */
     public function insert(RecordInterface $record)
@@ -157,7 +157,7 @@ class Transaction
      *
      * @param RecordInterface $record The record to update.
      *
-     * @return self
+     * @return $this
      *
      */
     public function update(RecordInterface $record)
@@ -171,7 +171,7 @@ class Transaction
      *
      * @param RecordInterface $record The record to delete.
      *
-     * @return self
+     * @return $this
      *
      */
     public function delete(RecordInterface $record)
@@ -188,7 +188,7 @@ class Transaction
      *
      * @param RecordInterface $record The record to work with.
      *
-     * @return self
+     * @return $this
      *
      */
     protected function plan($method, RecordInterface $record)
@@ -242,30 +242,13 @@ class Transaction
 
         try {
             $this->begin();
-            $this->execPlan();
+            $this->work();
             $this->commit();
             return true;
         } catch (\Exception $e) {
             $this->exception = $e;
             $this->rollBack();
             return false;
-        }
-    }
-
-    /**
-     *
-     * Executes all planned work.
-     *
-     * @return mixed
-     *
-     */
-    protected function execPlan()
-    {
-        foreach ($this->plan as $work) {
-            $this->failure = $work;
-            $work();
-            $this->completed[] = $work;
-            $this->failure = null;
         }
     }
 
@@ -280,6 +263,21 @@ class Transaction
     {
         foreach ($this->connections as $connection) {
             $connection->beginTransaction();
+        }
+    }
+
+    /**
+     *
+     * Executes all planned work.
+     *
+     */
+    protected function work()
+    {
+        foreach ($this->plan as $work) {
+            $this->failure = $work;
+            $work();
+            $this->completed[] = $work;
+            $this->failure = null;
         }
     }
 

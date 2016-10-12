@@ -19,12 +19,62 @@ use Atlas\Orm\Mapper\RecordInterface;
  */
 class Work
 {
+    /**
+     *
+     * A descriptive label for the work.
+     *
+     * @var string
+     *
+     */
     protected $label;
+
+    /**
+     *
+     * A callable to perform the work.
+     *
+     * @var callable
+     *
+     */
     protected $callable;
+
+    /**
+     *
+     * The record being worked with.
+     *
+     * @var RecordInterface
+     *
+     */
     protected $record;
+
+    /**
+     *
+     * The result of the work.
+     *
+     * @var bool
+     *
+     */
     protected $result;
+
+    /**
+     *
+     * Has the work callable already been invoked?
+     *
+     * @var bool
+     *
+     */
     protected $invoked = false;
 
+    /**
+     *
+     * Constructor.
+     *
+     * @param string $label A descriptive label for the work.
+     *
+     * @param callable $callable A callable to perform the work.
+     *
+     * @param RecordInterface $record The record being worked with.
+     *
+     */
     public function __construct($label, callable $callable, RecordInterface $record)
     {
         $this->label = $label;
@@ -32,6 +82,13 @@ class Work
         $this->record = $record;
     }
 
+    /**
+     *
+     * Performs the work.
+     *
+     * @throws Exception if it has already been performed.
+     *
+     */
     public function __invoke()
     {
         if ($this->invoked) {
@@ -42,26 +99,61 @@ class Work
         $this->result = call_user_func($this->callable, $this->record);
     }
 
+    /**
+     *
+     * Returns the descriptive label.
+     *
+     * @return string
+     *
+     */
     public function getLabel()
     {
         return $this->label;
     }
 
+    /**
+     *
+     * Returns the callable to perform the work.
+     *
+     * @return callable
+     *
+     */
     public function getCallable()
     {
         return $this->callable;
     }
 
+    /**
+     *
+     * Returns the record being worked with.
+     *
+     * @return RecordInterface
+     *
+     */
     public function getRecord()
     {
         return $this->record;
     }
 
+    /**
+     *
+     * Returns the result of the work.
+     *
+     * @return bool
+     *
+     */
     public function getResult()
     {
         return $this->result;
     }
 
+    /**
+     *
+     * Returns the "invoked" status (i.e., has the work callable already been invoked).
+     *
+     * @return bool
+     *
+     */
     public function getInvoked()
     {
         return $this->invoked;
