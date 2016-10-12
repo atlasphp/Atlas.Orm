@@ -20,19 +20,75 @@ use Aura\SqlQuery\QueryFactory;
 
 /**
  *
- * __________
+ * A container for setting up Atlas.
  *
  * @package atlas/orm
  *
  */
 class AtlasContainer
 {
+    /**
+     *
+     * The Atlas instance managed by this container.
+     *
+     * @var Atlas
+     *
+     */
     protected $atlas;
+
+    /**
+     *
+     * A locator for database connections.
+     *
+     * @var ConnectionLocator
+     *
+     */
     protected $connectionLocator;
-    protected $factories;
+
+    /**
+     *
+     * Custom object factories.
+     *
+     * @var array
+     *
+     */
+    protected $factories = [];
+
+    /**
+     *
+     * A locator for all Mapper objects.
+     *
+     * @var MapperLocator
+     *
+     */
     protected $mapperLocator;
+
+    /**
+     *
+     * A factory for query objects.
+     *
+     * @var QueryFactory
+     *
+     */
     protected $queryFactory;
 
+    /**
+     *
+     * Constructor.
+     *
+     * @param string $dsn The default database connection DSN.
+     *
+     * @param string $username The default database connection username.
+     *
+     * @param string $password The default database connection password.
+     *
+     * @param array $options The default database connection options.
+     *
+     * @param array $attributes The default database connection attributes.
+     *
+     * @see ExtendedPdo::__construct()
+     *
+     */
     public function __construct(
         $dsn,
         $username = null,
@@ -50,6 +106,15 @@ class AtlasContainer
         );
     }
 
+    /**
+     *
+     * Creates and sets the connection locator with a default connection.
+     *
+     * @param array $args Params for an ExtendedPdo constructor.
+     *
+     * @see ExtendedPdo::__construct()
+     *
+     */
     protected function setConnectionLocator(array $args)
     {
         $this->connectionLocator = new ConnectionLocator();
@@ -58,16 +123,37 @@ class AtlasContainer
         });
     }
 
+    /**
+     *
+     * Returns the connection locator.
+     *
+     * @return ConnectionLocator
+     *
+     */
     public function getConnectionLocator()
     {
         return $this->connectionLocator;
     }
 
+    /**
+     *
+     * Returns the mapper locator.
+     *
+     * @return MapperLocator
+     *
+     */
     public function getMapperLocator()
     {
         return $this->mapperLocator;
     }
 
+    /**
+     *
+     * Creates and sets the query factory.
+     *
+     * @param string $dsn The default database connection DSN.
+     *
+     */
     protected function setQueryFactory($dsn)
     {
         $parts = explode(':', $dsn);
@@ -75,21 +161,54 @@ class AtlasContainer
         $this->queryFactory = new QueryFactory($db);
     }
 
+    /**
+     *
+     * Returns the Atlas instance managed by this container.
+     *
+     * @return Atlas
+     *
+     */
     public function getAtlas()
     {
         return $this->atlas;
     }
 
+    /**
+     *
+     * Sets a new "read" connection by name into the connection locator.
+     *
+     * @param string $name The connection name.
+     *
+     * @param callable $callable A callable to create and return the connection.
+     *
+     */
     public function setReadConnection($name, callable $callable)
     {
         $this->connectionLocator->setRead($name, $callable);
     }
 
+    /**
+     *
+     * Sets a new "write" connection by name into the connection locator.
+     *
+     * @param string $name The connection name.
+     *
+     * @param callable $callable A callable to create and return the connection.
+     *
+     */
     public function setWriteConnection($name, callable $callable)
     {
         $this->connectionLocator->setWrite($name, $callable);
     }
 
+    /**
+     *
+     * Sets multiple mappers into the mapper locator.
+     *
+     * @param array $mapperClasses An array of mapper class names for the
+     * locator.
+     *
+     */
     public function setMappers(array $mapperClasses)
     {
         foreach ($mapperClasses as $mapperClass) {
@@ -97,6 +216,17 @@ class AtlasContainer
         }
     }
 
+    /**
+     *
+     * Sets one mapper into the mapper locator.
+     *
+     * @param string $mapperClasses A mapper class names for the locator.
+     *
+     * @throws Exception when the mapper class does not exist.
+     *
+     * @throws Exception when the table class for a mapper does not exist.
+     *
+     */
     public function setMapper($mapperClass)
     {
         if (! class_exists($mapperClass)) {
@@ -125,12 +255,21 @@ class AtlasContainer
         $this->mapperLocator->set($mapperClass, $mapperFactory);
     }
 
+    /**
+     *
+     * Sets a table into the table locator.
+     *
+     * @param string $tableClass The table class name.
+     *
+     */
     protected function setTable($tableClass)
     {
         $eventsClass = $tableClass . 'Events';
+
         $eventsClass = class_exists($eventsClass)
             ? $eventsClass
             : TableEvents::CLASS;
+
         $factory = function () use ($tableClass, $eventsClass) {
             return new $tableClass(
                 $this->connectionLocator,
@@ -143,11 +282,29 @@ class AtlasContainer
         $this->tableLocator->set($tableClass, $factory);
     }
 
+    /**
+     *
+     * Sets a custom factory for a class.
+     *
+     * @param string $class The class name.
+     *
+     * @param callable $callable A callable to create and return a new instance.
+     *
+     */
     public function setFactoryFor($class, callable $callable)
     {
         $this->factories[$class] = $callable;
     }
 
+    /**
+     *
+     * Creates and returns a new instance.
+     *
+     * @param string $class Create and return an instance of this class.
+     *
+     * @return object
+     *
+     */
     public function newInstance($class)
     {
         if (isset($this->factories[$class])) {
