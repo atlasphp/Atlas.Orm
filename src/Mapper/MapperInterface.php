@@ -76,14 +76,14 @@ interface MapperInterface
      * Fetches one Record by column-value equality pairs, optionally with
      * relateds.
      *
-     * @param array $colsVals The column-value equality pairs.
+     * @param array $whereEquals The column-value equality pairs.
      *
      * @return RecordInterface|false A Record on success, or `false` on failure.
      * (If a Mapper-specific Record class is defined, that will be returned on
      * success instead of a generic Record.)
      *
      */
-    public function fetchRecordBy(array $colsVals, array $with = []);
+    public function fetchRecordBy(array $whereEquals, array $with = []);
 
     /**
      *
@@ -107,7 +107,7 @@ interface MapperInterface
      * Fetches a RecordSet by column-value equality pairs, optionally with
      * relateds.
      *
-     * @param array $colsVals The column-value equality pairs.
+     * @param array $whereEquals The column-value equality pairs.
      *
      * @param array $with Return each Record with these relateds stitched in.
      *
@@ -116,19 +116,19 @@ interface MapperInterface
      * will be returned instead of a generic RecordSet.)
      *
      */
-    public function fetchRecordSetBy(array $colsVals, array $with = []);
+    public function fetchRecordSetBy(array $whereEquals, array $with = []);
 
     /**
      *
      * Returns a new MapperSelect object.
      *
-     * @param array $colsVals A series of column-value equality pairs for the
+     * @param array $whereEquals A series of column-value equality pairs for the
      * WHERE clause.
      *
      * @return MapperSelect
      *
      */
-    public function select(array $colsVals = []);
+    public function select(array $whereEquals = []);
 
     /**
      *

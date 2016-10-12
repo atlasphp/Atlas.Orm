@@ -229,16 +229,16 @@ abstract class AbstractTable implements TableInterface
      *
      * Returns a new TableSelect.
      *
-     * @param array $colsVals An array of column-value equality pairs for the
+     * @param array $whereEquals An array of column-value equality pairs for the
      * WHERE clause.
      *
      * @return TableSelect
      *
      */
-    public function select(array $colsVals = [])
+    public function select(array $whereEquals = [])
     {
         return new TableSelect(
-            $this->newSelect($colsVals),
+            $this->newSelect($whereEquals),
             $this->getReadConnection(),
             $this->getColNames(),
             [$this, 'getSelectedRow']
@@ -478,18 +478,18 @@ abstract class AbstractTable implements TableInterface
      *
      * Returns a new Select.
      *
-     * @param array $colsVals An array of column-value equality pairs for the
+     * @param array $whereEquals An array of column-value equality pairs for the
      * WHERE clause.
      *
      * @return SelectInterface
      *
      */
-    protected function newSelect(array $colsVals = [])
+    protected function newSelect(array $whereEquals = [])
     {
         $select = $this->queryFactory->newSelect();
         $table = $this->getName();
         $select->from($table);
-        foreach ($colsVals as $col => $val) {
+        foreach ($whereEquals as $col => $val) {
             if (is_numeric($col)) {
                 throw Exception::numericCol($col);
             }

@@ -127,14 +127,14 @@ class Atlas
      *
      * @param string $mapperClass Fetch the Record through this Mapper.
      *
-     * @param array $colsVals The column-value equality pairs.
+     * @param array $whereEquals The column-value equality pairs.
      *
      * @return RecordInterface|false A Record on success, or `false` on failure.
      *
      */
-    public function fetchRecordBy($mapperClass, array $colsVals, array $with = [])
+    public function fetchRecordBy($mapperClass, array $whereEquals, array $with = [])
     {
-        return $this->mapper($mapperClass)->fetchRecordBy($colsVals, $with);
+        return $this->mapper($mapperClass)->fetchRecordBy($whereEquals, $with);
     }
 
     /**
@@ -166,7 +166,7 @@ class Atlas
      *
      * @param string $mapperClass Fetch the RecordSet through this Mapper.
      *
-     * @param array $colsVals The column-value equality pairs.
+     * @param array $whereEquals The column-value equality pairs.
      *
      * @param array $with Return each Record with these relateds stitched in.
      *
@@ -174,9 +174,9 @@ class Atlas
      * array on failure.
      *
      */
-    public function fetchRecordSetBy($mapperClass, array $colsVals, array $with = [])
+    public function fetchRecordSetBy($mapperClass, array $whereEquals, array $with = [])
     {
-        return $this->mapper($mapperClass)->fetchRecordSetBy($colsVals, $with);
+        return $this->mapper($mapperClass)->fetchRecordSetBy($whereEquals, $with);
     }
 
     /**
@@ -185,15 +185,15 @@ class Atlas
      *
      * @param string $mapperClass Create the select object through this Mapper.
      *
-     * @param array $colsVals A series of column-value equality pairs for the
+     * @param array $whereEquals A series of column-value equality pairs for the
      * WHERE clause.
      *
      * @return MapperSelect
      *
      */
-    public function select($mapperClass, array $colsVals = [])
+    public function select($mapperClass, array $whereEquals = [])
     {
-        return $this->mapper($mapperClass)->select($colsVals);
+        return $this->mapper($mapperClass)->select($whereEquals);
     }
 
     /**

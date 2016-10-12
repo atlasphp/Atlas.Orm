@@ -12,7 +12,7 @@ use Atlas\Exception;
 
 /**
  *
- * __________
+ * Table data gateway interface.
  *
  * @package atlas/orm
  *
@@ -68,13 +68,13 @@ interface TableInterface
      *
      * Returns a new TableSelect.
      *
-     * @param array $colsVals An array of column-value equality pairs for the
+     * @param array $whereEquals An array of column-value equality pairs for the
      * WHERE clause.
      *
      * @return TableSelect
      *
      */
-    public function select(array $colsVals = []);
+    public function select(array $whereEquals = []);
 
     /**
      *
