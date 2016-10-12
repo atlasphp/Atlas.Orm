@@ -27,7 +27,7 @@ class RelationshipsTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException(
             Exception::CLASS,
-            "Relation 'foo' does not exist"
+            "Relationship 'foo' does not exist."
         );
 
         $this->relationships->manyToMany(

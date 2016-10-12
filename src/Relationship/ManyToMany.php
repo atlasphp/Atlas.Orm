@@ -82,7 +82,7 @@ class ManyToMany extends AbstractRelationship
         // so if even one is loaded, all the others ought to have been too.
         $firstNative = $nativeRecords[0];
         if (! isset($firstNative->{$this->throughName})) {
-            throw Exception::throughRelationNotFetched($this->name, $this->throughName);
+            throw Exception::throughRelationshipNotFetched($this->name, $this->throughName);
         }
 
         $throughRecords = [];

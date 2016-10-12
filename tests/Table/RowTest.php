@@ -68,7 +68,7 @@ class RowTest extends \PHPUnit_Framework_TestCase
         ]));
 
         $this->setExpectedException(
-            'UnexpectedValueException',
+            'Atlas\Orm\Exception',
             "Expected valid row status, got 'No Such Status' instead."
         );
         $row->setStatus('No Such Status');

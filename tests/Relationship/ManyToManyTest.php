@@ -51,7 +51,7 @@ class ManyToManyTest extends AbstractRelationshipTest
 
         $this->setExpectedException(
             Exception::CLASS,
-            "Cannot fetch 'tags' relation without 'taggings'"
+            "Cannot fetch 'tags' relationship without 'taggings' relationship."
         );
         $rel->stitchIntoRecords([$thread]);
     }
@@ -88,7 +88,7 @@ class ManyToManyTest extends AbstractRelationshipTest
 
         $this->setExpectedException(
             Exception::CLASS,
-            "Cannot fetch 'tags' relation without 'taggings'"
+            "Cannot fetch 'tags' relationship without 'taggings' relationship."
         );
         $rel->stitchIntoRecords($threads);
     }

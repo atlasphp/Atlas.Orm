@@ -3,7 +3,6 @@ namespace Atlas\Orm\Mapper;
 
 use Atlas\Orm\Table\Row;
 use Atlas\Orm\Table\Primary;
-use InvalidArgumentException;
 use StdClass;
 
 class RecordSetTest extends \PHPUnit_Framework_TestCase
@@ -46,13 +45,13 @@ class RecordSetTest extends \PHPUnit_Framework_TestCase
 
     public function testOffsetSet_nonObject()
     {
-        $this->setExpectedException(InvalidArgumentException::CLASS);
+        $this->setExpectedException('Atlas\Orm\Exception');
         $this->recordSet[] = 'Foo';
     }
 
     public function testOffsetSet_nonRecordObject()
     {
-        $this->setExpectedException(InvalidArgumentException::CLASS);
+        $this->setExpectedException('Atlas\Orm\Exception');
         $this->recordSet[] = new StdClass();
     }
 

@@ -235,7 +235,7 @@ class Relationships
         }
 
         if ($throughName && ! isset($this->defs[$throughName])) {
-            throw Exception::relationDoesNotExist($throughName);
+            throw Exception::relationshipDoesNotExist($throughName);
         }
 
         $this->fields[$name] = null;

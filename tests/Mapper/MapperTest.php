@@ -12,8 +12,6 @@ use Atlas\Orm\Table\Row;
 use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\QueryFactory;
-use InvalidArgumentException;
-use UnexpectedValueException;
 
 class MapperTest extends \PHPUnit_Framework_TestCase
 {
@@ -301,7 +299,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         // try to insert again, should fail on unique name
         $this->silenceErrors();
         $this->setExpectedException(
-            UnexpectedValueException::CLASS,
+            'Atlas\Orm\Exception',
             "Expected 1 row affected, actual 0"
         );
         $this->mapper->insert($record);
@@ -337,7 +335,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $record->getRow()->setStatus(Row::SELECTED);
         $record->name = 'Foo';
         $this->setExpectedException(
-            UnexpectedValueException::CLASS,
+            'Atlas\Orm\Exception',
             "Expected 1 row affected, actual 0"
         );
         $this->mapper->update($record);
@@ -361,7 +359,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
 
         // try to delete the record again
         $this->setExpectedException(
-            UnexpectedValueException::CLASS,
+            'Atlas\Orm\Exception',
             "Expected 1 row affected, actual 0"
         );
         $this->mapper->delete($record);
@@ -370,7 +368,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
     public function testSelect_numericCol()
     {
         $this->setExpectedException(
-            UnexpectedValueException::CLASS,
+            'Atlas\Orm\Exception',
             "Expected non-numeric column name, got '0' instead."
         );
         $this->mapper->select(['foo']);

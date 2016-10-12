@@ -10,8 +10,6 @@ use Atlas\Orm\Table\IdentityMap;
 use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\QueryFactory;
-use InvalidArgumentException;
-use UnexpectedValueException;
 
 class MapperCompositeTest extends \PHPUnit_Framework_TestCase
 {
@@ -288,7 +286,7 @@ class MapperCompositeTest extends \PHPUnit_Framework_TestCase
         // try to insert again, should fail on primary key repetition
         $this->silenceErrors();
         $this->setExpectedException(
-            UnexpectedValueException::CLASS,
+            'Atlas\Orm\Exception',
             "Expected 1 row affected, actual 0"
         );
         $this->mapper->insert($record);

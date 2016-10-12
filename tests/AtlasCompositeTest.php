@@ -171,7 +171,7 @@ class AtlasCompositeTest extends \PHPUnit_Framework_TestCase
     public function testCalcPrimaryComposite_missingKey()
     {
         $this->setExpectedException(
-            'UnexpectedValueException',
+            'Atlas\Orm\Exception',
             "Expected scalar value for primary key 'student_ln', value is missing instead."
         );
         $this->atlas->fetchRecord(StudentMapper::CLASS, ['student_fn' => 'Anna']);
@@ -180,7 +180,7 @@ class AtlasCompositeTest extends \PHPUnit_Framework_TestCase
     public function testCalcPrimaryComposite_nonScalar()
     {
         $this->setExpectedException(
-            'UnexpectedValueException',
+            'Atlas\Orm\Exception',
             "Expected scalar value for primary key 'student_fn', got array instead."
         );
         $this->atlas->fetchRecord(

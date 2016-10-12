@@ -290,7 +290,7 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
 
         // get the exception
         $e = $this->atlas->getException();
-        $this->assertInstanceOf('Exception', $e);
+        $this->assertInstanceOf('PDOException', $e);
     }
 
     public function testCalcPrimary()
@@ -309,7 +309,7 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
 
         // not a scalar
         $this->setExpectedException(
-            'UnexpectedValueException',
+            'Atlas\Orm\Exception',
             "Expected scalar value for primary key 'author_id', got array instead."
         );
         $this->atlas->fetchRecord(AuthorMapper::CLASS, [1, 2, 3]);
