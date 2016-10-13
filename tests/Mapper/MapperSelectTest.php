@@ -174,6 +174,33 @@ class SelectTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expect, $actual);
     }
 
+    public function testFetchCount()
+    {
+        $expect = [
+            '1' => 'Anna',
+            '2' => 'Betty',
+            '3' => 'Clara',
+        ];
+
+        $actual = $this->select
+            ->cols(['id', 'name'])
+            ->where('id > 0')
+            ->page(1)
+            ->setPaging(3)
+            ->fetchPairs();
+
+        $this->assertSame($expect, $actual);
+        $expect_select = $this->select->getStatement();
+
+        $expect = 12;
+        $actual = $this->select->fetchCount();
+        $this->assertEquals($expect, $actual);
+
+        // make sure it cloned properly inside Select
+        $actual_select = $this->select->getStatement();
+        $this->assertSame($expect_select, $actual_select);
+    }
+
     public function testFetchRecordGetStatement()
     {
         $expect = '

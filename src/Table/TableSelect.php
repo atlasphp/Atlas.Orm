@@ -347,6 +347,27 @@ class TableSelect implements SubselectInterface
 
     /**
      *
+     * Given the existing SELECT, fetches a row count without any LIMIT or
+     * OFFSET.
+     *
+     * @param string $col Count on this column.
+     *
+     * @return int
+     *
+     */
+    public function fetchCount($col = '*')
+    {
+        $select = clone $this->select;
+        $select->resetCols();
+        $select->cols(["COUNT($col)"])->limit(false)->offset(false);
+        return (int) $this->connection->fetchValue(
+            $select->getStatement(),
+            $select->getBindValues()
+        );
+    }
+
+    /**
+     *
      * Adds all table columns to the SELECT if it has no columns yet.
      *
      * @return void
