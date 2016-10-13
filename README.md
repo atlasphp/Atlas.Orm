@@ -372,6 +372,26 @@ You can also call `fetchRow()` or `fetchRows()` to get Row objects directly
 from the Table underlying the Mapper.
 
 
+#### Pagination
+
+With Aura.SqlQuery object exposed you can easily create paginated results.
+Below is an example to demonstrate the same.
+
+```php
+$query = $atlas->select(ThreadMapper::CLASS)
+    // page number
+    ->page($_GET['page'])
+    // set the number of rows per page.
+    ->paging(20);
+$result = $query->fetchRecordSet();
+
+$totalResult = clone $query;
+$$totalResult->resetCols()
+    ->cols(['COUNT(id)'])
+    ->limit(1);
+$total = $totalResult->cols(['COUNT(id)'])->fetchValue();
+```
+
 ### Modifying Records
 
 Make changes to the Record by setting new property values.
