@@ -18,7 +18,9 @@ namespace Atlas\Orm\Relationship;
 class ManyToOne extends OneToOne
 {
     /**
-     * @inheritdoc
+     *
+     * Initializes the `$on` property for the relationship.
+     *
      */
     protected function initializeOn()
     {

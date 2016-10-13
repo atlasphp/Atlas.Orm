@@ -62,7 +62,7 @@ class Related
      *
      * @param string $name The related field name.
      *
-     * @param mixed $name The field value.
+     * @param mixed $value The field value.
      *
      */
     public function __set($name, $value)
@@ -152,6 +152,8 @@ class Related
     /**
      *
      * Asserts that a field name exists.
+     *
+     * @param string $name The related field name.
      *
      * @throws Exception when the field name does not exist.
      *

@@ -58,6 +58,8 @@ interface RecordInterface
      *
      * Does the Record have a particular field?
      *
+     * @param string $field The Row or Related field name.
+     *
      * @return bool
      *
      */

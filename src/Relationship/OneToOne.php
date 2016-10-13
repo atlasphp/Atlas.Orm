@@ -20,7 +20,14 @@ use Atlas\Orm\Mapper\RecordInterface;
 class OneToOne extends AbstractRelationship
 {
     /**
-     * @inheritdoc
+     *
+     * Stitches one or more foreign Record objects into a native Record.
+     *
+     * @param RecordInterface $nativeRecord The native Record.
+     *
+     * @param array $foreignRecords All the foreign Record objects fetched for
+     * the relationship.
+     *
      */
     protected function stitchIntoRecord(
         RecordInterface $nativeRecord,

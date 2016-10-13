@@ -86,6 +86,8 @@ class Record implements RecordInterface
      *
      * @param string $field The Row or Related field name.
      *
+     * @param mixed $value Set the field to this value.
+     *
      * @return mixed
      *
      */
@@ -181,6 +183,8 @@ class Record implements RecordInterface
      *
      * Does the Record have a particular field?
      *
+     * @param string $field The Row or Related field name.
+     *
      * @return bool
      *
      */
@@ -207,6 +211,8 @@ class Record implements RecordInterface
     /**
      *
      * Asserts that a field exists on the Row or Related.
+     *
+     * @param string $field The Row or Related field name.
      *
      * @return string If the Row has the field, returns 'row'; if the Related
      * has the field, returns 'related'.

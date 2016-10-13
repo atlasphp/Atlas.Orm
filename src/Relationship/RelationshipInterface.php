@@ -46,5 +46,8 @@ interface RelationshipInterface
      * to modify the foreign MapperSelect statement.
      *
      */
-    public function stitchIntoRecords(array $records, callable $custom = null);
+    public function stitchIntoRecords(
+        array $nativeRecords,
+        callable $custom = null
+    );
 }

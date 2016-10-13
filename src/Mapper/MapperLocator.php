@@ -21,7 +21,13 @@ use Atlas\Orm\Exception;
 class MapperLocator extends AbstractLocator
 {
     /**
-     * @inheritdoc
+     *
+     * Returns the Exception for when a class is not available.
+     *
+     * @param string $class The class that was not found.
+     *
+     * @return Exception
+     *
      */
     protected function notFoundException($class)
     {

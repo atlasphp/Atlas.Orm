@@ -48,6 +48,15 @@ class Atlas
      */
     protected $prototypeTransaction;
 
+    /**
+     *
+     * Constructor.
+     *
+     * @param MapperLocator $mapperLocator A locator for all Mappers.
+     *
+     * @param Transaction $prototypeTransaction A prototype Transaction.
+     *
+     */
     public function __construct(
         MapperLocator $mapperLocator,
         Transaction $prototypeTransaction
@@ -129,6 +138,8 @@ class Atlas
      *
      * @param array $whereEquals The column-value equality pairs.
      *
+     * @param array $with Return the Record with these relateds stitched in.
+     *
      * @return RecordInterface|false A Record on success, or `false` on failure.
      *
      */
@@ -144,7 +155,7 @@ class Atlas
      *
      * @param string $mapperClass Fetch the RecordSet through this Mapper.
      *
-     * @param array $primaryVal The primary key values. Each element in the
+     * @param array $primaryVals The primary key values. Each element in the
      * array is a scalar in the case of simple keys, or an array of key-value
      * pairs for composite keys.
      *

@@ -220,7 +220,7 @@ class AtlasContainer
      *
      * Sets one mapper into the mapper locator.
      *
-     * @param string $mapperClasses A mapper class names for the locator.
+     * @param string $mapperClass A mapper class names for the locator.
      *
      * @throws Exception when the mapper class does not exist.
      *

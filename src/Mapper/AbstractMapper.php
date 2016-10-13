@@ -158,6 +158,8 @@ abstract class AbstractMapper implements MapperInterface
      *
      * @param array $whereEquals The column-value equality pairs.
      *
+     * @param array $with Return the Record with these relateds stitched in.
+     *
      * @return RecordInterface|false A Record on success, or `false` on failure.
      * (If a Mapper-specific Record class is defined, that will be returned on
      * success instead of a generic Record.)
@@ -177,7 +179,7 @@ abstract class AbstractMapper implements MapperInterface
      *
      * Fetches a RecordSet by primary key values, optionally with relateds.
      *
-     * @param array $primaryVal The primary key values. Each element in the
+     * @param array $primaryVals The primary key values. Each element in the
      * array is a scalar in the case of simple keys, or an array of key-value
      * pairs for composite keys.
      *

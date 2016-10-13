@@ -22,7 +22,9 @@ use Atlas\Orm\Mapper\RecordInterface;
 class ManyToMany extends AbstractRelationship
 {
     /**
-     * @inheritdoc
+     *
+     * Initializes the `$on` property for the relationship.
+     *
      */
     protected function initializeOn()
     {
@@ -32,7 +34,15 @@ class ManyToMany extends AbstractRelationship
     }
 
     /**
-     * @inheritdoc
+     *
+     * Given an array of native Record objects, stitches the foreign relateds
+     * into them as fields under the relationship name.
+     *
+     * @param array $nativeRecords The native Record objects.
+     *
+     * @param callable $custom A callable in the form `function (MapperSelect $select)`
+     * to modify the foreign MapperSelect statement.
+     *
      */
     public function stitchIntoRecords(
         array $nativeRecords,
@@ -52,7 +62,14 @@ class ManyToMany extends AbstractRelationship
     }
 
     /**
-     * @inheritdoc
+     *
+     * Stitches one or more foreign Record objects into a native Record.
+     *
+     * @param RecordInterface $nativeRecord The native Record.
+     *
+     * @param array $foreignRecords All the foreign Record objects fetched for
+     * the relationship.
+     *
      */
     protected function stitchIntoRecord(
         RecordInterface $nativeRecord,

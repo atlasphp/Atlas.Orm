@@ -43,8 +43,8 @@
 
     - Compare and contrast with:
 
-        - Analogue
-        - Doctrine
+        - Analogue https://github.com/analogueorm/analogue
+        - Doctrine http://www.doctrine-project.org/
         - Flourish
         - Idiorm
         - NotORM

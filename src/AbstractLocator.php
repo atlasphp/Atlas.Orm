@@ -92,6 +92,8 @@ abstract class AbstractLocator
      *
      * Returns the Exception for when a class is not available.
      *
+     * @param string $class The class that was not found.
+     *
      * @return Exception
      *
      */

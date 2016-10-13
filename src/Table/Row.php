@@ -296,6 +296,8 @@ class Row implements RowInterface
      *
      * Asserts that a column exists.
      *
+     * @param string $col The column name.
+     *
      * @throws Exception when the column does not exist.
      *
      */

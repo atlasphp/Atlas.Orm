@@ -288,10 +288,12 @@ class Relationships
      *
      * Normalizes a `$with` specification.
      *
+     * @param array $spec The `$with` specification.
+     *
      * @return array
      *
      */
-    protected function fixWith($spec)
+    protected function fixWith(array $spec)
     {
         $with = [];
         foreach ($spec as $key => $val) {
