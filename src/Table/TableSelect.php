@@ -358,4 +358,12 @@ class TableSelect implements SubselectInterface
             $this->select->cols($this->colNames);
         }
     }
+
+    /**
+     * Clone objects used internally
+     */
+    public function __clone()
+    {
+        $this->select = clone $this->select;
+    }
 }

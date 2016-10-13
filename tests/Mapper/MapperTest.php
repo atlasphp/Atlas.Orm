@@ -388,6 +388,33 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $this->assertSameSql($expect, $actual);
     }
 
+    public function testCloneSelectDontAlterOriginalQuery()
+    {
+        $select = $this->mapper->select(['foo' => null])->cols(['foo']);
+        $expect = 'SELECT
+                foo
+            FROM
+                "employee"
+            WHERE
+                "employee"."foo" IS NULL
+        ';
+        $counter = clone $select;
+        $counter->resetCols()
+            ->cols(['COUNT(*)']);
+        $actual = $select->__toString();
+        $this->assertSameSql($expect, $actual);
+
+        $expect = 'SELECT
+                COUNT(*)
+            FROM
+                "employee"
+            WHERE
+                "employee"."foo" IS NULL
+        ';
+        $actual = $counter->__toString();
+        $this->assertSameSql($expect, $actual);
+    }
+
     protected function silenceErrors()
     {
         $conn = $this->mapper->getWriteConnection();
