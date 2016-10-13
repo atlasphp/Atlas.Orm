@@ -74,6 +74,15 @@ class AtlasContainer
 
     /**
      *
+     * A locator for all Table objects.
+     *
+     * @var TableLocator
+     *
+     */
+    protected $tableLocator;
+
+    /**
+     *
      * Constructor.
      *
      * @param string $dsn The default database connection DSN.
