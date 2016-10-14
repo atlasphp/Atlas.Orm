@@ -69,6 +69,24 @@ abstract class AbstractTable implements TableInterface
 
     /**
      *
+     * The name of the read connection in registry entry.
+     *
+     * @var string
+     *
+     */
+    protected $readConnectionName = NULL;
+
+    /**
+     *
+     * The name of the write connection in registry entry.
+     *
+     * @var string
+     *
+     */
+    protected $writeConnectionName = NULL;
+
+    /**
+     *
      * A memo of the primary key column(s) for calculating identities.
      *
      * @var string|array A string for simple keys; an array for composite keys.
@@ -127,7 +145,7 @@ abstract class AbstractTable implements TableInterface
     public function getReadConnection()
     {
         if (! $this->readConnection) {
-            $this->readConnection = $this->connectionLocator->getRead();
+            $this->readConnection = $this->connectionLocator->getRead($this->readConnectionName);
         }
         return $this->readConnection;
     }
@@ -142,7 +160,7 @@ abstract class AbstractTable implements TableInterface
     public function getWriteConnection()
     {
         if (! $this->writeConnection) {
-            $this->writeConnection = $this->connectionLocator->getWrite();
+            $this->writeConnection = $this->connectionLocator->getWrite($this->writeConnectionName);
         }
         return $this->writeConnection;
     }
