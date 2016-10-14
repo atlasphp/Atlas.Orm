@@ -1,5 +1,8 @@
 # TODO
 
+- Rename Table::insert() etc to insertRow() etc, and rename newInsert() to
+  insert() etc, to expose query objects on tables.
+
 ## Possible Features
 
 - Have Rows force everything to scalar/null? (The Row represents the data as it
@@ -24,15 +27,11 @@
 
 - Add a way to specify custom conditions in relationship definitions?
 
-- Add `addNew()` to RecordSet to append a new Record of the proper type?
-
 - Add support for saving a record and all of its relateds recursively? (Auto-set
   foreign key values. Use a Transaction under the hood.)
 
 - Consider adding a way to put all reads *and* writes inside a transaction, as
   per <https://blog.acolyer.org/2015/09/04/feral-concurrency-control-an-empirical-investigation-of-modern-application-integrity/>
-
-
 
 ## Documentation
 
@@ -104,8 +103,7 @@
 
     - filter Record/Row -- as events
 
-    - Manage many-to-many relationships, e.g. tags through taggings. (Needs new
-      features for this.)
+    - Manage many-to-many relationships, e.g. tags through taggings.
 
         - Adding a tag:
 
@@ -114,12 +112,12 @@
             $tag = $tags->getOneBy(['name' => $tag_name]);
 
             // add Tag to in-memory Record
-            $post->tags->append($tag);
+            $post->tags[] = $tag;
 
-            // create new Tagging in memory and set relationship fields
+            // create new Tagging in memory and set columns on row
             $tagging = $post->taggings->appendNew([
                 'post_id' => $post->id,
-                'tag_id' => $tag_id
+                'tag_id' => $tag->id
             ]);
 
             // plan to insert the new Tagging
@@ -135,6 +133,6 @@
             // remove from in-memory RecordSet
             $tagging = $post->taggings->removeOneBy(['tag_id' => $tag->id);
 
-            // plan to delete the tagging
+            // plan to delete the Tagging
             $transaction->delete($tagging);
             ```
