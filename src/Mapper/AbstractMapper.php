@@ -235,10 +235,8 @@ abstract class AbstractMapper implements MapperInterface
     public function select(array $whereEquals = [])
     {
         return new MapperSelect(
-            $this->table->select($whereEquals),
-            [$this, 'turnRowIntoRecord'],
-            [$this, 'turnRowsIntoRecords'],
-            [$this, 'turnRowsIntoRecordSet']
+            $this,
+            $this->table->select($whereEquals)
         );
     }
 
