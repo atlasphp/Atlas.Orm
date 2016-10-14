@@ -238,10 +238,8 @@ abstract class AbstractTable implements TableInterface
     public function select(array $whereEquals = [])
     {
         return new TableSelect(
-            $this->newSelect($whereEquals),
-            $this->getReadConnection(),
-            $this->getColNames(),
-            [$this, 'getSelectedRow']
+            $this,
+            $this->newSelect($whereEquals)
         );
     }
 

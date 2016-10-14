@@ -8,7 +8,6 @@
  */
 namespace Atlas\Orm\Table;
 
-use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\Common\SelectInterface;
 use Aura\SqlQuery\Common\SubselectInterface;
 
@@ -32,30 +31,12 @@ class TableSelect implements SubselectInterface
 
     /**
      *
-     * A database read connection.
+     * The table that created this select.
      *
      * @var ExtendedPdo
      *
      */
-    protected $connection;
-
-    /**
-     *
-     * The column names in the Table.
-     *
-     * @var array
-     *
-     */
-    protected $colNames;
-
-    /**
-     *
-     * A callable to create a Row from the select results.
-     *
-     * @var callable
-     *
-     */
-    protected $getSelectedRow;
+    protected $table;
 
     /**
      *
@@ -63,24 +44,15 @@ class TableSelect implements SubselectInterface
      *
      * @param SelectInterface The underlying Select object being decorated.
      *
-     * @param ExtendedPdo $connection A database read connection.
-     *
-     * @param array $colNames The column names in the Table.
-     *
-     * @param callable $getSelectedRow A callable to create a Row from the
-     * select results.
+     * @param TableInterface $table The table that created this select.
      *
      */
     public function __construct(
-        SelectInterface $select,
-        ExtendedPdo $connection,
-        array $colNames,
-        callable $getSelectedRow
+        TableInterface $table,
+        SelectInterface $select
     ) {
+        $this->table = $table;
         $this->select = $select;
-        $this->connection = $connection;
-        $this->colNames = $colNames;
-        $this->getSelectedRow = $getSelectedRow;
     }
 
     /**
@@ -151,7 +123,7 @@ class TableSelect implements SubselectInterface
      */
     public function fetchAll()
     {
-        return $this->connection->fetchAll(
+        return $this->table->getReadConnection()->fetchAll(
             $this->select->getStatement(),
             $this->select->getBindValues()
         );
@@ -171,7 +143,7 @@ class TableSelect implements SubselectInterface
      */
     public function fetchAssoc()
     {
-        return $this->connection->fetchAssoc(
+        return $this->table->getReadConnection()->fetchAssoc(
             $this->select->getStatement(),
             $this->select->getBindValues()
         );
@@ -186,7 +158,7 @@ class TableSelect implements SubselectInterface
      */
     public function fetchCol()
     {
-        return $this->connection->fetchCol(
+        return $this->table->getReadConnection()->fetchCol(
             $this->select->getStatement(),
             $this->select->getBindValues()
         );
@@ -201,7 +173,7 @@ class TableSelect implements SubselectInterface
      */
     public function fetchOne()
     {
-        return $this->connection->fetchOne(
+        return $this->table->getReadConnection()->fetchOne(
             $this->select->getStatement(),
             $this->select->getBindValues()
         );
@@ -219,7 +191,7 @@ class TableSelect implements SubselectInterface
      */
     public function fetchPairs()
     {
-        return $this->connection->fetchPairs(
+        return $this->table->getReadConnection()->fetchPairs(
             $this->select->getStatement(),
             $this->select->getBindValues()
         );
@@ -234,7 +206,7 @@ class TableSelect implements SubselectInterface
      */
     public function fetchValue()
     {
-        return $this->connection->fetchValue(
+        return $this->table->getReadConnection()->fetchValue(
             $this->select->getStatement(),
             $this->select->getBindValues()
         );
@@ -250,7 +222,7 @@ class TableSelect implements SubselectInterface
      */
     public function yieldAll()
     {
-        return $this->connection->yieldAll(
+        return $this->table->getReadConnection()->yieldAll(
             $this->select->getStatement(),
             $this->select->getBindValues()
         );
@@ -270,7 +242,7 @@ class TableSelect implements SubselectInterface
      */
     public function yieldAssoc()
     {
-        return $this->connection->yieldAssoc(
+        return $this->table->getReadConnection()->yieldAssoc(
             $this->select->getStatement(),
             $this->select->getBindValues()
         );
@@ -285,7 +257,7 @@ class TableSelect implements SubselectInterface
      */
     public function yieldCol()
     {
-        return $this->connection->yieldCol(
+        return $this->table->getReadConnection()->yieldCol(
             $this->select->getStatement(),
             $this->select->getBindValues()
         );
@@ -303,7 +275,7 @@ class TableSelect implements SubselectInterface
      */
     public function yieldPairs()
     {
-        return $this->connection->yieldPairs(
+        return $this->table->getReadConnection()->yieldPairs(
             $this->select->getStatement(),
             $this->select->getBindValues()
         );
@@ -324,7 +296,7 @@ class TableSelect implements SubselectInterface
         if (! $cols) {
             return false;
         }
-        return call_user_func($this->getSelectedRow, $cols);
+        return $this->table->getSelectedRow($cols);
     }
 
     /**
@@ -340,7 +312,7 @@ class TableSelect implements SubselectInterface
 
         $rows = [];
         foreach ($this->yieldAll() as $cols) {
-            $rows[] = call_user_func($this->getSelectedRow, $cols);
+            $rows[] = $this->table->getSelectedRow($cols);
         }
         return $rows;
     }
@@ -355,7 +327,7 @@ class TableSelect implements SubselectInterface
     protected function addColNames()
     {
         if (! $this->select->hasCols()) {
-            $this->select->cols($this->colNames);
+            $this->select->cols($this->table->getColNames());
         }
     }
 }
