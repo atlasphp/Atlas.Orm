@@ -103,3 +103,38 @@
     - single-table inheritance -- already there with Mapper::getRecordClass() ?)
 
     - filter Record/Row -- as events
+
+    - Manage many-to-many relationships, e.g. tags through taggings. (Needs new
+      features for this.)
+
+        - Adding a tag:
+
+            ```
+            // get from a pre-fetched RecordSet of tags
+            $tag = $tags->getOneBy(['name' => $tag_name]);
+
+            // add Tag to in-memory Record
+            $post->tags->append($tag);
+
+            // create new Tagging in memory and set relationship fields
+            $tagging = $post->taggings->appendNew([
+                'post_id' => $post->id,
+                'tag_id' => $tag_id
+            ]);
+
+            // plan to insert the new Tagging
+            $transaction->insert($tagging);
+            ```
+
+        - Removing a tag
+
+            ```
+            // remove from in-memory RecordSet
+            $tag = $post->tags->removeOneBy(['name' => $tag_name]);
+
+            // remove from in-memory RecordSet
+            $tagging = $post->taggings->removeOneBy(['tag_id' => $tag->id);
+
+            // plan to delete the tagging
+            $transaction->delete($tagging);
+            ```
