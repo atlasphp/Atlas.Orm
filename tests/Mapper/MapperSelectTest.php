@@ -37,7 +37,7 @@ class MapperSelectTest extends \PHPUnit_Framework_TestCase
         $select = $queryFactory->newSelect()->from('employee');
 
         $this->select = new MapperSelect(
-            $this->createMock('Atlas\Orm\Mapper\MapperInterface'),
+            $this->getMock('Atlas\Orm\Mapper\MapperInterface'),
             new TableSelect($table, $select)
         );
     }
