@@ -29,6 +29,11 @@
 - Add support for saving a record and all of its relateds recursively? (Auto-set
   foreign key values. Use a Transaction under the hood.)
 
+- Consider adding a way to put all reads *and* writes inside a transaction, as
+  per <https://blog.acolyer.org/2015/09/04/feral-concurrency-control-an-empirical-investigation-of-modern-application-integrity/>
+
+
+
 ## Documentation
 
 - Compare and contrast with:
@@ -70,5 +75,31 @@
             - Table Data Gateway
             - https://docs.zendframework.com/zend-db/table-gateway/
 
-
 - Add examples on how to wrap a Record in the Domain.
+
+    - Include note that Repos+UOW are not a good idea?
+      <http://rob.conery.io/2014/03/04/repositories-and-unitofwork-are-not-a-good-idea/>
+
+- How to ...
+
+    - "Trivially export a record to JSON" per <https://twitter.com/taylorotwell/status/652535241765089280> -- `json_encode($record->getArrayCopy())`
+
+    - increment/decrement a Record field -- via events, and select back the new
+      count?
+
+    - convert field to object and back again, e.g. Date object -- should be a
+      be a method on a custom Record
+
+    - update *other* records on insert/update/delete; e.g. trees/lists/etc --
+      has to be part of events?
+
+    - auto-set field on insert/update, e.g. created_on, updated_on -- best to
+      be part of events
+
+    - soft-deletion by marking a field -- method on a custom Record
+
+    - check the database for presence/nonpresence of values (uniqueness)
+
+    - single-table inheritance -- already there with Mapper::getRecordClass() ?)
+
+    - filter Record/Row -- as events

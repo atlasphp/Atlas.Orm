@@ -49,6 +49,8 @@ When deleting a Record we have some trouble:
 
 Hm, or only bother deleting the ones in memory, and tell the user to set ON DELETE CASCADE (or SET NULL) at the DB level to remove the DB ones.
 
+Cf. http://docs.sqlalchemy.org/en/rel_1_0/orm/cascades.html
+
 * * *
 
 The thing is, what really happens in the Transaction is we operate on *Rows*, not on Records. Perhaps we need a TransactionPlan (i.e., UnitOfWork) that lists what will be done to each row, then the Transaction makes it happen.
