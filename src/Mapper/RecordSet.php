@@ -168,13 +168,31 @@ class RecordSet implements RecordSetInterface
         return $array;
     }
 
-    public function appendNew(array $fields = [])
+    /**
+     *
+     * Appends a new Record to the RecordSet.
+     *
+     * @param array $cols Column values for the Row in the new Record.
+     *
+     * @return RecordInterface The appended Record.
+     *
+     */
+    public function appendNew(array $cols = [])
     {
-        $record = call_user_func($this->newRecord, $fields);
+        $record = call_user_func($this->newRecord, $cols);
         $this->records[] = $record;
         return $record;
     }
 
+    /**
+     *
+     * Returns one Record matching an array of column-value equality pairs.
+     *
+     * @param array $whereEquals The column-value equality pairs.
+     *
+     * @return RecordInterface|false A Record on success, or false on failure.
+     *
+     */
     public function getOneBy(array $whereEquals)
     {
         foreach ($this->records as $i => $record) {
@@ -185,17 +203,36 @@ class RecordSet implements RecordSetInterface
         return false;
     }
 
+    /**
+     *
+     * Returns all Records matching an array of column-value equality pairs.
+     *
+     * @param array $whereEquals The column-value equality pairs.
+     *
+     * @return array An array of Record objects, with the same array keys as in
+     * this RecordSet.
+     *
+     */
     public function getAllBy(array $whereEquals)
     {
-        $found = [];
+        $records = [];
         foreach ($this->records as $i => $record) {
             if ($this->compareBy($record, $whereEquals)) {
-                $found[$i] = $record;
+                $records[$i] = $record;
             }
         }
-        return $found;
+        return $records;
     }
 
+    /**
+     *
+     * Removes one Record matching an array of column-value equality pairs.
+     *
+     * @param array $whereEquals The column-value equality pairs.
+     *
+     * @return RecordInterface|false The removed Record, or false if none matched.
+     *
+     */
     public function removeOneBy(array $whereEquals)
     {
         foreach ($this->records as $i => $record) {
@@ -207,19 +244,40 @@ class RecordSet implements RecordSetInterface
         return false;
     }
 
+    /**
+     *
+     * Removes all Records matching an array of column-value equality pairs.
+     *
+     * @param array $whereEquals The column-value equality pairs.
+     *
+     * @return array An array of removed Record objects, with the same array
+     * keys as in this RecordSet.
+     *
+     */
     public function removeAllBy(array $whereEquals)
     {
-        $removed = [];
+        $records = [];
         foreach ($this->records as $i => $record) {
             if ($this->compareBy($record, $whereEquals)) {
                 unset($this->records[$i]);
-                $removed[$i] = $record;
+                $records[$i] = $record;
             }
         }
-        return $removed;
+        return $records;
     }
 
-    protected function compareBy(RecordInterface $record, $whereEquals)
+    /**
+     *
+     * Compares a Record with an array of column-value equality pairs.
+     *
+     * @param RecordInterface The Record to examine.
+     *
+     * @param array $whereEquals Compare with these values.
+     *
+     * @return bool
+     *
+     */
+    protected function compareBy(RecordInterface $record, array $whereEquals)
     {
         foreach ($whereEquals as $field => $value) {
             if ($record->$field != $value) {
