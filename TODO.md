@@ -33,17 +33,42 @@
 
 - Compare and contrast with:
 
-    - Analogue https://github.com/analogueorm/analogue
-    - Doctrine http://www.doctrine-project.org/
-    - Flourish
-    - Idiorm
-    - NotORM
-    - Paris
-    - Propel
-    - RedBean
-    - Spot2
-    - Zend_Db_Table
-    - http://www.gajotres.net/best-available-php-orm-libraries-part-1/
-    - http://www.gajotres.net/best-available-php-orm-libraries-part-2/
+    - (Via <http://www.gajotres.net/best-available-php-orm-libraries-part-1/>
+      and <http://www.gajotres.net/best-available-php-orm-libraries-part-2/>)
 
-- Add examples on how to properly wrap a Record in the Domain.
+    - Data Mappers
+
+        - Analogue
+            - Data Mapper, Domain
+            - https://github.com/analogueorm/analogue
+        - Doctrine 2
+            - Data Mapper, Domain (?)
+            - http://www.doctrine-project.org/
+        - RedBean 4
+            - Data Mapper
+            - http://redbeanphp.com/
+        - Spot2
+            - Data Mapper
+            - http://phpdatamapper.com/
+
+    - Not Data Mappers:
+
+        - Flourish
+            - Active Record
+            - http://flourishlib.com/docs/fActiveRecord
+            - http://flourishlib.com/docs/fRecordSet
+        - Idiorm & Paris
+            - Active Record
+            - http://j4mie.github.io/idiormandparis/
+        - NotORM
+            - ???
+            - http://www.notorm.com/
+        - Propel
+            - Active Record
+            - http://propelorm.org/
+        - Zend_Db_Table
+            - Table Data Gateway
+            - https://docs.zendframework.com/zend-db/table-gateway/
+
+
+- Add examples on how to wrap a Record in the Domain.
