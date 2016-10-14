@@ -39,8 +39,11 @@ class RecordSet implements RecordSetInterface
      * @param array $records The Record objects in this set.
      *
      */
-    public function __construct(array $records = [])
-    {
+    public function __construct(
+        array $records = [],
+        callable $newRecord
+    ) {
+        $this->newRecord = $newRecord;
         foreach ($records as $key => $record) {
             $this->offsetSet($key, $record);
         }
@@ -163,5 +166,66 @@ class RecordSet implements RecordSetInterface
             $array[$key] = $record->getArrayCopy();
         }
         return $array;
+    }
+
+    public function appendNew(array $fields = [])
+    {
+        $record = call_user_func($this->newRecord, $fields);
+        $this->records[] = $record;
+        return $record;
+    }
+
+    public function getOneBy(array $whereEquals)
+    {
+        foreach ($this->records as $i => $record) {
+            if ($this->compareBy($record, $whereEquals)) {
+                return $record;
+            }
+        }
+        return false;
+    }
+
+    public function getAllBy(array $whereEquals)
+    {
+        $found = [];
+        foreach ($this->records as $i => $record) {
+            if ($this->compareBy($record, $whereEquals)) {
+                $found[$i] = $record;
+            }
+        }
+        return $found;
+    }
+
+    public function removeOneBy(array $whereEquals)
+    {
+        foreach ($this->records as $i => $record) {
+            if ($this->compareBy($record, $whereEquals)) {
+                unset($this->records[$i]);
+                return $record;
+            }
+        }
+        return false;
+    }
+
+    public function removeAllBy(array $whereEquals)
+    {
+        $removed = [];
+        foreach ($this->records as $i => $record) {
+            if ($this->compareBy($record, $whereEquals)) {
+                unset($this->records[$i]);
+                $removed[$i] = $record;
+            }
+        }
+        return $removed;
+    }
+
+    protected function compareBy(RecordInterface $record, $whereEquals)
+    {
+        foreach ($whereEquals as $field => $value) {
+            if ($record->$field != $value) {
+                return false;
+            }
+        }
+        return true;
     }
 }

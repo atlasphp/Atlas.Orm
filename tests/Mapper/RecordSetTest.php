@@ -27,7 +27,11 @@ class RecordSetTest extends \PHPUnit_Framework_TestCase
 
         $this->record = new Record('FakeMapper', $this->row, $this->related);
 
-        $this->recordSet = new RecordSet([$this->record]);
+        $newRecord = function ($fields = []) {
+            // nothing for now;
+        };
+
+        $this->recordSet = new RecordSet([$this->record], $newRecord);
     }
 
     public function testOffsetExists()
