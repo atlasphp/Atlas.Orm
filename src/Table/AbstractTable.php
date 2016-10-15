@@ -250,10 +250,10 @@ abstract class AbstractTable implements TableInterface
      * @param RowInterface $row The row to insert.
      *
      */
-    public function insert(RowInterface $row)
+    public function insertRow(RowInterface $row)
     {
         $this->events->beforeInsert($this, $row);
-        $insert = $this->newInsert($row);
+        $insert = $this->insert($row);
         $this->events->modifyInsert($this, $row, $insert);
 
         $connection = $this->getWriteConnection();
@@ -287,10 +287,10 @@ abstract class AbstractTable implements TableInterface
      * @param RowInterface $row The row to update.
      *
      */
-    public function update(RowInterface $row)
+    public function updateRow(RowInterface $row)
     {
         $this->events->beforeUpdate($this, $row);
-        $update = $this->newUpdate($row);
+        $update = $this->update($row);
         $this->events->modifyUpdate($this, $row, $update);
 
         if (! $update->hasCols()) {
@@ -323,10 +323,10 @@ abstract class AbstractTable implements TableInterface
      * @param RowInterface $row The row to delete.
      *
      */
-    public function delete(RowInterface $row)
+    public function deleteRow(RowInterface $row)
     {
         $this->events->beforeDelete($this, $row);
-        $delete = $this->newDelete($row);
+        $delete = $this->delete($row);
         $this->events->modifyDelete($this, $row, $delete);
 
         $connection = $this->getWriteConnection();
@@ -531,7 +531,7 @@ abstract class AbstractTable implements TableInterface
      * @return Insert
      *
      */
-    protected function newInsert(RowInterface $row)
+    protected function insert(RowInterface $row)
     {
         $insert = $this->queryFactory->newInsert();
         $insert->into($this->getName());
@@ -555,7 +555,7 @@ abstract class AbstractTable implements TableInterface
      * @return Update
      *
      */
-    protected function newUpdate(RowInterface $row)
+    protected function update(RowInterface $row)
     {
         $update = $this->queryFactory->newUpdate();
         $update->table($this->getName());
@@ -586,7 +586,7 @@ abstract class AbstractTable implements TableInterface
      * @return Delete
      *
      */
-    protected function newDelete(RowInterface $row)
+    protected function delete(RowInterface $row)
     {
         $delete = $this->queryFactory->newDelete();
         $delete->from($this->getName());
