@@ -1,34 +1,24 @@
 # TODO
 
-## Possible Features
+- Add support for relationship-specific joins. E.g.:
 
-- Have Rows force everything to scalar/null? (The Row represents the data as it
-  is at the database. It is the Record that might be allowed to do trivial
-  modifications for the domain.)
+  ```
+  $fooRecordSet = $atlas->select(FooMapper::CLASS)
+      ->joinWith('bar', 'LEFT', function ($select) { // bar_table AS bar
+          $select->joinWith('baz AS dib', 'INNER'); // baz_table As dib
+      })
+      ->where('bar.whatever = ?', 'somevalue')
+      ->orderBy(['dib.something DESC'])
+      ->fetchRecordSet();
+  ```
 
-- Add back Record factory?
+  Methods: joinWith(), leftJoinWith(), innerJoinWith()
 
-- Add support for relation-specific joins? E.g.:
-
-        $select = $atlas->select(Mapper::CLASS)
-            ->joinWith('foo', 'LEFT', function ($select) {
-                $select->joinWith('bar', 'INNER');
-            })
-            ->where('bar.whatever = 9');
-
-  This gets tricky when a with-with-with has the same name as something else;
-  no reasonable way to alias it. Also tricky when the related has the same name
-  as an actual table already in the query.
-
-- Add a way to specify self-join table aliases in relationship definitions?
-
-- Add a way to specify custom conditions in relationship definitions?
+  N.b.: user has to be careful to alias properly. Also, make sure that you don't
+  get back multiple identical rows. DON'T SELECT COLS!
 
 - Add support for saving a record and all of its relateds recursively? (Auto-set
   foreign key values. Use a Transaction under the hood.)
-
-- Consider adding a way to put all reads *and* writes inside a transaction, as
-  per <https://blog.acolyer.org/2015/09/04/feral-concurrency-control-an-empirical-investigation-of-modern-application-integrity/>
 
 ## Documentation
 
@@ -78,7 +68,7 @@
 
 - How to ...
 
-    - "Trivially export a record to JSON" per <https://twitter.com/taylorotwell/status/652535241765089280> -- `json_encode($record)`
+    - "trivially convert entities and relationships to JSON" per <https://twitter.com/taylorotwell/status/652535241765089280> -- `json_encode($record)`
 
     - increment/decrement a Record field -- via events, and select back the new
       count?
