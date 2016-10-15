@@ -164,7 +164,7 @@ class Row implements RowInterface
     {
         foreach ($cols as $col => $val) {
             if ($this->has($col)) {
-                $this->cols[$col] = $val;
+                $this->modify($col, $val);
             }
         }
     }
@@ -289,6 +289,10 @@ class Row implements RowInterface
     {
         if ($this->status == static::DELETED) {
             throw Exception::immutableOnceDeleted($this, $col);
+        }
+
+        if (! is_null($new) && ! is_scalar($new)) {
+            throw Exception::invalidType('scalar or null', $new);
         }
 
         if ($this->status == static::FOR_INSERT) {

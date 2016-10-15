@@ -104,7 +104,7 @@ class Exception extends \Exception
 
     /**
      *
-     * A parameter or argument was of an invalid object type.
+     * A parameter or argument was of an invalid type.
      *
      * @param string $expect The expected type.
      *
@@ -121,7 +121,7 @@ class Exception extends \Exception
             $actual = gettype($actual);
         }
 
-        return new Exception("Expected object of type '$expect', got '$actual' instead.");
+        return new Exception("Expected type $expect, got $actual instead.");
     }
 
     /**
