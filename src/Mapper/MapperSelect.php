@@ -195,4 +195,12 @@ class MapperSelect implements SubselectInterface
 
         return $this->mapper->turnRowsIntoRecordSet($rows, $this->with);
     }
+
+    /**
+     * Clone objects used internally
+     */
+    public function __clone()
+    {
+        $this->tableSelect = clone $this->tableSelect;
+    }
 }
