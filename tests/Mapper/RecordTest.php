@@ -118,4 +118,22 @@ class RecordTest extends \PHPUnit_Framework_TestCase
         // missing
         $this->assertFalse($this->record->has('noSuchField'));
     }
+
+    public function testSet()
+    {
+        $this->record->set([
+            'foo' => 'hello',
+            'zim' => 'dim'
+        ]);
+
+        $actual = $this->record->getArrayCopy();
+        $expected = [
+            'id' => '1',
+            'foo' => 'hello',
+            'baz' => 'dib',
+            'zim' => 'dim',
+            'irk' => 'doom',
+        ];
+        $this->assertSame($expected, $actual);
+    }
 }
