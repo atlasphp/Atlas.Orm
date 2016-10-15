@@ -83,7 +83,7 @@ interface TableInterface
      * @param RowInterface $row The row to insert.
      *
      */
-    public function insert(RowInterface $row);
+    public function insertRow(RowInterface $row);
 
     /**
      *
@@ -92,7 +92,7 @@ interface TableInterface
      * @param RowInterface $row The row to update.
      *
      */
-    public function update(RowInterface $row);
+    public function updateRow(RowInterface $row);
 
     /**
      *
@@ -101,7 +101,7 @@ interface TableInterface
      * @param RowInterface $row The row to delete.
      *
      */
-    public function delete(RowInterface $row);
+    public function deleteRow(RowInterface $row);
 
     /**
      *
