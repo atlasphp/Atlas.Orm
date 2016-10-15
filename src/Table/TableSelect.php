@@ -332,7 +332,7 @@ class TableSelect implements SubselectInterface
         $select = clone $this->select;
         $select->resetCols();
         $select->cols(["COUNT($col)"])->limit(false)->offset(false);
-        return (int) $this->connection->fetchValue(
+        return (int) $this->table->getReadConnection()->fetchValue(
             $select->getStatement(),
             $select->getBindValues()
         );
