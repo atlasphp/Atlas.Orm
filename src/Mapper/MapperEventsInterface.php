@@ -8,6 +8,11 @@
  */
 namespace Atlas\Orm\Mapper;
 
+use Aura\SqlQuery\Common\Delete;
+use Aura\SqlQuery\Common\Insert;
+use Aura\SqlQuery\Common\Update;
+use PDOStatement;
+
 /**
  *
  * Events to be invoked during Mapper operations.
@@ -19,85 +24,118 @@ interface MapperEventsInterface
 {
     /**
      *
-     * Runs before inserting a Record.
+     * Runs before the Insert object is created.
      *
-     * @param MapperInterface $mapper The Mapper for the Record.
+     * @param MapperInterface $mapper The mapper handling the insert.
      *
-     * @param RecordInterface $record The Record being worked with.
-     *
-     * @return void
+     * @param RecordInterface $record The record to be inserted.
      *
      */
     public function beforeInsert(MapperInterface $mapper, RecordInterface $record);
 
     /**
      *
-     * Runs after inserting a Record.
+     * Runs after the Insert object is created, but before it is executed.
      *
-     * @param MapperInterface $mapper The Mapper for the Record.
+     * @param MapperInterface $mapper The mapper handling the insert.
      *
-     * @param RecordInterface $record The Record being worked with.
+     * @param RecordInterface $record The record to be inserted.
      *
-     * @param mixed $result The result of the insert.
-     *
-     * @return void
+     * @param Insert $insert The insert query object to be modified.
      *
      */
-    public function afterInsert(MapperInterface $mapper, RecordInterface $record, $result);
+    public function modifyInsert(MapperInterface $mapper, RecordInterface $record, Insert $insert);
 
     /**
      *
-     * Runs before updating a Record.
+     * Runs after the Insert object is executed.
      *
-     * @param MapperInterface $mapper The Mapper for the Record.
+     * @param MapperInterface $mapper The mapper handling the insert.
      *
-     * @param RecordInterface $record The Record being worked with.
+     * @param RecordInterface $record The record that was inserted.
      *
-     * @return void
+     * @param Insert $insert The insert query object that was executed.
+     *
+     * @param PDOStatement $pdoStatement The PDOStatement returned from the insert.
+     *
+     */
+    public function afterInsert(MapperInterface $mapper, RecordInterface $record, Insert $insert, PDOStatement $pdoStatement);
+
+    /**
+     *
+     * Runs before the Update object is created.
+     *
+     * @param MapperInterface $mapper The mapper handling the update.
+     *
+     * @param RecordInterface $record The record to be udpated.
      *
      */
     public function beforeUpdate(MapperInterface $mapper, RecordInterface $record);
 
     /**
      *
-     * Runs after updating a Record.
+     * Runs after the Update object is created, but before it is executed.
      *
-     * @param MapperInterface $mapper The Mapper for the Record.
+     * @param MapperInterface $mapper The mapper handling the update.
      *
-     * @param RecordInterface $record The Record being worked with.
+     * @param RecordInterface $record The record to be updated.
      *
-     * @param mixed $result The result of the update.
-     *
-     * @return void
+     * @param Update $update The update query object to be modified.
      *
      */
-    public function afterUpdate(MapperInterface $mapper, RecordInterface $record, $result);
+    public function modifyUpdate(MapperInterface $mapper, RecordInterface $record, Update $update);
 
     /**
      *
-     * Runs before deleting a Record.
+     * Runs after the Update object is executed.
      *
-     * @param MapperInterface $mapper The Mapper for the Record.
+     * @param MapperInterface $mapper The mapper handling the update.
      *
-     * @param RecordInterface $record The Record being worked with.
+     * @param RecordInterface $record The record that was updated.
      *
-     * @return void
+     * @param Update $update The update query object that was executed.
+     *
+     * @param PDOStatement $pdoStatement The PDOStatement returned from the update.
+     *
+     */
+    public function afterUpdate(MapperInterface $mapper, RecordInterface $record, Update $update, PDOStatement $pdoStatement);
+
+    /**
+     *
+     * Runs before the Delete object is created.
+     *
+     * @param MapperInterface $mapper The mapper handling the delete.
+     *
+     * @param RecordInterface $record The record to be udpated.
      *
      */
     public function beforeDelete(MapperInterface $mapper, RecordInterface $record);
 
     /**
      *
-     * Runs after deleting a Record.
+     * Runs after the Delete object is created, but before it is executed.
      *
-     * @param MapperInterface $mapper The Mapper for the Record.
+     * @param MapperInterface $mapper The mapper handling the delete.
      *
-     * @param RecordInterface $record The Record being worked with.
+     * @param RecordInterface $record The record to be deleted.
      *
-     * @param mixed $result The result of the delete.
-     *
-     * @return void
+     * @param Delete $delete The delete query object to be modified.
      *
      */
-    public function afterDelete(MapperInterface $mapper, RecordInterface $record, $result);
+    public function modifyDelete(MapperInterface $mapper, RecordInterface $record, Delete $delete);
+
+    /**
+     *
+     * Runs after the Delete object is executed.
+     *
+     * @param MapperInterface $mapper The mapper handling the delete.
+     *
+     * @param RecordInterface $record The record that was deleted.
+     *
+     * @param Delete $delete The delete query object that was executed.
+     *
+     * @param PDOStatement $pdoStatement The PDOStatement returned from the delete.
+     *
+     */
+    public function afterDelete(MapperInterface $mapper, RecordInterface $record, Delete $delete, PDOStatement $pdoStatement);
 }

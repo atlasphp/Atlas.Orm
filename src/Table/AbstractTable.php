@@ -306,7 +306,7 @@ abstract class AbstractTable implements TableInterface
     public function insertRow(RowInterface $row)
     {
         $insert = $this->insertRowPrepare($row);
-        return $this->insertRowPerform($row, $insert);
+        return (bool) $this->insertRowPerform($row, $insert);
     }
 
     public function insertRowPrepare(RowInterface $row)
@@ -348,7 +348,7 @@ abstract class AbstractTable implements TableInterface
         $row->setStatus($row::INSERTED);
         $this->identityMap->setRow($row, $row->getArrayCopy(), $this->getPrimaryKey());
 
-        return true;
+        return $pdoStatement;
     }
 
     /**
@@ -361,7 +361,7 @@ abstract class AbstractTable implements TableInterface
     public function updateRow(RowInterface $row)
     {
         $update = $this->updateRowPrepare($row);
-        return $this->updateRowPerform($row, $update);
+        return (bool) $this->updateRowPerform($row, $update);
 
     }
 
@@ -410,7 +410,7 @@ abstract class AbstractTable implements TableInterface
         $row->setStatus($row::UPDATED);
         $this->identityMap->resetInitial($row);
 
-        return true;
+        return $pdoStatement;
     }
 
     /**
@@ -423,7 +423,7 @@ abstract class AbstractTable implements TableInterface
     public function deleteRow(RowInterface $row)
     {
         $delete = $this->deleteRowPrepare($row);
-        return $this->deleteRowPerform($row, $delete);
+        return (bool) $this->deleteRowPerform($row, $delete);
     }
 
     public function deleteRowPrepare(RowInterface $row)
@@ -455,7 +455,7 @@ abstract class AbstractTable implements TableInterface
         $this->events->afterDelete($this, $row, $delete, $pdoStatement);
 
         $row->setStatus($row::DELETED);
-        return true;
+        return $pdoStatement;
     }
 
     /**

@@ -94,7 +94,8 @@
 
     - soft-deletion by marking a field -- method on a custom Record
 
-    - check the database for presence/nonpresence of values (uniqueness)
+    - check the database for presence/nonpresence of values (uniqueness) -- part
+      of validation, so part of events
 
     - single-table inheritance -- already there with Mapper::getRecordClass() ?
 
