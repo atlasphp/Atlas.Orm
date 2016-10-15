@@ -2,6 +2,8 @@
 namespace Atlas\Orm;
 
 use Atlas\Orm\Mapper\Record;
+use Atlas\Orm\Mapper\RecordInterface;
+use Atlas\Orm\Mapper\RecordSetInterface;
 use Atlas\Orm\Mapper\Related;
 use Atlas\Orm\Table\Primary;
 use Atlas\Orm\Table\Row;
@@ -17,8 +19,8 @@ class WorkTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $related = new Related([
-            'zim' => 'gir',
-            'irk' => 'doom',
+            'zim' => $this->getMock(RecordInterface::CLASS),
+            'irk' => $this->getMock(RecordSetInterface::CLASS),
         ]);
 
         $record = new Record('FakeMapper', $row, $related);

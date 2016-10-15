@@ -81,7 +81,10 @@ class Row implements RowInterface
      */
     public function __construct(array $cols)
     {
-        $this->cols = $cols;
+        foreach ($cols as $col => $val) {
+            $this->assertValid($val);
+            $this->cols[$col] = $val;
+        }
         $this->status = static::FOR_INSERT;
     }
 
@@ -291,9 +294,7 @@ class Row implements RowInterface
             throw Exception::immutableOnceDeleted($this, $col);
         }
 
-        if (! is_null($new) && ! is_scalar($new)) {
-            throw Exception::invalidType('scalar or null', $new);
-        }
+        $this->assertValid($new);
 
         if ($this->status == static::FOR_INSERT) {
             $this->cols[$col] = $new;
@@ -304,6 +305,13 @@ class Row implements RowInterface
         $this->cols[$col] = $new;
         if (! $this->isEquivalent($old, $new)) {
             $this->setStatus(static::MODIFIED);
+        }
+    }
+
+    protected function assertValid($value)
+    {
+        if (! is_null($value) && ! is_scalar($value)) {
+            throw Exception::invalidType('scalar or null', $value);
         }
     }
 

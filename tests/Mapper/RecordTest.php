@@ -10,9 +10,14 @@ class RecordTest extends \PHPUnit_Framework_TestCase
     protected $row;
     protected $related;
     protected $record;
+    protected $zim;
+    protected $irk;
 
     protected function setUp()
     {
+        $this->zim = $this->getMock(RecordInterface::CLASS);
+        $this->irk = $this->getMock(RecordSetInterface::CLASS);
+
         $this->row = new Row([
             'id' => '1',
             'foo' => 'bar',
@@ -20,8 +25,8 @@ class RecordTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $this->related = new Related([
-            'zim' => 'gir',
-            'irk' => 'doom',
+            'zim' => $this->zim,
+            'irk' => $this->irk,
         ]);
 
         $this->record = new Record('FakeMapper', $this->row, $this->related);
@@ -43,7 +48,7 @@ class RecordTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('bar', $this->record->foo);
 
         // related
-        $this->assertSame('gir', $this->record->zim);
+        $this->assertSame($this->zim, $this->record->zim);
 
         // missing
         $this->setExpectedException(
@@ -61,8 +66,9 @@ class RecordTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('barbar', $this->row->foo);
 
         // related
-        $this->record->zim = 'girgir';
-        $this->assertSame('girgir', $this->record->zim);
+        $newZim = $this->getMock(RecordInterface::CLASS);
+        $this->record->zim = $newZim;
+        $this->assertSame($newZim, $this->record->zim);
 
         // missing
         $this->setExpectedException(
@@ -121,9 +127,16 @@ class RecordTest extends \PHPUnit_Framework_TestCase
 
     public function testSet()
     {
+        $newZim = $this->getMock(RecordInterface::CLASS);
+        $newZim->method('getArrayCopy')->willReturn('gir');
+
+        $newIrk = $this->getMock(RecordSetInterface::CLASS);
+        $newIrk->method('getArrayCopy')->willReturn('doom');
+
         $this->record->set([
             'foo' => 'hello',
-            'zim' => 'dim'
+            'zim' => $newZim,
+            'irk' => $newIrk,
         ]);
 
         $actual = $this->record->getArrayCopy();
@@ -131,7 +144,7 @@ class RecordTest extends \PHPUnit_Framework_TestCase
             'id' => '1',
             'foo' => 'hello',
             'baz' => 'dib',
-            'zim' => 'dim',
+            'zim' => 'gir',
             'irk' => 'doom',
         ];
         $this->assertSame($expected, $actual);

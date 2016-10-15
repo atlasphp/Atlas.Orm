@@ -121,7 +121,7 @@ class Exception extends \Exception
             $actual = gettype($actual);
         }
 
-        return new Exception("Expected type $expect, got $actual instead.");
+        return new Exception("Expected type $expect; got $actual instead.");
     }
 
     /**

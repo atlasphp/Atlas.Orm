@@ -5,20 +5,24 @@ use Atlas\Orm\Exception;
 
 class RelatedTest extends \PHPUnit_Framework_TestCase
 {
+    protected $zim;
+    protected $irk;
     protected $related;
 
     protected function setUp()
     {
+        $this->zim = $this->getMock(RecordInterface::CLASS);
+        $this->irk = $this->getMock(RecordSetInterface::CLASS);
         $this->related = new Related([
-            'zim' => 'gir',
-            'irk' => 'doom',
+            'zim' => $this->zim,
+            'irk' => $this->irk,
         ]);
     }
 
     public function test__get()
     {
         // related
-        $this->assertSame('gir', $this->related->zim);
+        $this->assertSame($this->zim, $this->related->zim);
 
         // missing
         $this->setExpectedException(
@@ -30,9 +34,11 @@ class RelatedTest extends \PHPUnit_Framework_TestCase
 
     public function test__set()
     {
+        $newZim = $this->getMock(RecordInterface::CLASS);
+
         // related
-        $this->related->zim = 'girgir';
-        $this->assertSame('girgir', $this->related->zim);
+        $this->related->zim = $newZim;
+        $this->assertSame($newZim, $this->related->zim);
 
         // missing
         $this->setExpectedException(

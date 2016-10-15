@@ -21,8 +21,8 @@ class RecordSetTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $this->related = new Related([
-            'zim' => 'gir',
-            'irk' => 'doom',
+            'zim' => $this->getMock(RecordInterface::CLASS),
+            'irk' => $this->getMock(RecordSetInterface::CLASS),
         ]);
 
         $this->record = new Record('FakeMapper', $this->row, $this->related);

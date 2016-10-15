@@ -38,7 +38,9 @@ class Related
      */
     public function __construct(array $fields = [])
     {
-        $this->fields = $fields;
+        foreach ($fields as $name => $value) {
+            $this->modify($name, $value);
+        }
     }
 
     /**
@@ -68,7 +70,7 @@ class Related
     public function __set($name, $value)
     {
         $this->assertHas($name);
-        $this->fields[$name] = $value;
+        $this->modify($name, $value);
     }
 
     /**
@@ -112,7 +114,7 @@ class Related
     {
         foreach ($namesValues as $name => $value) {
             if ($this->has($name)) {
-                $this->related[$name] = $value;
+                $this->modify($name, $value);
             }
         }
     }
@@ -148,6 +150,22 @@ class Related
             }
         }
         return $array;
+    }
+
+    protected function modify($name, $value)
+    {
+        $valid = $value === null
+              || $value === false
+              || $value === []
+              || $value instanceof RecordInterface
+              || $value instanceof RecordSetInterface;
+
+        if (! $valid) {
+            $expect = 'null, false, empty array, RecordInterface, or RecordSetInterface';
+            throw Exception::invalidType($expect, $value);
+        }
+
+        $this->fields[$name] = $value;
     }
 
     /**
