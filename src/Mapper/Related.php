@@ -111,8 +111,9 @@ class Related
     public function set(array $namesValues = [])
     {
         foreach ($namesValues as $name => $value) {
-            $this->assertHas($name);
-            $this->related[$name] = $value;
+            if ($this->has($name)) {
+                $this->related[$name] = $value;
+            }
         }
     }
 

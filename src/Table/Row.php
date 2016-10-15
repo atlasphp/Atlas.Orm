@@ -163,8 +163,9 @@ class Row implements RowInterface
     public function set(array $cols = [])
     {
         foreach ($cols as $col => $val) {
-            $this->assertHas($col);
-            $this->cols[$col] = $val;
+            if ($this->has($col)) {
+                $this->cols[$col] = $val;
+            }
         }
     }
 
