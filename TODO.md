@@ -1,8 +1,5 @@
 # TODO
 
-- Rename Table::insert() etc to insertRow() etc, and rename newInsert() to
-  insert() etc, to expose query objects on tables.
-
 ## Possible Features
 
 - Have Rows force everything to scalar/null? (The Row represents the data as it
@@ -99,9 +96,9 @@
 
     - check the database for presence/nonpresence of values (uniqueness)
 
-    - single-table inheritance -- already there with Mapper::getRecordClass() ?)
+    - single-table inheritance -- already there with Mapper::getRecordClass() ?
 
-    - filter Record/Row -- as events
+    - sanitize/validate Records and Rows -- as events
 
     - Manage many-to-many relationships, e.g. tags through taggings.
 

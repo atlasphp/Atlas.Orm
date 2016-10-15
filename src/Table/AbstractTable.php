@@ -237,10 +237,60 @@ abstract class AbstractTable implements TableInterface
      */
     public function select(array $whereEquals = [])
     {
-        return new TableSelect(
-            $this,
-            $this->newSelect($whereEquals)
-        );
+        $select = $this->queryFactory->newSelect();
+
+        $table = $this->getName();
+        $select->from($table);
+        foreach ($whereEquals as $col => $val) {
+            if (is_numeric($col)) {
+                throw Exception::numericCol($col);
+            }
+            $this->selectWhere($select, "{$table}.{$col}", $val);
+        }
+
+        return new TableSelect($this, $select);
+    }
+
+    /**
+     *
+     * Returns a new Insert object for this table.
+     *
+     * @return Insert
+     *
+     */
+    public function insert()
+    {
+        $insert = $this->queryFactory->newInsert();
+        $insert->into($this->getName());
+        return $insert;
+    }
+
+    /**
+     *
+     * Returns a new Update object for this table.
+     *
+     * @return Update
+     *
+     */
+    public function update()
+    {
+        $update = $this->queryFactory->newUpdate();
+        $update->table($this->getName());
+        return $update;
+    }
+
+    /**
+     *
+     * Returns a new Delete object for this table.
+     *
+     * @return Delete
+     *
+     */
+    protected function delete()
+    {
+        $delete = $this->queryFactory->newDelete();
+        $delete->from($this->getName());
+        return $delete;
     }
 
     /**
@@ -253,7 +303,15 @@ abstract class AbstractTable implements TableInterface
     public function insertRow(RowInterface $row)
     {
         $this->events->beforeInsert($this, $row);
-        $insert = $this->insert($row);
+
+        $insert = $this->insert();
+        $cols = $row->getArrayCopy();
+        $autoinc = $this->getAutoinc();
+        if ($autoinc) {
+            unset($cols[$autoinc]);
+        }
+        $insert->cols($cols);
+
         $this->events->modifyInsert($this, $row, $insert);
 
         $connection = $this->getWriteConnection();
@@ -290,7 +348,22 @@ abstract class AbstractTable implements TableInterface
     public function updateRow(RowInterface $row)
     {
         $this->events->beforeUpdate($this, $row);
-        $update = $this->update($row);
+
+        $update = $this->update();
+        $init = $this->identityMap->getInitial($row);
+        $diff = $row->getArrayDiff($init);
+        foreach ($this->getPrimaryKey() as $primaryCol) {
+            if (array_key_exists($primaryCol, $diff)) {
+                $message = "Primary key value for '$primaryCol' "
+                    . "changed from '$init[$primaryCol]' "
+                    . "to '$diff[$primaryCol]'.";
+                throw new Exception($message);
+            }
+            $update->where("{$primaryCol} = ?", $row->$primaryCol);
+            unset($diff[$primaryCol]);
+        }
+        $update->cols($diff);
+
         $this->events->modifyUpdate($this, $row, $update);
 
         if (! $update->hasCols()) {
@@ -326,7 +399,12 @@ abstract class AbstractTable implements TableInterface
     public function deleteRow(RowInterface $row)
     {
         $this->events->beforeDelete($this, $row);
-        $delete = $this->delete($row);
+
+        $delete = $this->delete();
+        foreach ($this->getPrimaryKey() as $primaryCol) {
+            $delete->where("{$primaryCol} = ?", $row->$primaryCol);
+        }
+
         $this->events->modifyDelete($this, $row, $delete);
 
         $connection = $this->getWriteConnection();
@@ -474,30 +552,6 @@ abstract class AbstractTable implements TableInterface
 
     /**
      *
-     * Returns a new Select.
-     *
-     * @param array $whereEquals An array of column-value equality pairs for the
-     * WHERE clause.
-     *
-     * @return SelectInterface
-     *
-     */
-    protected function newSelect(array $whereEquals = [])
-    {
-        $select = $this->queryFactory->newSelect();
-        $table = $this->getName();
-        $select->from($table);
-        foreach ($whereEquals as $col => $val) {
-            if (is_numeric($col)) {
-                throw Exception::numericCol($col);
-            }
-            $this->selectWhere($select, "{$table}.{$col}", $val);
-        }
-        return $select;
-    }
-
-    /**
-     *
      * Adds a WHERE condition to a select.
      *
      * @param SelectInterface $select The query object.
@@ -520,82 +574,6 @@ abstract class AbstractTable implements TableInterface
         }
 
         $select->where("{$col} = ?", $val);
-    }
-
-    /**
-     *
-     * Returns a new Insert object for a Row.
-     *
-     * @param RowInterface $row The row to insert.
-     *
-     * @return Insert
-     *
-     */
-    protected function insert(RowInterface $row)
-    {
-        $insert = $this->queryFactory->newInsert();
-        $insert->into($this->getName());
-
-        $cols = $row->getArrayCopy();
-        $autoinc = $this->getAutoinc();
-        if ($autoinc) {
-            unset($cols[$autoinc]);
-        }
-        $insert->cols($cols);
-
-        return $insert;
-    }
-
-    /**
-     *
-     * Returns a new Update object for a Row.
-     *
-     * @param RowInterface $row The row to update.
-     *
-     * @return Update
-     *
-     */
-    protected function update(RowInterface $row)
-    {
-        $update = $this->queryFactory->newUpdate();
-        $update->table($this->getName());
-
-        $init = $this->identityMap->getInitial($row);
-        $cols = $row->getArrayDiff($init);
-        foreach ($this->getPrimaryKey() as $primaryCol) {
-            if (array_key_exists($primaryCol, $cols)) {
-                $message = "Primary key value for '$primaryCol' "
-                    . "changed from '$init[$primaryCol]' "
-                    . "to '$cols[$primaryCol]'.";
-                throw new Exception($message);
-            }
-            $update->where("{$primaryCol} = ?", $row->$primaryCol);
-            unset($cols[$primaryCol]);
-        }
-
-        $update->cols($cols);
-        return $update;
-    }
-
-    /**
-     *
-     * Returns a new Delete object for a Row.
-     *
-     * @param RowInterface $row The row to delete.
-     *
-     * @return Delete
-     *
-     */
-    protected function delete(RowInterface $row)
-    {
-        $delete = $this->queryFactory->newDelete();
-        $delete->from($this->getName());
-
-        foreach ($this->getPrimaryKey() as $primaryCol) {
-            $delete->where("{$primaryCol} = ?", $row->$primaryCol);
-        }
-
-        return $delete;
     }
 
     /**
