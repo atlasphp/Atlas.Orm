@@ -304,16 +304,18 @@ abstract class AbstractMapper implements MapperInterface
      *
      * Returns a new Record object.
      *
-     * @param array $cols Populate the underlying Row fields with these values.
+     * @param array $fields Populate the Record fields with these values.
      *
      * @return RecordInterface If a Mapper-specific Record class is defined,
      * that will be returned instead of a generic Record.
      *
      */
-    public function newRecord(array $cols = [])
+    public function newRecord(array $fields = [])
     {
-        $row = $this->table->newRow($cols);
-        return $this->newRecordFromRow($row);
+        $row = $this->table->newRow($fields);
+        $record = $this->newRecordFromRow($row);
+        $record->getRelated()->set($fields);
+        return $record;
     }
 
     /**
