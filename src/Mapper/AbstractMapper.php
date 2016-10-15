@@ -235,10 +235,8 @@ abstract class AbstractMapper implements MapperInterface
     public function select(array $whereEquals = [])
     {
         return new MapperSelect(
-            $this->table->select($whereEquals),
-            [$this, 'turnRowIntoRecord'],
-            [$this, 'turnRowsIntoRecords'],
-            [$this, 'turnRowsIntoRecordSet']
+            $this,
+            $this->table->select($whereEquals)
         );
     }
 
@@ -254,9 +252,11 @@ abstract class AbstractMapper implements MapperInterface
     public function insert(RecordInterface $record)
     {
         $this->events->beforeInsert($this, $record);
-        $result = $this->table->insert($record->getRow());
-        $this->events->afterInsert($this, $record, $result);
-        return $result;
+        $insert = $this->table->insertRowPrepare($record->getRow());
+        $this->events->modifyInsert($this, $record, $insert);
+        $pdoStatement = $this->table->insertRowPerform($record->getRow(), $insert);
+        $this->events->afterInsert($this, $record, $insert, $pdoStatement);
+        return true;
     }
 
     /**
@@ -271,9 +271,14 @@ abstract class AbstractMapper implements MapperInterface
     public function update(RecordInterface $record)
     {
         $this->events->beforeUpdate($this, $record);
-        $result = $this->table->update($record->getRow());
-        $this->events->afterUpdate($this, $record, $result);
-        return $result;
+        $update = $this->table->updateRowPrepare($record->getRow());
+        $this->events->modifyUpdate($this, $record, $update);
+        $pdoStatement = $this->table->updateRowPerform($record->getRow(), $update);
+        if (! $pdoStatement) {
+            return false;
+        }
+        $this->events->afterUpdate($this, $record, $update, $pdoStatement);
+        return true;
     }
 
     /**
@@ -288,25 +293,29 @@ abstract class AbstractMapper implements MapperInterface
     public function delete(RecordInterface $record)
     {
         $this->events->beforeDelete($this, $record);
-        $result = $this->table->delete($record->getRow());
-        $this->events->afterDelete($this, $record, $result);
-        return $result;
+        $delete = $this->table->deleteRowPrepare($record->getRow());
+        $this->events->modifyDelete($this, $record, $delete);
+        $pdoStatement = $this->table->deleteRowPerform($record->getRow(), $delete);
+        $this->events->afterDelete($this, $record, $delete, $pdoStatement);
+        return true;
     }
 
     /**
      *
      * Returns a new Record object.
      *
-     * @param array $cols Populate the underlying Row fields with these values.
+     * @param array $fields Populate the Record fields with these values.
      *
      * @return RecordInterface If a Mapper-specific Record class is defined,
      * that will be returned instead of a generic Record.
      *
      */
-    public function newRecord(array $cols = [])
+    public function newRecord(array $fields = [])
     {
-        $row = $this->table->newRow($cols);
-        return $this->newRecordFromRow($row);
+        $row = $this->table->newRow($fields);
+        $record = $this->newRecordFromRow($row);
+        $record->getRelated()->set($fields);
+        return $record;
     }
 
     /**
@@ -322,7 +331,10 @@ abstract class AbstractMapper implements MapperInterface
     public function newRecordSet(array $records = [])
     {
         $recordSetClass = $this->getRecordSetClass();
-        return new $recordSetClass($records);
+        return new $recordSetClass(
+            $records,
+            [$this, 'newRecord']
+        );
     }
 
     /**

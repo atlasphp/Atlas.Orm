@@ -174,8 +174,11 @@ class Record implements RecordInterface
     public function set(array $fieldsValues)
     {
         foreach ($fieldsValues as $field => $value) {
-            $prop = $this->assertHas($field);
-            $this->$prop->$field = $value;
+            if ($this->row->has($field)) {
+                $this->row->$field = $value;
+            } elseif ($this->related->has($field)) {
+                $this->related->$field = $value;
+            }
         }
     }
 
@@ -206,6 +209,16 @@ class Record implements RecordInterface
         // use +, not array_merge(), so row takes precedence over related
         return $this->row->getArrayCopy()
              + $this->related->getArrayCopy();
+    }
+
+    /**
+     *
+     * Implements JsonSerializable::jsonSerialize().
+     *
+     */
+    public function jsonSerialize()
+    {
+        return $this->getArrayCopy();
     }
 
     /**

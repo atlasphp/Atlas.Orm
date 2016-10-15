@@ -39,8 +39,11 @@ class RecordSet implements RecordSetInterface
      * @param array $records The Record objects in this set.
      *
      */
-    public function __construct(array $records = [])
-    {
+    public function __construct(
+        array $records = [],
+        callable $newRecord
+    ) {
+        $this->newRecord = $newRecord;
         foreach ($records as $key => $record) {
             $this->offsetSet($key, $record);
         }
@@ -163,5 +166,134 @@ class RecordSet implements RecordSetInterface
             $array[$key] = $record->getArrayCopy();
         }
         return $array;
+    }
+
+    /**
+     *
+     * Appends a new Record to the RecordSet.
+     *
+     * @param array $cols Column values for the Row in the new Record.
+     *
+     * @return RecordInterface The appended Record.
+     *
+     */
+    public function appendNew(array $cols = [])
+    {
+        $record = call_user_func($this->newRecord, $cols);
+        $this->records[] = $record;
+        return $record;
+    }
+
+    /**
+     *
+     * Returns one Record matching an array of column-value equality pairs.
+     *
+     * @param array $whereEquals The column-value equality pairs.
+     *
+     * @return RecordInterface|false A Record on success, or false on failure.
+     *
+     */
+    public function getOneBy(array $whereEquals)
+    {
+        foreach ($this->records as $i => $record) {
+            if ($this->compareBy($record, $whereEquals)) {
+                return $record;
+            }
+        }
+        return false;
+    }
+
+    /**
+     *
+     * Returns all Records matching an array of column-value equality pairs.
+     *
+     * @param array $whereEquals The column-value equality pairs.
+     *
+     * @return array An array of Record objects, with the same array keys as in
+     * this RecordSet.
+     *
+     */
+    public function getAllBy(array $whereEquals)
+    {
+        $records = [];
+        foreach ($this->records as $i => $record) {
+            if ($this->compareBy($record, $whereEquals)) {
+                $records[$i] = $record;
+            }
+        }
+        return $records;
+    }
+
+    /**
+     *
+     * Removes one Record matching an array of column-value equality pairs.
+     *
+     * @param array $whereEquals The column-value equality pairs.
+     *
+     * @return RecordInterface|false The removed Record, or false if none matched.
+     *
+     */
+    public function removeOneBy(array $whereEquals)
+    {
+        foreach ($this->records as $i => $record) {
+            if ($this->compareBy($record, $whereEquals)) {
+                unset($this->records[$i]);
+                return $record;
+            }
+        }
+        return false;
+    }
+
+    /**
+     *
+     * Removes all Records matching an array of column-value equality pairs.
+     *
+     * @param array $whereEquals The column-value equality pairs.
+     *
+     * @return array An array of removed Record objects, with the same array
+     * keys as in this RecordSet.
+     *
+     */
+    public function removeAllBy(array $whereEquals)
+    {
+        $records = [];
+        foreach ($this->records as $i => $record) {
+            if ($this->compareBy($record, $whereEquals)) {
+                unset($this->records[$i]);
+                $records[$i] = $record;
+            }
+        }
+        return $records;
+    }
+
+    /**
+     *
+     * Compares a Record with an array of column-value equality pairs.
+     *
+     * @param RecordInterface The Record to examine.
+     *
+     * @param array $whereEquals Compare with these values.
+     *
+     * @return bool
+     *
+     */
+    protected function compareBy(RecordInterface $record, array $whereEquals)
+    {
+        foreach ($whereEquals as $field => $value) {
+            if ($record->$field != $value) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     *
+     * Implements JsonSerializable::jsonSerialize().
+     *
+     */
+    public function jsonSerialize()
+    {
+        return $this->getArrayCopy();
     }
 }

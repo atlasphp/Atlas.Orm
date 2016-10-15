@@ -12,6 +12,9 @@ use Atlas\Orm\Exception;
 use Aura\Sql\ConnectionLocator;
 use Aura\SqlQuery\QueryFactory;
 use Aura\SqlQuery\Common\SelectInterface;
+use Aura\SqlQuery\Common\InsertInterface;
+use Aura\SqlQuery\Common\UpdateInterface;
+use Aura\SqlQuery\Common\DeleteInterface;
 
 /**
  *
@@ -237,12 +240,60 @@ abstract class AbstractTable implements TableInterface
      */
     public function select(array $whereEquals = [])
     {
-        return new TableSelect(
-            $this->newSelect($whereEquals),
-            $this->getReadConnection(),
-            $this->getColNames(),
-            [$this, 'getSelectedRow']
-        );
+        $select = $this->queryFactory->newSelect();
+
+        $table = $this->getName();
+        $select->from($table);
+        foreach ($whereEquals as $col => $val) {
+            if (is_numeric($col)) {
+                throw Exception::numericCol($col);
+            }
+            $this->selectWhere($select, "{$table}.{$col}", $val);
+        }
+
+        return new TableSelect($this, $select);
+    }
+
+    /**
+     *
+     * Returns a new Insert object for this table.
+     *
+     * @return Insert
+     *
+     */
+    public function insert()
+    {
+        $insert = $this->queryFactory->newInsert();
+        $insert->into($this->getName());
+        return $insert;
+    }
+
+    /**
+     *
+     * Returns a new Update object for this table.
+     *
+     * @return Update
+     *
+     */
+    public function update()
+    {
+        $update = $this->queryFactory->newUpdate();
+        $update->table($this->getName());
+        return $update;
+    }
+
+    /**
+     *
+     * Returns a new Delete object for this table.
+     *
+     * @return Delete
+     *
+     */
+    public function delete()
+    {
+        $delete = $this->queryFactory->newDelete();
+        $delete->from($this->getName());
+        return $delete;
     }
 
     /**
@@ -252,12 +303,30 @@ abstract class AbstractTable implements TableInterface
      * @param RowInterface $row The row to insert.
      *
      */
-    public function insert(RowInterface $row)
+    public function insertRow(RowInterface $row)
+    {
+        $insert = $this->insertRowPrepare($row);
+        return (bool) $this->insertRowPerform($row, $insert);
+    }
+
+    public function insertRowPrepare(RowInterface $row)
     {
         $this->events->beforeInsert($this, $row);
-        $insert = $this->newInsert($row);
-        $this->events->modifyInsert($this, $row, $insert);
 
+        $insert = $this->insert();
+        $cols = $row->getArrayCopy();
+        $autoinc = $this->getAutoinc();
+        if ($autoinc) {
+            unset($cols[$autoinc]);
+        }
+        $insert->cols($cols);
+
+        $this->events->modifyInsert($this, $row, $insert);
+        return $insert;
+    }
+
+    public function insertRowPerform(RowInterface $row, InsertInterface $insert)
+    {
         $connection = $this->getWriteConnection();
         $pdoStatement = $connection->perform(
             $insert->getStatement(),
@@ -279,7 +348,7 @@ abstract class AbstractTable implements TableInterface
         $row->setStatus($row::INSERTED);
         $this->identityMap->setRow($row, $row->getArrayCopy(), $this->getPrimaryKey());
 
-        return true;
+        return $pdoStatement;
     }
 
     /**
@@ -289,12 +358,38 @@ abstract class AbstractTable implements TableInterface
      * @param RowInterface $row The row to update.
      *
      */
-    public function update(RowInterface $row)
+    public function updateRow(RowInterface $row)
+    {
+        $update = $this->updateRowPrepare($row);
+        return (bool) $this->updateRowPerform($row, $update);
+
+    }
+
+    public function updateRowPrepare(RowInterface $row)
     {
         $this->events->beforeUpdate($this, $row);
-        $update = $this->newUpdate($row);
-        $this->events->modifyUpdate($this, $row, $update);
 
+        $update = $this->update();
+        $init = $this->identityMap->getInitial($row);
+        $diff = $row->getArrayDiff($init);
+        foreach ($this->getPrimaryKey() as $primaryCol) {
+            if (array_key_exists($primaryCol, $diff)) {
+                $message = "Primary key value for '$primaryCol' "
+                    . "changed from '$init[$primaryCol]' "
+                    . "to '$diff[$primaryCol]'.";
+                throw new Exception($message);
+            }
+            $update->where("{$primaryCol} = ?", $row->$primaryCol);
+            unset($diff[$primaryCol]);
+        }
+        $update->cols($diff);
+
+        $this->events->modifyUpdate($this, $row, $update);
+        return $update;
+    }
+
+    public function updateRowPerform(RowInterface $row, UpdateInterface $update)
+    {
         if (! $update->hasCols()) {
             return false;
         }
@@ -315,7 +410,7 @@ abstract class AbstractTable implements TableInterface
         $row->setStatus($row::UPDATED);
         $this->identityMap->resetInitial($row);
 
-        return true;
+        return $pdoStatement;
     }
 
     /**
@@ -325,12 +420,27 @@ abstract class AbstractTable implements TableInterface
      * @param RowInterface $row The row to delete.
      *
      */
-    public function delete(RowInterface $row)
+    public function deleteRow(RowInterface $row)
+    {
+        $delete = $this->deleteRowPrepare($row);
+        return (bool) $this->deleteRowPerform($row, $delete);
+    }
+
+    public function deleteRowPrepare(RowInterface $row)
     {
         $this->events->beforeDelete($this, $row);
-        $delete = $this->newDelete($row);
-        $this->events->modifyDelete($this, $row, $delete);
 
+        $delete = $this->delete();
+        foreach ($this->getPrimaryKey() as $primaryCol) {
+            $delete->where("{$primaryCol} = ?", $row->$primaryCol);
+        }
+
+        $this->events->modifyDelete($this, $row, $delete);
+        return $delete;
+    }
+
+    public function deleteRowPerform(RowInterface $row, DeleteInterface $delete)
+    {
         $connection = $this->getWriteConnection();
         $pdoStatement = $connection->perform(
             $delete->getStatement(),
@@ -345,7 +455,7 @@ abstract class AbstractTable implements TableInterface
         $this->events->afterDelete($this, $row, $delete, $pdoStatement);
 
         $row->setStatus($row::DELETED);
-        return true;
+        return $pdoStatement;
     }
 
     /**
@@ -476,30 +586,6 @@ abstract class AbstractTable implements TableInterface
 
     /**
      *
-     * Returns a new Select.
-     *
-     * @param array $whereEquals An array of column-value equality pairs for the
-     * WHERE clause.
-     *
-     * @return SelectInterface
-     *
-     */
-    protected function newSelect(array $whereEquals = [])
-    {
-        $select = $this->queryFactory->newSelect();
-        $table = $this->getName();
-        $select->from($table);
-        foreach ($whereEquals as $col => $val) {
-            if (is_numeric($col)) {
-                throw Exception::numericCol($col);
-            }
-            $this->selectWhere($select, "{$table}.{$col}", $val);
-        }
-        return $select;
-    }
-
-    /**
-     *
      * Adds a WHERE condition to a select.
      *
      * @param SelectInterface $select The query object.
@@ -522,82 +608,6 @@ abstract class AbstractTable implements TableInterface
         }
 
         $select->where("{$col} = ?", $val);
-    }
-
-    /**
-     *
-     * Returns a new Insert object for a Row.
-     *
-     * @param RowInterface $row The row to insert.
-     *
-     * @return Insert
-     *
-     */
-    protected function newInsert(RowInterface $row)
-    {
-        $insert = $this->queryFactory->newInsert();
-        $insert->into($this->getName());
-
-        $cols = $row->getArrayCopy();
-        $autoinc = $this->getAutoinc();
-        if ($autoinc) {
-            unset($cols[$autoinc]);
-        }
-        $insert->cols($cols);
-
-        return $insert;
-    }
-
-    /**
-     *
-     * Returns a new Update object for a Row.
-     *
-     * @param RowInterface $row The row to update.
-     *
-     * @return Update
-     *
-     */
-    protected function newUpdate(RowInterface $row)
-    {
-        $update = $this->queryFactory->newUpdate();
-        $update->table($this->getName());
-
-        $init = $this->identityMap->getInitial($row);
-        $cols = $row->getArrayDiff($init);
-        foreach ($this->getPrimaryKey() as $primaryCol) {
-            if (array_key_exists($primaryCol, $cols)) {
-                $message = "Primary key value for '$primaryCol' "
-                    . "changed from '$init[$primaryCol]' "
-                    . "to '$cols[$primaryCol]'.";
-                throw new Exception($message);
-            }
-            $update->where("{$primaryCol} = ?", $row->$primaryCol);
-            unset($cols[$primaryCol]);
-        }
-
-        $update->cols($cols);
-        return $update;
-    }
-
-    /**
-     *
-     * Returns a new Delete object for a Row.
-     *
-     * @param RowInterface $row The row to delete.
-     *
-     * @return Delete
-     *
-     */
-    protected function newDelete(RowInterface $row)
-    {
-        $delete = $this->queryFactory->newDelete();
-        $delete->from($this->getName());
-
-        foreach ($this->getPrimaryKey() as $primaryCol) {
-            $delete->where("{$primaryCol} = ?", $row->$primaryCol);
-        }
-
-        return $delete;
     }
 
     /**

@@ -24,39 +24,21 @@ class MapperSelect implements SubselectInterface
 {
     /**
      *
+     * The Mapper that built this Select.
+     *
+     * @var MapperInterface
+     *
+     */
+    protected $mapper;
+
+    /**
+     *
      * The TableSelect being decorated.
      *
      * @var TableSelect
      *
      */
     protected $tableSelect;
-
-    /**
-     *
-     * A callable back to the Mapper-specific turnRowIntoRecord() method.
-     *
-     * @var callable
-     *
-     */
-    protected $turnRowIntoRecord;
-
-    /**
-     *
-     * A callable back to the Mapper-specific turnRowsIntoRecords() method.
-     *
-     * @var callable
-     *
-     */
-    protected $turnRowsIntoRecords;
-
-    /**
-     *
-     * A callable back to the Mapper-specific turnRowsIntoRecordSet() method.
-     *
-     * @var callable
-     *
-     */
-    protected $turnRowsIntoRecordSet;
 
     /**
      *
@@ -84,15 +66,11 @@ class MapperSelect implements SubselectInterface
      *
      */
     public function __construct(
-        TableSelect $tableSelect,
-        callable $turnRowIntoRecord,
-        callable $turnRowsIntoRecords,
-        callable $turnRowsIntoRecordSet
+        MapperInterface $mapper,
+        TableSelect $tableSelect
     ) {
+        $this->mapper = $mapper;
         $this->tableSelect = $tableSelect;
-        $this->turnRowIntoRecord = $turnRowIntoRecord;
-        $this->turnRowsIntoRecords = $turnRowsIntoRecords;
-        $this->turnRowsIntoRecordSet = $turnRowsIntoRecordSet;
     }
 
     /**
@@ -180,7 +158,7 @@ class MapperSelect implements SubselectInterface
             return false;
         }
 
-        return call_user_func($this->turnRowIntoRecord, $row, $this->with);
+        return $this->mapper->turnRowIntoRecord($row, $this->with);
     }
 
     /**
@@ -197,7 +175,7 @@ class MapperSelect implements SubselectInterface
             return [];
         }
 
-        return call_user_func($this->turnRowsIntoRecords, $rows, $this->with);
+        return $this->mapper->turnRowsIntoRecords($rows, $this->with);
     }
 
     /**
@@ -215,6 +193,6 @@ class MapperSelect implements SubselectInterface
             return [];
         }
 
-        return call_user_func($this->turnRowsIntoRecordSet, $rows, $this->with);
+        return $this->mapper->turnRowsIntoRecordSet($rows, $this->with);
     }
 }

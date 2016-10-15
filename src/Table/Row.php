@@ -81,7 +81,10 @@ class Row implements RowInterface
      */
     public function __construct(array $cols)
     {
-        $this->cols = $cols;
+        foreach ($cols as $col => $val) {
+            $this->assertValid($val);
+            $this->cols[$col] = $val;
+        }
         $this->status = static::FOR_INSERT;
     }
 
@@ -163,8 +166,9 @@ class Row implements RowInterface
     public function set(array $cols = [])
     {
         foreach ($cols as $col => $val) {
-            $this->assertHas($col);
-            $this->cols[$col] = $val;
+            if ($this->has($col)) {
+                $this->modify($col, $val);
+            }
         }
     }
 
@@ -264,6 +268,16 @@ class Row implements RowInterface
 
     /**
      *
+     * Implements JsonSerializable::jsonSerialize().
+     *
+     */
+    public function jsonSerialize()
+    {
+        return $this->getArrayCopy();
+    }
+
+    /**
+     *
      * Protects the row against disallowed modifications, and sets the row
      * status to MODIFIED as appropriate.
      *
@@ -280,6 +294,8 @@ class Row implements RowInterface
             throw Exception::immutableOnceDeleted($this, $col);
         }
 
+        $this->assertValid($new);
+
         if ($this->status == static::FOR_INSERT) {
             $this->cols[$col] = $new;
             return;
@@ -289,6 +305,13 @@ class Row implements RowInterface
         $this->cols[$col] = $new;
         if (! $this->isEquivalent($old, $new)) {
             $this->setStatus(static::MODIFIED);
+        }
+    }
+
+    protected function assertValid($value)
+    {
+        if (! is_null($value) && ! is_scalar($value)) {
+            throw Exception::invalidType('scalar or null', $value);
         }
     }
 

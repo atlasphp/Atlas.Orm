@@ -9,6 +9,7 @@
 namespace Atlas\Orm\Table;
 
 use Atlas\Orm\Exception;
+use JsonSerializable;
 
 /**
  *
@@ -17,7 +18,7 @@ use Atlas\Orm\Exception;
  * @package atlas/orm
  *
  */
-interface RowInterface
+interface RowInterface extends JsonSerializable
 {
     /**
      *

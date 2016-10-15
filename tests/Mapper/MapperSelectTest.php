@@ -3,11 +3,15 @@ namespace Atlas\Orm\Mapper;
 
 use Atlas\Orm\Assertions;
 use Atlas\Orm\SqliteFixture;
+use Atlas\Orm\Table\IdentityMap;
+use Atlas\Orm\Table\TableEvents;
 use Atlas\Orm\Table\TableSelect;
+use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\QueryFactory;
+use Atlas\Orm\DataSource\Employee\EmployeeTable;
 
-class SelectTest extends \PHPUnit_Framework_TestCase
+class MapperSelectTest extends \PHPUnit_Framework_TestCase
 {
     use Assertions;
 
@@ -15,29 +19,27 @@ class SelectTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $connection = new ExtendedPdo('sqlite::memory:');
+        $queryFactory = new QueryFactory('sqlite');
 
+        $table = new EmployeeTable(
+            new ConnectionLocator(function () {
+                return new ExtendedPdo('sqlite::memory:');
+            }),
+            $queryFactory,
+            new IdentityMap(),
+            new TableEvents()
+        );
+
+        $connection = $table->getWriteConnection();
         $fixture = new SqliteFixture($connection);
         $fixture->exec();
 
-        $queryFactory = new QueryFactory('sqlite');
-        $select = $queryFactory->newSelect();
-
-        $tableSelect = new TableSelect(
-            $select,
-            $connection,
-            ['id', 'name', 'building', 'floor'],
-            function () { }
-        );
+        $select = $queryFactory->newSelect()->from('employee');
 
         $this->select = new MapperSelect(
-            $tableSelect,
-            function () { },
-            function () { },
-            function () { }
+            $this->getMock('Atlas\Orm\Mapper\MapperInterface'),
+            new TableSelect($table, $select)
         );
-
-        $this->select->from('employee');
     }
 
     public function testGetStatement()
@@ -205,13 +207,14 @@ class SelectTest extends \PHPUnit_Framework_TestCase
     {
         $expect = '
             SELECT
+                id,
                 name
             FROM
                 "employee"
         ';
 
         $this->select
-            ->cols(['name'])
+            ->cols(['id', 'name'])
             ->fetchRecord();
 
         $actual = $this->select->__toString();
