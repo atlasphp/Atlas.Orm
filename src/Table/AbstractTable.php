@@ -12,6 +12,9 @@ use Atlas\Orm\Exception;
 use Aura\Sql\ConnectionLocator;
 use Aura\SqlQuery\QueryFactory;
 use Aura\SqlQuery\Common\SelectInterface;
+use Aura\SqlQuery\Common\InsertInterface;
+use Aura\SqlQuery\Common\UpdateInterface;
+use Aura\SqlQuery\Common\DeleteInterface;
 
 /**
  *
@@ -302,6 +305,12 @@ abstract class AbstractTable implements TableInterface
      */
     public function insertRow(RowInterface $row)
     {
+        $insert = $this->insertRowPrepare($row);
+        return $this->insertRowPerform($row, $insert);
+    }
+
+    public function insertRowPrepare(RowInterface $row)
+    {
         $this->events->beforeInsert($this, $row);
 
         $insert = $this->insert();
@@ -313,7 +322,11 @@ abstract class AbstractTable implements TableInterface
         $insert->cols($cols);
 
         $this->events->modifyInsert($this, $row, $insert);
+        return $insert;
+    }
 
+    public function insertRowPerform(RowInterface $row, InsertInterface $insert)
+    {
         $connection = $this->getWriteConnection();
         $pdoStatement = $connection->perform(
             $insert->getStatement(),
@@ -347,6 +360,13 @@ abstract class AbstractTable implements TableInterface
      */
     public function updateRow(RowInterface $row)
     {
+        $update = $this->updateRowPrepare($row);
+        return $this->updateRowPerform($row, $update);
+
+    }
+
+    public function updateRowPrepare(RowInterface $row)
+    {
         $this->events->beforeUpdate($this, $row);
 
         $update = $this->update();
@@ -365,7 +385,11 @@ abstract class AbstractTable implements TableInterface
         $update->cols($diff);
 
         $this->events->modifyUpdate($this, $row, $update);
+        return $update;
+    }
 
+    public function updateRowPerform(RowInterface $row, UpdateInterface $update)
+    {
         if (! $update->hasCols()) {
             return false;
         }
@@ -398,6 +422,12 @@ abstract class AbstractTable implements TableInterface
      */
     public function deleteRow(RowInterface $row)
     {
+        $delete = $this->deleteRowPrepare($row);
+        return $this->deleteRowPerform($row, $delete);
+    }
+
+    public function deleteRowPrepare(RowInterface $row)
+    {
         $this->events->beforeDelete($this, $row);
 
         $delete = $this->delete();
@@ -406,7 +436,11 @@ abstract class AbstractTable implements TableInterface
         }
 
         $this->events->modifyDelete($this, $row, $delete);
+        return $delete;
+    }
 
+    public function deleteRowPerform(RowInterface $row, DeleteInterface $delete)
+    {
         $connection = $this->getWriteConnection();
         $pdoStatement = $connection->perform(
             $delete->getStatement(),

@@ -78,7 +78,7 @@
 
 - How to ...
 
-    - "Trivially export a record to JSON" per <https://twitter.com/taylorotwell/status/652535241765089280> -- `json_encode($record->getArrayCopy())`
+    - "Trivially export a record to JSON" per <https://twitter.com/taylorotwell/status/652535241765089280> -- `json_encode($record)`
 
     - increment/decrement a Record field -- via events, and select back the new
       count?
