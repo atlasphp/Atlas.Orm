@@ -289,7 +289,7 @@ abstract class AbstractTable implements TableInterface
      * @return Delete
      *
      */
-    protected function delete()
+    public function delete()
     {
         $delete = $this->queryFactory->newDelete();
         $delete->from($this->getName());
