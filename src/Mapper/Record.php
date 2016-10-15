@@ -177,7 +177,7 @@ class Record implements RecordInterface
             if ($this->row->has($field)) {
                 $this->row->$field = $value;
             } elseif ($this->related->has($field)) {
-                $this->related->field = $value;
+                $this->related->$field = $value;
             }
         }
     }
