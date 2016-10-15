@@ -264,6 +264,16 @@ class Row implements RowInterface
 
     /**
      *
+     * Implements JsonSerializable::jsonSerialize().
+     *
+     */
+    public function jsonSerialize()
+    {
+        return $this->getArrayCopy();
+    }
+
+    /**
+     *
      * Protects the row against disallowed modifications, and sets the row
      * status to MODIFIED as appropriate.
      *

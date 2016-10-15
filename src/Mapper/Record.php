@@ -210,6 +210,16 @@ class Record implements RecordInterface
 
     /**
      *
+     * Implements JsonSerializable::jsonSerialize().
+     *
+     */
+    public function jsonSerialize()
+    {
+        return $this->getArrayCopy();
+    }
+
+    /**
+     *
      * Asserts that a field exists on the Row or Related.
      *
      * @param string $field The Row or Related field name.

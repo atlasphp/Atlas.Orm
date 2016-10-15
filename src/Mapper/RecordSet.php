@@ -286,4 +286,14 @@ class RecordSet implements RecordSetInterface
         }
         return true;
     }
+
+    /**
+     *
+     * Implements JsonSerializable::jsonSerialize().
+     *
+     */
+    public function jsonSerialize()
+    {
+        return $this->getArrayCopy();
+    }
 }

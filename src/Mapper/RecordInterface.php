@@ -8,6 +8,8 @@
  */
 namespace Atlas\Orm\Mapper;
 
+use JsonSerializable;
+
 /**
  *
  * An interface for Record objects.
@@ -15,7 +17,7 @@ namespace Atlas\Orm\Mapper;
  * @package atlas/orm
  *
  */
-interface RecordInterface
+interface RecordInterface extends JsonSerializable
 {
     /**
      *

@@ -11,6 +11,7 @@ namespace Atlas\Orm\Mapper;
 use ArrayAccess;
 use Countable;
 use IteratorAggregate;
+use JsonSerializable;
 
 /**
  *
