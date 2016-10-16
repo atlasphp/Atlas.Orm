@@ -127,6 +127,11 @@ abstract class AbstractMapper implements MapperInterface
         return $this->table->getWriteConnection();
     }
 
+    public function getRelationships()
+    {
+        return $this->relationships;
+    }
+
     /**
      *
      * Fetches one Record by its primary key value, optionally with relateds.

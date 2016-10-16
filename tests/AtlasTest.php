@@ -17,6 +17,8 @@ use Atlas\Orm\Mapper\RecordSet;
 
 class AtlasTest extends \PHPUnit_Framework_TestCase
 {
+    use Assertions;
+
     protected $atlas;
     protected $profiler;
 
@@ -313,6 +315,29 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
             "Expected scalar value for primary key 'author_id', got array instead."
         );
         $this->atlas->fetchRecord(AuthorMapper::CLASS, [1, 2, 3]);
+    }
+
+    public function testJoinWith()
+    {
+        $select = $this->atlas->select(ThreadMapper::CLASS)
+            ->distinct()
+            ->leftJoinWith('replies')
+            ->orderBy(['replies.reply_id DESC']);
+
+        $actual = $select->getStatement();
+
+        $expect = 'SELECT DISTINCT
+    "threads"."thread_id",
+    "threads"."author_id",
+    "threads"."subject",
+    "threads"."body"
+FROM
+    "threads"
+LEFT JOIN "replies" AS "replies" ON "threads"."thread_id" = "replies"."thread_id"
+ORDER BY
+    "replies"."reply_id" DESC';
+
+        $this->assertSameSql($expect, $actual);
     }
 
     protected $expectRecord = [

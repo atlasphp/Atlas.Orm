@@ -347,9 +347,16 @@ class TableSelect implements SubselectInterface
      */
     protected function addColNames()
     {
-        if (! $this->select->hasCols()) {
-            $this->select->cols($this->table->getColNames());
+        if ($this->select->hasCols()) {
+            return;
         }
+
+        $table = $this->table->getName();
+        $cols = [];
+        foreach ($this->table->getColNames() as $col) {
+            $cols[] = "{$table}.{$col}";
+        }
+        $this->select->cols($cols);
     }
 
     /**

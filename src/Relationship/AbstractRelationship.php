@@ -174,6 +174,18 @@ abstract class AbstractRelationship implements RelationshipInterface
         $this->on = $on;
     }
 
+    public function getOn()
+    {
+        $this->initialize();
+        return $this->on;
+    }
+
+    public function getForeignMapper()
+    {
+        $this->initialize();
+        return $this->foreignMapper;
+    }
+
     /**
      *
      * Given an array of native Record objects, stitches the foreign relateds

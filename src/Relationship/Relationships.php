@@ -73,6 +73,11 @@ class Relationships
         return $this->fields;
     }
 
+    public function get($name)
+    {
+        return $this->defs[$name];
+    }
+
     /**
      *
      * Defines a one-to-one relationship between Mapper objects.
