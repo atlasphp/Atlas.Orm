@@ -1,21 +1,8 @@
 # TODO
 
-- Add support for relationship-specific joins. E.g.:
-
-  ```
-  $fooRecordSet = $atlas->select(FooMapper::CLASS)
-      ->joinWith('bar', 'LEFT', function ($select) { // bar_table AS bar
-          $select->joinWith('baz AS dib', 'INNER'); // baz_table As dib
-      })
-      ->where('bar.whatever = ?', 'somevalue')
-      ->orderBy(['dib.something DESC'])
-      ->fetchRecordSet();
-  ```
-
-  Methods: joinWith(), leftJoinWith(), innerJoinWith()
-
-  N.b.: user has to be careful to alias properly. Also, make sure that you don't
-  get back multiple identical rows. DON'T SELECT COLS!
+- Add a MapperSelect::sort() or sortBy() method? Would allow user-defined
+  sorting on the selected Records *after* the results have been fetched with
+  their relateds.
 
 - Add support for saving a record and all of its relateds recursively? (Auto-set
   foreign key values. Use a Transaction under the hood.)
