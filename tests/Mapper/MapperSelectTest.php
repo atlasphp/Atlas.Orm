@@ -59,10 +59,10 @@ class MapperSelectTest extends \PHPUnit_Framework_TestCase
     {
         $expect = '
             SELECT
-                id,
-                name,
-                building,
-                floor
+                "employee"."id",
+                "employee"."name",
+                "employee"."building",
+                "employee"."floor"
             FROM
                 "employee"
         ';
@@ -87,10 +87,10 @@ class MapperSelectTest extends \PHPUnit_Framework_TestCase
     {
         $expect = '
             SELECT
-                id,
-                name,
-                building,
-                floor
+                "employee"."id",
+                "employee"."name",
+                "employee"."building",
+                "employee"."floor"
             FROM
                 "employee"
         ';
