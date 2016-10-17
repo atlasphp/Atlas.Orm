@@ -10,11 +10,11 @@ namespace Atlas\Orm\Table;
 
 use Atlas\Orm\Exception;
 use Aura\Sql\ConnectionLocator;
-use Aura\SqlQuery\QueryFactory;
-use Aura\SqlQuery\Common\SelectInterface;
-use Aura\SqlQuery\Common\InsertInterface;
-use Aura\SqlQuery\Common\UpdateInterface;
 use Aura\SqlQuery\Common\DeleteInterface;
+use Aura\SqlQuery\Common\InsertInterface;
+use Aura\SqlQuery\Common\SelectInterface;
+use Aura\SqlQuery\Common\UpdateInterface;
+use Aura\SqlQuery\QueryFactory;
 
 /**
  *
