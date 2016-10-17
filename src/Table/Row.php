@@ -308,6 +308,15 @@ class Row implements RowInterface
         }
     }
 
+    /**
+     *
+     * Asserts that a value is null or scalar.
+     *
+     * @param mixed $value The value to check.
+     *
+     * @throws Exception when non-noll and non-scalar.
+     *
+     */
     protected function assertValid($value)
     {
         if (! is_null($value) && ! is_scalar($value)) {

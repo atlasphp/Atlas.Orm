@@ -38,6 +38,9 @@ class RecordSet implements RecordSetInterface
      *
      * @param array $records The Record objects in this set.
      *
+     * @param callable $newRecord A callable in the form
+     * `function (RowInterface $row) : RecordInterface` to create a new Record.
+     *
      */
     public function __construct(
         array $records = [],
@@ -172,14 +175,14 @@ class RecordSet implements RecordSetInterface
      *
      * Appends a new Record to the RecordSet.
      *
-     * @param array $cols Column values for the Row in the new Record.
+     * @param array $fields Field values for the new Record.
      *
      * @return RecordInterface The appended Record.
      *
      */
-    public function appendNew(array $cols = [])
+    public function appendNew(array $fields = [])
     {
-        $record = call_user_func($this->newRecord, $cols);
+        $record = call_user_func($this->newRecord, $fields);
         $this->records[] = $record;
         return $record;
     }

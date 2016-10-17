@@ -302,6 +302,8 @@ abstract class AbstractTable implements TableInterface
      *
      * @param RowInterface $row The row to insert.
      *
+     * @return bool
+     *
      */
     public function insertRow(RowInterface $row)
     {
@@ -309,6 +311,15 @@ abstract class AbstractTable implements TableInterface
         return (bool) $this->insertRowPerform($row, $insert);
     }
 
+    /**
+     *
+     * Prepares an Insert for a Row.
+     *
+     * @param RowInterface $row The Row to be inserted.
+     *
+     * @return InsertInterface
+     *
+     */
     public function insertRowPrepare(RowInterface $row)
     {
         $this->events->beforeInsert($this, $row);
@@ -325,6 +336,17 @@ abstract class AbstractTable implements TableInterface
         return $insert;
     }
 
+    /**
+     *
+     * Performs the Insert for a Row.
+     *
+     * @param RowInterface $row The Row to be inserted.
+     *
+     * @param InsertInterface $insert The Insert to be performed.
+     *
+     * @return PDOStatement The PDOStatement resulting from the insert.
+     *
+     */
     public function insertRowPerform(RowInterface $row, InsertInterface $insert)
     {
         $connection = $this->getWriteConnection();
@@ -357,6 +379,8 @@ abstract class AbstractTable implements TableInterface
      *
      * @param RowInterface $row The row to update.
      *
+     * @return bool
+     *
      */
     public function updateRow(RowInterface $row)
     {
@@ -365,6 +389,15 @@ abstract class AbstractTable implements TableInterface
 
     }
 
+    /**
+     *
+     * Prepares an Update for a Row.
+     *
+     * @param RowInterface $row The Row to be updated.
+     *
+     * @return UpdateInterface
+     *
+     */
     public function updateRowPrepare(RowInterface $row)
     {
         $this->events->beforeUpdate($this, $row);
@@ -388,6 +421,17 @@ abstract class AbstractTable implements TableInterface
         return $update;
     }
 
+    /**
+     *
+     * Performs the Update for a Row.
+     *
+     * @param RowInterface $row The Row to be updated.
+     *
+     * @param UpdateInterface $update The Update to be performed.
+     *
+     * @return PDOStatement The PDOStatement resulting from the update.
+     *
+     */
     public function updateRowPerform(RowInterface $row, UpdateInterface $update)
     {
         if (! $update->hasCols()) {
@@ -419,6 +463,8 @@ abstract class AbstractTable implements TableInterface
      *
      * @param RowInterface $row The row to delete.
      *
+     * @return bool
+     *
      */
     public function deleteRow(RowInterface $row)
     {
@@ -426,6 +472,15 @@ abstract class AbstractTable implements TableInterface
         return (bool) $this->deleteRowPerform($row, $delete);
     }
 
+    /**
+     *
+     * Prepares a Delete for a Row.
+     *
+     * @param RowInterface $row The Row to be deleted.
+     *
+     * @return DeleteInterface
+     *
+     */
     public function deleteRowPrepare(RowInterface $row)
     {
         $this->events->beforeDelete($this, $row);
@@ -439,6 +494,17 @@ abstract class AbstractTable implements TableInterface
         return $delete;
     }
 
+    /**
+     *
+     * Performs the Delete for a Row.
+     *
+     * @param RowInterface $row The Row to be deleted.
+     *
+     * @param DeleteInterface $delete The Delete to be performed.
+     *
+     * @return PDOStatement The PDOStatement resulting from the delete.
+     *
+     */
     public function deleteRowPerform(RowInterface $row, DeleteInterface $delete)
     {
         $connection = $this->getWriteConnection();

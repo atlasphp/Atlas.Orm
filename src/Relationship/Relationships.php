@@ -62,24 +62,6 @@ class Relationships
 
     /**
      *
-     * Returns the array of fields for the Related that will be populated by
-     * these Relationships.
-     *
-     * @return array
-     *
-     */
-    public function getFields()
-    {
-        return $this->fields;
-    }
-
-    public function get($name)
-    {
-        return $this->defs[$name];
-    }
-
-    /**
-     *
      * Defines a one-to-one relationship between Mapper objects.
      *
      * @param string $name The Related field name.
@@ -185,6 +167,33 @@ class Relationships
             $foreignMapperClass,
             $throughName
         );
+    }
+
+    /**
+     *
+     * Returns a relationship object by field name.
+     *
+     * @param string $name The related field name.
+     *
+     * @return RelationshipInterface
+     *
+     */
+    public function get($name)
+    {
+        return $this->defs[$name];
+    }
+
+    /**
+     *
+     * Returns the array of fields for the Related that will be populated by
+     * these Relationships.
+     *
+     * @return array
+     *
+     */
+    public function getFields()
+    {
+        return $this->fields;
     }
 
     /**

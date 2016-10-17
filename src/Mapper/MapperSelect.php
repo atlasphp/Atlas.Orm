@@ -53,16 +53,9 @@ class MapperSelect implements SubselectInterface
      *
      * Constructor.
      *
+     * @param Mapper $mapper The Mapper that created this Select.
+     *
      * @param TableSelect $tableSelect The TableSelect instance being decorated.
-     *
-     * @param callable $turnRowIntoRecord A callable back to the Mapper-specific
-     * turnRowIntoRecord() method.
-     *
-     * @param callable $turnRowsIntoRecords A callable back to the Mapper-specific
-     * turnRowsIntoRecords() method.
-     *
-     * @param callable $turnRowsIntoRecordSet A callable back to the Mapper-specific
-     * turnRowsIntoRecordSet() method.
      *
      */
     public function __construct(
@@ -107,6 +100,16 @@ class MapperSelect implements SubselectInterface
 
     /**
      *
+     * Clones objects used internally.
+     *
+     */
+    public function __clone()
+    {
+        $this->tableSelect = clone $this->tableSelect;
+    }
+
+    /**
+     *
      * Implements the SubSelect::getStatement() interface.
      *
      * @return string
@@ -129,11 +132,67 @@ class MapperSelect implements SubselectInterface
         return $this->tableSelect->getBindValues();
     }
 
+
     /**
      *
-     * Sets relateds on the select.
+     * Adds a JOIN clause using a named relationship from the Mapper.
      *
-     * @param array
+     * @param string $join The type of join ("LEFT", "INNER", etc.).
+     *
+     * @param string $relatedName The name of the relationship from the Mapper.
+     *
+     * @return $this
+     *
+     */
+    public function joinWith($join, $relatedName)
+    {
+        $nativeTable = $this->mapper->getTable()->getName();
+        $relationship = $this->mapper->getRelationships()->get($relatedName);
+        $foreignTable = $relationship->getForeignMapper()->getTable()->getName();
+        $spec = "{$foreignTable} AS {$relatedName}";
+
+        $cond = [];
+        foreach ($relationship->getOn() as $nativeCol => $foreignCol) {
+            $cond[] = "{$nativeTable}.{$nativeCol} = {$relatedName}.{$foreignCol}";
+        }
+        $cond = implode(' AND ', $cond);
+
+        return $this->join($join, $spec, $cond);
+    }
+
+    /**
+     *
+     * Adds a LEFT JOIN clause using a named relationship from the Mapper.
+     *
+     * @param string $relatedName The name of the relationship from the Mapper.
+     *
+     * @return $this
+     *
+     */
+    public function leftJoinWith($relatedName)
+    {
+        return $this->joinWith('LEFT', $relatedName);
+    }
+
+    /**
+     *
+     * Adds an INNER JOIN clause using a named relationship from the Mapper.
+     *
+     * @param string $relatedName The name of the relationship from the Mapper.
+     *
+     * @return $this
+     *
+     */
+    public function innerJoinWith($relatedName)
+    {
+        return $this->joinWith('INNER', $relatedName);
+    }
+
+    /**
+     *
+     * When fetching records, return them with these relateds.
+     *
+     * @param array $with Add these relateds to fetched records.
      *
      * @return $this
      *
@@ -194,39 +253,5 @@ class MapperSelect implements SubselectInterface
         }
 
         return $this->mapper->turnRowsIntoRecordSet($rows, $this->with);
-    }
-
-    /**
-     * Clone objects used internally
-     */
-    public function __clone()
-    {
-        $this->tableSelect = clone $this->tableSelect;
-    }
-
-    public function joinWith($join, $relatedName)
-    {
-        $nativeTable = $this->mapper->getTable()->getName();
-        $relationship = $this->mapper->getRelationships()->get($relatedName);
-        $foreignTable = $relationship->getForeignMapper()->getTable()->getName();
-        $spec = "{$foreignTable} AS {$relatedName}";
-
-        $cond = [];
-        foreach ($relationship->getOn() as $nativeCol => $foreignCol) {
-            $cond[] = "{$nativeTable}.{$nativeCol} = {$relatedName}.{$foreignCol}";
-        }
-        $cond = implode(' AND ', $cond);
-
-        return $this->join($join, $spec, $cond);
-    }
-
-    public function leftJoinWith($with)
-    {
-        return $this->joinWith('LEFT', $with);
-    }
-
-    public function innerJoinWith($with)
-    {
-        return $this->joinWith('INNER', $with);
     }
 }

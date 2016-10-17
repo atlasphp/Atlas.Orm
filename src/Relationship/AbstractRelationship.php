@@ -174,12 +174,26 @@ abstract class AbstractRelationship implements RelationshipInterface
         $this->on = $on;
     }
 
+    /**
+     *
+     * Returns the native => foreign column names.
+     *
+     * @return array
+     *
+     */
     public function getOn()
     {
         $this->initialize();
         return $this->on;
     }
 
+    /**
+     *
+     * Returns the foreign Mapper instance.
+     *
+     * @return MapperInterface
+     *
+     */
     public function getForeignMapper()
     {
         $this->initialize();

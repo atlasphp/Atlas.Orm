@@ -44,12 +44,12 @@ interface RecordSetInterface extends ArrayAccess, Countable, IteratorAggregate
      *
      * Appends a new Record to the RecordSet.
      *
-     * @param array $cols Column values for the Row in the new Record.
+     * @param array $fields Field values for the new Record.
      *
      * @return RecordInterface The appended Record.
      *
      */
-    public function appendNew(array $cols = []);
+    public function appendNew(array $fields = []);
 
     /**
      *

@@ -152,6 +152,18 @@ class Related
         return $array;
     }
 
+    /**
+     *
+     * Modifies a field, making sure the new value is of an allowed type.
+     *
+     * @param string $name The field name to modify.
+     *
+     * @param mixed The new field value. Must be null, false, an empty array,
+     * a RecordInterface, or a RecordSetInterface.
+     *
+     * @throws Exception when the new value is not of the expected type.
+     *
+     */
     protected function modify($name, $value)
     {
         $valid = $value === null

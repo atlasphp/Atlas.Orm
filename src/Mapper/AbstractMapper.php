@@ -127,6 +127,13 @@ abstract class AbstractMapper implements MapperInterface
         return $this->table->getWriteConnection();
     }
 
+    /**
+     *
+     * Returns the relationships to other Mapper objects.
+     *
+     * @return Relationships
+     *
+     */
     public function getRelationships()
     {
         return $this->relationships;

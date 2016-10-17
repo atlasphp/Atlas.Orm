@@ -42,9 +42,9 @@ class TableSelect implements SubselectInterface
      *
      * Constructor.
      *
-     * @param SelectInterface The underlying Select object being decorated.
-     *
      * @param TableInterface $table The table that created this select.
+     *
+     * @param SelectInterface The underlying Select object being decorated.
      *
      */
     public function __construct(
@@ -86,6 +86,16 @@ class TableSelect implements SubselectInterface
     {
         $result = call_user_func_array([$this->select, $method], $params);
         return ($result === $this->select) ? $this : $result;
+    }
+
+    /**
+     *
+     * Clones objects used internally.
+     *
+     */
+    public function __clone()
+    {
+        $this->select = clone $this->select;
     }
 
     /**
@@ -357,13 +367,5 @@ class TableSelect implements SubselectInterface
             $cols[] = "{$table}.{$col}";
         }
         $this->select->cols($cols);
-    }
-
-    /**
-     * Clone objects used internally
-     */
-    public function __clone()
-    {
-        $this->select = clone $this->select;
     }
 }

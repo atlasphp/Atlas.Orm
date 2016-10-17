@@ -87,6 +87,30 @@ interface TableInterface
 
     /**
      *
+     * Prepares an Insert for a Row.
+     *
+     * @param RowInterface $row The Row to be inserted.
+     *
+     * @return InsertInterface
+     *
+     */
+    public function insertRowPrepare(RowInterface $row);
+
+    /**
+     *
+     * Performs the Insert for a Row.
+     *
+     * @param RowInterface $row The Row to be inserted.
+     *
+     * @param InsertInterface $insert The Insert to be performed.
+     *
+     * @return PDOStatement The PDOStatement resulting from the insert.
+     *
+     */
+    public function insertRowPerform(RowInterface $row, InsertInterface $insert);
+
+    /**
+     *
      * Updates a Row in the table.
      *
      * @param RowInterface $row The row to update.
@@ -96,12 +120,60 @@ interface TableInterface
 
     /**
      *
+     * Prepares an Update for a Row.
+     *
+     * @param RowInterface $row The Row to be updated.
+     *
+     * @return UpdateInterface
+     *
+     */
+    public function updateRowPrepare(RowInterface $row);
+
+    /**
+     *
+     * Performs the Update for a Row.
+     *
+     * @param RowInterface $row The Row to be updated.
+     *
+     * @param UpdateInterface $update The Update to be performed.
+     *
+     * @return PDOStatement The PDOStatement resulting from the update.
+     *
+     */
+    public function updateRowPerform(RowInterface $row, UpdateInterface $update);
+
+    /**
+     *
      * Deletes a Row from the table.
      *
      * @param RowInterface $row The row to delete.
      *
      */
     public function deleteRow(RowInterface $row);
+
+    /**
+     *
+     * Prepares a Delete for a Row.
+     *
+     * @param RowInterface $row The Row to be deleted.
+     *
+     * @return DeleteInterface
+     *
+     */
+    public function deleteRowPrepare(RowInterface $row);
+
+    /**
+     *
+     * Performs the Delete for a Row.
+     *
+     * @param RowInterface $row The Row to be deleted.
+     *
+     * @param DeleteInterface $delete The Delete to be performed.
+     *
+     * @return PDOStatement The PDOStatement resulting from the delete.
+     *
+     */
+    public function deleteRowPerform(RowInterface $row, DeleteInterface $delete);
 
     /**
      *

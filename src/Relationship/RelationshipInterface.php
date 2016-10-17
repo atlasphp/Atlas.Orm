@@ -37,6 +37,24 @@ interface RelationshipInterface
 
     /**
      *
+     * Returns the native => foreign column names.
+     *
+     * @return array
+     *
+     */
+    public function getOn();
+
+    /**
+     *
+     * Returns the foreign Mapper instance.
+     *
+     * @return MapperInterface
+     *
+     */
+    public function getForeignMapper();
+
+    /**
+     *
      * Given an array of native Record objects, stitches the foreign relateds
      * into them as fields under the relationship name.
      *
