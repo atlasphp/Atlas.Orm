@@ -25,6 +25,9 @@ class SqliteFixture
         $this->courses();
         $this->enrollments();
         $this->gpas();
+
+        $this->test1();
+        $this->test2();
     }
 
     protected function employee()
@@ -378,6 +381,42 @@ class SqliteFixture
                 $student['student_ln'],
                 $student['gpa']
             ]);
+        }
+    }
+
+
+    public function test1()
+    {
+        $this->connection->query("CREATE TABLE test1 (
+            id CHAR(10) PRIMARY KEY,
+            name VARCHAR(10) NOT NULL
+        )");
+
+        $stm = "INSERT INTO test1 (id, name) VALUES (?, ?)";
+        $rows = [
+            ['v5889', 'Value1'],
+            ['B23', 'Value2'],
+        ];
+        foreach ($rows as $row) {
+            $this->connection->perform($stm, $row);
+        }
+    }
+
+    public function test2()
+    {
+        $this->connection->query("CREATE TABLE test2 (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            test1_id CHAR(10) NOT NULL,
+            name VARCHAR(10) NOT NULL
+        )");
+
+        $stm = "INSERT INTO test2 (test1_id, name) VALUES (?, ?)";
+        $rows = [
+            ['V5889', 'Value1'],
+            ['B23', 'Value2'],
+        ];
+        foreach ($rows as $row) {
+            $this->connection->perform($stm, $row);
         }
     }
 }
