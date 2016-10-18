@@ -85,7 +85,9 @@ class AtlasContainer
      *
      * Constructor.
      *
-     * @param string $dsn The default database connection DSN.
+     * @param ExtendedPdo|PDO|string $dsn The data source name for a default
+     * lazy PDO connection, or an existing database connection. If the latter,
+     * the remaining params are ignored.
      *
      * @param string $username The default database connection username.
      *
@@ -105,8 +107,8 @@ class AtlasContainer
         array $options = [],
         array $attributes = []
     ) {
-        $this->setConnectionLocator(func_get_args());
-        $this->setQueryFactory($dsn);
+        $driver = $this->setConnectionLocator(func_get_args());
+        $this->setQueryFactory($driver);
         $this->tableLocator = new TableLocator();
         $this->mapperLocator = new MapperLocator();
         $this->atlas = new Atlas(
@@ -119,17 +121,42 @@ class AtlasContainer
      *
      * Creates and sets the connection locator with a default connection.
      *
-     * @param array $args Params for an ExtendedPdo constructor.
+     * @param array $args Params for an building a default connection.
      *
      * @see ExtendedPdo::__construct()
      *
      */
     protected function setConnectionLocator(array $args)
     {
-        $this->connectionLocator = new ConnectionLocator();
-        $this->connectionLocator->setDefault(function () use ($args) {
-            return new ExtendedPdo(...$args);
-        });
+        switch (true) {
+
+            case $args[0] instanceof ExtendedPdo:
+                $extendedPdo = $args[0];
+                $default = function () use ($extendedPdo) {
+                    return $extendedPdo;
+                };
+                $driver = $extendedPdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+                break;
+
+            case $args[0] instanceof PDO:
+                $extendedPdo = $args[0];
+                $default = function () use ($pdo) {
+                    return new ExtendedPdo($pdo);
+                };
+                $driver = $pdo->getAttribute(ExtendedPdo::ATTR_DRIVER_NAME);
+                break;
+
+            default:
+                $default = function () use ($args) {
+                    return new ExtendedPdo(...$args);
+                };
+                $parts = explode(':', $args[0]);
+                $driver = array_shift($parts);
+                break;
+        }
+
+        $this->connectionLocator = new ConnectionLocator($default);
+        return $driver;
     }
 
     /**
@@ -160,13 +187,11 @@ class AtlasContainer
      *
      * Creates and sets the query factory.
      *
-     * @param string $dsn The default database connection DSN.
+     * @param string $db The database driver type.
      *
      */
-    protected function setQueryFactory($dsn)
+    protected function setQueryFactory($db)
     {
-        $parts = explode(':', $dsn);
-        $db = array_shift($parts);
         $this->queryFactory = new QueryFactory($db);
     }
 
