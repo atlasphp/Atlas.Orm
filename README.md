@@ -436,7 +436,7 @@ $transaction->delete($record3);
 
 // execute the transaction plan
 $success = $transaction->exec();
-if ($ok) {
+if ($success) {
 
     echo "The Transaction succeeded!";
 
