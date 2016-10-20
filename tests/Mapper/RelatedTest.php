@@ -11,8 +11,8 @@ class RelatedTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->zim = $this->getMock(RecordInterface::CLASS);
-        $this->irk = $this->getMock(RecordSetInterface::CLASS);
+        $this->zim = $this->createMock(RecordInterface::CLASS);
+        $this->irk = $this->createMock(RecordSetInterface::CLASS);
         $this->related = new Related([
             'zim' => $this->zim,
             'irk' => $this->irk,
@@ -34,7 +34,7 @@ class RelatedTest extends \PHPUnit_Framework_TestCase
 
     public function test__set()
     {
-        $newZim = $this->getMock(RecordInterface::CLASS);
+        $newZim = $this->createMock(RecordInterface::CLASS);
 
         // related
         $this->related->zim = $newZim;

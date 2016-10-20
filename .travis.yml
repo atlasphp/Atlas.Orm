@@ -7,8 +7,9 @@ php:
 before_script:
   - composer self-update
   - composer install
+  - wget https://phar.phpunit.de/phpunit.phar
 script:
-  - phpunit --coverage-clover=coverage.clover
+  - php phpunit.phar --coverage-clover=coverage.clover
 after_script:
   - wget https://scrutinizer-ci.com/ocular.phar
   - php ocular.phar code-coverage:upload --format=php-clover coverage.clover

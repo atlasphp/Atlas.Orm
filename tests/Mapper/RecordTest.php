@@ -15,8 +15,8 @@ class RecordTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->zim = $this->getMock(RecordInterface::CLASS);
-        $this->irk = $this->getMock(RecordSetInterface::CLASS);
+        $this->zim = $this->createMock(RecordInterface::CLASS);
+        $this->irk = $this->createMock(RecordSetInterface::CLASS);
 
         $this->row = new Row([
             'id' => '1',
@@ -66,7 +66,7 @@ class RecordTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('barbar', $this->row->foo);
 
         // related
-        $newZim = $this->getMock(RecordInterface::CLASS);
+        $newZim = $this->createMock(RecordInterface::CLASS);
         $this->record->zim = $newZim;
         $this->assertSame($newZim, $this->record->zim);
 
@@ -127,10 +127,10 @@ class RecordTest extends \PHPUnit_Framework_TestCase
 
     public function testSet()
     {
-        $newZim = $this->getMock(RecordInterface::CLASS);
+        $newZim = $this->createMock(RecordInterface::CLASS);
         $newZim->method('getArrayCopy')->willReturn('gir');
 
-        $newIrk = $this->getMock(RecordSetInterface::CLASS);
+        $newIrk = $this->createMock(RecordSetInterface::CLASS);
         $newIrk->method('getArrayCopy')->willReturn('doom');
 
         $this->record->set([
