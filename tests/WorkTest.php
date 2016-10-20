@@ -8,7 +8,7 @@ use Atlas\Orm\Mapper\Related;
 use Atlas\Orm\Table\Primary;
 use Atlas\Orm\Table\Row;
 
-class WorkTest extends \PHPUnit_Framework_TestCase
+class WorkTest extends TestCase
 {
     public function test__invoke_reInvoke()
     {
@@ -19,8 +19,8 @@ class WorkTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $related = new Related([
-            'zim' => $this->getMock(RecordInterface::CLASS),
-            'irk' => $this->getMock(RecordSetInterface::CLASS),
+            'zim' => $this->getMockFromBuilder(RecordInterface::CLASS),
+            'irk' => $this->getMockFromBuilder(RecordSetInterface::CLASS),
         ]);
 
         $record = new Record('FakeMapper', $row, $related);
