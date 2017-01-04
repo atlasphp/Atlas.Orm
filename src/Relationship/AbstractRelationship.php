@@ -319,6 +319,7 @@ abstract class AbstractRelationship implements RelationshipInterface
     protected function foreignSelectSimple(MapperSelect $select, array $records)
     {
         $vals = [];
+        reset($this->on);
         $nativeCol = key($this->on);
         foreach ($records as $record) {
             $row = $record->getRow();
