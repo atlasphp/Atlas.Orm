@@ -561,6 +561,7 @@ abstract class AbstractTable implements TableInterface
         $row = $this->identityMap->getRow($primary);
         if (! $row) {
             $row = $this->newRow($cols);
+            $this->events->modifySelectedRow($this, $row);
             $row->setStatus($row::SELECTED);
             $this->identityMap->setRow($row, $cols, $this->getPrimaryKey());
         }

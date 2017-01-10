@@ -24,6 +24,18 @@ interface TableEventsInterface
 {
     /**
      *
+     * Runs after a newly-selected row is instantiated, but before it is
+     * identity-mapped.
+     *
+     * @param TableInterface $table The table handling the row creation.
+     *
+     * @param RowInterface $row The newly-selected row.
+     *
+     */
+    public function modifySelectedRow(TableInterface $table, RowInterface $row);
+
+    /**
+     *
      * Runs before the Insert object is created.
      *
      * @param TableInterface $table The table handling the insert.
