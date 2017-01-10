@@ -3,6 +3,8 @@ namespace Atlas\Orm;
 
 use Atlas\Orm\DataSource\Author\AuthorMapper;
 use Atlas\Orm\DataSource\Reply\ReplyMapper;
+use Atlas\Orm\DataSource\Reply\ReplyRecord;
+use Atlas\Orm\DataSource\Reply\ReplyRecordSet;
 use Atlas\Orm\DataSource\Summary\SummaryMapper;
 use Atlas\Orm\DataSource\Summary\SummaryTable;
 use Atlas\Orm\DataSource\Tag\TagMapper;
@@ -10,10 +12,10 @@ use Atlas\Orm\DataSource\Tagging\TaggingMapper;
 use Atlas\Orm\DataSource\Thread\ThreadMapper;
 use Atlas\Orm\DataSource\Thread\ThreadRecord;
 use Atlas\Orm\DataSource\Thread\ThreadRecordSet;
-use Aura\Sql\ExtendedPdo;
-use Aura\Sql\Profiler;
 use Atlas\Orm\Mapper\Record;
 use Atlas\Orm\Mapper\RecordSet;
+use Aura\Sql\ExtendedPdo;
+use Aura\Sql\Profiler;
 
 class AtlasTest extends \PHPUnit_Framework_TestCase
 {
@@ -50,6 +52,9 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
     {
         $actual = $this->atlas->newRecord(ThreadMapper::CLASS);
         $this->assertInstanceOf(ThreadRecord::CLASS, $actual);
+
+        $actual = $this->atlas->newRecord(ReplyMapper::CLASS);
+        $this->assertInstanceOf(ReplyRecord::CLASS, $actual);
     }
 
     public function testNewRecordSet()
