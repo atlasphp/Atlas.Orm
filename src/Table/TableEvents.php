@@ -24,7 +24,8 @@ class TableEvents implements TableEventsInterface
 {
     /**
      *
-     * Runs after a newly-selected row is instantiated.
+     * Runs after a newly-selected row is instantiated, but before it is
+     * identity-mapped.
      *
      * @param TableInterface $table The table handling the row creation.
      *
