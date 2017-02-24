@@ -10,6 +10,8 @@ use Atlas\Orm\DataSource\Summary\SummaryTable;
 use Atlas\Orm\DataSource\Tag\TagMapper;
 use Atlas\Orm\DataSource\Tagging\TaggingMapper;
 use Atlas\Orm\DataSource\Thread\ThreadMapper;
+use Atlas\Orm\DataSource\Test1\Test1Mapper;
+use Atlas\Orm\DataSource\Test2\Test2Mapper;
 use Atlas\Orm\DataSource\Thread\ThreadRecord;
 use Atlas\Orm\DataSource\Thread\ThreadRecordSet;
 use Atlas\Orm\Mapper\Record;
@@ -23,6 +25,7 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
 
     protected $atlas;
     protected $profiler;
+    protected $connection;
 
     // The $expect* properties are at the end, because they are so long
 
@@ -36,14 +39,16 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
             TagMapper::CLASS,
             ThreadMapper::CLASS,
             TaggingMapper::CLASS,
+            Test1Mapper::CLASS,
+            Test2Mapper::CLASS,
         ]);
 
-        $connection = $atlasContainer->getConnectionLocator()->getDefault();
-        $fixture = new SqliteFixture($connection);
+        $this->connection = $atlasContainer->getConnectionLocator()->getDefault();
+        $fixture = new SqliteFixture($this->connection);
         $fixture->exec();
 
         $this->profiler = new Profiler();
-        $connection->setProfiler($this->profiler);
+        $this->connection->setProfiler($this->profiler);
 
         $this->atlas = $atlasContainer->getAtlas();
     }
@@ -343,6 +348,41 @@ ORDER BY
     "replies"."reply_id" DESC';
 
         $this->assertSameSql($expect, $actual);
+    }
+
+
+    public function testFetchRecordCaseSensitiveKey()
+    {
+        $actual = $this->atlas->fetchRecord(
+            Test1Mapper::CLASS,
+            'B23',
+            [
+                'test2',
+            ]
+        );
+
+        $this->assertSame('B23', $actual->id);
+        $this->assertInstanceOf(RecordSet::CLASS, $actual->test2);
+
+        $records = $this->connection->fetchAll("SELECT * FROM test1 WHERE id = :id", ['id' => 'V5889']);
+        $expected = [
+            [
+                'id' => "v5889",
+                'name' => "Value1"
+            ]
+        ];
+        $this->assertSame($expected, $records);
+
+        $actual = $this->atlas->fetchRecord(
+            Test1Mapper::CLASS,
+            'V5889',
+            [
+                'test2',
+            ]
+        );
+
+        $this->assertSame('v5889', $actual->id);
+        // $this->assertInstanceOf(RecordSet::CLASS, $actual->test2);
     }
 
     protected $expectRecord = [
