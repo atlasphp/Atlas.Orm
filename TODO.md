@@ -76,7 +76,8 @@
 
     - single-table inheritance -- already there with Mapper::getRecordClass() ?
 
-    - sanitize/validate Records and Rows -- as events
+    - sanitize/validate Records and Rows -- as events. Need to throw execption
+      to cancel further filtering.
 
     - Manage many-to-many relationships, e.g. tags through taggings.
 
