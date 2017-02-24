@@ -22,7 +22,8 @@
         }
     },
     "require-dev": {
-        "atlas/cli": "0.x-dev"
+        "atlas/cli": "0.x-dev",
+        "phpunit/phpunit": "~5.3.0"
     },
     "autoload-dev": {
         "psr-4": {
