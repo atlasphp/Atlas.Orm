@@ -85,4 +85,14 @@ class RowTest extends \PHPUnit_Framework_TestCase
         );
         $row->foo = 'zim';
     }
+
+    public function testValidModification()
+    {
+        $row = new Row(['id' => '1', 'foo' => 'bar']);
+        $this->setExpectedException(
+            'Atlas\Orm\Exception',
+            'Expected type scalar or null; got stdClass instead.'
+        );
+        $row->foo = (object) [];
+    }
 }

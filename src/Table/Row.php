@@ -314,7 +314,7 @@ class Row implements RowInterface
      *
      * @param mixed $value The value to check.
      *
-     * @throws Exception when non-noll and non-scalar.
+     * @throws Exception when non-null and non-scalar.
      *
      */
     protected function assertValid($value)
