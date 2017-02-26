@@ -83,4 +83,13 @@ class RelatedTest extends \PHPUnit_Framework_TestCase
         // missing
         $this->assertFalse($this->related->has('noSuchForeign'));
     }
+
+    public function testInvalidModify()
+    {
+        $this->setExpectedException(
+            'Atlas\Orm\Exception',
+            'Expected type null, false, empty array, RecordInterface, or RecordSetInterface; got stdClass instead.'
+        );
+        $this->related->zim = (object) [];
+    }
 }
