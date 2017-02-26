@@ -121,4 +121,17 @@ class RecordSetTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(6, $actual[5]->id);
         $this->assertSame(9, $actual[8]->id);
     }
+
+    public function testJsonSerialize()
+    {
+        $this->recordSet->appendNew(['id' => 2, 'foo' => 'bar1']);
+        $this->recordSet->appendNew(['id' => 3, 'foo' => 'bar2']);
+        $expect = '['
+            . '{"id":"1","foo":"bar","baz":"dib","zim":null,"irk":null},'
+            . '{"id":2,"foo":"bar1","zim":null,"irk":null},'
+            . '{"id":3,"foo":"bar2","zim":null,"irk":null}'
+            . ']';
+        $actual = json_encode($this->recordSet);
+        $this->assertSame($expect, $actual);
+    }
 }

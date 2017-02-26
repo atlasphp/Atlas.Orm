@@ -20,7 +20,7 @@ use JsonSerializable;
  * @package atlas/orm
  *
  */
-interface RecordSetInterface extends ArrayAccess, Countable, IteratorAggregate
+interface RecordSetInterface extends ArrayAccess, Countable, IteratorAggregate, JsonSerializable
 {
     /**
      *
