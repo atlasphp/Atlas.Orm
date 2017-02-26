@@ -2,13 +2,15 @@
 namespace Atlas\Orm\Mapper;
 
 use Atlas\Orm\Assertions;
+use Atlas\Orm\DataSource\Employee\BadEmployeeMapper;
 use Atlas\Orm\DataSource\Employee\EmployeeMapper;
 use Atlas\Orm\DataSource\Employee\EmployeeTable;
+use Atlas\Orm\Exception;
 use Atlas\Orm\Relationship\Relationships;
 use Atlas\Orm\SqliteFixture;
-use Atlas\Orm\Table\TableEvents;
 use Atlas\Orm\Table\IdentityMap;
 use Atlas\Orm\Table\Row;
+use Atlas\Orm\Table\TableEvents;
 use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\QueryFactory;
@@ -419,5 +421,26 @@ class MapperTest extends \PHPUnit_Framework_TestCase
     {
         $conn = $this->mapper->getWriteConnection();
         $conn->setAttribute($conn::ATTR_ERRMODE, $conn::ERRMODE_SILENT);
+    }
+
+    public function testCannotUseRowNameForRelated()
+    {
+        $this->setExpectedException(
+            Exception::CLASS,
+            "Relationship 'name' conflicts with existing column name."
+        );
+
+        $badMmapper = new BadEmployeeMapper(
+            new EmployeeTable(
+                new ConnectionLocator(function () {
+                    return new ExtendedPdo('sqlite::memory:');
+                }),
+                new QueryFactory('sqlite'),
+                new IdentityMap(),
+                new TableEvents()
+            ),
+            new Relationships(new MapperLocator()),
+            new MapperEvents()
+        );
     }
 }

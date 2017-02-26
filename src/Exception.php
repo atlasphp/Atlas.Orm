@@ -289,4 +289,10 @@ class Exception extends \Exception
         $message = "Expected non-numeric column name, got '$col' instead.";
         return new Exception($message);
     }
+
+    public static function relatedNameConflict($name)
+    {
+        $message = "Relationship '$name' conflicts with existing column name.";
+        return new Exception($message);
+    }
 }

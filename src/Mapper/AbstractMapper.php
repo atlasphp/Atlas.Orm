@@ -437,6 +437,7 @@ abstract class AbstractMapper implements MapperInterface
      */
     protected function oneToOne($name, $foreignMapperClass)
     {
+        $this->assertRelatedName($name);
         return $this->relationships->oneToOne(
             $name,
             get_class($this),
@@ -458,6 +459,7 @@ abstract class AbstractMapper implements MapperInterface
      */
     protected function oneToMany($name, $foreignMapperClass)
     {
+        $this->assertRelatedName($name);
         return $this->relationships->oneToMany(
             $name,
             get_class($this),
@@ -479,6 +481,7 @@ abstract class AbstractMapper implements MapperInterface
      */
     protected function manyToOne($name, $foreignMapperClass)
     {
+        $this->assertRelatedName($name);
         return $this->relationships->manyToOne(
             $name,
             get_class($this),
@@ -503,12 +506,20 @@ abstract class AbstractMapper implements MapperInterface
      */
     protected function manyToMany($name, $foreignMapperClass, $throughName)
     {
+        $this->assertRelatedName($name);
         return $this->relationships->manyToMany(
             $name,
             get_class($this),
             $foreignMapperClass,
             $throughName
         );
+    }
+
+    protected function assertRelatedName($name)
+    {
+        if (in_array($name, $this->getTable()->getColNames())) {
+            throw Exception::relatedNameConflict($name);
+        }
     }
 
     /**
