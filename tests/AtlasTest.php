@@ -322,7 +322,7 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
         $this->atlas->fetchRecord(AuthorMapper::CLASS, [1, 2, 3]);
     }
 
-    public function testJoinWith()
+    public function testLeftJoinWith()
     {
         $select = $this->atlas->select(ThreadMapper::CLASS)
             ->distinct()
@@ -339,6 +339,29 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
 FROM
     "threads"
 LEFT JOIN "replies" AS "replies" ON "threads"."thread_id" = "replies"."thread_id"
+ORDER BY
+    "replies"."reply_id" DESC';
+
+        $this->assertSameSql($expect, $actual);
+    }
+
+    public function testInnerJoinWith()
+    {
+        $select = $this->atlas->select(ThreadMapper::CLASS)
+            ->distinct()
+            ->innerJoinWith('replies')
+            ->orderBy(['replies.reply_id DESC']);
+
+        $actual = $select->getStatement();
+
+        $expect = 'SELECT DISTINCT
+    "threads"."thread_id",
+    "threads"."author_id",
+    "threads"."subject",
+    "threads"."body"
+FROM
+    "threads"
+INNER JOIN "replies" AS "replies" ON "threads"."thread_id" = "replies"."thread_id"
 ORDER BY
     "replies"."reply_id" DESC';
 
