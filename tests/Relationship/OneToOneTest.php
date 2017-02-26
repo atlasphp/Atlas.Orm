@@ -33,4 +33,19 @@ class OneToOneTest extends AbstractRelationshipTest
         $actual = $rel->getSettings();
         $this->assertSame($expect, $actual);
     }
+
+
+    public function testStitchIntoRecords_noNativeRecords()
+    {
+        $rel = new OneToOne(
+            'summary',
+            $this->mapperLocator,
+            ThreadMapper::CLASS,
+            SummaryMapper::CLASS
+        );
+
+        $threads = [];
+        $rel->stitchIntoRecords($threads);
+        $this->assertSame([], $threads);
+    }
 }
