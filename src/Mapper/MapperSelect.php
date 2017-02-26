@@ -8,6 +8,7 @@
  */
 namespace Atlas\Orm\Mapper;
 
+use Atlas\Orm\Exception;
 use Atlas\Orm\Table\TableSelect;
 use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\Common\SelectInterface;
@@ -199,6 +200,17 @@ class MapperSelect implements SubselectInterface
      */
     public function with(array $with)
     {
+        // make sure that all with() are on relateds that actually exist
+        $fields = array_keys($this->mapper->getRelationships()->getFields());
+        foreach ($with as $key => $val) {
+            $related = $key;
+            if (is_int($key)) {
+                $related = $val;
+            }
+            if (! in_array($related, $fields)) {
+                throw Exception::relationshipDoesNotExist($related);
+            }
+        }
         $this->with = $with;
         return $this;
     }

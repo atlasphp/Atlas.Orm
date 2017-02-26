@@ -345,6 +345,22 @@ ORDER BY
         $this->assertSameSql($expect, $actual);
     }
 
+    public function testMissingWith()
+    {
+        $this->setExpectedException(
+            Exception::CLASS,
+            "Relationship 'no-such-relationship' does not exist."
+        );
+
+        $this->atlas->fetchRecord(
+            ThreadMapper::CLASS,
+            1,
+            [
+                'no-such-relationship', // manyToOne
+            ]
+        );
+    }
+
     protected $expectRecord = [
         'thread_id' => '1',
         'author_id' => '1',

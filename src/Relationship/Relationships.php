@@ -212,6 +212,9 @@ class Relationships
         array $with = []
     ) {
         foreach ($this->fixWith($with) as $name => $custom) {
+            if (! isset($this->defs[$name])) {
+                throw Exception::relationshipDoesNotExist($name);
+            }
             $this->defs[$name]->stitchIntoRecords(
                 $nativeRecords,
                 $custom
