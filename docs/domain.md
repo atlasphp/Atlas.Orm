@@ -106,7 +106,7 @@ There are three options, each with different tradeoffs:
 
 1. Implement the domain interface in the persistence layer.
 2. Compose the persistence record into the domain object.
-3. Map the persistence record fields to domain implmentation fields.
+3. Map the persistence record fields to domain implementation fields.
 
 ## Implement Domain In Persistence
 
@@ -397,7 +397,7 @@ Cons:
 "It depends." What does it depend on?  How much time you have available, and what kind of
 suffering you are willing to put up with.
 
-If you need something quick, fast, and in a hurry, implmenting the domain
+If you need something quick, fast, and in a hurry, implementing the domain
 interface in the persistence layer will do the trick. However, it will come back
 to bite in you just as quickly, as you begin to realize that you need different
 domain behaviors in different contexts, all built from the same backing
