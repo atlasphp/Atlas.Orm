@@ -1,4 +1,4 @@
-# Domain Integration
+# Domain Models
 
 You can go a long way with just a persistence model. However, at some point you
 may want to separate your persistence model from your domain model. This section
