@@ -380,7 +380,8 @@ class Thread implements ThreadInterface
 ```
 
 Now the `ThreadRepository::newThread()` factory method has a lot of work to do.
-It needs to map the individual parts of the persistence record to the
+It needs to map the individual fields in the persistence record to the domain
+object properties.
 
 ```php
 <?php
