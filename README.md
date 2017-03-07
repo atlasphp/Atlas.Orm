@@ -14,4 +14,4 @@ domain entities, or use them directly for simple data source interactions.
 Atlas is ready for side-project and experimental use. Please send bug reports
 and pull requests!
 
-Documentation is in [./docs](./docs).
+Documentation is in [./docs](./docs/index.md).

@@ -7,6 +7,44 @@
 - Add support for saving a record and all of its relateds recursively? (Auto-set
   foreign key values. Use a Transaction under the hood.)
 
+- Consider moving IdentityMap up to the Mapper level, for Rows serving as the
+  basis for Records. This is so you can use the Tables more like Gateways.
+  Review the problems of updating the IdentityMap with the latest values.
+
+- Consider only adding Related fields when they are retrieved with(). That way
+  you cannot add a Related after-the-fact and accidentally update or overwrite
+  the values in the DB. E.g., with(['foo', 'bar']) will set $record->foo and
+  $record->bar relateds, while with(['bar']) will set only $record->bar. So if
+  you plan to manipulate relateds, you have to fetch with() them.
+
+- Allow for Mapper inheritance, so you can define different Record types being
+  fetched. E.g., ContentMapper for all content, but then WikiMapper, BlogMapper,
+  ForumMapper, CommentMapper, etc. with their own fetch methods, and their own
+  Record types. Or can we already do this? Or should it be in the domain?
+
+- Add (Mapper|Atlas)::fetchRecords() and (Mapper|Atlas)fetchRecordsBy()
+
+- Allow for alternative record types at fetch time; e.g.:
+
+      public function fetchRecord($primaryVal, array $with = [], $class = null)
+      public function fetchRecordBy(array $whereEquals, array $with = [], $class = null)
+      public function fetchRecordSet(array $primaryVals, array $with = [], $class = null)
+      public function fetchRecordSetBy(array $whereEquals, array $with = [], $class = null)
+      $select->setRecordClass($class)
+
+  This helps to type against records that have specific methods and relateds,
+  that are pulled from the same set of relationships. Of course, the followup
+  here is that you *ought* to create a separate mapper for each record type, and
+  then have the mapper enforce always-fetching the same relateds. Or is that for
+  the entities after all? Want to avoid Persistence Mapping scope creep into
+  Domain Mapping.
+
+- Have Skeleton generate record-specific interfaces
+
+- Have Skeleton generate, and Atlas honor, Table-specific Row objects with
+  property annotations. They will have to be overwritten with new annotations
+  as the Table gets updated, too.
+
 ## Documentation
 
 - Compare and contrast with:
