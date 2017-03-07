@@ -79,25 +79,6 @@ class ThreadRepository
         $this->mapper = $mapper;
     }
 
-    public function fetchThreads($page)
-    {
-        $records = $this->mapper->select()
-            ->with([
-                'author',
-                'taggings',
-                'tags',
-            ])
-            ->orderBy(['thread_id DESC'])
-            ->page($page)
-            ->fetchRecords();
-
-        $threads = [];
-        foreach ($records as $record) {
-            $threads[] = $this->newThread($record);
-        }
-        return $threads;
-    }
-
     public function fetchThread($thread_id)
     {
         $record = $this->mapper->fetchRecord($thread_id, [
