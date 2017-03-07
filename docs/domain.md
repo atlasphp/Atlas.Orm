@@ -7,7 +7,7 @@ offers some suggestions and examples on how to do that.
 ## Origin Persistence Model
 
 For the examples below, we will work with an imaginary forum application that
-has conversational threads. The ThreadMapper might something like this:
+has conversation threads. The ThreadMapper might something like this:
 
 ```php
 <?php
