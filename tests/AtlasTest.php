@@ -175,6 +175,25 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($this->expectRecord, $actual->getArrayCopy());
     }
 
+    public function testSelect_fetchRecordNestedArrayWith()
+    {
+        $actual = $this->atlas
+            ->select(ThreadMapper::CLASS)
+            ->where('thread_id < ?', 2)
+            ->with([
+                'author', // manyToOne
+                'summary', // oneToOne
+                'replies' => [
+                    'author',
+                ], // oneToMany
+                'taggings', // oneToMany,
+                'tags', // manyToMany
+            ])
+            ->fetchRecord();
+
+        $this->assertSame($this->expectRecord, $actual->getArrayCopy());
+    }
+
     public function testSelect_fetchRecordSet()
     {
         $actual = $this->atlas
