@@ -316,7 +316,7 @@ class Relationships
         foreach ($spec as $key => $val) {
             if (is_int($key)) {
                 $with[$val] = null;
-            } elseif (is_array($val)) {
+            } elseif (is_array($val) && ! is_callable($val)) {
                 $with[$key] = function ($select) use ($val) {
                     $select->with($val);
                 };
