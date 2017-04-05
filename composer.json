@@ -22,7 +22,7 @@
         }
     },
     "require-dev": {
-        "atlas/cli": "0.x-dev",
+        "atlas/cli": "~1.0",
         "pds/skeleton": "~1.0",
         "phpunit/phpunit": "~5.3.0"
     },
@@ -32,7 +32,6 @@
         }
     },
     "suggest": {
-        "atlas/cli": "0.x command-line interface for atlas for development use"
-    },
-    "minimum-stability": "dev"
+        "atlas/cli": "A command-line tool to build skeleton classes."
+    }
 }
