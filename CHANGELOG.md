@@ -2,7 +2,8 @@
 
 ## 1.0.0
 
-- Add TableSelect::fetchCount().
+- Add TableSelect::fetchCount() to return a row-count, without limit/offset,
+  on a reused query object.
 
 - Add RecordSet::appendNew(), getOneBy(), getAllBy(), removeOneBy(), and
   removeAllBy()
@@ -25,9 +26,10 @@
 
 - Row::modify() now restricts to scalar or null
 
-- Related is now more strict: accepts only null, false, [], and RecordSet
+- Related::modify() now restricts to null, false, [], Record, and RecordSet
 
-- Added MapperSelect::joinWith() to allows joins to relateds, without fetching
+- Added MapperSelect::joinWith(), leftJoinWith(), innerJoinWith() to allow
+  joins to relateds, without fetching
 
 - In AtlasContainer::__construct() et al, allow for pre-existing ExtendedPdo and
   PDO connections
@@ -35,14 +37,14 @@
 - Add TableEvents::modifySelectedRow() to allow changes to rows coming from the
   database
 
-- MapperSelect now throws an exception when you call with() using a non-existent
+- MapperSelect::with() now throws an exception when you use a non-existent
   related name
 
-- AbstractMapper no longer allows related names to override column names
+- AbstractMapper::(one|many)To(One|Many)() no longer allows related names that
+  conflict with column names
 
 - MapperSelect::with() now allows for nested arrays (in addition to anonymous
   functions)
-
 
 ## 1.0.0-alpha1
 
