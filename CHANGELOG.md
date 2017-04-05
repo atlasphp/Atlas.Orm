@@ -43,6 +43,7 @@
 - MapperSelect::with() now allows for nested arrays (in addition to anonymous
   functions)
 
+
 ## 1.0.0-alpha1
 
 First 1.x alpha release.

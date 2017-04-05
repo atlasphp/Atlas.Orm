@@ -3,12 +3,12 @@
     "type": "library",
     "description": "A data mapper ORM for your persistence model (not your domain model).",
     "keywords": [ "sql", "data", "mapper", "mapping", "orm" ],
-    "homepage": "http://github.com/atlasphp/Atlas.Atlas",
+    "homepage": "http://github.com/atlasphp/Atlas.Orm",
     "license": "MIT",
     "authors": [
         {
             "name": "Atlas Contributors",
-            "homepage": "https://github.com/atlasphp/Atlas.Atlas/contributors"
+            "homepage": "https://github.com/atlasphp/Atlas.Orm/contributors"
         }
     ],
     "require": {
