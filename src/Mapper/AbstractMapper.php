@@ -515,6 +515,18 @@ abstract class AbstractMapper implements MapperInterface
         );
     }
 
+    /**
+     *
+     * Assert that a "related" name does not conflict with an existing column
+     * name.
+     *
+     * @param string $name The related name.
+     *
+     * @throws Exception if the name conflicts with a column name.
+     *
+     * @return null
+     *
+     */
     protected function assertRelatedName($name)
     {
         if (in_array($name, $this->getTable()->getColNames())) {

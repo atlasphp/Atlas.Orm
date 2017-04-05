@@ -290,6 +290,16 @@ class Exception extends \Exception
         return new Exception($message);
     }
 
+
+    /**
+     *
+     * A "related" name is the same as an existing column name.
+     *
+     * @param string $name The conflicting name.
+     *
+     * @return Exception
+     *
+     */
     public static function relatedNameConflict($name)
     {
         $message = "Relationship '$name' conflicts with existing column name.";
