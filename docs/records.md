@@ -6,11 +6,15 @@ as properties.
 ```php
 <?php
 // fetch thread id 1 with related replies, and each reply author
-$threadRecord = $atlas->fetchRecord(ThreadMapper::CLASS, 1, [
-    'replies' => [
-        'author',
-    ],
-]);
+$threadRecord = $atlas->fetchRecord(
+    ThreadMapper::CLASS,
+    1,
+    [
+        'replies' => [
+            'author',
+        ],
+    ]
+);
 
 echo $threadRecord->title;
 echo $threadRecord->body;
