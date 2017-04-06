@@ -1,7 +1,7 @@
 # Working With Records
 
 Once you have a Record, you can access its underlying Row and Related data
-throgh its properties.
+as properties.
 
 ```php
 <?php
