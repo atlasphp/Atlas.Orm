@@ -25,7 +25,7 @@ $threadIdsAndTitles = $atlas
 // etc.
 ```
 
-See [the list of `ExtendedPdo::fetch*()`][fetch] and ['yield*()'][yield]
+See [the list of `ExtendedPdo::fetch*()`][fetch] and [`yield*()`][yield]
 methods for more.
 
 [fetch]: https://github.com/auraphp/Aura.Sql/tree/2.x#new-fetch-methods
