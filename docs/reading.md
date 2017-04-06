@@ -138,20 +138,20 @@ that fetches the relateds:
 // including each reply author
 $threadRecord = $atlas->fetchRecord(
     ThreadMapper::CLASS,
-    '1', [
-    'author',
-    'summary',
-    'replies' => function ($selectReplies) {
-        $selectReplies
-            ->limit(10)
-            ->orderBy(['reply_id DESC'])
-            ->with([
-                'author'
-            ]);
-    },
-    'taggings',
-    'tags',
-]);
+    '1',
+    [
+        'author',
+        'summary',
+        'replies' => function ($selectReplies) {
+            $selectReplies
+                ->limit(10)
+                ->orderBy(['reply_id DESC'])
+                ->with([
+                    'author'
+                ]);
+        },
+    ]
+);
 ```
 
 ## Reading Record Counts
