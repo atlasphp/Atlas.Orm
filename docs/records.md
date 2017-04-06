@@ -28,9 +28,24 @@ Make changes to the Record by setting new property values.
 
 ```php
 <?php
-$threadRecord = $atlas->newRecord(ThreadMapper::CLASS);
 $threadRecord->title = "Thread title";
 $threadRecord->body = "Body text for the thread";
+```
+
+Note that the Row supporting each Record is identity-mapped, so a change to
+a Row used by more than one Record will be reflected immediately in each
+Record using that Row.
+
+ ```php
+<?php
+// if the reply rows are different, but the author of each reply
+// is the same, the reply author objects are the same.
+$threadRecord
+    ->replies[0]
+    ->author
+    ->name = "New name";
+
+// $threadRecord->replies[1]->author->name is now also "New name"
 ```
 
 ## New Records
@@ -54,20 +69,4 @@ JSON-encoding a Record is trivial:
 ```php
 <?php
 $json = json_encode($threadRecord);
-```
-
-## Identity Mapping
-
-Note that the Row supporting each Record is identity-mapped, so a change to
-a Row used by more than one Record will be reflected immediately in each
-Record using that Row.
-
- ```php
-<?php
-// $reply1 and $reply2 are two different replies by the same author. the reply
-// rows are different, but the underlying author row is the same.
-
-$reply1->author->name = "New name";
-
-// $reply2->author->name is now also "New name"
 ```
