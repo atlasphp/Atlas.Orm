@@ -45,7 +45,8 @@ $newThread = $threadRecordSet->appendNew([
 ]);
 ```
 
-(Note that this does not insert the Record into the database.)
+Note that this only adds the Record to the RecordSet; it does not insert the
+Record into the database.
 
 ## Searching
 
@@ -63,8 +64,7 @@ $matchingRecords = $threadRecordSet->getAllBy(['author_id' => '5']);
 
 ## Removing
 
-You can remove Records by their column values. (Note that this only removes
-them from the RecordSet; it does not delete them from the database.)
+You can remove Records by their column values.
 
 ```php
 <?php
@@ -75,6 +75,9 @@ $removedRecord = $threadRecordSet->removeOneBy(['subject' => 'Subject One']);
 // unsets and returns an array of matching Record objects from the Record Set
 $removedRecords = $threadRecordSet->removeAllBy(['author_id' => '5']);
 ```
+
+Note that this only removes them from the RecordSet; it does not delete them
+from the database.
 
 ## New RecordSets
 
