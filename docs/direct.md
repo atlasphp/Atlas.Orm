@@ -157,7 +157,7 @@ $threads = $atlas
 // ]
 ```
 
-### Yielding Data
+## Yielding Data
 
 If you prefer to get the results one at a time, you can use the yield*
 variations on these methods to iterate through the result set instead of
