@@ -63,7 +63,7 @@ $matchingRecords = $threadRecordSet->getAllBy(['author_id' => '5']);
 
 ## Removing
 
-You can remove Records by their columns values. (Note that this only removes
+You can remove Records by their column values. (Note that this only removes
 them from the RecordSet; it does not delete them from the database.)
 
 ```php
