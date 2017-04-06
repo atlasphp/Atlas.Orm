@@ -5,11 +5,8 @@ the database.
 
 ## Reading A Record
 
-> Returns a Record object, or `false`.
-
-The `fetchRecord()` method is the simplest way to select a single row with
-mapped relationships. It can be called either by primary key, or with select
-parameters.
+Use the `fetchRecord()` method to retrieve a single Record. It can be called
+either by primary key, or with a `select()` query.
 
 ```php
 <?php
@@ -29,13 +26,13 @@ $threadRecord = $atlas
 (Note that the `select()` variation gives you access to all the underlying
 SQL query methods.)
 
+If `fetchRecord()` does not find a match, it will return `false`.
+
 ## Reading A RecordSet
 
-> Returns a RecordSet object, or an empty array.
-
 The `fetchRecordSet()` method works the same as `fetchRecord()`, but for
-multiple rows.  It can be called either with primary keys, or with select
-parameters.
+multiple Records.  It can be called either with primary keys, or with a
+`select()` query.
 
 ```php
 <?php
@@ -54,6 +51,9 @@ $threadRecordSet = $atlas
 
 (Note that the `select()` variation gives you access to all the underlying
 SQL query methods.)
+
+If `fetchRecordSet()` does not find any matches, it will return an empty array.
+
 
 ## Reading Relateds
 
