@@ -11,8 +11,7 @@ record](http://martinfowler.com/eaaCatalog/activeRecord.html); it is
 disconnected from the database. Use Atlas records as a way to populate your
 domain entities, or use them directly for simple data source interactions.
 
-Atlas is ready for side-project and experimental use. Please send bug reports
-and pull requests!
+Atlas is stable for production use. Please send bug reports and pull requests!
 
 Documentation is in [the docs directory](./docs/index.md).
 
@@ -81,5 +80,6 @@ unacceptable. Because Atlas is a *persistence* modeling system, I think a base
 class is less objectionable, but for some people that's going to be a real
 problem.
 
-Finally, Atlas supports **composite primary keys** and **composite foreign keys.**
-Performance in these cases is sure to be slower, but it is in fact supported.
+Finally, Atlas supports **composite primary keys** and **composite foreign
+keys.** Performance in these cases is sure to be slower, but it is in fact
+supported.

@@ -1,10 +1,11 @@
 # Domain Models
 
-You can go a long way with just a persistence model. However, at some point you
-may want to separate your persistence model from your domain model. This section
-offers some suggestions and examples on how to do that.
+You can go a long way with just your persistence model Records. However, at some
+point you may want to separate your persistence model Records from your domain
+model Entities and Aggregates. This section offers some suggestions and examples
+on how to do that.
 
-## Origin Persistence Model
+## Persistence Model
 
 For the examples below, we will work with an imaginary forum application that
 has conversation threads. The ThreadMapper might something like this:
@@ -35,11 +36,13 @@ class ThreadMapper extends AbstractMapper
 
 (We will leave the other mappers and their record classes for the imagination.)
 
-## Targeted Domain Interfaces
+## Domain Model Interfaces
 
-At some point, we have decided we want to depend on domain entities or aggregates,
-rather than persistence records, in our application. The interface we want to use
-for a Thread looks like this:
+At some point, we have decided we want to depend on domain Entities or
+Aggregates, rather than persistence Records, in our application.
+
+For example, the interface we want to use for a Thread Entity in domain might
+look like this:
 
 ```php
 <?php
@@ -58,11 +61,11 @@ interface ThreadInterface
 }
 ```
 
-This interface allows us to typehint the application against these domain-specific
-methods, rather than using the persistence record properties.
+(This interface allows us to typehint the application against these domain-
+specific Entity methods, rather than using the persistence Record properties.)
 
 Further, we will presume a naive domain repository implementation that returns
-Thread objects. It might look something like this:
+Thread Entities. It might look something like this:
 
 ```php
 <?php
