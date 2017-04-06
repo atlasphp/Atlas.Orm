@@ -55,9 +55,12 @@ you want to initially populate into the Record.
 
 ```php
 <?php
-$threadRecord = $atlas->newRecord(ThreadMapper::CLASS, [
-    'title' => 'New Thread Title',
-]);
+$threadRecord = $atlas->newRecord(
+    ThreadMapper::CLASS,
+    [
+        'title' => 'New Thread Title',
+    ]
+);
 ```
 
 Note that this does not insert the Record into the database.
