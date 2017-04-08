@@ -96,6 +96,15 @@ abstract class AbstractRelationship implements RelationshipInterface
 
     /**
      *
+     * Should relationship value matching be case-sensitive?
+     *
+     * @var bool
+     *
+     */
+    protected $matchCase = true;
+
+    /**
+     *
      * In a many-to-many relationship, the name of the related field that holds
      * the association table (join table) values.
      *
@@ -168,10 +177,28 @@ abstract class AbstractRelationship implements RelationshipInterface
      *
      * @param array
      *
+     * @return self
+     *
      */
     public function on(array $on)
     {
         $this->on = $on;
+        return $this;
+    }
+
+    /**
+     *
+     * Should related values be case-sensitive?
+     *
+     * @param bool $matchCase True to be case-sensitive, false to be insensitive.
+     *
+     * @return self
+     *
+     */
+    public function matchCase($matchCase = true)
+    {
+        $this->matchCase = (bool) $matchCase;
+        return $this;
     }
 
     /**
@@ -423,11 +450,44 @@ abstract class AbstractRelationship implements RelationshipInterface
         $nativeRow = $nativeRecord->getRow();
         $foreignRow = $foreignRecord->getRow();
         foreach ($this->on as $nativeCol => $foreignCol) {
-            if ($nativeRow->$nativeCol != $foreignRow->$foreignCol) {
+            if (! $this->valuesMatch(
+                $nativeRow->$nativeCol,
+                $foreignRow->$foreignCol
+            )) {
                 return false;
             }
         }
         return true;
+    }
+
+    /**
+     *
+     * Do two relationship key values match?
+     *
+     * @param mixed $nativeVal The native value.
+     *
+     * @param mixed $foreignVal The foreign value.
+     *
+     * @return bool
+     *
+     * @see matchCase()
+     *
+     */
+    protected function valuesMatch($nativeVal, $foreignVal)
+    {
+        // cannot match if one is numeric and other is not
+        if (is_numeric($nativeVal) && ! is_numeric($foreignVal)) {
+            return false;
+        }
+
+        // case-insensitive?
+        if (! $this->matchCase) {
+            $nativeVal = strtolower($nativeVal);
+            $foreignVal = strtolower($foreignVal);
+        }
+
+        // are they equal?
+        return $nativeVal == $foreignVal;
     }
 
     /**
