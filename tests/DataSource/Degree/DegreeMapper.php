@@ -14,6 +14,6 @@ class DegreeMapper extends AbstractMapper
      */
     protected function setRelated()
     {
-        $this->oneToMany('students', StudentMapper::CLASS);
+        $this->oneToMany('students', StudentMapper::CLASS)->matchCase(false);
     }
 }

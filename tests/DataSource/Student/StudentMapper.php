@@ -18,7 +18,7 @@ class StudentMapper extends AbstractMapper
     protected function setRelated()
     {
         $this->oneToOne('gpa', GpaMapper::CLASS);
-        $this->manyToOne('degree', DegreeMapper::CLASS);
+        $this->manyToOne('degree', DegreeMapper::CLASS)->matchCase(false);
         $this->oneToMany('enrollments', EnrollmentMapper::CLASS);
         $this->manyToMany('courses', CourseMapper::CLASS, 'enrollments');
     }

@@ -192,16 +192,16 @@ class SqliteFixture
     protected function degrees()
     {
         $this->connection->query("CREATE TABLE degrees (
-            degree_type CHAR(2),
-            degree_subject CHAR(4),
+            degree_type CHAR(2) CONSTRAINT dtnocase COLLATE NOCASE,
+            degree_subject CHAR(4) CONSTRAINT dsnocase COLLATE NOCASE,
             title VARCHAR(50),
             PRIMARY KEY (degree_type, degree_subject)
         )");
 
         $stm = "INSERT INTO degrees (degree_type, degree_subject, title) VALUES (?, ?, ?)";
-        $this->connection->perform($stm, ['BA', 'ENGL', 'Bachelor of Arts, English']);
-        $this->connection->perform($stm, ['MA', 'HIST', 'Master of Arts, History']);
-        $this->connection->perform($stm, ['BS', 'MATH', 'Bachelor of Science, Mathematics']);
+        $this->connection->perform($stm, ['ba', 'engl', 'Bachelor of Arts, English']);
+        $this->connection->perform($stm, ['ma', 'hist', 'Master of Arts, History']);
+        $this->connection->perform($stm, ['bs', 'math', 'Bachelor of Science, Mathematics']);
     }
 
     protected function students()
