@@ -21,6 +21,9 @@ Note that this will write only the Row for that Record back to the database.
 These methods will not do anything with the Related fields on the Record; you
 will need to write them individually.
 
+Note also that inserting a Record with an auto-incrementing primary key will
+automatically update the Record with that last-inserted ID.
+
 ## Unit of Work
 
 If you make changes to several Records, you can write them back to the database
