@@ -91,3 +91,20 @@ class FooMapper
     }
 }
 ```
+
+## Case-sensitivity
+
+By default, the keys are case sensitive. You can turn off the feature calling `matchCase(false)`.
+
+```php
+
+<?php
+class FooMapper
+{
+    protected function setRelated()
+    {
+        $this->oneToMany('bars', BarMapper::CLASS)
+            ->matchCase(false);
+    }
+}
+```
