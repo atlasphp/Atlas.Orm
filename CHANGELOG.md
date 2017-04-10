@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.1.0
+
+- Added `ignoreCase()` option on relationships.
+
 ## 1.0.0
 
 - Add TableSelect::fetchCount() to return a row-count, without limit/offset,
