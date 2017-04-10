@@ -96,12 +96,12 @@ abstract class AbstractRelationship implements RelationshipInterface
 
     /**
      *
-     * Should relationship value matching be case-sensitive?
+     * When matching native and foreign values, should string case be ignored?
      *
      * @var bool
      *
      */
-    protected $matchCase = true;
+    protected $ignoreCase = false;
 
     /**
      *
@@ -188,16 +188,16 @@ abstract class AbstractRelationship implements RelationshipInterface
 
     /**
      *
-     * Should related values be case-sensitive?
+     * When matching native and foreign values, should string case be ignored?
      *
-     * @param bool $matchCase True to be case-sensitive, false to be insensitive.
+     * @param bool $ignoreCase True to ignore string case, false to honor it.
      *
      * @return self
      *
      */
-    public function matchCase($matchCase = true)
+    public function ignoreCase($ignoreCase = true)
     {
-        $this->matchCase = (bool) $matchCase;
+        $this->ignoreCase = (bool) $ignoreCase;
         return $this;
     }
 
@@ -470,7 +470,7 @@ abstract class AbstractRelationship implements RelationshipInterface
      *
      * @return bool
      *
-     * @see matchCase()
+     * @see ignoreCase()
      *
      */
     protected function valuesMatch($nativeVal, $foreignVal)
@@ -480,8 +480,8 @@ abstract class AbstractRelationship implements RelationshipInterface
             return false;
         }
 
-        // case-insensitive?
-        if (! $this->matchCase) {
+        // ignore string case?
+        if ($this->ignoreCase) {
             $nativeVal = strtolower($nativeVal);
             $foreignVal = strtolower($foreignVal);
         }

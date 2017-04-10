@@ -92,9 +92,20 @@ class FooMapper
 }
 ```
 
-## Case-sensitivity
+## Case-Sensitivity
 
-By default, the keys are case sensitive. You can turn off the feature calling `matchCase(false)`.
+> N.b.: This applies only to **string-based** relationship keys. If you are
+> using numeric relationship keys, this section does not apply.
+
+Atlas will match records related by string keys in a case-senstive manner. If
+your collations on the related string key columns are *not* case sensitive,
+Atlas might not match up related records properly in memory after fetching them
+from the database. This is because 'foo' and 'FOO' might be equivalent in the
+database collation, but they are *not* equivalent in PHP.
+
+In that kind of situation, you will want to tell the relationship to ignore the
+case of related string key columns when matching related records. You can do so
+with the `ignoreCase()` method on the relationship definition.
 
 ```php
 
@@ -104,7 +115,10 @@ class FooMapper
     protected function setRelated()
     {
         $this->oneToMany('bars', BarMapper::CLASS)
-            ->matchCase(false);
+            ->ignoreCase();
     }
 }
 ```
+
+With that in place, a native value of 'foo' match to a foreign value of 'FOO'
+when Atlas is stitching together related records.

@@ -26,7 +26,7 @@ class ManyToManyTest extends AbstractRelationshipTest
             'foreignMapperClass' => 'Atlas\\Orm\\DataSource\\Tag\\TagMapper',
             'foreignTableName' => 'tags',
             'on' => ['through_foreign' => 'foreign'],
-            'matchCase' => true,
+            'ignoreCase' => false,
             'throughName' => 'taggings',
         ];
 
