@@ -14,7 +14,10 @@ class ThreadMapper extends AbstractMapper
     {
         $this->manyToOne('author', AuthorMapper::CLASS);
         $this->oneToOne('summary', SummaryMapper::CLASS);
-        $this->oneToMany('replies', ReplyMapper::CLASS);
+        $this->oneToMany('replies', ReplyMapper::CLASS)
+            ->custom(function ($select) {
+                $select->orderBy(['reply_id ASC']);
+            });
         $this->oneToMany('taggings', TaggingMapper::CLASS);
         $this->manyToMany('tags', TagMapper::CLASS, 'taggings');
     }

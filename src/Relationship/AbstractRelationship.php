@@ -96,6 +96,16 @@ abstract class AbstractRelationship implements RelationshipInterface
 
     /**
      *
+     * A callable in the form of `function ($select)` to customize the foreign
+     * SELECT object.
+     *
+     * @var callable
+     *
+     */
+    protected $custom;
+
+    /**
+     *
      * When matching native and foreign values, should string case be ignored?
      *
      * @var bool
@@ -183,6 +193,22 @@ abstract class AbstractRelationship implements RelationshipInterface
     public function on(array $on)
     {
         $this->on = $on;
+        return $this;
+    }
+
+    /**
+     *
+     * Sets a callable in the form of `function ($select)` to customize the
+     * foreign SELECT object.
+     *
+     * @param callable $custom The callable to customize the foreign SELECT.
+     *
+     * @return self
+     *
+     */
+    public function custom(callable $custom)
+    {
+        $this->custom = $custom;
         return $this;
     }
 
@@ -326,10 +352,14 @@ abstract class AbstractRelationship implements RelationshipInterface
 
         if (count($this->on) > 1) {
             $this->foreignSelectComposite($select, $records);
-            return $select;
+        } else {
+            $this->foreignSelectSimple($select, $records);
         }
 
-        $this->foreignSelectSimple($select, $records);
+        if ($this->custom) {
+            call_user_func($this->custom, $select);
+        }
+
         return $select;
     }
 
