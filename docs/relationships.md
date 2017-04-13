@@ -123,6 +123,9 @@ class IssueMapper extends AbstractMapper
 The `$select` is fully functional, so you have a great deal of control over
 the relationship definition (and the concomitant ability to mess things up).
 
+> N.b.: The `custom()` functionality applies only to foreign record retrieval,
+> through the relationship, not to `MapperSelect::joinWith()`.
+
 ## Case-Sensitivity
 
 > N.b.: This applies only to **string-based** relationship keys. If you are
