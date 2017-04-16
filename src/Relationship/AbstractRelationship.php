@@ -280,6 +280,23 @@ abstract class AbstractRelationship implements RelationshipInterface
         }
     }
 
+    public function joinSelect($join, $select)
+    {
+        $this->initialize();
+
+        $nativeTable = $this->nativeMapper->getTable()->getName();
+        $foreignTable = $this->foreignMapper->getTable()->getName();
+        $spec = "{$foreignTable} AS {$this->name}";
+
+        $cond = [];
+        foreach ($this->on as $nativeCol => $foreignCol) {
+            $cond[] = "{$nativeTable}.{$nativeCol} = {$this->name}.{$foreignCol}";
+        }
+        $cond = implode(' AND ', $cond);
+
+        $select->join($join, $spec, $cond);
+    }
+
     /**
      *
      * Initializes all the relationship settings.

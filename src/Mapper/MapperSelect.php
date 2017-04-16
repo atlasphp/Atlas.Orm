@@ -147,18 +147,8 @@ class MapperSelect implements SubselectInterface
      */
     public function joinWith($join, $relatedName)
     {
-        $nativeTable = $this->mapper->getTable()->getName();
-        $relationship = $this->mapper->getRelationships()->get($relatedName);
-        $foreignTable = $relationship->getForeignMapper()->getTable()->getName();
-        $spec = "{$foreignTable} AS {$relatedName}";
-
-        $cond = [];
-        foreach ($relationship->getOn() as $nativeCol => $foreignCol) {
-            $cond[] = "{$nativeTable}.{$nativeCol} = {$relatedName}.{$foreignCol}";
-        }
-        $cond = implode(' AND ', $cond);
-
-        return $this->join($join, $spec, $cond);
+        $this->mapper->getRelationships()->get($relatedName)->joinSelect($join, $this);
+        return $this;
     }
 
     /**
