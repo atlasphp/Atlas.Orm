@@ -104,6 +104,8 @@ abstract class AbstractRelationship implements RelationshipInterface
      */
     protected $custom;
 
+    protected $where = [];
+
     /**
      *
      * When matching native and foreign values, should string case be ignored?
@@ -194,6 +196,16 @@ abstract class AbstractRelationship implements RelationshipInterface
     {
         $this->on = $on;
         return $this;
+    }
+
+    public function where($where)
+    {
+        $this->where[] = ['where', func_get_args()];
+    }
+
+    public function orWhere($where)
+    {
+        $this->where[] = ['orWhere', func_get_args()];
     }
 
     /**
@@ -293,8 +305,11 @@ abstract class AbstractRelationship implements RelationshipInterface
             $cond[] = "{$nativeTable}.{$nativeCol} = {$this->name}.{$foreignCol}";
         }
         $cond = implode(' AND ', $cond);
-
         $select->join($join, $spec, $cond);
+
+        $this->addWhere($this->name, $select);
+
+        return $select;
     }
 
     /**
@@ -373,11 +388,22 @@ abstract class AbstractRelationship implements RelationshipInterface
             $this->foreignSelectSimple($select, $records);
         }
 
+        $this->addWhere($this->foreignTableName, $select);
+
         if ($this->custom) {
             call_user_func($this->custom, $select);
         }
 
         return $select;
+    }
+
+    protected function addWhere($alias, $select)
+    {
+        foreach ($this->where as $spec) {
+            $method = array_shift($spec);
+            $cond = "{$alias}." . array_shift($spec);
+            $select->$method($cond, ...$spec);
+        }
     }
 
     /**
