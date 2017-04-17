@@ -96,24 +96,21 @@ abstract class AbstractRelationship implements RelationshipInterface
 
     /**
      *
-     * A callable in the form of `function ($select)` to customize the foreign
-     * SELECT object.
-     *
-     * @var callable
-     *
-     */
-    protected $custom;
-
-    protected $where = [];
-
-    /**
-     *
      * When matching native and foreign values, should string case be ignored?
      *
      * @var bool
      *
      */
     protected $ignoreCase = false;
+
+    /**
+     *
+     * Simple WHERE conditions on the foreign table relationship.
+     *
+     * @var array
+     *
+     */
+    protected $where = [];
 
     /**
      *
@@ -198,24 +195,24 @@ abstract class AbstractRelationship implements RelationshipInterface
         return $this;
     }
 
-    public function where($spec)
-    {
-        $this->where[] = func_get_args();
-    }
-
     /**
      *
-     * Sets a callable in the form of `function ($select)` to customize the
-     * foreign SELECT object.
+     * Adds a WHERE condition to the foreign SELECT by AND. If the condition has
+     * ?-placeholders, additional arguments to the method will be bound to
+     * those placeholders.
      *
-     * @param callable $custom The callable to customize the foreign SELECT.
+     * @param string $cond The WHERE condition.
      *
-     * @return self
+     * @param mixed ...$bind arguments to bind to placeholders
+     *
+     * @return $this
+     *
+     * @see Aura\SqlQuery\Common\Select::where()
      *
      */
-    public function custom(callable $custom)
+    public function where($cond)
     {
-        $this->custom = $custom;
+        $this->where[] = func_get_args();
         return $this;
     }
 
@@ -287,7 +284,18 @@ abstract class AbstractRelationship implements RelationshipInterface
         }
     }
 
-    public function joinSelect($join, $select)
+    /**
+     *
+     * Adds this relationship as a JOIN to a SELECT object.
+     *
+     * @param string $join The type of join: INNER, LEFT, etc.
+     *
+     * @param MapperSelect $select Add the JOIN to this object.
+     *
+     * @return null
+     *
+     */
+    public function joinSelect($join, MapperSelect $select)
     {
         $this->initialize();
 
@@ -302,9 +310,7 @@ abstract class AbstractRelationship implements RelationshipInterface
         $cond = implode(' AND ', $cond);
         $select->join($join, $spec, $cond);
 
-        $this->foreignSelectWhere($this->name, $select);
-
-        return $select;
+        $this->foreignSelectWhere($select, $this->name);
     }
 
     /**
@@ -383,21 +389,9 @@ abstract class AbstractRelationship implements RelationshipInterface
             $this->foreignSelectSimple($select, $records);
         }
 
-        $this->foreignSelectWhere($this->foreignTableName, $select);
-
-        if ($this->custom) {
-            call_user_func($this->custom, $select);
-        }
-
+        // add relationship-specific WHERE conditions
+        $this->foreignSelectWhere($select, $this->foreignTableName);
         return $select;
-    }
-
-    protected function foreignSelectWhere($alias, $select)
-    {
-        foreach ($this->where as $spec) {
-            $cond = "{$alias}." . array_shift($spec);
-            $select->where($cond, ...$spec);
-        }
     }
 
     /**
@@ -497,6 +491,25 @@ abstract class AbstractRelationship implements RelationshipInterface
             $uniques[$key] = $vals;
         }
         return $uniques;
+    }
+
+    /**
+     *
+     * Adds relationship-specific WHERE conditions.
+     *
+     * @param MapperSelect $select Add to this MapperSelect.
+     *
+     * @param string $alias Use this alias for the foreign table.
+     *
+     * @return null
+     *
+     */
+    protected function foreignSelectWhere(MapperSelect $select, $alias)
+    {
+        foreach ($this->where as $spec) {
+            $cond = "{$alias}." . array_shift($spec);
+            $select->where($cond, ...$spec);
+        }
     }
 
     /**

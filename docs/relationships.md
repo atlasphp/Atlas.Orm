@@ -92,40 +92,6 @@ class FooMapper
 }
 ```
 
-## Custom Relationship SELECT
-
-You may find it useful to add custom conditions, ordering, limits, etc. to
-the relationship SELECT object. To do so, call `custom()` on the relationship
-and pass a callable with the signature `function ($select)`. This will allow
-you to manipulate the foreign SELECT statement for the relationship.
-
-For example, you can handle one side of a so-called polymorphic relationship by
-selecting only related records of a particular type. In this case, a `comments`
-table has a `commentable` column indicating a record type or table name, and a
-`commentable_id` column as the foreign key value.
-
-```php
-class IssueMapper extends AbstractMapper
-{
-    protected function setRelated()
-    {
-        $this->oneToMany('comments', CommentMapper::CLASS)
-            ->on([
-                'issue_id' => 'commentable_id'
-            ])
-            ->custom(function ($select) {
-                $select->where('commentable = ?', 'issue');
-            });
-    }
-}
-```
-
-The `$select` is fully functional, so you have a great deal of control over
-the relationship definition (and the concomitant ability to mess things up).
-
-> N.b.: The `custom()` functionality applies only to foreign record retrieval,
-> through the relationship, not to `MapperSelect::joinWith()`.
-
 ## Case-Sensitivity
 
 > N.b.: This applies only to **string-based** relationship keys. If you are
@@ -156,3 +122,29 @@ class FooMapper
 
 With that in place, a native value of 'foo' match to a foreign value of 'FOO'
 when Atlas is stitching together related records.
+
+## Simple WHERE Conditions
+
+You may find it useful to define simple WHERE conditions on the foreign side of
+the relationship. For example, you can handle one side of a so-called
+polymorphic relationship by selecting only related records of a particular type.
+
+In the following example, a `comments` table has a `commentable_id` column as
+the foreign key value, but is restricted to "issue" values on a discriminator
+column named `commentable`.
+
+```php
+class IssueMapper extends AbstractMapper
+{
+    protected function setRelated()
+    {
+        $this->oneToMany('comments', CommentMapper::CLASS)
+            ->on([
+                'issue_id' => 'commentable_id'
+            ])
+            ->where('commentable = ?', 'issue');
+    }
+}
+```
+
+(These conditions will be honored by `MapperSelect::*joinWith()` as well.)
