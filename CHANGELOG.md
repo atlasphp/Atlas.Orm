@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.2.0
+
+- Added `where()` funcitonality for relationships.
+
 ## 1.1.0
 
 - Added `ignoreCase()` option on relationships.
