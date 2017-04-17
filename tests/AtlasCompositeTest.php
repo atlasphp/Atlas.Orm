@@ -205,6 +205,37 @@ class AtlasCompositeTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('Alpha', $actual->student_ln);
     }
 
+    public function testRelationshipWhere()
+    {
+        $student = $this->atlas->fetchRecord(
+            StudentMapper::CLASS,
+            [
+                'student_fn' => 'Anna',
+                'student_ln' => 'Alpha',
+            ],
+            [
+                'engl_enrollments',
+            ]
+        );
+
+        $actual = $student->engl_enrollments->getArrayCopy();
+
+        $expect = [
+            [
+                'student_fn' => 'Anna',
+                'student_ln' => 'Alpha',
+                'course_subject' => 'ENGL',
+                'course_number' => '100',
+                'grade' => '65',
+                'points' => '1',
+                'course' => NULL,
+                'student' => NULL,
+            ]
+        ];
+
+        $this->assertSame($expect, $actual);
+    }
+
     protected $expectRecord = [
         'student_fn' => 'Anna',
         'student_ln' => 'Alpha',
@@ -277,6 +308,7 @@ class AtlasCompositeTest extends \PHPUnit_Framework_TestCase
                 'students' => null,
             ],
         ],
+        'engl_enrollments' => null,
     ];
 
     protected $expectRecordSet = [
@@ -352,6 +384,7 @@ class AtlasCompositeTest extends \PHPUnit_Framework_TestCase
                     'students' => NULL,
                 ],
             ],
+            'engl_enrollments' => null,
         ],
         1 => [
             'student_fn' => 'Betty',
@@ -425,6 +458,7 @@ class AtlasCompositeTest extends \PHPUnit_Framework_TestCase
                     'students' => NULL,
                 ],
             ],
+            'engl_enrollments' => null,
         ],
         2 => [
             'student_fn' => 'Clara',
@@ -498,6 +532,7 @@ class AtlasCompositeTest extends \PHPUnit_Framework_TestCase
                     'students' => NULL,
                 ],
             ],
+            'engl_enrollments' => null,
         ],
     ];
 }

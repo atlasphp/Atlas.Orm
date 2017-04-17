@@ -198,14 +198,9 @@ abstract class AbstractRelationship implements RelationshipInterface
         return $this;
     }
 
-    public function where($where)
+    public function where($spec)
     {
-        $this->where[] = ['where', func_get_args()];
-    }
-
-    public function orWhere($where)
-    {
-        $this->where[] = ['orWhere', func_get_args()];
+        $this->where[] = func_get_args();
     }
 
     /**
@@ -307,7 +302,7 @@ abstract class AbstractRelationship implements RelationshipInterface
         $cond = implode(' AND ', $cond);
         $select->join($join, $spec, $cond);
 
-        $this->addWhere($this->name, $select);
+        $this->foreignSelectWhere($this->name, $select);
 
         return $select;
     }
@@ -388,7 +383,7 @@ abstract class AbstractRelationship implements RelationshipInterface
             $this->foreignSelectSimple($select, $records);
         }
 
-        $this->addWhere($this->foreignTableName, $select);
+        $this->foreignSelectWhere($this->foreignTableName, $select);
 
         if ($this->custom) {
             call_user_func($this->custom, $select);
@@ -397,12 +392,11 @@ abstract class AbstractRelationship implements RelationshipInterface
         return $select;
     }
 
-    protected function addWhere($alias, $select)
+    protected function foreignSelectWhere($alias, $select)
     {
         foreach ($this->where as $spec) {
-            $method = array_shift($spec);
             $cond = "{$alias}." . array_shift($spec);
-            $select->$method($cond, ...$spec);
+            $select->where($cond, ...$spec);
         }
     }
 
@@ -444,7 +438,7 @@ abstract class AbstractRelationship implements RelationshipInterface
     protected function foreignSelectComposite(MapperSelect $select, array $records)
     {
         $uniques = $this->getUniqueCompositeKeys($records);
-        $cond = '(' . implode(' = ? AND ', $this->on) . '= ?)';
+        $cond = '(' . implode(' = ? AND ', $this->on) . ' = ?)';
 
         // get the first unique composite
         $firstUnique = array_shift($uniques);

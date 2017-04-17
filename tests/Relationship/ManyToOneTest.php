@@ -24,6 +24,7 @@ class ManyToOneTest extends AbstractRelationshipTest
             'foreignTableName' => 'authors',
             'on' => ['native' => 'foreign'],
             'custom' => null,
+            'where' => [],
             'ignoreCase' => false,
             'throughName' => null,
         ];

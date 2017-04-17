@@ -21,5 +21,8 @@ class StudentMapper extends AbstractMapper
         $this->manyToOne('degree', DegreeMapper::CLASS)->ignoreCase();
         $this->oneToMany('enrollments', EnrollmentMapper::CLASS);
         $this->manyToMany('courses', CourseMapper::CLASS, 'enrollments');
+
+        $this->oneToMany('engl_enrollments', EnrollmentMapper::CLASS)
+            ->where('course_subject = ?', 'ENGL');
     }
 }

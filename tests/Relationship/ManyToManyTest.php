@@ -27,6 +27,7 @@ class ManyToManyTest extends AbstractRelationshipTest
             'foreignTableName' => 'tags',
             'on' => ['through_foreign' => 'foreign'],
             'custom' => null,
+            'where' => [],
             'ignoreCase' => false,
             'throughName' => 'taggings',
         ];

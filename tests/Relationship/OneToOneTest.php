@@ -24,6 +24,7 @@ class OneToOneTest extends AbstractRelationshipTest
             'foreignTableName' => 'summaries',
             'on' => ['native' => 'foreign'],
             'custom' => null,
+            'where' => [],
             'ignoreCase' => false,
             'throughName' => null,
         ];
