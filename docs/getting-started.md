@@ -55,7 +55,7 @@ $atlasContainer->setMappers([
 ]);
 ```
 
-Finaly, get back the Atlas instance out of the container.
+Finally, get back the Atlas instance out of the container.
 
 ```
 <?php

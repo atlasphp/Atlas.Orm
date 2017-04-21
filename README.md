@@ -44,7 +44,7 @@ of a project. Even so, the Row, Record, and RecordSet objects are disconnected
 from the database, which should make the refactoring process a lot cleaner than
 with Active Record.
 
-[mkap]: http://www.mehdi-khalili.com/orm-anti-patterns-part-4-persistence-domain-model/
+[mkap]: http://www.mehdi-khalili.com/orm-anti-patterns-part-4-persistence-domain-model
 
 Other rationalizations, essentially based around things I *do not* want in an
 ORM:
