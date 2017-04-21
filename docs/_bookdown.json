@@ -1,0 +1,13 @@
+{
+    "title": "Persistence Mapper",
+    "content": [
+        "getting-started.md",
+        "relationships.md",
+        "reading.md",
+        "records.md",
+        "record-sets.md",
+        "writing.md",
+        "direct.md",
+        "domain.md"
+    ],
+}
