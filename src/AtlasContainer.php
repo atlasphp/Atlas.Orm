@@ -17,6 +17,7 @@ use Atlas\Orm\Table\IdentityMap;
 use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\QueryFactory;
+use PDO;
 
 /**
  *
@@ -139,7 +140,7 @@ class AtlasContainer
                 break;
 
             case $args[0] instanceof PDO:
-                $extendedPdo = $args[0];
+                $pdo = $args[0];
                 $default = function () use ($pdo) {
                     return new ExtendedPdo($pdo);
                 };
