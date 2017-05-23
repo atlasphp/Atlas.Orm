@@ -145,7 +145,10 @@ class Related
         $array = [];
         foreach ($this->fields as $name => $foreign) {
             $array[$name] = $foreign;
-            if ($foreign) {
+            if (
+                $foreign instanceof RecordInterface ||
+                $foreign instanceof RecordSetInterface
+            ) {
                 $array[$name] = $foreign->getArrayCopy();
             }
         }
