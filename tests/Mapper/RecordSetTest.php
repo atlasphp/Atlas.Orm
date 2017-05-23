@@ -3,9 +3,10 @@ namespace Atlas\Orm\Mapper;
 
 use Atlas\Orm\Table\Row;
 use Atlas\Orm\Table\Primary;
+use Atlas\Orm\TestCase;
 use StdClass;
 
-class RecordSetTest extends \PHPUnit_Framework_TestCase
+class RecordSetTest extends TestCase
 {
     protected $row;
     protected $related;
@@ -21,8 +22,8 @@ class RecordSetTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $this->related = new Related([
-            'zim' => $this->getMock(RecordInterface::CLASS),
-            'irk' => $this->getMock(RecordSetInterface::CLASS),
+            'zim' => $this->getMockFromBuilder(RecordInterface::CLASS),
+            'irk' => $this->getMockFromBuilder(RecordSetInterface::CLASS),
         ]);
 
         $this->record = new Record('FakeMapper', $this->row, $this->related);
