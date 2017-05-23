@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 1.2.1
+
+- Docs updates and fixes
+- Fixed error when using PDO in AtlasContainer constructor (#53)
+
 ## 1.2.0
 
 - Added `where()` funcitonality for relationships.
