@@ -584,4 +584,9 @@ abstract class AbstractRelationship implements RelationshipInterface
         RecordInterface $nativeRecord,
         array $foreignRecords
     );
+
+    abstract public function fixNativeRecordKeys(RecordInterface $nativeRecord);
+
+    abstract public function fixForeignRecordKeys(RecordInterface $nativeRecord);
+
 }

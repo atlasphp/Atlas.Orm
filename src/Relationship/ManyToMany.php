@@ -138,4 +138,14 @@ class ManyToMany extends AbstractRelationship
         }
         return $matches;
     }
+
+    public function fixNativeRecordKeys(RecordInterface $nativeRecord)
+    {
+
+    }
+
+    public function fixForeignRecordKeys(RecordInterface $nativeRecord)
+    {
+
+    }
 }

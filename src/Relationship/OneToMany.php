@@ -9,6 +9,7 @@
 namespace Atlas\Orm\Relationship;
 
 use Atlas\Orm\Mapper\RecordInterface;
+use Atlas\Orm\Mapper\RecordSetInterface;
 
 /**
  *
@@ -42,6 +43,27 @@ class OneToMany extends AbstractRelationship
         }
         if ($matches) {
             $nativeRecord->{$this->name} = $this->foreignMapper->newRecordSet($matches);
+        }
+    }
+
+    public function fixNativeRecordKeys(RecordInterface $nativeRecord)
+    {
+        // do nothing
+    }
+
+    public function fixForeignRecordKeys(RecordInterface $nativeRecord)
+    {
+        $foreignRecordSet = $nativeRecord->{$this->name};
+        if (! $foreignRecordSet instanceof RecordSetInterface) {
+            return;
+        }
+
+        $this->initialize();
+
+        foreach ($foreignRecordSet as $foreignRecord) {
+            foreach ($this->getOn() as $nativeField => $foreignField) {
+                $foreignRecord->$foreignField = $nativeRecord->$nativeField;
+            }
         }
     }
 }

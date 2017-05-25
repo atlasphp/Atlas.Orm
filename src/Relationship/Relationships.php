@@ -326,4 +326,18 @@ class Relationships
         }
         return $with;
     }
+
+    public function fixNativeRecordKeys(RecordInterface $nativeRecord)
+    {
+        foreach ($this->defs as $def) {
+            $def->fixNativeRecordKeys($nativeRecord);
+        }
+    }
+
+    public function fixForeignRecordKeys(RecordInterface $nativeRecord)
+    {
+        foreach ($this->defs as $def) {
+            $def->fixForeignRecordKeys($nativeRecord);
+        }
+    }
 }

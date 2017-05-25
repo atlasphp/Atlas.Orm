@@ -264,9 +264,11 @@ abstract class AbstractMapper implements MapperInterface
     public function insert(RecordInterface $record)
     {
         $this->events->beforeInsert($this, $record);
+        $this->relationships->fixNativeRecordKeys($record);
         $insert = $this->table->insertRowPrepare($record->getRow());
         $this->events->modifyInsert($this, $record, $insert);
         $pdoStatement = $this->table->insertRowPerform($record->getRow(), $insert);
+        $this->relationships->fixForeignRecordKeys($record);
         $this->events->afterInsert($this, $record, $insert, $pdoStatement);
         return true;
     }
@@ -283,12 +285,14 @@ abstract class AbstractMapper implements MapperInterface
     public function update(RecordInterface $record)
     {
         $this->events->beforeUpdate($this, $record);
+        $this->relationships->fixNativeRecordKeys($record);
         $update = $this->table->updateRowPrepare($record->getRow());
         $this->events->modifyUpdate($this, $record, $update);
         $pdoStatement = $this->table->updateRowPerform($record->getRow(), $update);
         if (! $pdoStatement) {
             return false;
         }
+        $this->relationships->fixForeignRecordKeys($record);
         $this->events->afterUpdate($this, $record, $update, $pdoStatement);
         return true;
     }

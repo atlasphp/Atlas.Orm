@@ -40,4 +40,23 @@ class OneToOne extends AbstractRelationship
             }
         }
     }
+
+    public function fixNativeRecordKeys(RecordInterface $nativeRecord)
+    {
+        // do nothing
+    }
+
+    public function fixForeignRecordKeys(RecordInterface $nativeRecord)
+    {
+        $foreignRecord = $nativeRecord->{$this->name};
+        if (! $foreignRecord instanceof RecordInterface) {
+            return;
+        }
+
+        $this->initialize();
+
+        foreach ($this->getOn() as $nativeField => $foreignField) {
+            $foreignRecord->$foreignField = $nativeRecord->$nativeField;
+        }
+    }
 }
