@@ -9,7 +9,7 @@ class TaggingMapper extends AbstractMapper
 {
     protected function setRelated()
     {
-        $this->manyToOne('tag', TagMapper::CLASS);
         $this->manyToOne('thread', ThreadMapper::CLASS);
+        $this->manyToOne('tag', TagMapper::CLASS);
     }
 }
