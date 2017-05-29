@@ -49,4 +49,9 @@ class ManyToOne extends OneToOne
     {
         // do nothing
     }
+
+    public function persist(RecordInterface $nativeRecord)
+    {
+        // do nothing
+    }
 }

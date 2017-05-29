@@ -141,11 +141,16 @@ class ManyToMany extends AbstractRelationship
 
     public function fixNativeRecordKeys(RecordInterface $nativeRecord)
     {
-
+        // do nothing
     }
 
     public function fixForeignRecordKeys(RecordInterface $nativeRecord)
     {
+        // do nothing
+    }
 
+    public function persist(RecordInterface $nativeRecord)
+    {
+        // do nothing
     }
 }

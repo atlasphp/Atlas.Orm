@@ -8,6 +8,8 @@
  */
 namespace Atlas\Orm\Relationship;
 
+use Atlas\Orm\Mapper\RecordInterface;
+
 /**
  *
  * Interface for a relationship between Mapper objects.
@@ -68,4 +70,10 @@ interface RelationshipInterface
         array $nativeRecords,
         callable $custom = null
     );
+
+    public function fixNativeRecordKeys(RecordInterface $record);
+
+    public function fixForeignRecordKeys(RecordInterface $record);
+
+    public function persist(RecordInterface $record);
 }

@@ -340,4 +340,11 @@ class Relationships
             $def->fixForeignRecordKeys($nativeRecord);
         }
     }
+
+    public function persist(RecordInterface $nativeRecord)
+    {
+        foreach ($this->defs as $def) {
+            $def->persist($nativeRecord);
+        }
+    }
 }

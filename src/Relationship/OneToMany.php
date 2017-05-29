@@ -66,4 +66,18 @@ class OneToMany extends AbstractRelationship
             }
         }
     }
+
+    public function persist(RecordInterface $nativeRecord)
+    {
+        $foreignRecordSet = $nativeRecord->{$this->name};
+        if (! $foreignRecordSet instanceof RecordSetInterface) {
+            return;
+        }
+
+        $this->initialize();
+
+        foreach ($foreignRecordSet as $foreignRecord) {
+            $this->foreignMapper->persist($foreignRecord);
+        }
+    }
 }

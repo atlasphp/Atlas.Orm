@@ -167,6 +167,22 @@ interface MapperInterface
 
     /**
      *
+     * Given a record, inserts/updates/deletes it, *and* its related
+     * one-to-one and one-to-many records (if they have been loaded).
+     *
+     * Does not persist many-to-one (as this leads to easily to recursion)
+     * or many-to-many (as they are only indirectly attached) relationships.
+     *
+     * @param RecordInterface $record Persist the Row for this Record,
+     * *and* the Rows in Records that are one-to-one or one-to-may related.
+     *
+     * @return mixed
+     *
+     */
+    public function persist(RecordInterface $record);
+
+    /**
+     *
      * Returns a new Record object.
      *
      * @param array $cols Populate the underlying Row fields with these values.

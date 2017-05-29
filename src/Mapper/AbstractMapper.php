@@ -10,6 +10,7 @@ namespace Atlas\Orm\Mapper;
 
 use Atlas\Orm\Exception;
 use Atlas\Orm\Relationship\Relationships;
+use Atlas\Orm\Table\Row;
 use Atlas\Orm\Table\RowInterface;
 use Atlas\Orm\Table\TableInterface;
 
@@ -313,6 +314,25 @@ abstract class AbstractMapper implements MapperInterface
         $this->events->modifyDelete($this, $record, $delete);
         $pdoStatement = $this->table->deleteRowPerform($record->getRow(), $delete);
         $this->events->afterDelete($this, $record, $delete, $pdoStatement);
+        return true;
+    }
+
+    public function persist(RecordInterface $record)
+    {
+        $row = $record->getRow();
+
+        if ($row->hasStatus(Row::FOR_INSERT)) {
+            $this->insert($record);
+        } elseif ($row->hasStatus(Row::MODIFIED)) {
+            $this->update($record);
+        }
+
+        $this->relationships->persist($record);
+
+        if ($row->hasStatus(Row::FOR_DELETE)) {
+            $this->delete($record);
+        }
+
         return true;
     }
 

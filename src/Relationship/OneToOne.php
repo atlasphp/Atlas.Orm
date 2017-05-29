@@ -59,4 +59,17 @@ class OneToOne extends AbstractRelationship
             $foreignRecord->$foreignField = $nativeRecord->$nativeField;
         }
     }
+
+
+    public function persist(RecordInterface $nativeRecord)
+    {
+        $foreignRecord = $nativeRecord->{$this->name};
+        if (! $foreignRecord instanceof RecordInterface) {
+            return;
+        }
+
+        $this->initialize();
+
+        $this->foreignMapper->persist($foreignRecord);
+    }
 }
