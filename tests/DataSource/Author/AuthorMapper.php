@@ -9,6 +9,8 @@ class AuthorMapper extends AbstractMapper
 {
     protected function setRelated()
     {
+        parent::setRelated(); // test coverage only
+
         $this->oneToMany('replies', ReplyMapper::CLASS);
         $this->oneToMany('threads', ThreadMapper::CLASS);
     }
