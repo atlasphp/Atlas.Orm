@@ -421,6 +421,63 @@ ORDER BY
         );
     }
 
+    public function testPersist()
+    {
+        // remember to check that the values get set on the relateds, too
+
+        $author = $this->atlas->newRecord(AuthorMapper::CLASS, [
+            'name' => 'New Name',
+        ]);
+
+        $tag = $this->atlas->newRecord(TagMapper::CLASS, [
+            'name' => 'New Tag',
+        ]);
+
+        $summary = $this->atlas->newRecord(SummaryMapper::CLASS, [
+            'reply_count' => 0,
+            'view_count' => 0,
+        ]);
+
+        $taggings = $this->atlas->newRecordSet(TaggingMapper::CLASS);
+
+        $tags = $this->atlas->newRecordSet(TagMapper::CLASS);
+
+        // create an entirely new thread with a new author and everything
+        $thread = $this->atlas->newRecord(ThreadMapper::CLASS ,[
+            'subject' => 'New Subject',
+            'body' => 'New Body',
+            'author' => $author,
+            'summary' => $summary,
+            'taggings' => $taggings,
+            'tags' => $tags,
+        ]);
+
+        // the tagging WILL NOT save the tag or thread, because it is manyToOne.
+        // so the thread *and* the tag have to be saved first.
+        $tagging = $thread->taggings->appendNew([
+            'thread' => $thread,
+            'tag' => $tag,
+        ]);
+
+        $thread->tags[] = $tag; // essentially for convenience
+
+        // persist the belonged-to records
+        $this->atlas->insert($author);
+        $this->assertTrue($author->author_id > 0);
+        $this->atlas->insert($tag);
+        $this->assertTrue($tag->tag_id > 0);
+
+        $this->atlas->persist($thread);
+        $this->assertTrue($thread->thread_id > 0);
+        $this->assertSame($thread->author_id, $thread->author->author_id);
+        $this->assertSame($thread->thread_id, $thread->summary->thread_id);
+        $this->assertSame($thread->taggings[0]->thread_id, $thread->thread_id);
+        $this->assertSame($thread->taggings[0]->tag_id, $thread->tags[0]->tag_id);
+
+        // unset($thread->taggings[0]->thread); // otherwise infinite recursion
+        // var_dump($thread->getArrayCopy());
+    }
+
     protected $expectRecord = [
         'thread_id' => '1',
         'author_id' => '1',
