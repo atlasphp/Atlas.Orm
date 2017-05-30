@@ -149,4 +149,11 @@ class RecordTest extends \PHPUnit_Framework_TestCase
         ];
         $this->assertSame($expected, $actual);
     }
+
+    public function testJsonSerialize()
+    {
+        $actual = json_encode($this->record);
+        $expect = '{"id":"1","foo":"bar","baz":"dib","zim":null,"irk":null}';
+        $this->assertSame($expect, $actual);
+    }
 }
