@@ -317,22 +317,32 @@ abstract class AbstractMapper implements MapperInterface
         return true;
     }
 
+    /**
+     *
+     * Persists a Record and its relateds to the database.
+     *
+     * This method will:
+     *
+     * - insert the Row for the Record if it is new;
+     * - update the Row for the Record if it has been modified; or,
+     * - delete the Row for the Record if the Record is marked for deletion.
+     *
+     * Whether or not the Row for the Record is inserted/updated/deleted, this
+     * method will *also* recursively traverse all the loaded one-to-one and
+     * one-to-many relateds on the Record, and apply persist() to them as well.
+     *
+     * @param RecordInterface $record Persist this Record and its relateds.
+     *
+     * @return mixed
+     *
+     */
     public function persist(RecordInterface $record)
     {
-        $row = $record->getRow();
-
-        if ($row->hasStatus(Row::FOR_INSERT)) {
-            $this->insert($record);
-        } elseif ($row->hasStatus(Row::MODIFIED)) {
-            $this->update($record);
+        $method = $record->getPersistMethod();
+        if ($method) {
+            $this->$method($record);
         }
-
         $this->relationships->persist($record);
-
-        if ($row->hasStatus(Row::FOR_DELETE)) {
-            $this->delete($record);
-        }
-
         return true;
     }
 

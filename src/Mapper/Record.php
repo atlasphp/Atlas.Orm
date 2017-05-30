@@ -9,6 +9,7 @@
 namespace Atlas\Orm\Mapper;
 
 use Atlas\Orm\Exception;
+use Atlas\Orm\Table\Row;
 use Atlas\Orm\Table\RowInterface;
 
 /**
@@ -46,6 +47,8 @@ class Record implements RecordInterface
      *
      */
     private $related;
+
+    private $delete = false;
 
     /**
      *
@@ -244,5 +247,28 @@ class Record implements RecordInterface
         }
 
         throw Exception::propertyDoesNotExist($this, $field);
+    }
+
+    public function markForDeletion($delete = true)
+    {
+        $this->delete = (bool) $delete;
+    }
+
+    public function getPersistMethod()
+    {
+        if ($this->delete) {
+            return 'delete';
+        }
+
+        switch ($this->row->getStatus()) {
+            case Row::FOR_INSERT:
+                return 'insert';
+            case Row::MODIFIED:
+                return 'update';
+            case Row::FOR_DELETE:
+                return 'delete';
+        }
+
+        return null;
     }
 }
