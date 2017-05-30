@@ -249,7 +249,7 @@ class Atlas
 
     /**
      *
-     * Delete a Record through its Mapper as a one-off transaction..
+     * Delete a Record through its Mapper as a one-off transaction.
      *
      * @param RecordInterface $record Delete the Row for this Record.
      *
@@ -259,6 +259,23 @@ class Atlas
     public function delete(RecordInterface $record)
     {
         return $this->transact('delete', $record);
+    }
+
+    /**
+     *
+     * Persists a Record through its Mapper as a one-off transaction. This will
+     * insert/update/delete the Record as appropriate; further, it will
+     * recursively persist its one-to-one and one-to-many relateds.
+     *
+     * @param RecordInterface $record Persist this Record along with its
+     * one-to-one and one-to-many relateds.
+     *
+     * @return bool
+     *
+     */
+    public function persist(RecordInterface $record)
+    {
+        return $this->transact('persist', $record);
     }
 
     /**
