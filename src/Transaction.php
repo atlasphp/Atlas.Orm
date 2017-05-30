@@ -181,6 +181,22 @@ class Transaction
 
     /**
      *
+     * Specifies a record to persist as part of the transaction. Note that this
+     * delays the choosing of insert/update/delete until persistence time, and
+     * will persist the one-to-one and one-to-many relateds on the record.
+     *
+     * @param RecordInterface $record The record to persist.
+     *
+     * @return $this
+     *
+     */
+    public function persist(RecordInterface $record)
+    {
+        return $this->plan('persist', $record);
+    }
+
+    /**
+     *
      * Adds record-specific work to the transaction plan, and attaches the
      * relevant mapper connection.
      *
