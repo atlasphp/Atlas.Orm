@@ -294,8 +294,7 @@ class Atlas
      *
      * Performs a one-off transaction.
      *
-     * @param string $method The transaction work to perform: insert, update, or
-     * delete.
+     * @param string $method The transaction work to perform.
      *
      * @param RecordInterface $record The record to work with.
      *
