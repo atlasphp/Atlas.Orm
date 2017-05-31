@@ -352,14 +352,14 @@ abstract class AbstractMapper implements MapperInterface
 
         $tracker->attach($record);
 
-        $this->relationships->persistBefore($record, $tracker);
+        $this->relationships->persistBeforeNative($record, $tracker);
 
         $method = $record->getPersistMethod();
         if ($method) {
             $this->$method($record);
         }
 
-        $this->relationships->persistAfter($record, $tracker);
+        $this->relationships->persistAfterNative($record, $tracker);
 
         return true;
     }

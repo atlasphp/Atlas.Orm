@@ -38,7 +38,7 @@ class Relationships
      * @array
      *
      */
-    protected $defs = [];
+    protected $relationships = [];
 
     /**
      *
@@ -49,9 +49,9 @@ class Relationships
      */
     protected $fields = [];
 
-    protected $persistBefore = [];
+    protected $persistBeforeNative = [];
 
-    protected $persistAfter = [];
+    protected $persistAfterNative = [];
 
     /**
      *
@@ -83,14 +83,13 @@ class Relationships
         $nativeMapperClass,
         $foreignMapperClass
     ) {
-        $def = $this->set(
+        return $this->set(
             $name,
             OneToOne::CLASS,
             $nativeMapperClass,
-            $foreignMapperClass
+            $foreignMapperClass,
+            'persistAfterNative'
         );
-        $this->persistAfter[] = $def;
-        return $def;
     }
 
     /**
@@ -111,14 +110,13 @@ class Relationships
         $nativeMapperClass,
         $foreignMapperClass
     ) {
-        $def = $this->set(
+        return $this->set(
             $name,
             OneToMany::CLASS,
             $nativeMapperClass,
-            $foreignMapperClass
+            $foreignMapperClass,
+            'persistAfterNative'
         );
-        $this->persistAfter[] = $def;
-        return $def;
     }
 
     /**
@@ -139,14 +137,13 @@ class Relationships
         $nativeMapperClass,
         $foreignMapperClass
     ) {
-        $def = $this->set(
+        return $this->set(
             $name,
             ManyToOne::CLASS,
             $nativeMapperClass,
-            $foreignMapperClass
+            $foreignMapperClass,
+            'persistBeforeNative'
         );
-        $this->persistBefore[] = $def;
-        return $def;
     }
 
     /**
@@ -171,15 +168,14 @@ class Relationships
         $foreignMapperClass,
         $throughName
     ) {
-        $def = $this->set(
+        return $this->set(
             $name,
             ManyToMany::CLASS,
             $nativeMapperClass,
             $foreignMapperClass,
+            'persistAfterNative',
             $throughName
         );
-        $this->persistBefore[] = $def;
-        return $def;
     }
 
     /**
@@ -193,7 +189,7 @@ class Relationships
      */
     public function get($name)
     {
-        return $this->defs[$name];
+        return $this->relationships[$name];
     }
 
     /**
@@ -225,10 +221,10 @@ class Relationships
         array $with = []
     ) {
         foreach ($this->fixWith($with) as $name => $custom) {
-            if (! isset($this->defs[$name])) {
+            if (! isset($this->relationships[$name])) {
                 throw Exception::relationshipDoesNotExist($name);
             }
-            $this->defs[$name]->stitchIntoRecords(
+            $this->relationships[$name]->stitchIntoRecords(
                 $nativeRecords,
                 $custom
             );
@@ -247,6 +243,9 @@ class Relationships
      *
      * @param string $foreignMapperClass The foreign Mapper class name.
      *
+     * @param string $persistencePriority The persistence priority property
+     * name.
+     *
      * @param string $throughName The name of the Related field that holds
      * the association table (join table) values.
      *
@@ -255,37 +254,40 @@ class Relationships
      */
     protected function set(
         $name,
-        $relationClass,
+        $relationshipClass,
         $nativeMapperClass,
         $foreignMapperClass,
+        $persistencePriority,
         $throughName = null
     ) {
         if (! class_exists($foreignMapperClass)) {
             throw Exception::classDoesNotExist($foreignMapperClass);
         }
 
-        if ($throughName && ! isset($this->defs[$throughName])) {
+        if ($throughName && ! isset($this->relationships[$throughName])) {
             throw Exception::relationshipDoesNotExist($throughName);
         }
 
         $this->fields[$name] = null;
 
-        $this->defs[$name] = $this->newRelation(
-            $relationClass,
+        $relationship = $this->newRelationship(
+            $relationshipClass,
             $name,
             $nativeMapperClass,
             $foreignMapperClass,
             $throughName
         );
 
-        return $this->defs[$name];
+        $this->{$persistencePriority}[] = $relationship;
+        $this->relationships[$name] = $relationship;
+        return $relationship;
     }
 
     /**
      *
      * Returns a new relationship definition object.
      *
-     * @param string $relationClass The relationship class name.
+     * @param string $relationshipClass The relationship class name.
      *
      * @param string $name The Related field name.
      *
@@ -299,14 +301,14 @@ class Relationships
      * @return RelationshipInterface
      *
      */
-    protected function newRelation(
-        $relationClass,
+    protected function newRelationship(
+        $relationshipClass,
         $name,
         $nativeMapperClass,
         $foreignMapperClass,
         $throughName = null
     ) {
-        return new $relationClass(
+        return new $relationshipClass(
             $name,
             $this->mapperLocator,
             $nativeMapperClass,
@@ -343,29 +345,29 @@ class Relationships
 
     public function fixNativeRecordKeys(RecordInterface $nativeRecord)
     {
-        foreach ($this->defs as $def) {
-            $def->fixNativeRecordKeys($nativeRecord);
+        foreach ($this->relationships as $relationship) {
+            $relationship->fixNativeRecordKeys($nativeRecord);
         }
     }
 
     public function fixForeignRecordKeys(RecordInterface $nativeRecord)
     {
-        foreach ($this->defs as $def) {
-            $def->fixForeignRecordKeys($nativeRecord);
+        foreach ($this->relationships as $relationship) {
+            $relationship->fixForeignRecordKeys($nativeRecord);
         }
     }
 
-    public function persistBefore(RecordInterface $nativeRecord, SplObjectStorage $tracker)
+    public function persistBeforeNative(RecordInterface $nativeRecord, SplObjectStorage $tracker)
     {
-        foreach ($this->persistBefore as $def) {
-            $def->persistForeign($nativeRecord, $tracker);
+        foreach ($this->persistBeforeNative as $relationship) {
+            $relationship->persistForeign($nativeRecord, $tracker);
         }
     }
 
-    public function persistAfter(RecordInterface $nativeRecord, SplObjectStorage $tracker)
+    public function persistAfterNative(RecordInterface $nativeRecord, SplObjectStorage $tracker)
     {
-        foreach ($this->persistAfter as $def) {
-            $def->persistForeign($nativeRecord, $tracker);
+        foreach ($this->persistAfterNative as $relationship) {
+            $relationship->persistForeign($nativeRecord, $tracker);
         }
     }
 }
