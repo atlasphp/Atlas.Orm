@@ -265,10 +265,10 @@ class Atlas
      *
      * Persists a Record through its Mapper as a one-off transaction. This will
      * insert/update/delete the Record as appropriate; further, it will
-     * recursively persist its one-to-one and one-to-many relateds.
+     * recursively persist all of its loaded relationships.
      *
      * @param RecordInterface $record Persist this Record along with its
-     * one-to-one and one-to-many relateds.
+     * relateds.
      *
      * @return bool
      *

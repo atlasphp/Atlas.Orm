@@ -17,12 +17,55 @@ if ($success) {
 }
 ```
 
-Note that this will write only the Row for that Record back to the database.
-These methods will not do anything with the Related fields on the Record; you
-will need to write them individually.
+Inserting a Record with an auto-incrementing primary key will automatically
+modify the Record to set the last-inserted ID.
 
-Note also that inserting a Record with an auto-incrementing primary key will
-automatically update the Record with that last-inserted ID.
+Inserting or updating a Record will automatically set the foreign key fields on
+the native Record, and on all the loaded relationships for that Record.
+
+The `insert()`, `update()`, and `delete()` methods write only the one Row for
+that Record back to the database. They will not automatically operate on related
+fields.
+
+## Persisting Related Records
+
+If you like, you can persist a Record and all of its loaded relationships (and
+all of *their* loaded relationships, etc.) back to the database using the Atlas
+`persist()` method. This is good for simple relationship structures where the
+order of write operations is not critical.
+
+The `persist()` method will:
+
+- persist many-to-one and many-to-many relateds loaded on the native Record;
+- persist the native Record by ...
+    - inserting the Row for the Record if it is new; or,
+    - updating the Row for the Record if it has been modified; or,
+    - deleting the Row for the Record if the Record has been marked for deletion
+      using the Record::markForDeletion() method;
+- persist one-to-one and one-to-many relateds loaded on the native Record.
+
+```php
+<?php
+$success = $atlas->persist($record);
+if ($success) {
+    echo "Wrote the Record and all of its relateds back to the database.";
+} else {
+    echo "Did not write the Record: " . $atlas->getException();
+}
+```
+
+As with insert and update, this will automatically set the foreign key fields on
+the native Record, and on all the loaded relationships for that Record.
+
+If a related field is not loaded, it cannot be persisted automatically.
+
+Note that whether or not the Row for the Record is inserted/updated/deleted, the
+`persist()` method will still recursively traverse all the related fields and
+persist them as well.
+
+The `delete()` method **will not** attempt to cascade deletion or nullification
+across relateds at the ORM level. Your database may have cascading set up at the
+database level; Atlas has no control over this.
 
 ## Unit of Work
 
@@ -40,6 +83,9 @@ $transaction = $atlas->newTransaction();
 $transaction->insert($record1);
 $transaction->update($record2);
 $transaction->delete($record3);
+
+// or persist an entire record and its relateds
+$transaction->persist($record4);
 
 // execute the transaction plan
 $success = $transaction->exec();
@@ -60,7 +106,3 @@ if ($success) {
     echo $work->getLabel() . ' threw ' . $e->getMessage();
 }
 ```
-
-Note that this will write only the Row for each Record back to the database.
-These methods will not do anything with the Related fields on each Record; you
-will need to write them individually, perhaps as part of the same Transaction.
