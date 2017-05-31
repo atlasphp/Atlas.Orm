@@ -173,7 +173,7 @@ class Relationships
             ManyToMany::CLASS,
             $nativeMapperClass,
             $foreignMapperClass,
-            'persistAfterNative',
+            'persistBeforeNative',
             $throughName
         );
     }
