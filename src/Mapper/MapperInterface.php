@@ -9,6 +9,7 @@
 namespace Atlas\Orm\Mapper;
 
 use Atlas\Orm\Table\RowInterface;
+use SplObjectStorage;
 
 /**
  *
@@ -167,19 +168,17 @@ interface MapperInterface
 
     /**
      *
-     * Given a record, inserts/updates/deletes it, *and* its related
-     * one-to-one and one-to-many records (if they have been loaded).
+     * Persists a Record and its relateds to the database.
      *
-     * Does not persist many-to-one (as this leads to easily to recursion)
-     * or many-to-many (as they are only indirectly attached) relationships.
+     * @param RecordInterface $record Persist this Record and its relateds.
      *
-     * @param RecordInterface $record Persist the Row for this Record,
-     * *and* the Rows in Records that are one-to-one or one-to-may related.
+     * @param SplObjectStorage $tracker Tracks which Records have been
+     * persisted, to avoid infinite recursion.
      *
      * @return mixed
      *
      */
-    public function persist(RecordInterface $record);
+    public function persist(RecordInterface $record, SplObjectStorage $tracker = null);
 
     /**
      *
