@@ -13,6 +13,7 @@ use Atlas\Orm\Relationship\Relationships;
 use Atlas\Orm\Table\Row;
 use Atlas\Orm\Table\RowInterface;
 use Atlas\Orm\Table\TableInterface;
+use SplObjectStorage;
 
 /**
  *
@@ -328,21 +329,38 @@ abstract class AbstractMapper implements MapperInterface
      * - delete the Row for the Record if the Record is marked for deletion.
      *
      * Whether or not the Row for the Record is inserted/updated/deleted, this
-     * method will *also* recursively traverse all the loaded one-to-one and
-     * one-to-many relateds on the Record, and apply persist() to them as well.
+     * method will *also* recursively traverse all the related fields and
+     * persist them as well.
      *
      * @param RecordInterface $record Persist this Record and its relateds.
+     *
+     * @param SplObjectStorage $tracker Tracks which Records have been
+     * persisted, to avoid infinite recursion.
      *
      * @return mixed
      *
      */
-    public function persist(RecordInterface $record)
+    public function persist(RecordInterface $record, SplObjectStorage $tracker = null)
     {
+        if ($tracker === null) {
+            $tracker = new SplObjectStorage();
+        }
+
+        if ($tracker->contains($record)) {
+            return false;
+        }
+
+        $tracker->attach($record);
+
+        $this->relationships->persistBefore($record, $tracker);
+
         $method = $record->getPersistMethod();
         if ($method) {
             $this->$method($record);
         }
-        $this->relationships->persist($record);
+
+        $this->relationships->persistAfter($record, $tracker);
+
         return true;
     }
 

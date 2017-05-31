@@ -10,6 +10,7 @@ namespace Atlas\Orm\Relationship;
 
 use Atlas\Orm\Mapper\RecordInterface;
 use Atlas\Orm\Mapper\RecordSetInterface;
+use SplObjectStorage;
 
 /**
  *
@@ -67,17 +68,8 @@ class OneToMany extends AbstractRelationship
         }
     }
 
-    public function persist(RecordInterface $nativeRecord)
+    public function persistForeign(RecordInterface $nativeRecord, SplObjectStorage $tracker)
     {
-        $foreignRecordSet = $nativeRecord->{$this->name};
-        if (! $foreignRecordSet instanceof RecordSetInterface) {
-            return;
-        }
-
-        $this->initialize();
-
-        foreach ($foreignRecordSet as $foreignRecord) {
-            $this->foreignMapper->persist($foreignRecord);
-        }
+        $this->persistForeignRecordSet($nativeRecord, $tracker);
     }
 }

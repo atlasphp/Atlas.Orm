@@ -9,6 +9,7 @@
 namespace Atlas\Orm\Relationship;
 
 use Atlas\Orm\Mapper\RecordInterface;
+use SplObjectStorage;
 
 /**
  *
@@ -50,8 +51,8 @@ class ManyToOne extends OneToOne
         // do nothing
     }
 
-    public function persist(RecordInterface $nativeRecord)
+    public function persistForeign(RecordInterface $nativeRecord, SplObjectStorage $tracker)
     {
-        // do nothing
+        $this->persistForeignRecord($nativeRecord, $tracker);
     }
 }

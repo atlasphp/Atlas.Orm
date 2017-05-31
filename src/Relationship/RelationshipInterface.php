@@ -9,6 +9,7 @@
 namespace Atlas\Orm\Relationship;
 
 use Atlas\Orm\Mapper\RecordInterface;
+use SplObjectStorage;
 
 /**
  *
@@ -71,9 +72,9 @@ interface RelationshipInterface
         callable $custom = null
     );
 
-    public function fixNativeRecordKeys(RecordInterface $record);
+    public function fixNativeRecordKeys(RecordInterface $nativeRecord);
 
-    public function fixForeignRecordKeys(RecordInterface $record);
+    public function fixForeignRecordKeys(RecordInterface $nativeRecord);
 
-    public function persist(RecordInterface $record);
+    public function persistForeign(RecordInterface $nativeRecord, SplObjectStorage $tracker);
 }

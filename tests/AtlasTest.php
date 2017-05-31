@@ -423,8 +423,6 @@ ORDER BY
 
     public function testPersist()
     {
-        // remember to check that the values get set on the relateds, too
-
         $author = $this->atlas->newRecord(AuthorMapper::CLASS, [
             'name' => 'New Name',
         ]);
@@ -442,7 +440,6 @@ ORDER BY
 
         $tags = $this->atlas->newRecordSet(TagMapper::CLASS);
 
-        // create an entirely new thread with a new author and everything
         $thread = $this->atlas->newRecord(ThreadMapper::CLASS ,[
             'subject' => 'New Subject',
             'body' => 'New Body',
@@ -452,8 +449,6 @@ ORDER BY
             'tags' => $tags,
         ]);
 
-        // the tagging WILL NOT save the tag or thread, because it is manyToOne.
-        // so the thread *and* the tag have to be saved first.
         $tagging = $thread->taggings->appendNew([
             'thread' => $thread,
             'tag' => $tag,
@@ -461,21 +456,16 @@ ORDER BY
 
         $thread->tags[] = $tag; // essentially for convenience
 
-        // persist the belonged-to records
-        $this->atlas->insert($author);
-        $this->assertTrue($author->author_id > 0);
-        $this->atlas->insert($tag);
-        $this->assertTrue($tag->tag_id > 0);
-
+        // persist the thread and all its relateds
         $this->atlas->persist($thread);
+
+        $this->assertTrue($author->author_id > 0);
+        $this->assertTrue($tag->tag_id > 0);
         $this->assertTrue($thread->thread_id > 0);
         $this->assertSame($thread->author_id, $thread->author->author_id);
         $this->assertSame($thread->thread_id, $thread->summary->thread_id);
         $this->assertSame($thread->taggings[0]->thread_id, $thread->thread_id);
         $this->assertSame($thread->taggings[0]->tag_id, $thread->tags[0]->tag_id);
-
-        // unset($thread->taggings[0]->thread); // otherwise infinite recursion
-        // var_dump($thread->getArrayCopy());
     }
 
     protected $expectRecord = [

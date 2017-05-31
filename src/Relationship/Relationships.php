@@ -11,6 +11,7 @@ namespace Atlas\Orm\Relationship;
 use Atlas\Orm\Exception;
 use Atlas\Orm\Mapper\MapperLocator;
 use Atlas\Orm\Mapper\RecordInterface;
+use SplObjectStorage;
 
 /**
  *
@@ -48,6 +49,10 @@ class Relationships
      */
     protected $fields = [];
 
+    protected $persistBefore = [];
+
+    protected $persistAfter = [];
+
     /**
      *
      * Constructor.
@@ -78,12 +83,14 @@ class Relationships
         $nativeMapperClass,
         $foreignMapperClass
     ) {
-        return $this->set(
+        $def = $this->set(
             $name,
             OneToOne::CLASS,
             $nativeMapperClass,
             $foreignMapperClass
         );
+        $this->persistAfter[] = $def;
+        return $def;
     }
 
     /**
@@ -104,12 +111,14 @@ class Relationships
         $nativeMapperClass,
         $foreignMapperClass
     ) {
-        return $this->set(
+        $def = $this->set(
             $name,
             OneToMany::CLASS,
             $nativeMapperClass,
             $foreignMapperClass
         );
+        $this->persistAfter[] = $def;
+        return $def;
     }
 
     /**
@@ -130,12 +139,14 @@ class Relationships
         $nativeMapperClass,
         $foreignMapperClass
     ) {
-        return $this->set(
+        $def = $this->set(
             $name,
             ManyToOne::CLASS,
             $nativeMapperClass,
             $foreignMapperClass
         );
+        $this->persistBefore[] = $def;
+        return $def;
     }
 
     /**
@@ -160,13 +171,15 @@ class Relationships
         $foreignMapperClass,
         $throughName
     ) {
-        return $this->set(
+        $def = $this->set(
             $name,
             ManyToMany::CLASS,
             $nativeMapperClass,
             $foreignMapperClass,
             $throughName
         );
+        $this->persistBefore[] = $def;
+        return $def;
     }
 
     /**
@@ -256,6 +269,7 @@ class Relationships
         }
 
         $this->fields[$name] = null;
+
         $this->defs[$name] = $this->newRelation(
             $relationClass,
             $name,
@@ -341,10 +355,17 @@ class Relationships
         }
     }
 
-    public function persist(RecordInterface $nativeRecord)
+    public function persistBefore(RecordInterface $nativeRecord, SplObjectStorage $tracker)
     {
-        foreach ($this->defs as $def) {
-            $def->persist($nativeRecord);
+        foreach ($this->persistBefore as $def) {
+            $def->persistForeign($nativeRecord, $tracker);
+        }
+    }
+
+    public function persistAfter(RecordInterface $nativeRecord, SplObjectStorage $tracker)
+    {
+        foreach ($this->persistAfter as $def) {
+            $def->persistForeign($nativeRecord, $tracker);
         }
     }
 }

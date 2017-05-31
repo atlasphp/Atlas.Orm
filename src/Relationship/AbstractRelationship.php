@@ -12,6 +12,7 @@ use Atlas\Orm\Mapper\MapperLocator;
 use Atlas\Orm\Mapper\MapperSelect;
 use Atlas\Orm\Mapper\RecordInterface;
 use Atlas\Orm\Mapper\RecordSetInterface;
+use SplObjectStorage;
 
 /**
  *
@@ -589,5 +590,31 @@ abstract class AbstractRelationship implements RelationshipInterface
 
     abstract public function fixForeignRecordKeys(RecordInterface $nativeRecord);
 
-    abstract public function persist(RecordInterface $record);
+    abstract public function persistForeign(RecordInterface $nativeRecord, SplObjectStorage $tracker);
+
+    protected function persistForeignRecord(RecordInterface $nativeRecord, SplObjectStorage $tracker)
+    {
+        $foreignRecord = $nativeRecord->{$this->name};
+        if (! $foreignRecord instanceof RecordInterface) {
+            return;
+        }
+
+        $this->initialize();
+
+        $this->foreignMapper->persist($foreignRecord, $tracker);
+    }
+
+    protected function persistForeignRecordSet(RecordInterface $nativeRecord, SplObjectStorage $tracker)
+    {
+        $foreignRecordSet = $nativeRecord->{$this->name};
+        if (! $foreignRecordSet instanceof RecordSetInterface) {
+            return;
+        }
+
+        $this->initialize();
+
+        foreach ($foreignRecordSet as $foreignRecord) {
+            $this->foreignMapper->persist($foreignRecord, $tracker);
+        }
+    }
 }
