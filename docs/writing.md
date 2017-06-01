@@ -31,8 +31,8 @@ fields.
 
 If you like, you can persist a Record and all of its loaded relationships (and
 all of *their* loaded relationships, etc.) back to the database using the Atlas
-`persist()` method. This is good for simple relationship structures where the
-order of write operations is not critical.
+`persist()` method. This is good for straightforward relationship structures
+where the order of write operations does not need to be closely managed.
 
 The `persist()` method will:
 
