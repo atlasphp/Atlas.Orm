@@ -291,10 +291,10 @@ abstract class AbstractMapper implements MapperInterface
         $update = $this->table->updateRowPrepare($record->getRow());
         $this->events->modifyUpdate($this, $record, $update);
         $pdoStatement = $this->table->updateRowPerform($record->getRow(), $update);
+        $this->relationships->fixForeignRecordKeys($record);
         if (! $pdoStatement) {
             return false;
         }
-        $this->relationships->fixForeignRecordKeys($record);
         $this->events->afterUpdate($this, $record, $update, $pdoStatement);
         return true;
     }
