@@ -353,12 +353,14 @@ abstract class AbstractMapper implements MapperInterface
         $tracker->attach($record);
 
         $this->relationships->persistBeforeNative($record, $tracker);
+        $this->relationships->fixNativeRecordKeys($record);
 
         $method = $record->getPersistMethod();
         if ($method) {
             $this->$method($record);
         }
 
+        $this->relationships->fixForeignRecordKeys($record);
         $this->relationships->persistAfterNative($record, $tracker);
 
         return true;
