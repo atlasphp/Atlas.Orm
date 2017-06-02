@@ -49,4 +49,17 @@ class OneToOneTest extends AbstractRelationshipTest
         $rel->stitchIntoRecords($threads);
         $this->assertSame([], $threads);
     }
+
+    public function testGetForeignMapper()
+    {
+        $rel = new OneToOne(
+            'summary',
+            $this->mapperLocator,
+            ThreadMapper::CLASS,
+            SummaryMapper::CLASS
+        );
+
+        $foreignMapper = $rel->getForeignMapper();
+        $this->assertInstanceOf(SummaryMapper::CLASS, $foreignMapper);
+    }
 }
