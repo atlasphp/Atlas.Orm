@@ -433,6 +433,7 @@ ORDER BY
             'threads' => null,
         ],
         'summary' => [
+            'summary_id' => '1',
             'thread_id' => '1',
             'reply_count' => '5',
             'view_count' => '0',
@@ -558,6 +559,7 @@ ORDER BY
                 'threads' => null,
             ],
             'summary' => [
+                'summary_id' => '1',
                 'thread_id' => '1',
                 'reply_count' => '5',
                 'view_count' => '0',
@@ -681,6 +683,7 @@ ORDER BY
                 'threads' => null,
             ],
             'summary' => [
+                'summary_id' => '2',
                 'thread_id' => '2',
                 'reply_count' => '5',
                 'view_count' => '0',
@@ -804,6 +807,7 @@ ORDER BY
                 'threads' => null,
             ],
             'summary' => [
+                'summary_id' => '3',
                 'thread_id' => '3',
                 'reply_count' => '5',
                 'view_count' => '0',
