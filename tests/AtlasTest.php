@@ -421,53 +421,6 @@ ORDER BY
         );
     }
 
-    public function testPersist()
-    {
-        $author = $this->atlas->newRecord(AuthorMapper::CLASS, [
-            'name' => 'New Name',
-        ]);
-
-        $tag = $this->atlas->newRecord(TagMapper::CLASS, [
-            'name' => 'New Tag',
-        ]);
-
-        $summary = $this->atlas->newRecord(SummaryMapper::CLASS, [
-            'reply_count' => 0,
-            'view_count' => 0,
-        ]);
-
-        $taggings = $this->atlas->newRecordSet(TaggingMapper::CLASS);
-
-        $tags = $this->atlas->newRecordSet(TagMapper::CLASS);
-
-        $thread = $this->atlas->newRecord(ThreadMapper::CLASS ,[
-            'subject' => 'New Subject',
-            'body' => 'New Body',
-            'author' => $author,
-            'summary' => $summary,
-            'taggings' => $taggings,
-            'tags' => $tags,
-        ]);
-
-        $tagging = $thread->taggings->appendNew([
-            'thread' => $thread,
-            'tag' => $tag,
-        ]);
-
-        $thread->tags[] = $tag; // essentially for convenience
-
-        // persist the thread and all its relateds
-        $this->atlas->persist($thread);
-
-        $this->assertTrue($author->author_id > 0);
-        $this->assertTrue($tag->tag_id > 0);
-        $this->assertTrue($thread->thread_id > 0);
-        $this->assertSame($thread->author_id, $thread->author->author_id);
-        $this->assertSame($thread->thread_id, $thread->summary->thread_id);
-        $this->assertSame($thread->taggings[0]->thread_id, $thread->thread_id);
-        $this->assertSame($thread->taggings[0]->tag_id, $thread->tags[0]->tag_id);
-    }
-
     protected $expectRecord = [
         'thread_id' => '1',
         'author_id' => '1',
