@@ -25,6 +25,7 @@ class SummaryTable extends AbstractTable
     public function getColNames()
     {
         return [
+            'summary_id',
             'thread_id',
             'reply_count',
             'view_count',
@@ -37,8 +38,8 @@ class SummaryTable extends AbstractTable
     public function getCols()
     {
         return [
-            'thread_id' => (object) [
-                'name' => 'thread_id',
+            'summary_id' => (object) [
+                'name' => 'summary_id',
                 'type' => 'integer',
                 'size' => null,
                 'scale' => null,
@@ -46,6 +47,16 @@ class SummaryTable extends AbstractTable
                 'default' => null,
                 'autoinc' => false,
                 'primary' => true,
+            ],
+            'thread_id' => (object) [
+                'name' => 'thread_id',
+                'type' => 'integer',
+                'size' => null,
+                'scale' => null,
+                'notnull' => true,
+                'default' => null,
+                'autoinc' => false,
+                'primary' => false,
             ],
             'reply_count' => (object) [
                 'name' => 'reply_count',
@@ -76,7 +87,7 @@ class SummaryTable extends AbstractTable
     public function getPrimaryKey()
     {
         return [
-            'thread_id',
+            'summary_id',
         ];
     }
 
@@ -85,7 +96,7 @@ class SummaryTable extends AbstractTable
      */
     public function getAutoinc()
     {
-        return '';
+        return 'summary_id';
     }
 
     /**
@@ -94,6 +105,7 @@ class SummaryTable extends AbstractTable
     public function getColDefaults()
     {
         return [
+            'summary_id' => null,
             'thread_id' => null,
             'reply_count' => null,
             'view_count' => null,
