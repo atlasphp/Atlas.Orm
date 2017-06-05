@@ -363,6 +363,10 @@ abstract class AbstractRelationship implements RelationshipInterface
      */
     protected function fetchForeignRecords(array $records, $custom)
     {
+        if (! $records) {
+            return [];
+        }
+
         $select = $this->foreignSelect($records);
         if ($custom) {
             $custom($select);
