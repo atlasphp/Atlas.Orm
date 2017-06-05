@@ -49,8 +49,22 @@ class Relationships
      */
     protected $fields = [];
 
+    /**
+     *
+     * Persist these relateds before the native Record.
+     *
+     * @var array
+     *
+     */
     protected $persistBeforeNative = [];
 
+    /**
+     *
+     * Persist these relateds after the native Record.
+     *
+     * @var array
+     *
+     */
     protected $persistAfterNative = [];
 
     /**
@@ -343,6 +357,14 @@ class Relationships
         return $with;
     }
 
+    /**
+     *
+     * Given a native Record, sets the related foreign Record values into the
+     * native Record.
+     *
+     * @param RecordInterface $nativeRecord The native Record to work with.
+     *
+     */
     public function fixNativeRecordKeys(RecordInterface $nativeRecord)
     {
         foreach ($this->relationships as $relationship) {
@@ -350,6 +372,14 @@ class Relationships
         }
     }
 
+    /**
+     *
+     * Given a native Record, sets the appropriate native Record values into all
+     * related foreign Records.
+     *
+     * @param RecordInterface $nativeRecord The native Record to work with.
+     *
+     */
     public function fixForeignRecordKeys(RecordInterface $nativeRecord)
     {
         foreach ($this->relationships as $relationship) {
@@ -357,6 +387,16 @@ class Relationships
         }
     }
 
+    /**
+     *
+     * Persist all the relateds that go before a native Record.
+     *
+     * @param RecordInterface $nativeRecord The native Record being persisted.
+     *
+     * @param SplObjectStorage $tracker Tracks which Record objects have been
+     * operated on, to prevent infinite recursion.
+     *
+     */
     public function persistBeforeNative(RecordInterface $nativeRecord, SplObjectStorage $tracker)
     {
         foreach ($this->persistBeforeNative as $relationship) {
@@ -364,6 +404,16 @@ class Relationships
         }
     }
 
+    /**
+     *
+     * Persist all the relateds that go after a native Record.
+     *
+     * @param RecordInterface $nativeRecord The native Record being persisted.
+     *
+     * @param SplObjectStorage $tracker Tracks which Record objects have been
+     * operated on, to prevent infinite recursion.
+     *
+     */
     public function persistAfterNative(RecordInterface $nativeRecord, SplObjectStorage $tracker)
     {
         foreach ($this->persistAfterNative as $relationship) {
