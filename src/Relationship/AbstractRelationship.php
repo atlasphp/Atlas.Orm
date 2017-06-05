@@ -586,14 +586,55 @@ abstract class AbstractRelationship implements RelationshipInterface
         array $foreignRecords
     );
 
+    /**
+     *
+     * Given a native Record, sets the related foreign Record values into the
+     * native Record.
+     *
+     * @param RecordInterface $nativeRecord The native Record to work with.
+     *
+     */
     abstract public function fixNativeRecordKeys(RecordInterface $nativeRecord);
 
+    /**
+     *
+     * Given a native Record, sets the appropriate native Record values into all
+     * related foreign Records.
+     *
+     * @param RecordInterface $nativeRecord The native Record to work with.
+     *
+     */
     abstract public function fixForeignRecordKeys(RecordInterface $nativeRecord);
 
-    abstract public function persistForeign(RecordInterface $nativeRecord, SplObjectStorage $tracker);
+    /**
+     *
+     * Given a native Record, persists the related foreign Records.
+     *
+     * @param RecordInterface $nativeRecord The native Record being persisted.
+     *
+     * @param SplObjectStorage $tracker Tracks which Record objects have been
+     * operated on, to prevent infinite recursion.
+     *
+     */
+    abstract public function persistForeign(
+        RecordInterface $nativeRecord,
+        SplObjectStorage $tracker
+    );
 
-    protected function persistForeignRecord(RecordInterface $nativeRecord, SplObjectStorage $tracker)
-    {
+    /**
+     *
+     * Persists the related foreign Record.
+     *
+     * @param RecordInterface $nativeRecord The native Record being persisted.
+     *
+     * @param SplObjectStorage $tracker Tracks which Record objects have been
+     * operated on, to prevent infinite recursion.
+     *
+     */
+    protected function persistForeignRecord(
+        RecordInterface $nativeRecord,
+        SplObjectStorage $tracker
+    ) {
         $foreignRecord = $nativeRecord->{$this->name};
         if (! $foreignRecord instanceof RecordInterface) {
             return;
@@ -604,6 +645,16 @@ abstract class AbstractRelationship implements RelationshipInterface
         $this->foreignMapper->persist($foreignRecord, $tracker);
     }
 
+    /**
+     *
+     * Persists the related foreign RecordSet.
+     *
+     * @param RecordInterface $nativeRecord The native Record being persisted.
+     *
+     * @param SplObjectStorage $tracker Tracks which Record objects have been
+     * operated on, to prevent infinite recursion.
+     *
+     */
     protected function persistForeignRecordSet(RecordInterface $nativeRecord, SplObjectStorage $tracker)
     {
         $foreignRecordSet = $nativeRecord->{$this->name};

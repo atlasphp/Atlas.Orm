@@ -48,6 +48,13 @@ class Record implements RecordInterface
      */
     private $related;
 
+    /**
+     *
+     * Is this Record marked for deletion?
+     *
+     * @var bool
+     *
+     */
     private $delete = false;
 
     /**
@@ -218,6 +225,8 @@ class Record implements RecordInterface
      *
      * Implements JsonSerializable::jsonSerialize().
      *
+     * @return array
+     *
      */
     public function jsonSerialize()
     {
@@ -249,11 +258,26 @@ class Record implements RecordInterface
         throw Exception::propertyDoesNotExist($this, $field);
     }
 
+    /**
+     *
+     * Marks this Record for deletion.
+     *
+     * @param bool $delete True to mark for deletion, false to unmark.
+     *
+     */
     public function markForDeletion($delete = true)
     {
         $this->delete = (bool) $delete;
     }
 
+    /**
+     *
+     * Returns the persistence method that will be used for this Record (one of
+     * insert/update/delete) or null if no method will be used.
+     *
+     * @return string|null
+     *
+     */
     public function getPersistMethod()
     {
         if ($this->delete) {
