@@ -251,7 +251,7 @@ class Relationships
      *
      * @param string $name The Related field name.
      *
-     * @param string $relationClass The relationship class name.
+     * @param string $relationshipClass The relationship class name.
      *
      * @param string $nativeMapperClass The native Mapper class name.
      *
