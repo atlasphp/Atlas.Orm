@@ -2,6 +2,8 @@
 namespace Atlas\Orm\Mapper;
 
 use Atlas\Orm\Assertions;
+use Atlas\Orm\AtlasContainer;
+use Atlas\Orm\DataSource\Employee\EmployeeMapper;
 use Atlas\Orm\SqliteFixture;
 use Atlas\Orm\Table\IdentityMap;
 use Atlas\Orm\Table\TableEvents;
@@ -9,7 +11,6 @@ use Atlas\Orm\Table\TableSelect;
 use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\QueryFactory;
-use Atlas\Orm\DataSource\Employee\EmployeeTable;
 
 class MapperSelectTest extends \PHPUnit_Framework_TestCase
 {
@@ -19,27 +20,19 @@ class MapperSelectTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $queryFactory = new QueryFactory('sqlite');
+        $atlasContainer = new AtlasContainer('sqlite::memory:');
+        $atlasContainer->setMappers([
+            EmployeeMapper::CLASS,
+        ]);
 
-        $table = new EmployeeTable(
-            new ConnectionLocator(function () {
-                return new ExtendedPdo('sqlite::memory:');
-            }),
-            $queryFactory,
-            new IdentityMap(),
-            new TableEvents()
-        );
-
-        $connection = $table->getWriteConnection();
+        $connection = $atlasContainer->getConnectionLocator()->getDefault();
         $fixture = new SqliteFixture($connection);
         $fixture->exec();
 
-        $select = $queryFactory->newSelect()->from('employee');
-
-        $this->select = new MapperSelect(
-            $this->getMock('Atlas\Orm\Mapper\MapperInterface'),
-            new TableSelect($table, $select)
-        );
+        $this->select = $atlasContainer
+            ->getMapperLocator()
+            ->get(EmployeeMapper::CLASS)
+            ->select();
     }
 
     public function testGetStatement()
@@ -220,5 +213,14 @@ class MapperSelectTest extends \PHPUnit_Framework_TestCase
         $actual = $this->select->__toString();
 
         $this->assertSameSql($expect, $actual);
+    }
+
+    public function testWith_noSuchRelationship()
+    {
+        $this->setExpectedException(
+            'Atlas\Orm\Exception',
+            "Relationship 'no_such_related' does not exist."
+        );
+        $this->select->with(['no_such_related']);
     }
 }

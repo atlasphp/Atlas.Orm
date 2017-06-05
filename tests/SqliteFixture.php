@@ -125,7 +125,8 @@ class SqliteFixture
     protected function summaries()
     {
         $this->connection->query("CREATE TABLE summaries (
-            thread_id INTEGER PRIMARY KEY,
+            summary_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            thread_id INTEGER NOT NULL,
             reply_count INTEGER NOT NULL DEFAULT 0,
             view_count INTEGER NOT NULL DEFAULT 0
         )");

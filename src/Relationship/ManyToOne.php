@@ -8,6 +8,9 @@
  */
 namespace Atlas\Orm\Relationship;
 
+use Atlas\Orm\Mapper\RecordInterface;
+use SplObjectStorage;
+
 /**
  *
  * Defines a one-to-one relationship.
@@ -27,5 +30,29 @@ class ManyToOne extends OneToOne
         foreach ($this->foreignMapper->getTable()->getPrimaryKey() as $col) {
             $this->on[$col] = $col;
         }
+    }
+
+    public function fixNativeRecordKeys(RecordInterface $nativeRecord)
+    {
+        $foreignRecord = $nativeRecord->{$this->name};
+        if (! $foreignRecord instanceof RecordInterface) {
+            return;
+        }
+
+        $this->initialize();
+
+        foreach ($this->getOn() as $nativeField => $foreignField) {
+            $nativeRecord->$nativeField = $foreignRecord->$foreignField;
+        }
+    }
+
+    public function fixForeignRecordKeys(RecordInterface $nativeRecord)
+    {
+        // do nothing
+    }
+
+    public function persistForeign(RecordInterface $nativeRecord, SplObjectStorage $tracker)
+    {
+        $this->persistForeignRecord($nativeRecord, $tracker);
     }
 }

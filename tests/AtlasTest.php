@@ -433,6 +433,7 @@ ORDER BY
             'threads' => null,
         ],
         'summary' => [
+            'summary_id' => '1',
             'thread_id' => '1',
             'reply_count' => '5',
             'view_count' => '0',
@@ -505,16 +506,22 @@ ORDER BY
                 'tagging_id' => '1',
                 'thread_id' => '1',
                 'tag_id' => '1',
+                'thread' => null,
+                'tag' => null,
             ],
             1 => [
                 'tagging_id' => '2',
                 'thread_id' => '1',
                 'tag_id' => '2',
+                'thread' => null,
+                'tag' => null,
             ],
             2 => [
                 'tagging_id' => '3',
                 'thread_id' => '1',
                 'tag_id' => '3',
+                'thread' => null,
+                'tag' => null,
             ],
         ],
         'tags' => [
@@ -552,6 +559,7 @@ ORDER BY
                 'threads' => null,
             ],
             'summary' => [
+                'summary_id' => '1',
                 'thread_id' => '1',
                 'reply_count' => '5',
                 'view_count' => '0',
@@ -624,16 +632,22 @@ ORDER BY
                     'tagging_id' => '1',
                     'thread_id' => '1',
                     'tag_id' => '1',
+                    'thread' => null,
+                    'tag' => null,
                 ],
                 1 => [
                     'tagging_id' => '2',
                     'thread_id' => '1',
                     'tag_id' => '2',
+                    'thread' => null,
+                    'tag' => null,
                 ],
                 2 => [
                     'tagging_id' => '3',
                     'thread_id' => '1',
                     'tag_id' => '3',
+                    'thread' => null,
+                    'tag' => null,
                 ],
             ],
             'tags' => [
@@ -669,6 +683,7 @@ ORDER BY
                 'threads' => null,
             ],
             'summary' => [
+                'summary_id' => '2',
                 'thread_id' => '2',
                 'reply_count' => '5',
                 'view_count' => '0',
@@ -741,16 +756,22 @@ ORDER BY
                     'tagging_id' => '4',
                     'thread_id' => '2',
                     'tag_id' => '2',
+                    'thread' => null,
+                    'tag' => null,
                 ],
                 1 => [
                     'tagging_id' => '5',
                     'thread_id' => '2',
                     'tag_id' => '3',
+                    'thread' => null,
+                    'tag' => null,
                 ],
                 2 => [
                     'tagging_id' => '6',
                     'thread_id' => '2',
                     'tag_id' => '4',
+                    'thread' => null,
+                    'tag' => null,
                 ],
             ],
             'tags' => [
@@ -786,6 +807,7 @@ ORDER BY
                 'threads' => null,
             ],
             'summary' => [
+                'summary_id' => '3',
                 'thread_id' => '3',
                 'reply_count' => '5',
                 'view_count' => '0',

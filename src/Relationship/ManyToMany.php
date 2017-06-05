@@ -11,6 +11,7 @@ namespace Atlas\Orm\Relationship;
 use Atlas\Orm\Exception;
 use Atlas\Orm\Mapper\MapperLocator;
 use Atlas\Orm\Mapper\RecordInterface;
+use SplObjectStorage;
 
 /**
  *
@@ -137,5 +138,20 @@ class ManyToMany extends AbstractRelationship
             }
         }
         return $matches;
+    }
+
+    public function fixNativeRecordKeys(RecordInterface $nativeRecord)
+    {
+        // do nothing
+    }
+
+    public function fixForeignRecordKeys(RecordInterface $nativeRecord)
+    {
+        // do nothing
+    }
+
+    public function persistForeign(RecordInterface $nativeRecord, SplObjectStorage $tracker)
+    {
+        $this->persistForeignRecordSet($nativeRecord, $tracker);
     }
 }

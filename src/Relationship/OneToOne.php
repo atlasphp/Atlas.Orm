@@ -9,6 +9,7 @@
 namespace Atlas\Orm\Relationship;
 
 use Atlas\Orm\Mapper\RecordInterface;
+use SplObjectStorage;
 
 /**
  *
@@ -39,5 +40,29 @@ class OneToOne extends AbstractRelationship
                 $nativeRecord->{$this->name} = $foreignRecord;
             }
         }
+    }
+
+    public function fixNativeRecordKeys(RecordInterface $nativeRecord)
+    {
+        // do nothing
+    }
+
+    public function fixForeignRecordKeys(RecordInterface $nativeRecord)
+    {
+        $foreignRecord = $nativeRecord->{$this->name};
+        if (! $foreignRecord instanceof RecordInterface) {
+            return;
+        }
+
+        $this->initialize();
+
+        foreach ($this->getOn() as $nativeField => $foreignField) {
+            $foreignRecord->$foreignField = $nativeRecord->$nativeField;
+        }
+    }
+
+    public function persistForeign(RecordInterface $nativeRecord, SplObjectStorage $tracker)
+    {
+        $this->persistForeignRecord($nativeRecord, $tracker);
     }
 }

@@ -9,6 +9,7 @@
 namespace Atlas\Orm\Mapper;
 
 use Atlas\Orm\Table\RowInterface;
+use SplObjectStorage;
 
 /**
  *
@@ -164,6 +165,20 @@ interface MapperInterface
      *
      */
     public function delete(RecordInterface $record);
+
+    /**
+     *
+     * Persists a Record and its relateds to the database.
+     *
+     * @param RecordInterface $record Persist this Record and its relateds.
+     *
+     * @param SplObjectStorage $tracker Tracks which Records have been
+     * persisted, to avoid infinite recursion.
+     *
+     * @return mixed
+     *
+     */
+    public function persist(RecordInterface $record, SplObjectStorage $tracker = null);
 
     /**
      *

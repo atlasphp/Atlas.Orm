@@ -10,8 +10,10 @@ namespace Atlas\Orm\Mapper;
 
 use Atlas\Orm\Exception;
 use Atlas\Orm\Relationship\Relationships;
+use Atlas\Orm\Table\Row;
 use Atlas\Orm\Table\RowInterface;
 use Atlas\Orm\Table\TableInterface;
+use SplObjectStorage;
 
 /**
  *
@@ -264,9 +266,11 @@ abstract class AbstractMapper implements MapperInterface
     public function insert(RecordInterface $record)
     {
         $this->events->beforeInsert($this, $record);
+        $this->relationships->fixNativeRecordKeys($record);
         $insert = $this->table->insertRowPrepare($record->getRow());
         $this->events->modifyInsert($this, $record, $insert);
         $pdoStatement = $this->table->insertRowPerform($record->getRow(), $insert);
+        $this->relationships->fixForeignRecordKeys($record);
         $this->events->afterInsert($this, $record, $insert, $pdoStatement);
         return true;
     }
@@ -283,9 +287,11 @@ abstract class AbstractMapper implements MapperInterface
     public function update(RecordInterface $record)
     {
         $this->events->beforeUpdate($this, $record);
+        $this->relationships->fixNativeRecordKeys($record);
         $update = $this->table->updateRowPrepare($record->getRow());
         $this->events->modifyUpdate($this, $record, $update);
         $pdoStatement = $this->table->updateRowPerform($record->getRow(), $update);
+        $this->relationships->fixForeignRecordKeys($record);
         if (! $pdoStatement) {
             return false;
         }
@@ -309,6 +315,54 @@ abstract class AbstractMapper implements MapperInterface
         $this->events->modifyDelete($this, $record, $delete);
         $pdoStatement = $this->table->deleteRowPerform($record->getRow(), $delete);
         $this->events->afterDelete($this, $record, $delete, $pdoStatement);
+        return true;
+    }
+
+    /**
+     *
+     * Persists a Record and its relateds to the database.
+     *
+     * This method will:
+     *
+     * - insert the Row for the Record if it is new;
+     * - update the Row for the Record if it has been modified; or,
+     * - delete the Row for the Record if the Record is marked for deletion.
+     *
+     * Whether or not the Row for the Record is inserted/updated/deleted, this
+     * method will *also* recursively traverse all the related fields and
+     * persist them as well.
+     *
+     * @param RecordInterface $record Persist this Record and its relateds.
+     *
+     * @param SplObjectStorage $tracker Tracks which Records have been
+     * persisted, to avoid infinite recursion.
+     *
+     * @return mixed
+     *
+     */
+    public function persist(RecordInterface $record, SplObjectStorage $tracker = null)
+    {
+        if ($tracker === null) {
+            $tracker = new SplObjectStorage();
+        }
+
+        if ($tracker->contains($record)) {
+            return false;
+        }
+
+        $tracker->attach($record);
+
+        $this->relationships->persistBeforeNative($record, $tracker);
+        $this->relationships->fixNativeRecordKeys($record);
+
+        $method = $record->getPersistMethod();
+        if ($method) {
+            $this->$method($record);
+        }
+
+        $this->relationships->fixForeignRecordKeys($record);
+        $this->relationships->persistAfterNative($record, $tracker);
+
         return true;
     }
 

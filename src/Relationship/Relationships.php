@@ -11,6 +11,7 @@ namespace Atlas\Orm\Relationship;
 use Atlas\Orm\Exception;
 use Atlas\Orm\Mapper\MapperLocator;
 use Atlas\Orm\Mapper\RecordInterface;
+use SplObjectStorage;
 
 /**
  *
@@ -37,7 +38,7 @@ class Relationships
      * @array
      *
      */
-    protected $defs = [];
+    protected $relationships = [];
 
     /**
      *
@@ -47,6 +48,10 @@ class Relationships
      *
      */
     protected $fields = [];
+
+    protected $persistBeforeNative = [];
+
+    protected $persistAfterNative = [];
 
     /**
      *
@@ -82,7 +87,8 @@ class Relationships
             $name,
             OneToOne::CLASS,
             $nativeMapperClass,
-            $foreignMapperClass
+            $foreignMapperClass,
+            'persistAfterNative'
         );
     }
 
@@ -108,7 +114,8 @@ class Relationships
             $name,
             OneToMany::CLASS,
             $nativeMapperClass,
-            $foreignMapperClass
+            $foreignMapperClass,
+            'persistAfterNative'
         );
     }
 
@@ -134,7 +141,8 @@ class Relationships
             $name,
             ManyToOne::CLASS,
             $nativeMapperClass,
-            $foreignMapperClass
+            $foreignMapperClass,
+            'persistBeforeNative'
         );
     }
 
@@ -165,6 +173,7 @@ class Relationships
             ManyToMany::CLASS,
             $nativeMapperClass,
             $foreignMapperClass,
+            'persistBeforeNative',
             $throughName
         );
     }
@@ -180,7 +189,7 @@ class Relationships
      */
     public function get($name)
     {
-        return $this->defs[$name];
+        return $this->relationships[$name];
     }
 
     /**
@@ -212,10 +221,10 @@ class Relationships
         array $with = []
     ) {
         foreach ($this->fixWith($with) as $name => $custom) {
-            if (! isset($this->defs[$name])) {
+            if (! isset($this->relationships[$name])) {
                 throw Exception::relationshipDoesNotExist($name);
             }
-            $this->defs[$name]->stitchIntoRecords(
+            $this->relationships[$name]->stitchIntoRecords(
                 $nativeRecords,
                 $custom
             );
@@ -234,6 +243,9 @@ class Relationships
      *
      * @param string $foreignMapperClass The foreign Mapper class name.
      *
+     * @param string $persistencePriority The persistence priority property
+     * name.
+     *
      * @param string $throughName The name of the Related field that holds
      * the association table (join table) values.
      *
@@ -242,36 +254,40 @@ class Relationships
      */
     protected function set(
         $name,
-        $relationClass,
+        $relationshipClass,
         $nativeMapperClass,
         $foreignMapperClass,
+        $persistencePriority,
         $throughName = null
     ) {
         if (! class_exists($foreignMapperClass)) {
             throw Exception::classDoesNotExist($foreignMapperClass);
         }
 
-        if ($throughName && ! isset($this->defs[$throughName])) {
+        if ($throughName && ! isset($this->relationships[$throughName])) {
             throw Exception::relationshipDoesNotExist($throughName);
         }
 
         $this->fields[$name] = null;
-        $this->defs[$name] = $this->newRelation(
-            $relationClass,
+
+        $relationship = $this->newRelationship(
+            $relationshipClass,
             $name,
             $nativeMapperClass,
             $foreignMapperClass,
             $throughName
         );
 
-        return $this->defs[$name];
+        $this->{$persistencePriority}[] = $relationship;
+        $this->relationships[$name] = $relationship;
+        return $relationship;
     }
 
     /**
      *
      * Returns a new relationship definition object.
      *
-     * @param string $relationClass The relationship class name.
+     * @param string $relationshipClass The relationship class name.
      *
      * @param string $name The Related field name.
      *
@@ -285,14 +301,14 @@ class Relationships
      * @return RelationshipInterface
      *
      */
-    protected function newRelation(
-        $relationClass,
+    protected function newRelationship(
+        $relationshipClass,
         $name,
         $nativeMapperClass,
         $foreignMapperClass,
         $throughName = null
     ) {
-        return new $relationClass(
+        return new $relationshipClass(
             $name,
             $this->mapperLocator,
             $nativeMapperClass,
@@ -325,5 +341,33 @@ class Relationships
             }
         }
         return $with;
+    }
+
+    public function fixNativeRecordKeys(RecordInterface $nativeRecord)
+    {
+        foreach ($this->relationships as $relationship) {
+            $relationship->fixNativeRecordKeys($nativeRecord);
+        }
+    }
+
+    public function fixForeignRecordKeys(RecordInterface $nativeRecord)
+    {
+        foreach ($this->relationships as $relationship) {
+            $relationship->fixForeignRecordKeys($nativeRecord);
+        }
+    }
+
+    public function persistBeforeNative(RecordInterface $nativeRecord, SplObjectStorage $tracker)
+    {
+        foreach ($this->persistBeforeNative as $relationship) {
+            $relationship->persistForeign($nativeRecord, $tracker);
+        }
+    }
+
+    public function persistAfterNative(RecordInterface $nativeRecord, SplObjectStorage $tracker)
+    {
+        foreach ($this->persistAfterNative as $relationship) {
+            $relationship->persistForeign($nativeRecord, $tracker);
+        }
     }
 }
