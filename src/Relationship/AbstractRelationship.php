@@ -594,7 +594,10 @@ abstract class AbstractRelationship implements RelationshipInterface
      * @param RecordInterface $nativeRecord The native Record to work with.
      *
      */
-    abstract public function fixNativeRecordKeys(RecordInterface $nativeRecord);
+    public function fixNativeRecordKeys(RecordInterface $nativeRecord)
+    {
+        // by default do nothing
+    }
 
     /**
      *
@@ -604,7 +607,10 @@ abstract class AbstractRelationship implements RelationshipInterface
      * @param RecordInterface $nativeRecord The native Record to work with.
      *
      */
-    abstract public function fixForeignRecordKeys(RecordInterface $nativeRecord);
+    public function fixForeignRecordKeys(RecordInterface $nativeRecord)
+    {
+        // by default do nothing
+    }
 
     /**
      *

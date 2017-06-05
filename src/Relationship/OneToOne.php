@@ -42,11 +42,14 @@ class OneToOne extends AbstractRelationship
         }
     }
 
-    public function fixNativeRecordKeys(RecordInterface $nativeRecord)
-    {
-        // do nothing
-    }
-
+    /**
+     *
+     * Given a native Record, sets the appropriate native Record values into all
+     * related foreign Records.
+     *
+     * @param RecordInterface $nativeRecord The native Record to work with.
+     *
+     */
     public function fixForeignRecordKeys(RecordInterface $nativeRecord)
     {
         $foreignRecord = $nativeRecord->{$this->name};
@@ -61,6 +64,16 @@ class OneToOne extends AbstractRelationship
         }
     }
 
+    /**
+     *
+     * Given a native Record, persists the related foreign Records.
+     *
+     * @param RecordInterface $nativeRecord The native Record being persisted.
+     *
+     * @param SplObjectStorage $tracker Tracks which Record objects have been
+     * operated on, to prevent infinite recursion.
+     *
+     */
     public function persistForeign(RecordInterface $nativeRecord, SplObjectStorage $tracker)
     {
         $this->persistForeignRecord($nativeRecord, $tracker);

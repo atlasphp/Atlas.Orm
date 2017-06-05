@@ -72,9 +72,35 @@ interface RelationshipInterface
         callable $custom = null
     );
 
+    /**
+     *
+     * Given a native Record, sets the related foreign Record values into the
+     * native Record.
+     *
+     * @param RecordInterface $nativeRecord The native Record to work with.
+     *
+     */
     public function fixNativeRecordKeys(RecordInterface $nativeRecord);
 
+    /**
+     *
+     * Given a native Record, sets the appropriate native Record values into all
+     * related foreign Records.
+     *
+     * @param RecordInterface $nativeRecord The native Record to work with.
+     *
+     */
     public function fixForeignRecordKeys(RecordInterface $nativeRecord);
 
+    /**
+     *
+     * Given a native Record, persists the related foreign Records.
+     *
+     * @param RecordInterface $nativeRecord The native Record being persisted.
+     *
+     * @param SplObjectStorage $tracker Tracks which Record objects have been
+     * operated on, to prevent infinite recursion.
+     *
+     */
     public function persistForeign(RecordInterface $nativeRecord, SplObjectStorage $tracker);
 }

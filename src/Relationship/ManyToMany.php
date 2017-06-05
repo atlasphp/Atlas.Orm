@@ -140,16 +140,16 @@ class ManyToMany extends AbstractRelationship
         return $matches;
     }
 
-    public function fixNativeRecordKeys(RecordInterface $nativeRecord)
-    {
-        // do nothing
-    }
-
-    public function fixForeignRecordKeys(RecordInterface $nativeRecord)
-    {
-        // do nothing
-    }
-
+    /**
+     *
+     * Given a native Record, persists the related foreign Records.
+     *
+     * @param RecordInterface $nativeRecord The native Record being persisted.
+     *
+     * @param SplObjectStorage $tracker Tracks which Record objects have been
+     * operated on, to prevent infinite recursion.
+     *
+     */
     public function persistForeign(RecordInterface $nativeRecord, SplObjectStorage $tracker)
     {
         $this->persistForeignRecordSet($nativeRecord, $tracker);
