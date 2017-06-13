@@ -131,6 +131,11 @@ class AtlasContainer
     {
         switch (true) {
 
+            case $args[0] instanceof ConnectionLocator:
+                $this->connectionLocator = $args[0];
+
+                return $this->connectionLocator->getDefault()->getAttribute(PDO::ATTR_DRIVER_NAME);
+
             case $args[0] instanceof ExtendedPdo:
                 $extendedPdo = $args[0];
                 $default = function () use ($extendedPdo) {
