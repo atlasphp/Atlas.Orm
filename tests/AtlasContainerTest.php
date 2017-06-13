@@ -10,6 +10,7 @@ use Atlas\Orm\DataSource\Summary\SummaryTable;
 use Atlas\Orm\DataSource\Tag\TagMapper;
 use Atlas\Orm\DataSource\Thread\ThreadMapper;
 use Atlas\Orm\DataSource\Tagging\TaggingMapper;
+use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
 
 class AtlasContainerTest extends \PHPUnit_Framework_TestCase
@@ -57,5 +58,15 @@ class AtlasContainerTest extends \PHPUnit_Framework_TestCase
             'FooMapper does not exist'
         );
         $this->atlasContainer->setMapper('FooMapper');
+    }
+
+    public function testCustomConnectionLocator()
+    {
+        $locator = new ConnectionLocator(function() {
+            return new ExtendedPdo('sqlite::memory:');
+        });
+        $atlasContainer = new AtlasContainer($locator);
+
+        $this->assertEquals($locator, $atlasContainer->getConnectionLocator());
     }
 }
