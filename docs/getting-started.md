@@ -29,11 +29,19 @@ from the database. You can read more about that in the
 
 ## Instantiating Atlas
 
-Create an Atlas instance using the AtlasContainer, passing along the default
-ExtendedPdo connection parameters:
+Create an Atlas instance using the AtlasContainer.
+
+The container accepts a PDO, ExtendedPdo or ConnectionLocator instance or you 
+can enter connection parameters and the container creates a connection for you.
 
 ```php
 <?php
+$atlasContainer = new AtlasContainer(new PDO(...));
+// or
+$atlasContainer = new AtlasContainer(new ExtendedPdo(...));
+// or
+$atlasContainer = new AtlasContainer(new ConnectionLocator(...));
+// or
 $atlasContainer = new AtlasContainer(
     'mysql:host=localhost;dbname=testdb',
     'username',
