@@ -31,7 +31,7 @@ from the database. You can read more about that in the
 
 Create an Atlas instance using the AtlasContainer.
 
-The container accepts a PDO, ExtendedPdo or ConnectionLocator instance or you 
+The container accepts a [PDO](http://php.net/manual/en/pdo.construct.php), [ExtendedPdo](https://github.com/auraphp/Aura.Sql/blob/3.x/docs/getting-started.md) or [ConnectionLocator](https://github.com/auraphp/Aura.Sql/blob/3.x/docs/connection-locator.md) instance or you 
 can enter connection parameters and the container creates a connection for you.
 
 ```php
@@ -69,4 +69,3 @@ Finally, get back the Atlas instance out of the container.
 <?php
 $atlas = $atlasContainer->getAtlas();
 ```
-
