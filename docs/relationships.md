@@ -59,7 +59,7 @@ class ThreadMapper extends AbstractMapper
 {
     protected function setRelated()
     {
-        $this->oneToOne('author', AuthorMapper::CLASS)
+        $this->manyToOne('author', AuthorMapper::CLASS)
             ->on([
                 // native (threads) column => foreign (authors) column
                 'author_id' => 'id',
@@ -67,6 +67,20 @@ class ThreadMapper extends AbstractMapper
         // ...
     }
 }
+// On the `oneToMany` side of the relationship
+class AuthorMapper extends AbstractMapper
+{
+    protected function setRelated()
+    {
+        $this->oneToMany('posts', PostsMapper::CLASS)
+            ->on([
+                // native (author) column => foreign (threads) column
+                'id' => 'author_id',
+            ]);
+        // ...
+    }
+}
+
 ```
 
 ## Composite Relationship Keys
