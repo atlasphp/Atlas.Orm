@@ -67,7 +67,11 @@ class ThreadMapper extends AbstractMapper
         // ...
     }
 }
-// On the `oneToMany` side of the relationship
+```
+And on the `oneToMany` side of the relationship, you use the native author table
+`id` column with the foreign threads table `author_id` column.
+```php
+<?php
 class AuthorMapper extends AbstractMapper
 {
     protected function setRelated()
@@ -80,7 +84,6 @@ class AuthorMapper extends AbstractMapper
         // ...
     }
 }
-
 ```
 
 ## Composite Relationship Keys

@@ -1,9 +1,8 @@
-# Reading Records From The Database
+# Reading Records and RecordSets
 
-Use Atlas to retrieve a single Record, or many Records in a RecordSet, from
-the database.
+Use Atlas to retrieve a single Record, or many Records in a RecordSet, from the database.
 
-## Reading A Record
+## Reading a Record
 
 Use the `fetchRecord()` method to retrieve a single Record. It can be called
 either by primary key, or with a `select()` query.
@@ -24,7 +23,7 @@ $threadRecord = $atlas
 ```
 
 (Note that the `select()` variation gives you access to all the underlying
-SQL query methods.)
+SQL query methods. See [Aura\SqlQuery](https://github.com/auraphp/Aura.SqlQuery/blob/3.x/docs/select.md) for more information.)
 
 If `fetchRecord()` does not find a match, it will return `false`.
 
@@ -34,20 +33,27 @@ The `fetchRecordSet()` method works the same as `fetchRecord()`, but for
 multiple Records.  It can be called either with primary keys, or with a
 `select()` query.
 
+
+
 ```php
 <?php
 // fetch thread_id 1, 2, and 3
-
 $threadRecordSet = $atlas->fetchRecordSet(
     ThreadMapper::CLASS,
     [1, 2, 3]
 );
 
+// This is identical to the example above, but uses the `select()` variation.
 $threadRecordSet = $atlas
     ->select(ThreadMapper::CLASS)
     ->where('thread_id IN (?)', [1, 2, 3])
     ->fetchRecordSet();
+```
 
+To return all rows, use the `select()` variation as shown below.
+
+```php
+<?php
 // Use the `select()` variation to fetch all records, optionally ordering the
 // returned results
 
@@ -61,8 +67,23 @@ $threadRecordSet = $atlas
 SQL query methods.)
 
 If `fetchRecordSet()` does not find any matches, it will return an empty array.
+This is important as you cannot call RecordSet methods (see later in the
+documentation) such as `appendNew()` or `getArrayCopy()` on an empty array. In
+these situations, you must test for the empty array, and then instantiate a
+new RecordSet, if necessary.
 
+```php
+<?php
+$threadRecordSet = $atlas->fetchRecordSet(
+    ThreadMapper::CLASS,
+    [1, 2, 3]
+);
+if (! $threadRecordSet) {
+    $threadRecordSet = $atlas->newRecordSet(ThreadMapper::CLASS);
+}
 
+$threadMapper->appendNew(...);
+```
 
 ## Reading Relateds
 
@@ -180,50 +201,4 @@ $threadRecord = $atlas->fetchRecord(
 );
 ```
 
-## Returning Data in Other Formats
-
-You can return a Record or a RecordSet as an array rather than a Record or
-RecordSet object using the `getArrayCopy()` method.
-
-```php
-<?php
-$threadRecord = $atlas->fetchRecord('ThreadMapper::CLASS', '1');
-$threadArray = $threadRecord->getArrayCopy();
-
-$threadRecordSet = $atlas
-    ->select(ThreadMapper::CLASS)
-    ->orderBy(['date_added DESC'])
-    ->fetchRecordSet();
-
-$threadsArray = $threadRecordSet->getArrayCopy();
-```
-
-JSON-encoding Records and RecordSets is trival.
-
-```php
-<?php
-$threadJson = json_encode($threadRecord);
-$threadsJson = json_encode($threadRecordSet);
-```
-
-## Reading Record Counts
-
-If you use a `select()` to fetch a RecordSet with a `limit()` or `page()`, you
-can re-use the select to get a count of how many Records would have been
-returned. This can be useful for paging displays.
-
-```php
-<?php
-$select = $atlas
-    ->select(ThreadMapper::CLASS)
-    ->with([
-        'author',
-        'summary',
-        'replies'
-    ])
-    ->limit(10)
-    ->offset(20);
-
-$threadRecordSet = $select->fetchRecordSet();
-$countOfAllThreads = $select->fetchCount();
-```
+## Reading/Accessing Data
