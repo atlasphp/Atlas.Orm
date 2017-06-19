@@ -14,13 +14,17 @@
 * * Fetching Records and RecordSets
 * * Fetching Related Data
 * * Reading/Accessing Data
-* * Alternate Formats
+* * Returning Data in Other Formats
+* * Reading Record Counts
 * Working with Records and RecordSets
 * * Creating a Record
 * * Updating a Record (including Relateds)
 * * Deleting a Record
 * * Persisting a Record (including Relateds)
 * * Transactions (Unit of Work)
+* Adding Logic to Records and RecordSets
+* * Records
+* * RecordSets
 * Events
 * * Record and RecordSet Events
 * * Table Events

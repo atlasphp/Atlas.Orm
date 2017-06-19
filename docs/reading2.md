@@ -202,3 +202,114 @@ $threadRecord = $atlas->fetchRecord(
 ```
 
 ## Reading/Accessing Data
+
+Column names and relationship names are mapped to properties of a Record.
+Relationships must be explicitly requested or their value will be NULL.
+
+Assume a table with the following columns:
+
+<pre>
+---------------------------------------------------------------------------
+thread_id    | title    | body    | author_id | date_added   | date_created
+-------------+----------+---------+-----------+--------------+-------------
+</pre>
+
+```php
+<?php
+$threadRecord = $atlas->fetchRecord(
+    ThreadMapper::CLASS,
+    '1'
+);
+
+echo $threadRecord->title;
+
+// If there were a related named `author`, its value would be `NULL` as it was
+// not requests in the fetch.
+var_dump($threadRecord->author); // NULL
+```
+
+By requesting the author related, you can then access its data via properties.
+
+```php
+<?php
+$threadRecord = $atlas->fetchRecord(
+    ThreadMapper::CLASS,
+    '1',
+    [
+        'author'
+    ]
+);
+
+// `first_name` maps to a column name in the authors table.
+echo $threadRecord->author->first_name;
+```
+
+Relationships can be nested, but as long as a related exists, you can access its
+data.
+
+```php
+<?php
+$threadRecord = $this->atlas
+    ->select(ThreadMapper::class)
+    ->where('thread_id = ?', $threadId)
+    ->with([
+        'author',
+        'summary',
+        'replies' => [
+            'author'
+        ]
+    ])
+    ->fetchRecord();
+
+foreach ($threadRecord->replies as $reply) {
+    echo $reply->author->first_name;
+}
+```
+
+## Returning Data in Other Formats
+
+You can return a Record or a RecordSet as an `array` rather than a Record or
+RecordSet object using the `getArrayCopy()` method.
+
+```php
+<?php
+$threadRecord = $atlas->fetchRecord('ThreadMapper::CLASS', '1');
+$threadArray = $threadRecord->getArrayCopy();
+
+$threadRecordSet = $atlas
+    ->select(ThreadMapper::CLASS)
+    ->orderBy(['date_added DESC'])
+    ->fetchRecordSet();
+
+$threadsArray = $threadRecordSet->getArrayCopy();
+```
+
+JSON-encoding Records and RecordSets is trival.
+
+```php
+<?php
+$threadJson = json_encode($threadRecord);
+$threadsJson = json_encode($threadRecordSet);
+```
+
+## Reading Record Counts
+
+If you use a `select()` to fetch a RecordSet with a `limit()` or `page()`, you
+can re-use the select to get a count of how many Records would have been
+returned. This can be useful for paging displays.
+
+```php
+<?php
+$select = $atlas
+    ->select(ThreadMapper::CLASS)
+    ->with([
+        'author',
+        'summary',
+        'replies'
+    ])
+    ->limit(10)
+    ->offset(20);
+
+$threadRecordSet = $select->fetchRecordSet();
+$countOfAllThreads = $select->fetchCount();
+```
