@@ -17,7 +17,7 @@
 * * Returning Data in Other Formats
 * * Reading Record Counts
 * Working with Records and RecordSets
-* * Creating a Record
+* * Creating and Inserting a Record
 * * Updating a Record (including Relateds)
 * * Deleting a Record
 * * Persisting a Record (including Relateds)

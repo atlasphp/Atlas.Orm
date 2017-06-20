@@ -1,8 +1,9 @@
-# Reading Records and RecordSets
+# Reading Records From The Database
 
-Use Atlas to retrieve a single Record, or many Records in a RecordSet, from the database.
+Use Atlas to retrieve a single Record, or many Records in a RecordSet, from
+the database.
 
-## Reading a Record
+## Reading A Record
 
 Use the `fetchRecord()` method to retrieve a single Record. It can be called
 either by primary key, or with a `select()` query.
@@ -23,7 +24,7 @@ $threadRecord = $atlas
 ```
 
 (Note that the `select()` variation gives you access to all the underlying
-SQL query methods. See [Aura\SqlQuery](https://github.com/auraphp/Aura.SqlQuery/blob/3.x/docs/select.md) for more information.)
+SQL query methods.)
 
 If `fetchRecord()` does not find a match, it will return `false`.
 
@@ -33,27 +34,20 @@ The `fetchRecordSet()` method works the same as `fetchRecord()`, but for
 multiple Records.  It can be called either with primary keys, or with a
 `select()` query.
 
-
-
 ```php
 <?php
 // fetch thread_id 1, 2, and 3
+
 $threadRecordSet = $atlas->fetchRecordSet(
     ThreadMapper::CLASS,
     [1, 2, 3]
 );
 
-// This is identical to the example above, but uses the `select()` variation.
 $threadRecordSet = $atlas
     ->select(ThreadMapper::CLASS)
     ->where('thread_id IN (?)', [1, 2, 3])
     ->fetchRecordSet();
-```
 
-To return all rows, use the `select()` variation as shown below.
-
-```php
-<?php
 // Use the `select()` variation to fetch all records, optionally ordering the
 // returned results
 
@@ -67,23 +61,8 @@ $threadRecordSet = $atlas
 SQL query methods.)
 
 If `fetchRecordSet()` does not find any matches, it will return an empty array.
-This is important as you cannot call RecordSet methods (see later in the
-documentation) such as `appendNew()` or `getArrayCopy()` on an empty array. In
-these situations, you must test for the empty array, and then instantiate a
-new RecordSet, if necessary.
 
-```php
-<?php
-$threadRecordSet = $atlas->fetchRecordSet(
-    ThreadMapper::CLASS,
-    [1, 2, 3]
-);
-if (! $threadRecordSet) {
-    $threadRecordSet = $atlas->newRecordSet(ThreadMapper::CLASS);
-}
 
-$threadMapper->appendNew(...);
-```
 
 ## Reading Relateds
 
@@ -201,74 +180,9 @@ $threadRecord = $atlas->fetchRecord(
 );
 ```
 
-## Reading/Accessing Data
-
-Column names and relationship names are mapped to properties of a Record.
-Relationships must be explicitly requested or their value will be NULL.
-
-Assume a table with the following columns:
-
-<pre>
----------------------------------------------------------------------------
-thread_id    | title    | body    | author_id | date_added   | date_created
--------------+----------+---------+-----------+--------------+-------------
-</pre>
-
-```php
-<?php
-$threadRecord = $atlas->fetchRecord(
-    ThreadMapper::CLASS,
-    '1'
-);
-
-echo $threadRecord->title;
-
-// If there were a related named `author`, its value would be `NULL` as it was
-// not requests in the fetch.
-var_dump($threadRecord->author); // NULL
-```
-
-By requesting the author related, you can then access its data via properties.
-
-```php
-<?php
-$threadRecord = $atlas->fetchRecord(
-    ThreadMapper::CLASS,
-    '1',
-    [
-        'author'
-    ]
-);
-
-// `first_name` maps to a column name in the authors table.
-echo $threadRecord->author->first_name;
-```
-
-Relationships can be nested, but as long as a related exists, you can access its
-data.
-
-```php
-<?php
-$threadRecord = $this->atlas
-    ->select(ThreadMapper::class)
-    ->where('thread_id = ?', $threadId)
-    ->with([
-        'author',
-        'summary',
-        'replies' => [
-            'author'
-        ]
-    ])
-    ->fetchRecord();
-
-foreach ($threadRecord->replies as $reply) {
-    echo $reply->author->first_name;
-}
-```
-
 ## Returning Data in Other Formats
 
-You can return a Record or a RecordSet as an `array` rather than a Record or
+You can return a Record or a RecordSet as an array rather than a Record or
 RecordSet object using the `getArrayCopy()` method.
 
 ```php
