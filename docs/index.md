@@ -13,7 +13,6 @@ domain entities, or use them directly for simple data source interactions.
 
 Atlas is stable for production use. Please send bug reports and pull requests!
 
-Documentation is in [the docs directory](./docs/index.md).
 
 ## Rationale
 
