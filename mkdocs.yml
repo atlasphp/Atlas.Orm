@@ -1,6 +1,7 @@
 site_name: Atlas ORM Documentation
 theme: material
 pages:
+    - Home: index.md
     - Getting Started: getting-started.md
     - Mapper Relationships: relationships.md
     - Reading Records and RecordSets: reading.md
