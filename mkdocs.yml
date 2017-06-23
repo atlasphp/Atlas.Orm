@@ -1,0 +1,14 @@
+site_name: Atlas ORM Documentation
+theme: material
+pages:
+    - Getting Started: getting-started.md
+    - Mapper Relationships: relationships.md
+    - Reading Records and RecordSets: reading.md
+    - Working with Records: records.md
+    - Working with RecordSets: record-sets.md
+    
+# Extensions
+markdown_extensions:
+  - admonition
+  - codehilite(linenums=true)
+  - extra

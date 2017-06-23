@@ -26,6 +26,7 @@ Use the `fetchRecordBy()` method to find a record by one or more equality pairs.
 
 ```php
 <?php
+// If more than one is found, the first match will be returned
 $threadRecord = $atlas->fetchRecordBy(ThreadMapper::CLASS,
     [
         'author_id'=>3,
@@ -34,8 +35,20 @@ $threadRecord = $atlas->fetchRecordBy(ThreadMapper::CLASS,
 );
 ```
 
-(Note that the `select()` variation gives you access to all the underlying
-SQL query methods. See [Aura\SqlQuery](https://github.com/auraphp/Aura.SqlQuery/blob/3.x/docs/select.md) for more information.)
+The example above is equivalent to...
+
+```php
+<?php
+$threadRecord = $atlas->select(ThreadMapper::CLASS)
+    ->where('author_id=>', 3)
+    ->where('published=?', 1)
+    ->fetchRecord();
+```
+
+!!! note
+    The `select()` variation gives you access to all the underlying
+    SQL query methods. See [Aura\SqlQuery](https://github.com/auraphp/Aura.SqlQuery/blob/3.x/docs/select.md) 
+    for more information.
 
 If `fetchRecord()` or  `fetchRecordBy()` does not find a match, it will return `false`.
 
@@ -45,8 +58,6 @@ If `fetchRecord()` or  `fetchRecordBy()` does not find a match, it will return `
 The `fetchRecordSet()` method works the same as `fetchRecord()`, but for
 multiple Records.  It can be called either with primary keys, or with a
 `select()` query.
-
-
 
 ```php
 <?php
@@ -76,14 +87,38 @@ $threadRecordSet = $atlas
     ->fetchRecordSet();
 ```
 
-(Note that the `select()` variation gives you access to all the underlying
-SQL query methods.)
+Use the `fetchRecordSetBy()` method to find a RecordSet by one or more equality pairs.
 
-If `fetchRecordSet()` does not find any matches, it will return an empty array.
-This is important as you cannot call RecordSet methods (see later in the
-documentation) such as `appendNew()` or `getArrayCopy()` on an empty array. In
-these situations, you must test for the empty array, and then instantiate a
-new RecordSet, if necessary.
+```php
+<?php
+$threadRecords = $atlas->fetchRecordSetBy(ThreadMapper::CLASS,
+    [
+        'author_id'=>3,
+        'published'=>1
+    ]
+);
+```
+
+The example above is equivalent to...
+
+```php
+<?php
+$threadRecords = $atlas->select(ThreadMapper::CLASS)
+    ->where('author_id=>', 3)
+    ->where('published=?', 1)
+    ->fetchRecordSet();
+```
+
+!!! note 
+    The `select()` variation gives you access to all the underlying
+    SQL query methods. See [Aura\SqlQuery](https://github.com/auraphp/Aura.SqlQuery/blob/3.x/docs/select.md)
+    for more information.
+
+If `fetchRecordSet()` or `fetchRecordSetBy()` do not find any matches, they will
+return an empty array. This is important as you cannot call RecordSet methods
+(see later in the documentation) such as `appendNew()` or `getArrayCopy()` on
+an empty array. In these situations, you must test for the empty array, and then
+instantiate a new RecordSet, if necessary.
 
 ```php
 <?php
@@ -130,9 +165,10 @@ $threadRecordSet = $atlas->fetchRecordSet(
 );
 ```
 
-**Note:** when fetching a `manyToMany` relationship, you mush explicitly specify
-both the association (join) table AND the `manyToMany` table. Additionally, you
-must specify these relationships in the correct order.
+!!! note 
+    When fetching a `manyToMany` relationship, you must explicitly specify
+    both the association (join) table AND the `manyToMany` table. Additionally, you
+    must specify these relationships in the correct order.
 
 ```php
 <?php
