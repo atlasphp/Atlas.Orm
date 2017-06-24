@@ -542,6 +542,12 @@ abstract class AbstractTable implements TableInterface
                 unset($cols[$col]);
             }
 
+            // If property is null and is nullable continue
+            if ($val === null && property_exists($colMap[$col], 'notnull') && $colMap[$col]->notnull === true) {
+                continue;
+            }
+
+            // Cast to a specified type if mapTo has been specified
             if (isset($colMap[$col]) && property_exists($colMap[$col], 'mapTo')) {
                 settype($cols[$col], $colMap[$col]->mapTo);
             }
