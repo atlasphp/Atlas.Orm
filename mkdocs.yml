@@ -4,7 +4,7 @@ pages:
     - Home: index.md
     - Getting Started: getting-started.md
     - Mapper Relationships: relationships.md
-    - Reading Records and RecordSets: reading.md
+    - Fetching Records and RecordSets: reading.md
     - Working with Records: records.md
     - Working with RecordSets: record-sets.md
     - Transactions (Unit of Work): transactions.md
