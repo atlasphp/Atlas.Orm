@@ -39,6 +39,7 @@ class AuthorTable extends AbstractTable
             'author_id' => (object) [
                 'name' => 'author_id',
                 'type' => 'integer',
+                'mapTo' => 'integer',
                 'size' => null,
                 'scale' => null,
                 'notnull' => false,
@@ -49,6 +50,7 @@ class AuthorTable extends AbstractTable
             'name' => (object) [
                 'name' => 'name',
                 'type' => 'varchar',
+                'mapTo' => 'string',
                 'size' => 10,
                 'scale' => null,
                 'notnull' => true,

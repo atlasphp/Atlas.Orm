@@ -41,6 +41,7 @@ class ThreadTable extends AbstractTable
             'thread_id' => (object) [
                 'name' => 'thread_id',
                 'type' => 'integer',
+                'mapTo' => 'integer',
                 'size' => null,
                 'scale' => null,
                 'notnull' => false,
@@ -51,6 +52,7 @@ class ThreadTable extends AbstractTable
             'author_id' => (object) [
                 'name' => 'author_id',
                 'type' => 'integer',
+                'mapTo' => 'integer',
                 'size' => null,
                 'scale' => null,
                 'notnull' => true,
@@ -61,6 +63,7 @@ class ThreadTable extends AbstractTable
             'subject' => (object) [
                 'name' => 'subject',
                 'type' => 'varchar',
+                'mapTo' => 'string',
                 'size' => 255,
                 'scale' => null,
                 'notnull' => true,
@@ -71,6 +74,7 @@ class ThreadTable extends AbstractTable
             'body' => (object) [
                 'name' => 'body',
                 'type' => 'text',
+                'mapTo' => 'string',
                 'size' => null,
                 'scale' => null,
                 'notnull' => true,

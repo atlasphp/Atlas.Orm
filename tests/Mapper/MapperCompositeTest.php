@@ -1,12 +1,13 @@
 <?php
+
 namespace Atlas\Orm\Mapper;
 
 use Atlas\Orm\DataSource\Course\CourseMapper;
 use Atlas\Orm\DataSource\Course\CourseTable;
 use Atlas\Orm\Relationship\Relationships;
 use Atlas\Orm\SqliteFixture;
-use Atlas\Orm\Table\TableEvents;
 use Atlas\Orm\Table\IdentityMap;
+use Atlas\Orm\Table\TableEvents;
 use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\QueryFactory;
@@ -46,14 +47,14 @@ class MapperCompositeTest extends \PHPUnit_Framework_TestCase
     {
         $expect = [
             'course_subject' => 'MATH',
-            'course_number' => '100',
+            'course_number' => 100,
             'title' => 'Algebra',
         ];
 
         // fetch success
         $record1 = $this->mapper->fetchRecord([
             'course_subject' => 'MATH',
-            'course_number' => '100',
+            'course_number' => 100,
         ]);
         $this->assertInstanceOf(Record::CLASS, $record1);
         $row1 = $record1->getRow();
@@ -62,7 +63,7 @@ class MapperCompositeTest extends \PHPUnit_Framework_TestCase
         // fetch again
         $record2 = $this->mapper->fetchRecord([
             'course_subject' => 'MATH',
-            'course_number' => '100',
+            'course_number' => 100,
         ]);
         $this->assertInstanceOf(Record::CLASS, $record2);
         $this->assertNotSame($record1, $record2);
@@ -72,7 +73,7 @@ class MapperCompositeTest extends \PHPUnit_Framework_TestCase
         // fetch failure
         $actual = $this->mapper->fetchRecord([
             'course_subject' => 'NONE',
-            'course_number' => '999',
+            'course_number' => 999,
         ]);
         $this->assertFalse($actual);
     }
@@ -81,7 +82,7 @@ class MapperCompositeTest extends \PHPUnit_Framework_TestCase
     {
         $expect = [
             'course_subject' => 'MATH',
-            'course_number' => '100',
+            'course_number' => 100,
             'title' => 'Algebra',
         ];
 
@@ -107,14 +108,14 @@ class MapperCompositeTest extends \PHPUnit_Framework_TestCase
     {
         $expect = [
             'course_subject' => 'MATH',
-            'course_number' => '100',
+            'course_number' => 100,
             'title' => 'Algebra',
         ];
 
         // fetch success
         $select = $this->mapper->select([
             'course_subject' => 'MATH',
-            'course_number' => '100',
+            'course_number' => 100,
         ]);
         $record1 = $select->fetchRecord();
         $this->assertInstanceOf(Record::CLASS, $record1);
@@ -131,7 +132,7 @@ class MapperCompositeTest extends \PHPUnit_Framework_TestCase
         // fetch failure
         $select = $this->mapper->select([
             'course_subject' => 'NONE',
-            'course_number' => '999',
+            'course_number' => 999,
         ]);
         $actual = $select->fetchRecord();
         $this->assertFalse($actual);
@@ -140,15 +141,15 @@ class MapperCompositeTest extends \PHPUnit_Framework_TestCase
     public function testFetchRecordSet()
     {
         $expect = [
-            ['course_subject' => 'ENGL', 'course_number' => '100', 'title' => 'Composition'],
-            ['course_subject' => 'HIST', 'course_number' => '200', 'title' => 'US History'],
-            ['course_subject' => 'MATH', 'course_number' => '300', 'title' => 'Calculus'],
+            ['course_subject' => 'ENGL', 'course_number' => 100, 'title' => 'Composition'],
+            ['course_subject' => 'HIST', 'course_number' => 200, 'title' => 'US History'],
+            ['course_subject' => 'MATH', 'course_number' => 300, 'title' => 'Calculus'],
         ];
 
         $actual = $this->mapper->fetchRecordSet([
-            ['course_subject' => 'ENGL', 'course_number' => '100'],
-            ['course_subject' => 'HIST', 'course_number' => '200'],
-            ['course_subject' => 'MATH', 'course_number' => '300'],
+            ['course_subject' => 'ENGL', 'course_number' => 100],
+            ['course_subject' => 'HIST', 'course_number' => 200],
+            ['course_subject' => 'MATH', 'course_number' => 300],
         ]);
         $this->assertInstanceOf(RecordSet::CLASS, $actual);
         $this->assertCount(3, $actual);
@@ -160,9 +161,9 @@ class MapperCompositeTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expect[2], $actual[2]->getRow()->getArrayCopy());
 
         $again = $this->mapper->fetchRecordSet([
-            ['course_subject' => 'ENGL', 'course_number' => '100'],
-            ['course_subject' => 'HIST', 'course_number' => '200'],
-            ['course_subject' => 'MATH', 'course_number' => '300'],
+            ['course_subject' => 'ENGL', 'course_number' => 100],
+            ['course_subject' => 'HIST', 'course_number' => 200],
+            ['course_subject' => 'MATH', 'course_number' => 300],
         ]);
         $this->assertInstanceOf(RecordSet::CLASS, $again);
         $this->assertCount(3, $again);
@@ -174,9 +175,9 @@ class MapperCompositeTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($actual[2]->getRow(), $again[2]->getRow());
 
         $actual = $this->mapper->fetchRecordSet([
-            ['course_subject' => 'ENGL', 'course_number' => '999'],
-            ['course_subject' => 'HIST', 'course_number' => '999'],
-            ['course_subject' => 'MATH', 'course_number' => '999'],
+            ['course_subject' => 'ENGL', 'course_number' => 999],
+            ['course_subject' => 'HIST', 'course_number' => 999],
+            ['course_subject' => 'MATH', 'course_number' => 999],
         ]);
         $this->assertSame([], $actual);
     }
@@ -184,10 +185,10 @@ class MapperCompositeTest extends \PHPUnit_Framework_TestCase
     public function testFetchRecordSetBy()
     {
         $expect = [
-            ['course_subject' => 'HIST', 'course_number' => '100', 'title' => 'World History'],
-            ['course_subject' => 'HIST', 'course_number' => '200', 'title' => 'US History'],
-            ['course_subject' => 'HIST', 'course_number' => '300', 'title' => 'Victorian History'],
-            ['course_subject' => 'HIST', 'course_number' => '400', 'title' => 'Recent History'],
+            ['course_subject' => 'HIST', 'course_number' => 100, 'title' => 'World History'],
+            ['course_subject' => 'HIST', 'course_number' => 200, 'title' => 'US History'],
+            ['course_subject' => 'HIST', 'course_number' => 300, 'title' => 'Victorian History'],
+            ['course_subject' => 'HIST', 'course_number' => 400, 'title' => 'Recent History'],
         ];
 
         $actual = $this->mapper->fetchRecordSetBy(['course_subject' => 'HIST']);
@@ -220,10 +221,10 @@ class MapperCompositeTest extends \PHPUnit_Framework_TestCase
     public function testSelectFetchRecordSet()
     {
         $expect = [
-            ['course_subject' => 'HIST', 'course_number' => '100', 'title' => 'World History'],
-            ['course_subject' => 'HIST', 'course_number' => '200', 'title' => 'US History'],
-            ['course_subject' => 'HIST', 'course_number' => '300', 'title' => 'Victorian History'],
-            ['course_subject' => 'HIST', 'course_number' => '400', 'title' => 'Recent History'],
+            ['course_subject' => 'HIST', 'course_number' => 100, 'title' => 'World History'],
+            ['course_subject' => 'HIST', 'course_number' => 200, 'title' => 'US History'],
+            ['course_subject' => 'HIST', 'course_number' => 300, 'title' => 'Victorian History'],
+            ['course_subject' => 'HIST', 'course_number' => 400, 'title' => 'Recent History'],
         ];
 
         $select = $this->mapper->select(['course_subject' => 'HIST']);
@@ -257,7 +258,7 @@ class MapperCompositeTest extends \PHPUnit_Framework_TestCase
     {
         $record = $this->mapper->newRecord([
             'course_subject' => 'PHIL',
-            'course_number' => '100',
+            'course_number' => 100,
             'title' => 'Greek Philosophy',
         ]);
 
@@ -268,7 +269,7 @@ class MapperCompositeTest extends \PHPUnit_Framework_TestCase
         // did it save in the identity map?
         $again = $this->mapper->fetchRecord([
             'course_subject' => 'PHIL',
-            'course_number' => '100',
+            'course_number' => 100,
         ]);
         $this->assertSame($record->getRow(), $again->getRow());
 
@@ -297,7 +298,7 @@ class MapperCompositeTest extends \PHPUnit_Framework_TestCase
         // fetch a record, then modify and update it
         $record = $this->mapper->fetchRecordBy([
             'course_subject' => 'MATH',
-            'course_number' => '100',
+            'course_number' => 100,
         ]);
         $record->title = 'Algebra I';
 
@@ -308,7 +309,7 @@ class MapperCompositeTest extends \PHPUnit_Framework_TestCase
         // is it still in the identity map?
         $again = $this->mapper->fetchRecordBy([
             'course_subject' => 'MATH',
-            'course_number' => '100',
+            'course_number' => 100,
         ]);
         $this->assertSame($record->getRow(), $again->getRow());
 
@@ -317,7 +318,9 @@ class MapperCompositeTest extends \PHPUnit_Framework_TestCase
         $actual = $this->mapper->getReadConnection()->fetchOne(
             "SELECT * FROM courses WHERE course_subject = 'MATH' AND course_number = '100'"
         );
-        $this->assertSame($expect, $actual);
+
+        // Will assert equals but not same because the 'course_number' has been casted in integer
+        $this->assertEquals($expect, $actual);
 
         // try to update again, should be a no-op because there are no changes
         $this->assertFalse($this->mapper->update($record));
@@ -328,14 +331,14 @@ class MapperCompositeTest extends \PHPUnit_Framework_TestCase
         // fetch a record, then delete it
         $record = $this->mapper->fetchRecordBy([
             'course_subject' => 'MATH',
-            'course_number' => '100',
+            'course_number' => 100,
         ]);
         $this->mapper->delete($record);
 
         // did it delete?
         $actual = $this->mapper->fetchRecordBy([
             'course_subject' => 'MATH',
-            'course_number' => '100',
+            'course_number' => 100,
         ]);
         $this->assertFalse($actual);
 

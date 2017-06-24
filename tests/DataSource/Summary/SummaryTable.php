@@ -41,6 +41,7 @@ class SummaryTable extends AbstractTable
             'summary_id' => (object) [
                 'name' => 'summary_id',
                 'type' => 'integer',
+                'mapTo' => 'integer',
                 'size' => null,
                 'scale' => null,
                 'notnull' => false,
@@ -51,6 +52,7 @@ class SummaryTable extends AbstractTable
             'thread_id' => (object) [
                 'name' => 'thread_id',
                 'type' => 'integer',
+                'mapTo' => 'integer',
                 'size' => null,
                 'scale' => null,
                 'notnull' => true,
@@ -61,6 +63,7 @@ class SummaryTable extends AbstractTable
             'reply_count' => (object) [
                 'name' => 'reply_count',
                 'type' => 'integer',
+                'mapTo' => 'integer',
                 'size' => null,
                 'scale' => null,
                 'notnull' => true,
@@ -71,6 +74,7 @@ class SummaryTable extends AbstractTable
             'view_count' => (object) [
                 'name' => 'view_count',
                 'type' => 'integer',
+                'mapTo' => 'integer',
                 'size' => null,
                 'scale' => null,
                 'notnull' => true,

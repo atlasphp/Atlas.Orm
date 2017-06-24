@@ -1,4 +1,5 @@
 <?php
+
 namespace Atlas\Orm;
 
 use Atlas\Orm\DataSource\Course\CourseMapper;
@@ -6,7 +7,6 @@ use Atlas\Orm\DataSource\Degree\DegreeMapper;
 use Atlas\Orm\DataSource\Enrollment\EnrollmentMapper;
 use Atlas\Orm\DataSource\Gpa\GpaMapper;
 use Atlas\Orm\DataSource\Student\StudentMapper;
-use Aura\Sql\ExtendedPdo;
 
 class AtlasCompositeTest extends \PHPUnit_Framework_TestCase
 {
@@ -82,7 +82,7 @@ class AtlasCompositeTest extends \PHPUnit_Framework_TestCase
         )->getArrayCopy();
 
         foreach ($this->expectRecordSet as $i => $expect) {
-            $this->assertSame($expect, $actual[$i], "record $i not the same");
+            $this->assertEquals($expect, $actual[$i], "record $i not the same");
         }
     }
 
@@ -101,7 +101,7 @@ class AtlasCompositeTest extends \PHPUnit_Framework_TestCase
         )->getArrayCopy();
 
         foreach ($this->expectRecordSet as $i => $expect) {
-            $this->assertSame($expect, $actual[$i], "record $i not the same");
+            $this->assertEquals($expect, $actual[$i], "record $i not the same");
         }
     }
 
@@ -118,7 +118,7 @@ class AtlasCompositeTest extends \PHPUnit_Framework_TestCase
             ])
             ->fetchRecord();
 
-        $this->assertSame($this->expectRecord, $actual->getArrayCopy());
+        $this->assertEquals($this->expectRecord, $actual->getArrayCopy());
     }
 
     public function testSelect_fetchRecordSet()
@@ -136,7 +136,7 @@ class AtlasCompositeTest extends \PHPUnit_Framework_TestCase
             ->getArrayCopy();
 
         foreach ($this->expectRecordSet as $i => $expect) {
-            $this->assertSame($expect, $actual[$i], "record $i not the same");
+            $this->assertEquals($expect, $actual[$i], "record $i not the same");
         }
     }
 
@@ -225,9 +225,9 @@ class AtlasCompositeTest extends \PHPUnit_Framework_TestCase
                 'student_fn' => 'Anna',
                 'student_ln' => 'Alpha',
                 'course_subject' => 'ENGL',
-                'course_number' => '100',
-                'grade' => '65',
-                'points' => '1',
+                'course_number' => 100,
+                'grade' => 65,
+                'points' => 1,
                 'course' => NULL,
                 'student' => NULL,
             ]
@@ -244,7 +244,7 @@ class AtlasCompositeTest extends \PHPUnit_Framework_TestCase
         'gpa' => [
             'student_fn' => 'Anna',
             'student_ln' => 'Alpha',
-            'gpa' => '1.333',
+            'gpa' => 1.333,
             'student' => null,
         ],
         'degree' => [
@@ -258,9 +258,9 @@ class AtlasCompositeTest extends \PHPUnit_Framework_TestCase
                 'student_fn' => 'Anna',
                 'student_ln' => 'Alpha',
                 'course_subject' => 'ENGL',
-                'course_number' => '100',
-                'grade' => '65',
-                'points' => '1',
+                'course_number' => 100,
+                'grade' => 65,
+                'points' => 1,
                 'course' => null,
                 'student' => null,
             ],
@@ -268,9 +268,9 @@ class AtlasCompositeTest extends \PHPUnit_Framework_TestCase
                 'student_fn' => 'Anna',
                 'student_ln' => 'Alpha',
                 'course_subject' => 'HIST',
-                'course_number' => '100',
-                'grade' => '68',
-                'points' => '1',
+                'course_number' => 100,
+                'grade' => 68,
+                'points' => 1,
                 'course' => null,
                 'student' => null,
             ],
@@ -278,9 +278,9 @@ class AtlasCompositeTest extends \PHPUnit_Framework_TestCase
                 'student_fn' => 'Anna',
                 'student_ln' => 'Alpha',
                 'course_subject' => 'MATH',
-                'course_number' => '100',
-                'grade' => '71',
-                'points' => '2',
+                'course_number' => 100,
+                'grade' => 71,
+                'points' => 2,
                 'course' => null,
                 'student' => null,
             ],
@@ -288,21 +288,21 @@ class AtlasCompositeTest extends \PHPUnit_Framework_TestCase
         'courses' => [
             0 => [
                 'course_subject' => 'ENGL',
-                'course_number' => '100',
+                'course_number' => 100,
                 'title' => 'Composition',
                 'enrollments' => null,
                 'students' => null,
             ],
             1 => [
                 'course_subject' => 'HIST',
-                'course_number' => '100',
+                'course_number' => 100,
                 'title' => 'World History',
                 'enrollments' => null,
                 'students' => null,
             ],
             2 => [
                 'course_subject' => 'MATH',
-                'course_number' => '100',
+                'course_number' => 100,
                 'title' => 'Algebra',
                 'enrollments' => null,
                 'students' => null,
@@ -320,7 +320,7 @@ class AtlasCompositeTest extends \PHPUnit_Framework_TestCase
             'gpa' => [
                 'student_fn' => 'Anna',
                 'student_ln' => 'Alpha',
-                'gpa' => '1.333',
+                'gpa' => 1.333,
                 'student' => NULL,
             ],
             'degree' => [
@@ -334,9 +334,9 @@ class AtlasCompositeTest extends \PHPUnit_Framework_TestCase
                     'student_fn' => 'Anna',
                     'student_ln' => 'Alpha',
                     'course_subject' => 'ENGL',
-                    'course_number' => '100',
-                    'grade' => '65',
-                    'points' => '1',
+                    'course_number' => 100,
+                    'grade' => 65,
+                    'points' => 1,
                     'course' => NULL,
                     'student' => NULL,
                 ],
@@ -344,9 +344,9 @@ class AtlasCompositeTest extends \PHPUnit_Framework_TestCase
                     'student_fn' => 'Anna',
                     'student_ln' => 'Alpha',
                     'course_subject' => 'HIST',
-                    'course_number' => '100',
-                    'grade' => '68',
-                    'points' => '1',
+                    'course_number' => 100,
+                    'grade' => 68,
+                    'points' => 1,
                     'course' => NULL,
                     'student' => NULL,
                 ],
@@ -354,9 +354,9 @@ class AtlasCompositeTest extends \PHPUnit_Framework_TestCase
                     'student_fn' => 'Anna',
                     'student_ln' => 'Alpha',
                     'course_subject' => 'MATH',
-                    'course_number' => '100',
-                    'grade' => '71',
-                    'points' => '2',
+                    'course_number' => 100,
+                    'grade' => 71,
+                    'points' => 2,
                     'course' => NULL,
                     'student' => NULL,
                 ],
@@ -364,21 +364,21 @@ class AtlasCompositeTest extends \PHPUnit_Framework_TestCase
             'courses' => [
                 0 => [
                     'course_subject' => 'ENGL',
-                    'course_number' => '100',
+                    'course_number' => 100,
                     'title' => 'Composition',
                     'enrollments' => NULL,
                     'students' => NULL,
                 ],
                 1 => [
                     'course_subject' => 'HIST',
-                    'course_number' => '100',
+                    'course_number' => 100,
                     'title' => 'World History',
                     'enrollments' => NULL,
                     'students' => NULL,
                 ],
                 2 => [
                     'course_subject' => 'MATH',
-                    'course_number' => '100',
+                    'course_number' => 100,
                     'title' => 'Algebra',
                     'enrollments' => NULL,
                     'students' => NULL,
@@ -394,7 +394,7 @@ class AtlasCompositeTest extends \PHPUnit_Framework_TestCase
             'gpa' => [
                 'student_fn' => 'Betty',
                 'student_ln' => 'Beta',
-                'gpa' => '1.667',
+                'gpa' => 1.667,
                 'student' => NULL,
             ],
             'degree' => [
@@ -408,9 +408,9 @@ class AtlasCompositeTest extends \PHPUnit_Framework_TestCase
                     'student_fn' => 'Betty',
                     'student_ln' => 'Beta',
                     'course_subject' => 'ENGL',
-                    'course_number' => '200',
-                    'grade' => '74',
-                    'points' => '2',
+                    'course_number' => 200,
+                    'grade' => 74,
+                    'points' => 2,
                     'course' => NULL,
                     'student' => NULL,
                 ],
@@ -418,9 +418,9 @@ class AtlasCompositeTest extends \PHPUnit_Framework_TestCase
                     'student_fn' => 'Betty',
                     'student_ln' => 'Beta',
                     'course_subject' => 'HIST',
-                    'course_number' => '100',
-                    'grade' => '68',
-                    'points' => '1',
+                    'course_number' => 100,
+                    'grade' => 68,
+                    'points' => 1,
                     'course' => NULL,
                     'student' => NULL,
                 ],
@@ -428,9 +428,9 @@ class AtlasCompositeTest extends \PHPUnit_Framework_TestCase
                     'student_fn' => 'Betty',
                     'student_ln' => 'Beta',
                     'course_subject' => 'MATH',
-                    'course_number' => '100',
-                    'grade' => '71',
-                    'points' => '2',
+                    'course_number' => 100,
+                    'grade' => 71,
+                    'points' => 2,
                     'course' => NULL,
                     'student' => NULL,
                 ],
@@ -438,21 +438,21 @@ class AtlasCompositeTest extends \PHPUnit_Framework_TestCase
             'courses' => [
                 0 => [
                     'course_subject' => 'ENGL',
-                    'course_number' => '200',
+                    'course_number' => 200,
                     'title' => 'Creative Writing',
                     'enrollments' => NULL,
                     'students' => NULL,
                 ],
                 1 => [
                     'course_subject' => 'HIST',
-                    'course_number' => '100',
+                    'course_number' => 100,
                     'title' => 'World History',
                     'enrollments' => NULL,
                     'students' => NULL,
                 ],
                 2 => [
                     'course_subject' => 'MATH',
-                    'course_number' => '100',
+                    'course_number' => 100,
                     'title' => 'Algebra',
                     'enrollments' => NULL,
                     'students' => NULL,
@@ -482,9 +482,9 @@ class AtlasCompositeTest extends \PHPUnit_Framework_TestCase
                     'student_fn' => 'Clara',
                     'student_ln' => 'Clark',
                     'course_subject' => 'ENGL',
-                    'course_number' => '200',
-                    'grade' => '74',
-                    'points' => '2',
+                    'course_number' => 200,
+                    'grade' => 74,
+                    'points' => 2,
                     'course' => NULL,
                     'student' => NULL,
                 ],
@@ -492,9 +492,9 @@ class AtlasCompositeTest extends \PHPUnit_Framework_TestCase
                     'student_fn' => 'Clara',
                     'student_ln' => 'Clark',
                     'course_subject' => 'HIST',
-                    'course_number' => '200',
-                    'grade' => '77',
-                    'points' => '2',
+                    'course_number' => 200,
+                    'grade' => 77,
+                    'points' => 2,
                     'course' => NULL,
                     'student' => NULL,
                 ],
@@ -502,9 +502,9 @@ class AtlasCompositeTest extends \PHPUnit_Framework_TestCase
                     'student_fn' => 'Clara',
                     'student_ln' => 'Clark',
                     'course_subject' => 'MATH',
-                    'course_number' => '100',
-                    'grade' => '71',
-                    'points' => '2',
+                    'course_number' => 100,
+                    'grade' => 71,
+                    'points' => 2,
                     'course' => NULL,
                     'student' => NULL,
                 ],
@@ -512,21 +512,21 @@ class AtlasCompositeTest extends \PHPUnit_Framework_TestCase
             'courses' => [
                 0 => [
                     'course_subject' => 'ENGL',
-                    'course_number' => '200',
+                    'course_number' => 200,
                     'title' => 'Creative Writing',
                     'enrollments' => NULL,
                     'students' => NULL,
                 ],
                 1 => [
                     'course_subject' => 'HIST',
-                    'course_number' => '200',
+                    'course_number' => 200,
                     'title' => 'US History',
                     'enrollments' => NULL,
                     'students' => NULL,
                 ],
                 2 => [
                     'course_subject' => 'MATH',
-                    'course_number' => '100',
+                    'course_number' => 100,
                     'title' => 'Algebra',
                     'enrollments' => NULL,
                     'students' => NULL,

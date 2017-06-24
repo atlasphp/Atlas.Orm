@@ -40,6 +40,7 @@ class CourseTable extends AbstractTable
             'course_subject' => (object) [
                 'name' => 'course_subject',
                 'type' => 'char',
+                'mapTo' => 'string',
                 'size' => 4,
                 'scale' => null,
                 'notnull' => false,
@@ -50,6 +51,7 @@ class CourseTable extends AbstractTable
             'course_number' => (object) [
                 'name' => 'course_number',
                 'type' => 'int',
+                'mapTo' => 'integer',
                 'size' => null,
                 'scale' => null,
                 'notnull' => false,
@@ -60,6 +62,7 @@ class CourseTable extends AbstractTable
             'title' => (object) [
                 'name' => 'title',
                 'type' => 'varchar',
+                'mapTo' => 'string',
                 'size' => 20,
                 'scale' => null,
                 'notnull' => false,

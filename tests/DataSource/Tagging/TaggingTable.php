@@ -40,6 +40,7 @@ class TaggingTable extends AbstractTable
             'tagging_id' => (object) [
                 'name' => 'tagging_id',
                 'type' => 'integer',
+                'mapTo' => 'integer',
                 'size' => null,
                 'scale' => null,
                 'notnull' => false,
@@ -50,6 +51,7 @@ class TaggingTable extends AbstractTable
             'thread_id' => (object) [
                 'name' => 'thread_id',
                 'type' => 'integer',
+                'mapTo' => 'integer',
                 'size' => null,
                 'scale' => null,
                 'notnull' => true,
@@ -60,6 +62,7 @@ class TaggingTable extends AbstractTable
             'tag_id' => (object) [
                 'name' => 'tag_id',
                 'type' => 'integer',
+                'mapTo' => 'integer',
                 'size' => null,
                 'scale' => null,
                 'notnull' => true,

@@ -1,12 +1,11 @@
 <?php
+
 namespace Atlas\Orm;
 
 use Atlas\Orm\DataSource\Author\AuthorMapper;
 use Atlas\Orm\DataSource\Reply\ReplyMapper;
 use Atlas\Orm\DataSource\Reply\ReplyRecord;
-use Atlas\Orm\DataSource\Reply\ReplyRecordSet;
 use Atlas\Orm\DataSource\Summary\SummaryMapper;
-use Atlas\Orm\DataSource\Summary\SummaryTable;
 use Atlas\Orm\DataSource\Tag\TagMapper;
 use Atlas\Orm\DataSource\Tagging\TaggingMapper;
 use Atlas\Orm\DataSource\Thread\ThreadMapper;
@@ -14,7 +13,6 @@ use Atlas\Orm\DataSource\Thread\ThreadRecord;
 use Atlas\Orm\DataSource\Thread\ThreadRecordSet;
 use Atlas\Orm\Mapper\Record;
 use Atlas\Orm\Mapper\RecordSet;
-use Aura\Sql\ExtendedPdo;
 use Aura\Sql\Profiler;
 
 class AtlasTest extends \PHPUnit_Framework_TestCase
@@ -293,7 +291,8 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
             ->fetchOne(
                 "SELECT * FROM authors WHERE name = 'Annabelle'"
             );
-        $this->assertSame($expect, $actual);
+        // Will assert equals but not same because the 'author_id' has been casted in integer
+        $this->assertEquals($expect, $actual);
 
         // try to update again, should be a no-op because there are no changes
         $this->assertFalse($this->atlas->update($author));
@@ -341,7 +340,7 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
     {
         // plain old primary value
         $actual = $this->atlas->fetchRecord(AuthorMapper::CLASS, 1);
-        $this->assertSame('1', $actual->author_id);
+        $this->assertSame(1, $actual->author_id);
 
         // primary embedded in array
         $actual = $this->atlas->fetchRecord(AuthorMapper::CLASS, [
@@ -349,7 +348,7 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
             'foo' => 'bar',
             'baz' => 'dib'
         ]);
-        $this->assertSame('2', $actual->author_id);
+        $this->assertSame(2, $actual->author_id);
 
         // not a scalar
         $this->setExpectedException(
@@ -422,79 +421,79 @@ ORDER BY
     }
 
     protected $expectRecord = [
-        'thread_id' => '1',
-        'author_id' => '1',
+        'thread_id' => 1,
+        'author_id' => 1,
         'subject' => 'Thread subject 1',
         'body' => 'Thread body 1',
         'author' => [
-            'author_id' => '1',
+            'author_id' => 1,
             'name' => 'Anna',
             'replies' => null,
             'threads' => null,
         ],
         'summary' => [
-            'summary_id' => '1',
-            'thread_id' => '1',
-            'reply_count' => '5',
-            'view_count' => '0',
+            'summary_id' => 1,
+            'thread_id' => 1,
+            'reply_count' => 5,
+            'view_count' => 0,
             'thread' => null,
         ],
         'replies' => [
             0 => [
-                'reply_id' => '1',
-                'thread_id' => '1',
-                'author_id' => '2',
+                'reply_id' => 1,
+                'thread_id' => 1,
+                'author_id' => 2,
                 'body' => 'Reply 1 on thread 1',
                 'author' => [
-                    'author_id' => '2',
+                    'author_id' => 2,
                     'name' => 'Betty',
                     'replies' => null,
                     'threads' => null,
                 ],
             ],
             1 => [
-                'reply_id' => '2',
-                'thread_id' => '1',
-                'author_id' => '3',
+                'reply_id' => 2,
+                'thread_id' => 1,
+                'author_id' => 3,
                 'body' => 'Reply 2 on thread 1',
                 'author' => [
-                    'author_id' => '3',
+                    'author_id' => 3,
                     'name' => 'Clara',
                     'replies' => null,
                     'threads' => null,
                 ],
             ],
             2 => [
-                'reply_id' => '3',
-                'thread_id' => '1',
-                'author_id' => '4',
+                'reply_id' => 3,
+                'thread_id' => 1,
+                'author_id' => 4,
                 'body' => 'Reply 3 on thread 1',
                 'author' => [
-                    'author_id' => '4',
+                    'author_id' => 4,
                     'name' => 'Donna',
                     'replies' => null,
                     'threads' => null,
                 ],
             ],
             3 => [
-                'reply_id' => '4',
-                'thread_id' => '1',
-                'author_id' => '5',
+                'reply_id' => 4,
+                'thread_id' => 1,
+                'author_id' => 5,
                 'body' => 'Reply 4 on thread 1',
                 'author' => [
-                    'author_id' => '5',
+                    'author_id' => 5,
                     'name' => 'Edna',
                     'replies' => null,
                     'threads' => null,
                 ],
             ],
             4 => [
-                'reply_id' => '5',
-                'thread_id' => '1',
-                'author_id' => '6',
+                'reply_id' => 5,
+                'thread_id' => 1,
+                'author_id' => 6,
                 'body' => 'Reply 5 on thread 1',
                 'author' => [
-                    'author_id' => '6',
+                    'author_id' => 6,
                     'name' => 'Fiona',
                     'replies' => null,
                     'threads' => null,
@@ -503,42 +502,42 @@ ORDER BY
         ],
         'taggings' => [
             0 => [
-                'tagging_id' => '1',
-                'thread_id' => '1',
-                'tag_id' => '1',
+                'tagging_id' => 1,
+                'thread_id' => 1,
+                'tag_id' => 1,
                 'thread' => null,
                 'tag' => null,
             ],
             1 => [
-                'tagging_id' => '2',
-                'thread_id' => '1',
-                'tag_id' => '2',
+                'tagging_id' => 2,
+                'thread_id' => 1,
+                'tag_id' => 2,
                 'thread' => null,
                 'tag' => null,
             ],
             2 => [
-                'tagging_id' => '3',
-                'thread_id' => '1',
-                'tag_id' => '3',
+                'tagging_id' => 3,
+                'thread_id' => 1,
+                'tag_id' => 3,
                 'thread' => null,
                 'tag' => null,
             ],
         ],
         'tags' => [
             0 => [
-                'tag_id' => '1',
+                'tag_id' => 1,
                 'name' => 'foo',
                 'taggings' => null,
                 'threads' => null,
             ],
             1 => [
-                'tag_id' => '2',
+                'tag_id' => 2,
                 'name' => 'bar',
                 'taggings' => null,
                 'threads' => null,
             ],
             2 => [
-                'tag_id' => '3',
+                'tag_id' => 3,
                 'name' => 'baz',
                 'taggings' => null,
                 'threads' => null,
@@ -548,79 +547,79 @@ ORDER BY
 
     protected $expectRecordSet = [
         0 => [
-            'thread_id' => '1',
-            'author_id' => '1',
+            'thread_id' => 1,
+            'author_id' => 1,
             'subject' => 'Thread subject 1',
             'body' => 'Thread body 1',
             'author' => [
-                'author_id' => '1',
+                'author_id' => 1,
                 'name' => 'Anna',
                 'replies' => null,
                 'threads' => null,
             ],
             'summary' => [
-                'summary_id' => '1',
-                'thread_id' => '1',
-                'reply_count' => '5',
-                'view_count' => '0',
+                'summary_id' => 1,
+                'thread_id' => 1,
+                'reply_count' => 5,
+                'view_count' => 0,
                 'thread' => null,
             ],
             'replies' => [
                 0 => [
-                    'reply_id' => '1',
-                    'thread_id' => '1',
-                    'author_id' => '2',
+                    'reply_id' => 1,
+                    'thread_id' => 1,
+                    'author_id' => 2,
                     'body' => 'Reply 1 on thread 1',
                     'author' => [
-                        'author_id' => '2',
+                        'author_id' => 2,
                         'name' => 'Betty',
                         'replies' => null,
                         'threads' => null,
                     ],
                 ],
                 1 => [
-                    'reply_id' => '2',
-                    'thread_id' => '1',
-                    'author_id' => '3',
+                    'reply_id' => 2,
+                    'thread_id' => 1,
+                    'author_id' => 3,
                     'body' => 'Reply 2 on thread 1',
                     'author' => [
-                        'author_id' => '3',
+                        'author_id' => 3,
                         'name' => 'Clara',
                         'replies' => null,
                         'threads' => null,
                     ],
                 ],
                 2 => [
-                    'reply_id' => '3',
-                    'thread_id' => '1',
-                    'author_id' => '4',
+                    'reply_id' => 3,
+                    'thread_id' => 1,
+                    'author_id' => 4,
                     'body' => 'Reply 3 on thread 1',
                     'author' => [
-                        'author_id' => '4',
+                        'author_id' => 4,
                         'name' => 'Donna',
                         'replies' => null,
                         'threads' => null,
                     ],
                 ],
                 3 => [
-                    'reply_id' => '4',
-                    'thread_id' => '1',
-                    'author_id' => '5',
+                    'reply_id' => 4,
+                    'thread_id' => 1,
+                    'author_id' => 5,
                     'body' => 'Reply 4 on thread 1',
                     'author' => [
-                        'author_id' => '5',
+                        'author_id' => 5,
                         'name' => 'Edna',
                         'replies' => null,
                         'threads' => null,
                     ],
                 ],
                 4 => [
-                    'reply_id' => '5',
-                    'thread_id' => '1',
-                    'author_id' => '6',
+                    'reply_id' => 5,
+                    'thread_id' => 1,
+                    'author_id' => 6,
                     'body' => 'Reply 5 on thread 1',
                     'author' => [
-                        'author_id' => '6',
+                        'author_id' => 6,
                         'name' => 'Fiona',
                         'replies' => null,
                         'threads' => null,
@@ -629,42 +628,42 @@ ORDER BY
             ],
             'taggings' => [
                 0 => [
-                    'tagging_id' => '1',
-                    'thread_id' => '1',
-                    'tag_id' => '1',
+                    'tagging_id' => 1,
+                    'thread_id' => 1,
+                    'tag_id' => 1,
                     'thread' => null,
                     'tag' => null,
                 ],
                 1 => [
-                    'tagging_id' => '2',
-                    'thread_id' => '1',
-                    'tag_id' => '2',
+                    'tagging_id' => 2,
+                    'thread_id' => 1,
+                    'tag_id' => 2,
                     'thread' => null,
                     'tag' => null,
                 ],
                 2 => [
-                    'tagging_id' => '3',
-                    'thread_id' => '1',
-                    'tag_id' => '3',
+                    'tagging_id' => 3,
+                    'thread_id' => 1,
+                    'tag_id' => 3,
                     'thread' => null,
                     'tag' => null,
                 ],
             ],
             'tags' => [
                 0 => [
-                    'tag_id' => '1',
+                    'tag_id' => 1,
                     'name' => 'foo',
                     'taggings' => null,
                     'threads' => null,
                 ],
                 1 => [
-                    'tag_id' => '2',
+                    'tag_id' => 2,
                     'name' => 'bar',
                     'taggings' => null,
                     'threads' => null,
                 ],
                 2 => [
-                    'tag_id' => '3',
+                    'tag_id' => 3,
                     'name' => 'baz',
                     'taggings' => null,
                     'threads' => null,
@@ -672,79 +671,79 @@ ORDER BY
             ],
         ],
         1 => [
-            'thread_id' => '2',
-            'author_id' => '2',
+            'thread_id' => 2,
+            'author_id' => 2,
             'subject' => 'Thread subject 2',
             'body' => 'Thread body 2',
             'author' => [
-                'author_id' => '2',
+                'author_id' => 2,
                 'name' => 'Betty',
                 'replies' => null,
                 'threads' => null,
             ],
             'summary' => [
-                'summary_id' => '2',
-                'thread_id' => '2',
-                'reply_count' => '5',
-                'view_count' => '0',
+                'summary_id' => 2,
+                'thread_id' => 2,
+                'reply_count' => 5,
+                'view_count' => 0,
                 'thread' => null,
             ],
             'replies' => [
                 0 => [
-                    'reply_id' => '6',
-                    'thread_id' => '2',
-                    'author_id' => '3',
+                    'reply_id' => 6,
+                    'thread_id' => 2,
+                    'author_id' => 3,
                     'body' => 'Reply 1 on thread 2',
                     'author' => [
-                        'author_id' => '3',
+                        'author_id' => 3,
                         'name' => 'Clara',
                         'replies' => null,
                         'threads' => null,
                     ],
                 ],
                 1 => [
-                    'reply_id' => '7',
-                    'thread_id' => '2',
-                    'author_id' => '4',
+                    'reply_id' => 7,
+                    'thread_id' => 2,
+                    'author_id' => 4,
                     'body' => 'Reply 2 on thread 2',
                     'author' => [
-                        'author_id' => '4',
+                        'author_id' => 4,
                         'name' => 'Donna',
                         'replies' => null,
                         'threads' => null,
                     ],
                 ],
                 2 => [
-                    'reply_id' => '8',
-                    'thread_id' => '2',
-                    'author_id' => '5',
+                    'reply_id' => 8,
+                    'thread_id' => 2,
+                    'author_id' => 5,
                     'body' => 'Reply 3 on thread 2',
                     'author' => [
-                        'author_id' => '5',
+                        'author_id' => 5,
                         'name' => 'Edna',
                         'replies' => null,
                         'threads' => null,
                     ],
                 ],
                 3 => [
-                    'reply_id' => '9',
-                    'thread_id' => '2',
-                    'author_id' => '6',
+                    'reply_id' => 9,
+                    'thread_id' => 2,
+                    'author_id' => 6,
                     'body' => 'Reply 4 on thread 2',
                     'author' => [
-                        'author_id' => '6',
+                        'author_id' => 6,
                         'name' => 'Fiona',
                         'replies' => null,
                         'threads' => null,
                     ],
                 ],
                 4 => [
-                    'reply_id' => '10',
-                    'thread_id' => '2',
-                    'author_id' => '7',
+                    'reply_id' => 10,
+                    'thread_id' => 2,
+                    'author_id' => 7,
                     'body' => 'Reply 5 on thread 2',
                     'author' => [
-                        'author_id' => '7',
+                        'author_id' => 7,
                         'name' => 'Gina',
                         'replies' => null,
                         'threads' => null,
@@ -753,42 +752,42 @@ ORDER BY
             ],
             'taggings' => [
                 0 => [
-                    'tagging_id' => '4',
-                    'thread_id' => '2',
-                    'tag_id' => '2',
+                    'tagging_id' => 4,
+                    'thread_id' => 2,
+                    'tag_id' => 2,
                     'thread' => null,
                     'tag' => null,
                 ],
                 1 => [
-                    'tagging_id' => '5',
-                    'thread_id' => '2',
-                    'tag_id' => '3',
+                    'tagging_id' => 5,
+                    'thread_id' => 2,
+                    'tag_id' => 3,
                     'thread' => null,
                     'tag' => null,
                 ],
                 2 => [
-                    'tagging_id' => '6',
-                    'thread_id' => '2',
-                    'tag_id' => '4',
+                    'tagging_id' => 6,
+                    'thread_id' => 2,
+                    'tag_id' => 4,
                     'thread' => null,
                     'tag' => null,
                 ],
             ],
             'tags' => [
                 0 => [
-                    'tag_id' => '2',
+                    'tag_id' => 2,
                     'name' => 'bar',
                     'taggings' => null,
                     'threads' => null,
                 ],
                 1 => [
-                    'tag_id' => '3',
+                    'tag_id' => 3,
                     'name' => 'baz',
                     'taggings' => null,
                     'threads' => null,
                 ],
                 2 => [
-                    'tag_id' => '4',
+                    'tag_id' => 4,
                     'name' => 'dib',
                     'taggings' => null,
                     'threads' => null,
@@ -796,79 +795,79 @@ ORDER BY
             ],
         ],
         2 => [
-            'thread_id' => '3',
-            'author_id' => '3',
+            'thread_id' => 3,
+            'author_id' => 3,
             'subject' => 'Thread subject 3',
             'body' => 'Thread body 3',
             'author' => [
-                'author_id' => '3',
+                'author_id' => 3,
                 'name' => 'Clara',
                 'replies' => null,
                 'threads' => null,
             ],
             'summary' => [
-                'summary_id' => '3',
-                'thread_id' => '3',
-                'reply_count' => '5',
-                'view_count' => '0',
+                'summary_id' => 3,
+                'thread_id' => 3,
+                'reply_count' => 5,
+                'view_count' => 0,
                 'thread' => null,
             ],
             'replies' => [
                 0 => [
-                    'reply_id' => '11',
-                    'thread_id' => '3',
-                    'author_id' => '4',
+                    'reply_id' => 11,
+                    'thread_id' => 3,
+                    'author_id' => 4,
                     'body' => 'Reply 1 on thread 3',
                     'author' => [
-                        'author_id' => '4',
+                        'author_id' => 4,
                         'name' => 'Donna',
                         'replies' => null,
                         'threads' => null,
                     ],
                 ],
                 1 => [
-                    'reply_id' => '12',
-                    'thread_id' => '3',
-                    'author_id' => '5',
+                    'reply_id' => 12,
+                    'thread_id' => 3,
+                    'author_id' => 5,
                     'body' => 'Reply 2 on thread 3',
                     'author' => [
-                        'author_id' => '5',
+                        'author_id' => 5,
                         'name' => 'Edna',
                         'replies' => null,
                         'threads' => null,
                     ],
                 ],
                 2 => [
-                    'reply_id' => '13',
-                    'thread_id' => '3',
-                    'author_id' => '6',
+                    'reply_id' => 13,
+                    'thread_id' => 3,
+                    'author_id' => 6,
                     'body' => 'Reply 3 on thread 3',
                     'author' => [
-                        'author_id' => '6',
+                        'author_id' => 6,
                         'name' => 'Fiona',
                         'replies' => null,
                         'threads' => null,
                     ],
                 ],
                 3 => [
-                    'reply_id' => '14',
-                    'thread_id' => '3',
-                    'author_id' => '7',
+                    'reply_id' => 14,
+                    'thread_id' => 3,
+                    'author_id' => 7,
                     'body' => 'Reply 4 on thread 3',
                     'author' => [
-                        'author_id' => '7',
+                        'author_id' => 7,
                         'name' => 'Gina',
                         'replies' => null,
                         'threads' => null,
                     ],
                 ],
                 4 => [
-                    'reply_id' => '15',
-                    'thread_id' => '3',
-                    'author_id' => '8',
+                    'reply_id' => 15,
+                    'thread_id' => 3,
+                    'author_id' => 8,
                     'body' => 'Reply 5 on thread 3',
                     'author' => [
-                        'author_id' => '8',
+                        'author_id' => 8,
                         'name' => 'Hanna',
                         'replies' => null,
                         'threads' => null,

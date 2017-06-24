@@ -43,6 +43,7 @@ class EnrollmentTable extends AbstractTable
             'student_fn' => (object) [
                 'name' => 'student_fn',
                 'type' => 'varchar',
+                'mapTo' => 'string',
                 'size' => 10,
                 'scale' => null,
                 'notnull' => false,
@@ -53,6 +54,7 @@ class EnrollmentTable extends AbstractTable
             'student_ln' => (object) [
                 'name' => 'student_ln',
                 'type' => 'varchar',
+                'mapTo' => 'string',
                 'size' => 10,
                 'scale' => null,
                 'notnull' => false,
@@ -63,6 +65,7 @@ class EnrollmentTable extends AbstractTable
             'course_subject' => (object) [
                 'name' => 'course_subject',
                 'type' => 'char',
+                'mapTo' => 'string',
                 'size' => 4,
                 'scale' => null,
                 'notnull' => false,
@@ -73,6 +76,7 @@ class EnrollmentTable extends AbstractTable
             'course_number' => (object) [
                 'name' => 'course_number',
                 'type' => 'int',
+                'mapTo' => 'int',
                 'size' => null,
                 'scale' => null,
                 'notnull' => false,
@@ -83,6 +87,7 @@ class EnrollmentTable extends AbstractTable
             'grade' => (object) [
                 'name' => 'grade',
                 'type' => 'int',
+                'mapTo' => 'int',
                 'size' => null,
                 'scale' => null,
                 'notnull' => false,
@@ -93,6 +98,7 @@ class EnrollmentTable extends AbstractTable
             'points' => (object) [
                 'name' => 'points',
                 'type' => 'int',
+                'mapTo' => 'int',
                 'size' => null,
                 'scale' => null,
                 'notnull' => false,
