@@ -21,7 +21,7 @@ $date = new \DateTime();
 $thread->date_added = $date->format('Y-m-d H:i:s');
 ```
 
-You can insert a single Record back to the database by using the Atlas `insert()`
+You can insert a single Record back to the database by using the `Atlas::insert()`
 method. This will use the appropriate Mapper for the Record to perform the
 write within a transaction, and capture any exceptions that occur along the way.
 
@@ -61,7 +61,7 @@ $success = $atlas->insert($thread);
 echo $thread->author_id; // 4
 ```
 
-!!! note 
+!!! note
     If the Author Record is new, Atlas will NOT automatically insert the
     new Author and set the foreign key on the new Author Record via the `insert()`
     method. This can, however, be achieved using the `persist()` method. This is

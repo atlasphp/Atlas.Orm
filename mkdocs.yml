@@ -7,7 +7,11 @@ pages:
     - Reading Records and RecordSets: reading.md
     - Working with Records: records.md
     - Working with RecordSets: record-sets.md
-    
+    - Transactions (Unit of Work): transactions.md
+    - Adding Logic to Records and RecordSets: logic.md
+    - Events: events.md
+    - Direct Queries: direct.md
+
 # Extensions
 markdown_extensions:
   - admonition

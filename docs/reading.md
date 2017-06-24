@@ -1,8 +1,8 @@
-# Reading Records and RecordSets
+# Fetching Records and RecordSets
 
 Use Atlas to retrieve a single Record, or many Records in a RecordSet, from the database.
 
-## Reading a Record
+## Fetching a Record
 
 Use the `fetchRecord()` method to retrieve a single Record. It can be called
 either by primary key, or with a `select()` query.
@@ -22,38 +22,50 @@ $threadRecord = $atlas
     ->fetchRecord();
 ```
 
-Use the `fetchRecordBy()` method to find a record by one or more equality pairs.
 
-```php
-<?php
-// If more than one is found, the first match will be returned
-$threadRecord = $atlas->fetchRecordBy(ThreadMapper::CLASS,
-    [
-        'author_id'=>3,
-        'published'=>1
-    ]
-);
-```
-
-The example above is equivalent to...
-
-```php
-<?php
-$threadRecord = $atlas->select(ThreadMapper::CLASS)
-    ->where('author_id=>', 3)
-    ->where('published=?', 1)
-    ->fetchRecord();
-```
-
-!!! note
+!!! tip
     The `select()` variation gives you access to all the underlying
-    SQL query methods. See [Aura\SqlQuery](https://github.com/auraphp/Aura.SqlQuery/blob/3.x/docs/select.md) 
+    SQL query methods. See [Aura\SqlQuery](https://github.com/auraphp/Aura.SqlQuery/blob/3.x/docs/select.md)
     for more information.
 
-If `fetchRecord()` or  `fetchRecordBy()` does not find a match, it will return `false`.
+!!! note
+    If `fetchRecord()` does not find a match, it will return `false`.
 
+!!! warning
+    If using the `select()` variation with the `cols()` method, be sure to include
+    the table's primary key column(s) if you are fetching a Record. If using one
+    of the other `fetch*()` methods outlined in the chapter on Direct Queries,
+    then this isn't necessary. See below.
 
-## Reading A RecordSet
+```php
+<?php
+// must include the primary key column (and author_id because of the
+// where clause)
+$threadRecord = $atlas
+    ->select(ThreadMapper::class)
+    ->where('author_id = ?', '2')
+    ->cols(['thread_id', 'title', 'author_id'])
+    ->fetchRecord();
+
+// No need to include the primary key column
+$threadRecord = $atlas
+    ->select(ThreadMapper::class)
+    ->where('author_id = ?', '2')
+    ->cols(['title', 'author_id'])
+    ->fetchOne();
+```
+
+### Accessing/Reading Record Data
+
+Once you have a Record, you can access the columns via properties on the Record.
+Assume a database column called `title`.
+
+```php
+<?php
+echo $thread->title;
+```
+
+## Fetching A RecordSet
 
 The `fetchRecordSet()` method works the same as `fetchRecord()`, but for
 multiple Records.  It can be called either with primary keys, or with a
@@ -87,38 +99,17 @@ $threadRecordSet = $atlas
     ->fetchRecordSet();
 ```
 
-Use the `fetchRecordSetBy()` method to find a RecordSet by one or more equality pairs.
-
-```php
-<?php
-$threadRecords = $atlas->fetchRecordSetBy(ThreadMapper::CLASS,
-    [
-        'author_id'=>3,
-        'published'=>1
-    ]
-);
-```
-
-The example above is equivalent to...
-
-```php
-<?php
-$threadRecords = $atlas->select(ThreadMapper::CLASS)
-    ->where('author_id=>', 3)
-    ->where('published=?', 1)
-    ->fetchRecordSet();
-```
-
-!!! note 
+!!! tip
     The `select()` variation gives you access to all the underlying
     SQL query methods. See [Aura\SqlQuery](https://github.com/auraphp/Aura.SqlQuery/blob/3.x/docs/select.md)
     for more information.
 
-If `fetchRecordSet()` or `fetchRecordSetBy()` do not find any matches, they will
-return an empty array. This is important as you cannot call RecordSet methods
-(see later in the documentation) such as `appendNew()` or `getArrayCopy()` on
-an empty array. In these situations, you must test for the empty array, and then
-instantiate a new RecordSet, if necessary.
+!!! note
+    If `fetchRecordSet()` does not find any matches, it will
+    return an empty array. This is important as you cannot call RecordSet methods
+    (see later in the documentation) such as `appendNew()` or `getArrayCopy()` on
+    an empty array. In these situations, you must test for the empty array, and then
+    instantiate a new RecordSet, if necessary. See below.
 
 ```php
 <?php
@@ -133,10 +124,29 @@ if (! $threadRecordSet) {
 $threadMapper->appendNew(...);
 ```
 
-## Reading Relateds
+### Accessing/Reading RecordSet Data
+
+RecordSets act as arrays of Records. As such, you can easily iterate over the
+RecordSet and access the Records individually.
+
+```php
+<?php
+// fetch the top 100 threads
+$threadRecordSet = $atlas
+    ->select(ThreadMapper::CLASS)
+    ->orderBy(['thread_id DESC'])
+    ->limit(100)
+    ->fetchRecordSet();
+
+foreach ($threadRecordSet as $threadRecord) {
+    echo $threadRecord->title;
+}
+```
+
+## Fetching Related Records
 
 Any relationships that are set in the Mapper will appear as `NULL` in the Record
-object.  Related data will only be populated if it explicitly requested as part
+object.  Related data will only be populated if it is explicitly requested as part
 of the fetch or select.
 
 On a `fetch*()`, load relateds using a third argument: an array specifying
@@ -165,27 +175,10 @@ $threadRecordSet = $atlas->fetchRecordSet(
 );
 ```
 
-!!! note 
-    When fetching a `manyToMany` relationship, you must explicitly specify
-    both the association (join) table AND the `manyToMany` table. Additionally, you
-    must specify these relationships in the correct order.
+When using the `select()` variation, load relateds using the `with()` method:
 
 ```php
 <?php
-$threadRecord = $atlas->fetchRecord(
-    ThreadMapper::CLASS,
-    '1',
-    [
-        'taggings', // specify the join table first
-        'tags' // then the manyToMany table
-    ]
-);
-```
-
-
-On a `select()`, load relateds using the `with()` method:
-
-```php
 $threadRecord = $atlas
     ->select(ThreadMapper::class)
     ->where('thread_id = ?', '1')
@@ -205,6 +198,23 @@ $threadRecordSet = $atlas
         'replies',
     ])
     ->fetchRecordSet();
+```
+
+!!! note
+    When fetching a `manyToMany` relationship, you must explicitly specify
+    both the association (join) table AND the `manyToMany` table. Additionally, you
+    must specify these relationships in the correct order.
+
+```php
+<?php
+$threadRecord = $atlas->fetchRecord(
+    ThreadMapper::CLASS,
+    '1',
+    [
+        'taggings', // specify the join table first
+        'tags' // then the manyToMany table
+    ]
+);
 ```
 
 Relationships can be nested as deeply as needed. For example, to fetch the
@@ -250,51 +260,10 @@ $threadRecord = $atlas->fetchRecord(
 );
 ```
 
-## Reading/Accessing Data
+### Accessing/Reading Related Data
 
-Column names and relationship names are mapped to properties of a Record.
-Relationships must be explicitly requested or their value will be NULL.
-
-Assume a table with the following columns:
-
-<pre>
----------------------------------------------------------------------------
-thread_id    | title    | body    | author_id | date_added   | date_created
--------------+----------+---------+-----------+--------------+-------------
-</pre>
-
-```php
-<?php
-$threadRecord = $atlas->fetchRecord(
-    ThreadMapper::CLASS,
-    '1'
-);
-
-echo $threadRecord->title;
-
-// If there were a related named `author`, its value would be `NULL` as it was
-// not requests in the fetch.
-var_dump($threadRecord->author); // NULL
-```
-
-By requesting the author related, you can then access its data via properties.
-
-```php
-<?php
-$threadRecord = $atlas->fetchRecord(
-    ThreadMapper::CLASS,
-    '1',
-    [
-        'author'
-    ]
-);
-
-// `first_name` maps to a column name in the authors table.
-echo $threadRecord->author->first_name;
-```
-
-Relationships can be nested, but as long as a related exists, you can access its
-data.
+Accessing related data works just like accessing Record properties except instead
+of using a column name, you use the relationship name defined in the mapper.
 
 ```php
 <?php
@@ -310,10 +279,12 @@ $threadRecord = $this->atlas
     ])
     ->fetchRecord();
 
+// Assume the author table has a column named `last_name`
 foreach ($threadRecord->replies as $reply) {
-    echo $reply->author->first_name;
+    echo $reply->author->last_name;
 }
 ```
+
 
 ## Returning Data in Other Formats
 
