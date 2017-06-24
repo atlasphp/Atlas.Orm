@@ -17,6 +17,7 @@ $thread = $atlas->newRecord(ThreadMapper::CLASS,
 You can assign a value via a property, which maps to a column name.
 
 ```php
+<?php
 $date = new \DateTime();
 $thread->date_added = $date->format('Y-m-d H:i:s');
 ```

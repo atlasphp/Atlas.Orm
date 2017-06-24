@@ -202,8 +202,8 @@ $threadRecordSet = $atlas
 
 !!! note
     When fetching a `manyToMany` relationship, you must explicitly specify
-    both the association (join) table AND the `manyToMany` table. Additionally, you
-    must specify these relationships in the correct order.
+    both the association (through) related AND the `manyToMany` related.
+    Additionally, you must specify these relationships in the correct order.
 
 ```php
 <?php
@@ -211,8 +211,8 @@ $threadRecord = $atlas->fetchRecord(
     ThreadMapper::CLASS,
     '1',
     [
-        'taggings', // specify the join table first
-        'tags' // then the manyToMany table
+        'taggings', // specify the through first
+        'tags' // then the manyToMany
     ]
 );
 ```

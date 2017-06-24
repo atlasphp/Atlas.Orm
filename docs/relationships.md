@@ -111,8 +111,9 @@ class FooMapper
 
 ## Case-Sensitivity
 
-> N.b.: This applies only to **string-based** relationship keys. If you are
-> using numeric relationship keys, this section does not apply.
+!!! note
+    This applies only to **string-based** relationship keys. If you are
+    using numeric relationship keys, this section does not apply.
 
 Atlas will match records related by string keys in a case-senstive manner. If
 your collations on the related string key columns are *not* case sensitive,
