@@ -9,23 +9,6 @@ Create a new RecordSet using the `newRecordSet()` method.
 $threadRecordSet = $atlas->newRecordSet(ThreadMapper::CLASS);
 ```
 
-## Array Access
-
-The RecordSet also acts as an array, so you can get/set/unset Records by their
-sequential keys in the RecordSet.
-
-```php
-<?php
-// address the second record in the set
-$threadRecordSet[1]->title = 'Changed Title';
-
-// unset the first record in the set
-unset($threadRecordSet[0]);
-
-// push a new record onto the set
-$threadRecordSet[] = $atlas->newRecord(ThreadMapper::CLASS);
-```
-
 ## Appending Records to a RecordSet
 
 You can append a new Record to an existing RecordSet using `appendNew()`, optionally passing any
@@ -64,6 +47,23 @@ $transaction->insert($comment);
 // Or persist the thread
 $atlas->persist($thread);
 
+```
+
+## Array Access
+
+The RecordSet also acts as an array, so you can get/set/unset Records by their
+sequential keys in the RecordSet.
+
+```php
+<?php
+// address the second record in the set
+$threadRecordSet[1]->title = 'Changed Title';
+
+// unset the first record in the set
+unset($threadRecordSet[0]);
+
+// push a new record onto the set
+$threadRecordSet[] = $atlas->newRecord(ThreadMapper::CLASS);
 ```
 
 ## Searching within RecordSets
