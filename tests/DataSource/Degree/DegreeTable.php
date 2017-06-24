@@ -40,6 +40,7 @@ class DegreeTable extends AbstractTable
             'degree_type' => (object) [
                 'name' => 'degree_type',
                 'type' => 'char',
+                'mapTo' => 'string',
                 'size' => 2,
                 'scale' => null,
                 'notnull' => false,
@@ -50,6 +51,7 @@ class DegreeTable extends AbstractTable
             'degree_subject' => (object) [
                 'name' => 'degree_subject',
                 'type' => 'char',
+                'mapTo' => 'string',
                 'size' => 4,
                 'scale' => null,
                 'notnull' => false,
@@ -60,6 +62,7 @@ class DegreeTable extends AbstractTable
             'title' => (object) [
                 'name' => 'title',
                 'type' => 'varchar',
+                'mapTo' => 'string',
                 'size' => 50,
                 'scale' => null,
                 'notnull' => false,

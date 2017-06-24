@@ -41,6 +41,7 @@ class StudentTable extends AbstractTable
             'student_fn' => (object) [
                 'name' => 'student_fn',
                 'type' => 'varchar',
+                'mapTo' => 'string',
                 'size' => 10,
                 'scale' => null,
                 'notnull' => false,
@@ -51,6 +52,7 @@ class StudentTable extends AbstractTable
             'student_ln' => (object) [
                 'name' => 'student_ln',
                 'type' => 'varchar',
+                'mapTo' => 'string',
                 'size' => 10,
                 'scale' => null,
                 'notnull' => false,
@@ -61,6 +63,7 @@ class StudentTable extends AbstractTable
             'degree_type' => (object) [
                 'name' => 'degree_type',
                 'type' => 'char',
+                'mapTo' => 'string',
                 'size' => 2,
                 'scale' => null,
                 'notnull' => false,
@@ -71,6 +74,7 @@ class StudentTable extends AbstractTable
             'degree_subject' => (object) [
                 'name' => 'degree_subject',
                 'type' => 'char',
+                'mapTo' => 'string',
                 'size' => 4,
                 'scale' => null,
                 'notnull' => false,

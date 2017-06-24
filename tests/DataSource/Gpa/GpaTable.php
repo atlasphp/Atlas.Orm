@@ -40,6 +40,7 @@ class GpaTable extends AbstractTable
             'student_fn' => (object) [
                 'name' => 'student_fn',
                 'type' => 'varchar',
+                'mapTo' => 'string',
                 'size' => 10,
                 'scale' => null,
                 'notnull' => false,
@@ -50,6 +51,7 @@ class GpaTable extends AbstractTable
             'student_ln' => (object) [
                 'name' => 'student_ln',
                 'type' => 'varchar',
+                'mapTo' => 'string',
                 'size' => 10,
                 'scale' => null,
                 'notnull' => false,
@@ -60,6 +62,7 @@ class GpaTable extends AbstractTable
             'gpa' => (object) [
                 'name' => 'gpa',
                 'type' => 'decimal',
+                'mapTo' => 'float',
                 'size' => 4,
                 'scale' => 3,
                 'notnull' => false,

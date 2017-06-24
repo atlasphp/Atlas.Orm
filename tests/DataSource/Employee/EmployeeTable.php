@@ -41,6 +41,7 @@ class EmployeeTable extends AbstractTable
             'id' => (object) [
                 'name' => 'id',
                 'type' => 'integer',
+                'mapTo' => 'integer',
                 'size' => null,
                 'scale' => null,
                 'notnull' => false,
@@ -51,6 +52,7 @@ class EmployeeTable extends AbstractTable
             'name' => (object) [
                 'name' => 'name',
                 'type' => 'varchar',
+                'mapTo' => 'string',
                 'size' => 10,
                 'scale' => null,
                 'notnull' => true,
@@ -61,6 +63,7 @@ class EmployeeTable extends AbstractTable
             'building' => (object) [
                 'name' => 'building',
                 'type' => 'integer',
+                'mapTo' => 'integer',
                 'size' => null,
                 'scale' => null,
                 'notnull' => false,
@@ -71,6 +74,7 @@ class EmployeeTable extends AbstractTable
             'floor' => (object) [
                 'name' => 'floor',
                 'type' => 'integer',
+                'mapTo' => 'integer',
                 'size' => null,
                 'scale' => null,
                 'notnull' => false,

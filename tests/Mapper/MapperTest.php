@@ -1,4 +1,5 @@
 <?php
+
 namespace Atlas\Orm\Mapper;
 
 use Atlas\Orm\Assertions;
@@ -51,10 +52,10 @@ class MapperTest extends \PHPUnit_Framework_TestCase
     public function testFetchRecord()
     {
         $expect = [
-            'id' => '1',
+            'id' => 1,
             'name' => 'Anna',
-            'building' => '1',
-            'floor' => '1',
+            'building' => 1,
+            'floor' => 1,
         ];
 
         // fetch success
@@ -78,10 +79,10 @@ class MapperTest extends \PHPUnit_Framework_TestCase
     public function testFetchRecordBy()
     {
         $expect = [
-            'id' => '1',
+            'id' => 1,
             'name' => 'Anna',
-            'building' => '1',
-            'floor' => '1',
+            'building' => 1,
+            'floor' => 1,
         ];
 
         // fetch success
@@ -105,10 +106,10 @@ class MapperTest extends \PHPUnit_Framework_TestCase
     public function testSelectFetchRecord()
     {
         $expect = [
-            'id' => '1',
+            'id' => 1,
             'name' => 'Anna',
-            'building' => '1',
-            'floor' => '1',
+            'building' => 1,
+            'floor' => 1,
         ];
 
         // fetch success
@@ -135,22 +136,22 @@ class MapperTest extends \PHPUnit_Framework_TestCase
     {
         $expect = [
             [
-                'id' => '1',
+                'id' => 1,
                 'name' => 'Anna',
-                'building' => '1',
-                'floor' => '1',
+                'building' => 1,
+                'floor' => 1,
             ],
             [
-                'id' => '2',
+                'id' => 2,
                 'name' => 'Betty',
-                'building' => '1',
-                'floor' => '2',
+                'building' => 1,
+                'floor' => 2,
             ],
             [
-                'id' => '3',
+                'id' => 3,
                 'name' => 'Clara',
-                'building' => '1',
-                'floor' => '3',
+                'building' => 1,
+                'floor' => 3,
             ],
         ];
 
@@ -182,22 +183,22 @@ class MapperTest extends \PHPUnit_Framework_TestCase
     {
         $expect = [
             [
-                'id' => '1',
+                'id' => 1,
                 'name' => 'Anna',
-                'building' => '1',
-                'floor' => '1',
+                'building' => 1,
+                'floor' => 1,
             ],
             [
-                'id' => '2',
+                'id' => 2,
                 'name' => 'Betty',
-                'building' => '1',
-                'floor' => '2',
+                'building' => 1,
+                'floor' => 2,
             ],
             [
-                'id' => '3',
+                'id' => 3,
                 'name' => 'Clara',
-                'building' => '1',
-                'floor' => '3',
+                'building' => 1,
+                'floor' => 3,
             ],
         ];
 
@@ -229,22 +230,22 @@ class MapperTest extends \PHPUnit_Framework_TestCase
     {
         $expect = [
             [
-                'id' => '1',
+                'id' => 1,
                 'name' => 'Anna',
-                'building' => '1',
-                'floor' => '1',
+                'building' => 1,
+                'floor' => 1,
             ],
             [
-                'id' => '2',
+                'id' => 2,
                 'name' => 'Betty',
-                'building' => '1',
-                'floor' => '2',
+                'building' => 1,
+                'floor' => 2,
             ],
             [
-                'id' => '3',
+                'id' => 3,
                 'name' => 'Clara',
-                'building' => '1',
-                'floor' => '3',
+                'building' => 1,
+                'floor' => 3,
             ],
         ];
 
@@ -261,7 +262,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($actual[1]->getRow(), $again[1]->getRow());
         $this->assertSame($actual[2]->getRow(), $again[2]->getRow());
 
-        $select = $this->mapper->select(['id' => [997,998,999]]);
+        $select = $this->mapper->select(['id' => [997, 998, 999]]);
         $actual = $select->fetchRecordSet();
         $this->assertSame([], $actual);
     }
@@ -326,7 +327,8 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $actual = $this->mapper->getReadConnection()->fetchOne(
             "SELECT * FROM employee WHERE name = 'Annabelle'"
         );
-        $this->assertSame($expect, $actual);
+        // Will assert equals but not same because the 'id, building, floor' have been casted in integer
+        $this->assertEquals($expect, $actual);
 
         // try to update again, should be a no-op because there are no changes
         $this->assertFalse($this->mapper->update($record));
