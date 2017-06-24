@@ -536,9 +536,14 @@ abstract class AbstractTable implements TableInterface
     public function newRow(array $cols = [])
     {
         $colNames = $this->getColNames();
+        $colMap = $this->getCols();
         foreach ($cols as $col => $val) {
             if (! in_array($col, $colNames)) {
                 unset($cols[$col]);
+            }
+
+            if (isset($colMap[$col]) && property_exists($colMap[$col], 'mapTo')) {
+                settype($cols[$col], $colMap[$col]->mapTo);
             }
         }
         $cols = array_merge($this->getColDefaults(), $cols);
