@@ -6,28 +6,41 @@ Managing many-to-many relationships, e.g. tags through taggings.
     // get from a pre-fetched RecordSet of tags
     $tag = $tags->getOneBy(['name' => $tag_name]);
 
-    // add Tag to in-memory Record
-    $post->tags[] = $tag;
-
-    // create new Tagging in memory and set columns on row
-    $tagging = $post->taggings->appendNew([
-        'post_id' => $post->id,
-        'tag_id' => $tag->id
+    // create new Tagging in memory on the "through" related
+    $tagging = $thread->taggings->appendNew([
+        'thread' => $thread,
+        'tag' => $tag
     ]);
 
-    // plan to insert the new Tagging
+    // if you fetched many-to-many, add Tag to in-memory Record
+    $thread->tags[] = $tag;
+
+    // persist the whole thread and its relateds
+    $atlas->persist($thread);
+
+    // ... or insert the Tagging by itself ...
+    $atlas->insert($tagging);
+
+    // ... or plan to insert the new Tagging in a transaction
     $transaction->insert($tagging);
     ```
 
 - Removing a tag
 
     ```
-    // remove from in-memory RecordSet
-    $tag = $post->tags->removeOneBy(['name' => $tag_name]);
+    // remove the Tagging from the "through" related
+    $tagging = $thread->taggings->removeOneBy(['tag_id' => $tag->id);
 
-    // remove from in-memory RecordSet
-    $tagging = $post->taggings->removeOneBy(['tag_id' => $tag->id);
+    // if you fetched many-to-many, also remove from in-memory RecordSet
+    $tag = $thread->tags->removeOneBy(['name' => $tag_name]);
 
-    // plan to delete the Tagging
+    // mark the tagging for deletion and persist the whole thread ...
+    $tagging->markForDeletion();
+    $atlas->persist($thread);
+
+    // ... or delete it by itself ...
+    $atlas->delete($tagging);
+
+    // ... or plan to delete the Tagging in a transaction
     $transaction->delete($tagging);
     ```

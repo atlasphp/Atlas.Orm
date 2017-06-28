@@ -1,3 +1,5 @@
+- removing relateds; cf. https://github.com/atlasphp/Atlas.Orm/issues/62
+
 - convert field to object and back again, e.g. Date object -- should be a
   be a method on a custom Record
 
