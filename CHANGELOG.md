@@ -14,7 +14,7 @@
 - AtlasContainer constructor now accepts a ConnectionLocator as an alternative
   to a PDO object or PDO connection params. (Cf. #63 and #64.)
 
-- Updated docs and tests.
+- Updated readne, docs and tests.
 
 ## 1.2.1
 
