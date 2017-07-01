@@ -10,6 +10,15 @@ Table Events and Mapper Events.
 - auto-set field on insert/update, e.g. created_on, updated_on
 
 - increment/decrement a Record field -- via events, and select back the new
-  count
+  count. alternatively, make these mapper/transaction methods:
+
+    // $record->$field += $increment;
+    // if $record already inserted ...
+    // `UPDATE table SET field = field $incr WHERE primarykey`
+    // if not inserted yet, just increment in memory
+    $mapper->increment($record, 'field' [, $incr]);
+
+    // *plans* an increment method call
+    $transaction->increment($record, 'field' [, $incr]);
 
 - update *other* records on insert/update/delete; e.g. trees/lists/etc

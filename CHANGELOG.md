@@ -1,8 +1,25 @@
 # CHANGELOG
 
+## 1.3.0
+
+- Changed Mapper::insert() and Mapper::update() to auto-set foreign key values
+  on relateds
+
+- Added Mapper::persist() to insert/update/delete a Record and all its relateds.
+  Also available via added Atlas::persist() and Transaction::persist() methods.
+
+- In AbstractRelationship::fetchForeignRecords() no longer issues an empty IN()
+  query if there are no native records to match against. (Fixes #58.)
+
+- AtlasContainer constructor now accepts a ConnectionLocator as an alternative
+  to a PDO object or PDO connection params. (Cf. #63 and #64.)
+
+- Updated readne, docs and tests.
+
 ## 1.2.1
 
 - Docs updates and fixes
+
 - Fixed error when using PDO in AtlasContainer constructor (#53)
 
 ## 1.2.0
