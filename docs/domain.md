@@ -384,7 +384,7 @@ class ThreadRepository ...
             $record->replies->getArrayCopy()
         );
     }
-?>
+
 ```
 
 Pros:
@@ -415,5 +415,3 @@ The most formally-correct approach is to map the record fields over to domain
 object properties. This level of separation makes testing and modification of
 application logic much easier in the long run, but it takes a lot of time,
 attention, and discipline.
-
-

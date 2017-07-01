@@ -23,19 +23,16 @@ $threadRecord = $atlas
 ```
 
 
-!!! tip
-    The `select()` variation gives you access to all the underlying
-    SQL query methods. See [Aura\SqlQuery](https://github.com/auraphp/Aura.SqlQuery/blob/3.x/docs/select.md)
-    for more information.
+> **Tip:** The `select()` variation gives you access to all the underlying
+  SQL query methods. See [Aura\SqlQuery](https://github.com/auraphp/Aura.SqlQuery/blob/3.x/docs/select.md)
+ for more information.
 
-!!! note
-    If `fetchRecord()` does not find a match, it will return `false`.
+> **Note:** If `fetchRecord()` does not find a match, it will return `false`.
 
-!!! warning
-    If using the `select()` variation with the `cols()` method, be sure to include
-    the table's primary key column(s) if you are fetching a Record. If using one
-    of the other `fetch*()` methods outlined in the chapter on Direct Queries,
-    then this isn't necessary. See below.
+> **Warning:** If using the `select()` variation with the `cols()` method, be sure to include
+  the table's primary key column(s) if you are fetching a Record. If using one
+  of the other `fetch*()` methods outlined in the chapter on Direct Queries,
+  then this isn't necessary. See below.
 
 ```php
 <?php
@@ -99,17 +96,17 @@ $threadRecordSet = $atlas
     ->fetchRecordSet();
 ```
 
-!!! tip
-    The `select()` variation gives you access to all the underlying
-    SQL query methods. See [Aura\SqlQuery](https://github.com/auraphp/Aura.SqlQuery/blob/3.x/docs/select.md)
-    for more information.
+> **Tip:**
+  The `select()` variation gives you access to all the underlying
+  SQL query methods. See [Aura\SqlQuery](https://github.com/auraphp/Aura.SqlQuery/blob/3.x/docs/select.md)
+  for more information.
 
-!!! note
-    If `fetchRecordSet()` does not find any matches, it will
-    return an empty array. This is important as you cannot call RecordSet methods
-    (see later in the documentation) such as `appendNew()` or `getArrayCopy()` on
-    an empty array. In these situations, you must test for the empty array, and then
-    instantiate a new RecordSet, if necessary. See below.
+> **Note:**
+  If `fetchRecordSet()` does not find any matches, it will
+  return an empty array. This is important as you cannot call RecordSet methods
+  (see later in the documentation) such as `appendNew()` or `getArrayCopy()` on
+  an empty array. In these situations, you must test for the empty array, and then
+  instantiate a new RecordSet, if necessary. See below.
 
 ```php
 <?php
@@ -200,10 +197,10 @@ $threadRecordSet = $atlas
     ->fetchRecordSet();
 ```
 
-!!! note
-    When fetching a `manyToMany` relationship, you must explicitly specify
-    both the association (through) related AND the `manyToMany` related.
-    Additionally, you must specify these relationships in the correct order.
+> **Note:**
+  When fetching a `manyToMany` relationship, you must explicitly specify
+  both the association (through) related AND the `manyToMany` related.
+  Additionally, you must specify these relationships in the correct order.
 
 ```php
 <?php

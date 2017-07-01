@@ -99,7 +99,7 @@ $removedRecord = $threadRecordSet->removeOneBy(['subject' => 'Subject One']);
 $removedRecords = $threadRecordSet->removeAllBy(['author_id' => '5']);
 ```
 
-!!! note
-    This only removes them from the RecordSet; it does not delete them
-    from the database. If you need to delete a record from the database, see the
-    sections on Marking Records for Deletion and deleting Records.
+> **Note:**
+  This only removes them from the RecordSet; it does not delete them
+  from the database. If you need to delete a record from the database, see the
+  sections on Marking Records for Deletion and deleting Records.

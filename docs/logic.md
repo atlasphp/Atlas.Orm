@@ -1,12 +1,18 @@
-# Adding Custom Logic to Records and RecordSets
+# Record and RecordSet Logic
 
 Atlas makes it easy to add your own logic to both Records and RecordSets. To
 accomplish this, you need a Record class for custom Record logic, and a
 RecordSet class for custom RecordSet logic. The Atlas CLI script
 (installable via composer using `atlas/cli`), can create these classes for you,
 saving you from manually writing them.
-[Atlas CLI documentation](https://github.com/atlasphp/Atlas.Cli/blob/1.x/README.md)
-is available on GitHub.
+
+Consult the [Atlas CLI documentation](https://github.com/atlasphp/Atlas.Cli/blob/1.x/README.md).
+
+It's important to note that the Record and RecordSet objects described below
+**should only be used for very simple behaviours**. Any non-trivial domain work
+may be an indication that you need a domain layer. See the documentation on
+[Domain Models](domain.md) for examples of how you can use Atlas to build a
+domain layer.
 
 Here is an example using the `atlas/cli` package and the `--full` option.
 
@@ -34,7 +40,7 @@ Upon completion, you will have a folder layout as follows:
             -- ThreadTableEvents.php
 ```
 
-Once you have a Record Class (ThreadRecord.php), you can create custom methods
+Once you have a Record Class (`ThreadRecord.php`), you can create custom methods
 to call from your Record object.
 
 ```php

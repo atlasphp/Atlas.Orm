@@ -62,11 +62,11 @@ $success = $atlas->insert($thread);
 echo $thread->author_id; // 4
 ```
 
-!!! note
-    If the Author Record is new, Atlas will NOT automatically insert the
-    new Author and set the foreign key on the new Author Record via the `insert()`
-    method. This can, however, be achieved using the `persist()` method. This is
-    discussed later in this chapter.
+> **Note:**
+  If the Author Record is new, Atlas will NOT automatically insert the
+  new Author and set the foreign key on the new Author Record via the `insert()`
+  method. This can, however, be achieved using the `persist()` method. This is
+  discussed later in this chapter.
 
 The following will fail.
 
