@@ -1,6 +1,6 @@
-# Record and RecordSet Logic
+# Record and RecordSet Behaviors
 
-Atlas makes it easy to add your own logic to both Records and RecordSets. To
+Atlas makes it easy to add your own behaviors to both Records and RecordSets. To
 accomplish this, you need a Record class for custom Record logic, and a
 RecordSet class for custom RecordSet logic. The Atlas CLI script
 (installable via composer using `atlas/cli`), can create these classes for you,
