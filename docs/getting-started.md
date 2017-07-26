@@ -25,13 +25,13 @@ help create skeleton classes for the mapper.)
 You can create your data source classes by hand, but it's going to be tedious to
 do so. Instead, use the `atlas-skeleton` command to read the table information
 from the database. You can read more about that in the
-[atlas/cli docs](https://github.com/atlasphp/Atlas.Cli/blob/1.x/README.md).
+[atlas/cli docs](https://github.com/atlasphp/Atlas.Cli/blob/1.x/docs/getting-started.md).
 
 ## Instantiating Atlas
 
 Create an Atlas instance using the AtlasContainer.
 
-The container accepts a PDO, ExtendedPdo or ConnectionLocator instance or you 
+The container accepts a [PDO](http://php.net/manual/en/pdo.construct.php), [ExtendedPdo](https://github.com/auraphp/Aura.Sql/blob/3.x/docs/getting-started.md) or [ConnectionLocator](https://github.com/auraphp/Aura.Sql/blob/3.x/docs/connection-locator.md) instance or you
 can enter connection parameters and the container creates a connection for you.
 
 ```php
@@ -69,4 +69,3 @@ Finally, get back the Atlas instance out of the container.
 <?php
 $atlas = $atlasContainer->getAtlas();
 ```
-

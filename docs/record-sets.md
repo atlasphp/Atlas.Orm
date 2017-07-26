@@ -1,19 +1,52 @@
-# Working With RecordSets
+# Working with RecordSets
 
-Once you have a RecordSet, you can iterate over it.
+## New RecordSets
+
+Create a new RecordSet using the `newRecordSet()` method.
 
 ```php
 <?php
-// fetch the top 100 threads
-$threadRecordSet = $atlas
-    ->select(ThreadMapper::CLASS)
-    ->orderBy(['thread_id DESC'])
-    ->limit(100)
-    ->fetchRecordSet();
+$threadRecordSet = $atlas->newRecordSet(ThreadMapper::CLASS);
+```
 
-foreach ($threadRecordSet as $threadRecord) {
-    echo $threadRecord->title;
+## Appending Records to a RecordSet
+
+You can append a new Record to an existing RecordSet using `appendNew()`, optionally passing any
+data you want to initially populate into the Record:
+
+```php
+<?php
+$newThread = $threadRecordSet->appendNew([
+    'title' => 'New Title',
+]);
+```
+
+Additionally, you can append foreign Records to a native Record's relateds.
+
+```php
+<?php
+$thread = $atlas->fetchRecord(ThreadMapper::CLASS, 1,
+    [
+        'comments',
+    ]
+);
+
+// Ensure we have a RecordSet to append to
+if (! $thread->comments) {
+    $thread->comments = $atlas->newRecordSet(CommentMapper::CLASS);
 }
+
+$comment = $thread->comments->appendNew([
+    'thread_id' => $thread->thread_id,
+    'comment' => 'Lorem ipsum dolor sit amet...'
+]);
+
+// plan to insert the new comment
+$transaction->insert($comment);
+
+// Or persist the thread
+$atlas->persist($thread);
+
 ```
 
 ## Array Access
@@ -33,27 +66,16 @@ unset($threadRecordSet[0]);
 $threadRecordSet[] = $atlas->newRecord(ThreadMapper::CLASS);
 ```
 
-## Appending
+## Searching within RecordSets
 
-You can append a new Record using `appendNew()`, optionally passing any
-data you want to initially populate into the Record:
-
-```php
-<?php
-$newThread = $threadRecordSet->appendNew([
-    'title' => 'New Title',
-]);
-```
-
-Note that this only adds the Record to the RecordSet; it does not insert the
-Record into the database.
-
-## Searching
-
-You can search for Records by their column values:
+You can search for Records within an existing RecordSet by their column values:
 
 ```php
 <?php
+$threadRecordSet = $atlas->select(ThreadMapper::CLASS)
+    ->where('published=?', 1)
+    ->fetchRecordSet();
+
 // returns one matching Record object from the RecordSet,
 // or false if there is no match
 $matchingRecord = $threadRecordSet->getOneBy(['subject' => 'Subject One']);
@@ -62,9 +84,10 @@ $matchingRecord = $threadRecordSet->getOneBy(['subject' => 'Subject One']);
 $matchingRecords = $threadRecordSet->getAllBy(['author_id' => '5']);
 ```
 
-## Removing
+## Removing Records from RecordSets
 
-You can remove Records by their column values.
+You can remove Records from a RecordSet by their column values. This does NOT
+delete the Record from the database; only from the RecordSet.
 
 ```php
 <?php
@@ -76,34 +99,7 @@ $removedRecord = $threadRecordSet->removeOneBy(['subject' => 'Subject One']);
 $removedRecords = $threadRecordSet->removeAllBy(['author_id' => '5']);
 ```
 
-Note that this only removes them from the RecordSet; it does not delete them
-from the database.
-
-## New RecordSets
-
-Create a new RecordSet using the `newRecordSet()` method.
-
-```php
-<?php
-$threadRecordSet = $atlas->newRecordSet(ThreadMapper::CLASS);
-```
-
-## JSON Encoding
-
-JSON-encoding a RecordSet is trivial:
-
-```php
-<?php
-$json = json_encode($threadRecordSet);
-```
-
-## Other Methods
-
-Other RecordSet methods include:
-
-```php
-<?php
-$array = $recordSet->getArrayCopy();
-$isEmpty = empty($threadRecordSet);
-$count = count($threadRecordSet);
-```
+> **Note:**
+  This only removes them from the RecordSet; it does not delete them
+  from the database. If you need to delete a record from the database, see the
+  sections on Marking Records for Deletion and deleting Records.

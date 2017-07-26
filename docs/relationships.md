@@ -59,10 +59,27 @@ class ThreadMapper extends AbstractMapper
 {
     protected function setRelated()
     {
-        $this->oneToOne('author', AuthorMapper::CLASS)
+        $this->manyToOne('author', AuthorMapper::CLASS)
             ->on([
                 // native (threads) column => foreign (authors) column
                 'author_id' => 'id',
+            ]);
+        // ...
+    }
+}
+```
+And on the `oneToMany` side of the relationship, you use the native author table
+`id` column with the foreign threads table `author_id` column.
+```php
+<?php
+class AuthorMapper extends AbstractMapper
+{
+    protected function setRelated()
+    {
+        $this->oneToMany('threads', ThreadMapper::CLASS)
+            ->on([
+                // native (author) column => foreign (threads) column
+                'id' => 'author_id',
             ]);
         // ...
     }
@@ -94,8 +111,9 @@ class FooMapper
 
 ## Case-Sensitivity
 
-> N.b.: This applies only to **string-based** relationship keys. If you are
-> using numeric relationship keys, this section does not apply.
+> **Note:**
+  This applies only to **string-based** relationship keys. If you are
+  using numeric relationship keys, this section does not apply.
 
 Atlas will match records related by string keys in a case-senstive manner. If
 your collations on the related string key columns are *not* case sensitive,

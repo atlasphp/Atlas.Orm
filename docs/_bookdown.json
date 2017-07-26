@@ -6,7 +6,9 @@
         "reading.md",
         "records.md",
         "record-sets.md",
-        "writing.md",
+        "transactions.md",
+        "behavior.md",
+        "events.md",
         "direct.md",
         "domain.md"
     ]
