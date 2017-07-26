@@ -25,7 +25,7 @@ help create skeleton classes for the mapper.)
 You can create your data source classes by hand, but it's going to be tedious to
 do so. Instead, use the `atlas-skeleton` command to read the table information
 from the database. You can read more about that in the
-[atlas/cli docs](/skeleton/getting-started.html).
+[atlas/cli docs](https://github.com/atlasphp/Atlas.Cli/blob/1.x/docs/getting-started.md).
 
 ## Instantiating Atlas
 
