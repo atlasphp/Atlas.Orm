@@ -9,9 +9,9 @@ saving you from manually writing them.
 Consult the [Atlas CLI documentation](https://github.com/atlasphp/Atlas.Cli/blob/1.x/README.md).
 
 It's important to note that the Record and RecordSet objects described below
-**should only be used for very simple behaviours**. Any non-trivial domain work
+**should only be used for very simple behaviors**. Any non-trivial domain work
 may be an indication that you need a domain layer. See the documentation on
-[Domain Models](domain.md) for examples of how you can use Atlas to build a
+[Domain Models](domain.html) for examples of how you can use Atlas to build a
 domain layer.
 
 Here is an example using the `atlas/cli` package and the `--full` option.

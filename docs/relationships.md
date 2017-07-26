@@ -76,7 +76,7 @@ class AuthorMapper extends AbstractMapper
 {
     protected function setRelated()
     {
-        $this->oneToMany('posts', PostsMapper::CLASS)
+        $this->oneToMany('threads', ThreadMapper::CLASS)
             ->on([
                 // native (author) column => foreign (threads) column
                 'id' => 'author_id',
