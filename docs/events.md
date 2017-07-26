@@ -54,7 +54,7 @@ afterDelete(MapperInterface $mapper,
 
 Here is a simple example with the assumption that the Record object has a
 `validate()` method and a `getErrors()` method. See the section on [Adding Logic
-to Records and RecordSets](logic.html).
+to Records and RecordSets](behavior.html).
 
 ```php
 <?php

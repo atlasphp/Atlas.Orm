@@ -7,7 +7,7 @@
         "records.md",
         "record-sets.md",
         "transactions.md",
-        "logic.md",
+        "behavior.md",
         "events.md",
         "direct.md",
         "domain.md"
