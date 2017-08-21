@@ -362,7 +362,8 @@ abstract class AbstractTable implements TableInterface
 
         $autoinc = $this->getAutoinc();
         if ($autoinc) {
-            $row->$autoinc = $connection->lastInsertId($autoinc);
+            $lastInsertIdName = $insert->getLastInsertIdName($autoinc);
+            $row->$autoinc = $connection->lastInsertId($lastInsertIdName);
         }
 
         $this->events->afterInsert($this, $row, $insert, $pdoStatement);
