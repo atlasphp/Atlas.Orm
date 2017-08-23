@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.3.1
+
+- AbstractTable::insertRowPerform() now uses the correct sequence name for the last insert ID on Postgres. (#71)
+
+- Substantial documentation updates and additions; thanks, @jelofson!
+
 ## 1.3.0
 
 - Changed Mapper::insert() and Mapper::update() to auto-set foreign key values
