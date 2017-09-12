@@ -8,8 +8,11 @@
  */
 namespace Atlas\Orm;
 
+use Atlas\Orm\Mapper\MapperInterface;
 use Atlas\Orm\Mapper\MapperLocator;
+use Atlas\Orm\Mapper\MapperSelect;
 use Atlas\Orm\Mapper\RecordInterface;
+use Atlas\Orm\Mapper\RecordSetInterface;
 use Exception;
 
 /**
