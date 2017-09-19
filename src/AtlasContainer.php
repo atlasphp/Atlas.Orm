@@ -11,6 +11,7 @@ namespace Atlas\Orm;
 use Atlas\Orm\Mapper\MapperLocator;
 use Atlas\Orm\Mapper\MapperEvents;
 use Atlas\Orm\Relationship\Relationships;
+use Atlas\Orm\Table\ConnectionManager;
 use Atlas\Orm\Table\TableEvents;
 use Atlas\Orm\Table\TableLocator;
 use Atlas\Orm\Table\IdentityMap;
@@ -45,6 +46,15 @@ class AtlasContainer
      *
      */
     protected $connectionLocator;
+
+    /**
+     *
+     * A manager for table-specific database connections.
+     *
+     * @var ConnectionManager
+     *
+     */
+    protected $connectionManager;
 
     /**
      *
@@ -110,11 +120,15 @@ class AtlasContainer
     ) {
         $driver = $this->setConnectionLocator(func_get_args());
         $this->setQueryFactory($driver);
+        $this->connectionManager = new ConnectionManager($this->connectionLocator);
         $this->tableLocator = new TableLocator();
         $this->mapperLocator = new MapperLocator();
         $this->atlas = new Atlas(
             $this->mapperLocator,
-            new Transaction($this->mapperLocator)
+            new Transaction(
+                $this->connectionManager,
+                $this->mapperLocator
+            )
         );
     }
 
@@ -175,6 +189,11 @@ class AtlasContainer
     public function getConnectionLocator()
     {
         return $this->connectionLocator;
+    }
+
+    public function getConnectionManager()
+    {
+        return $this->connectionManager;
     }
 
     /**
@@ -312,7 +331,7 @@ class AtlasContainer
 
         $factory = function () use ($tableClass, $eventsClass) {
             return new $tableClass(
-                $this->connectionLocator,
+                $this->connectionManager,
                 $this->queryFactory,
                 new IdentityMap(),
                 $this->newInstance($eventsClass)

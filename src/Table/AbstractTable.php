@@ -9,7 +9,6 @@
 namespace Atlas\Orm\Table;
 
 use Atlas\Orm\Exception;
-use Aura\Sql\ConnectionLocator;
 use Aura\SqlQuery\Common\DeleteInterface;
 use Aura\SqlQuery\Common\InsertInterface;
 use Aura\SqlQuery\Common\SelectInterface;
@@ -32,7 +31,7 @@ abstract class AbstractTable implements TableInterface
      * @var ConnectionLocator
      *
      */
-    protected $connectionLocator;
+    protected $connectionManager;
 
     /**
      *
@@ -51,24 +50,6 @@ abstract class AbstractTable implements TableInterface
      *
      */
     protected $identityMap;
-
-    /**
-     *
-     * The "read" database connection.
-     *
-     * @var ExtendedPdoInterface
-     *
-     */
-    protected $readConnection;
-
-    /**
-     *
-     * The "write" database connection.
-     *
-     * @var ExtendedPdoInterface
-     *
-     */
-    protected $writeConnection;
 
     /**
      *
@@ -92,7 +73,7 @@ abstract class AbstractTable implements TableInterface
      *
      * Constructor.
      *
-     * @param ConnectionLocator $connectionLocator A locator for database
+     * @param ConnectionManager $connectionManager A manager for database
      * connections.
      *
      * @param QueryFactory $queryFactory A factory for SQL query objects.
@@ -104,12 +85,12 @@ abstract class AbstractTable implements TableInterface
      *
      */
     public function __construct(
-        ConnectionLocator $connectionLocator,
+        ConnectionManager $connectionManager,
         QueryFactory $queryFactory,
         IdentityMap $identityMap,
         TableEventsInterface $events
     ) {
-        $this->connectionLocator = $connectionLocator;
+        $this->connectionManager = $connectionManager;
         $this->queryFactory = $queryFactory;
         $this->identityMap = $identityMap;
         $this->events = $events;
@@ -129,10 +110,7 @@ abstract class AbstractTable implements TableInterface
      */
     public function getReadConnection()
     {
-        if (! $this->readConnection) {
-            $this->readConnection = $this->connectionLocator->getRead();
-        }
-        return $this->readConnection;
+        return $this->connectionManager->getReadForTable(static::CLASS);
     }
 
     /**
@@ -144,10 +122,7 @@ abstract class AbstractTable implements TableInterface
      */
     public function getWriteConnection()
     {
-        if (! $this->writeConnection) {
-            $this->writeConnection = $this->connectionLocator->getWrite();
-        }
-        return $this->writeConnection;
+        return $this->connectionManager->getWriteForTable(static::CLASS);
     }
 
     /**

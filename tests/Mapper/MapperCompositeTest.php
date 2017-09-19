@@ -5,6 +5,7 @@ use Atlas\Orm\DataSource\Course\CourseMapper;
 use Atlas\Orm\DataSource\Course\CourseTable;
 use Atlas\Orm\Relationship\Relationships;
 use Atlas\Orm\SqliteFixture;
+use Atlas\Orm\Table\ConnectionManager;
 use Atlas\Orm\Table\TableEvents;
 use Atlas\Orm\Table\IdentityMap;
 use Aura\Sql\ConnectionLocator;
@@ -22,9 +23,11 @@ class MapperCompositeTest extends \PHPUnit_Framework_TestCase
 
         $this->mapper = new CourseMapper(
             new CourseTable(
-                new ConnectionLocator(function () {
-                    return new ExtendedPdo('sqlite::memory:');
-                }),
+                new ConnectionManager(
+                    new ConnectionLocator(function () {
+                        return new ExtendedPdo('sqlite::memory:');
+                    })
+                ),
                 new QueryFactory('sqlite'),
                 new IdentityMap(),
                 new TableEvents()

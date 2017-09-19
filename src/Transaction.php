@@ -11,6 +11,7 @@ namespace Atlas\Orm;
 use Atlas\Orm\Exception;
 use Atlas\Orm\Mapper\RecordInterface;
 use Atlas\Orm\Mapper\MapperLocator;
+use Atlas\Orm\Table\ConnectionManager;
 use SplObjectStorage;
 
 /**
@@ -80,13 +81,18 @@ class Transaction
      *
      * Constructor.
      *
+     * @param ConnectionManager $connectionManager A table-specific connection
+     * manager.
+     *
      * @param MapperLocator $mapperLocator The Mapper locator.
      *
      */
-    public function __construct(MapperLocator $mapperLocator)
-    {
+    public function __construct(
+        ConnectionManager $connectionManager,
+        MapperLocator $mapperLocator
+    ) {
+        $this->connectionManager = $connectionManager;
         $this->mapperLocator = $mapperLocator;
-        $this->connections = new SplObjectStorage();
     }
 
     /**
@@ -210,8 +216,6 @@ class Transaction
     protected function plan($method, RecordInterface $record)
     {
         $mapper = $this->mapperLocator->get($record->getMapperClass());
-        $this->connections->attach($mapper->getWriteConnection());
-
         $label = "$method " . get_class($record) . " via " . get_class($mapper);
         $callable = [$mapper, $method];
         $this->plan[] = $this->newWork($label, $callable, $record);
@@ -257,28 +261,14 @@ class Transaction
         }
 
         try {
-            $this->begin();
+            $this->connectionManager->beginTransaction();
             $this->work();
-            $this->commit();
+            $this->connectionManager->commit();
             return true;
         } catch (\Exception $e) {
             $this->exception = $e;
-            $this->rollBack();
+            $this->connectionManager->rollBack();
             return false;
-        }
-    }
-
-    /**
-     *
-     * Begins a transaction on all connections.
-     *
-     * @return null
-     *
-     */
-    protected function begin()
-    {
-        foreach ($this->connections as $connection) {
-            $connection->beginTransaction();
         }
     }
 
@@ -294,34 +284,6 @@ class Transaction
             $work();
             $this->completed[] = $work;
             $this->failure = null;
-        }
-    }
-
-    /**
-     *
-     * Commits the transaction on each connection.
-     *
-     * @return null
-     *
-     */
-    protected function commit()
-    {
-        foreach ($this->connections as $connection) {
-            $connection->commit();
-        }
-    }
-
-    /**
-     *
-     * Rolls back the transaction on each connection.
-     *
-     * @return null
-     *
-     */
-    protected function rollBack()
-    {
-        foreach ($this->connections as $connection) {
-            $connection->rollBack();
         }
     }
 }

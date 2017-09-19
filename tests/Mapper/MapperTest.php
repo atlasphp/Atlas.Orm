@@ -8,6 +8,7 @@ use Atlas\Orm\DataSource\Employee\EmployeeTable;
 use Atlas\Orm\Exception;
 use Atlas\Orm\Relationship\Relationships;
 use Atlas\Orm\SqliteFixture;
+use Atlas\Orm\Table\ConnectionManager;
 use Atlas\Orm\Table\IdentityMap;
 use Atlas\Orm\Table\Row;
 use Atlas\Orm\Table\TableEvents;
@@ -28,9 +29,11 @@ class MapperTest extends \PHPUnit_Framework_TestCase
 
         $this->mapper = new EmployeeMapper(
             new EmployeeTable(
-                new ConnectionLocator(function () {
-                    return new ExtendedPdo('sqlite::memory:');
-                }),
+                new ConnectionManager(
+                    new ConnectionLocator(function () {
+                        return new ExtendedPdo('sqlite::memory:');
+                    })
+                ),
                 new QueryFactory('sqlite'),
                 new IdentityMap(),
                 new TableEvents()
@@ -432,9 +435,11 @@ class MapperTest extends \PHPUnit_Framework_TestCase
 
         $badMmapper = new BadEmployeeMapper(
             new EmployeeTable(
-                new ConnectionLocator(function () {
-                    return new ExtendedPdo('sqlite::memory:');
-                }),
+                new ConnectionManager(
+                    new ConnectionLocator(function () {
+                        return new ExtendedPdo('sqlite::memory:');
+                    })
+                ),
                 new QueryFactory('sqlite'),
                 new IdentityMap(),
                 new TableEvents()
