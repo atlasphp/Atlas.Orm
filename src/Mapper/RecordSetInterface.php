@@ -29,7 +29,7 @@ interface RecordSetInterface extends ArrayAccess, Countable, IteratorAggregate, 
      * @return bool
      *
      */
-    public function isEmpty();
+    public function isEmpty() : bool;
 
     /**
      *
@@ -38,7 +38,7 @@ interface RecordSetInterface extends ArrayAccess, Countable, IteratorAggregate, 
      * @return array
      *
      */
-    public function getArrayCopy();
+    public function getArrayCopy() : array;
 
     /**
      *
@@ -49,7 +49,7 @@ interface RecordSetInterface extends ArrayAccess, Countable, IteratorAggregate, 
      * @return RecordInterface The appended Record.
      *
      */
-    public function appendNew(array $fields = []);
+    public function appendNew(array $fields = []) : RecordInterface;
 
     /**
      *
@@ -60,7 +60,7 @@ interface RecordSetInterface extends ArrayAccess, Countable, IteratorAggregate, 
      * @return RecordInterface|false A Record on success, or false on failure.
      *
      */
-    public function getOneBy(array $whereEquals);
+    public function getOneBy(array $whereEquals) : ?RecordInterface;
 
     /**
      *
@@ -72,7 +72,7 @@ interface RecordSetInterface extends ArrayAccess, Countable, IteratorAggregate, 
      * this RecordSet.
      *
      */
-    public function getAllBy(array $whereEquals);
+    public function getAllBy(array $whereEquals) : array;
 
     /**
      *
@@ -83,7 +83,7 @@ interface RecordSetInterface extends ArrayAccess, Countable, IteratorAggregate, 
      * @return RecordInterface|false The removed Record, or false if none matched.
      *
      */
-    public function removeOneBy(array $whereEquals);
+    public function removeOneBy(array $whereEquals) : ?RecordInterface;
 
     /**
      *
@@ -95,5 +95,5 @@ interface RecordSetInterface extends ArrayAccess, Countable, IteratorAggregate, 
      * keys as in this RecordSet.
      *
      */
-    public function removeAllBy(array $whereEquals);
+    public function removeAllBy(array $whereEquals) : array;
 }

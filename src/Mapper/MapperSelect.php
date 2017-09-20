@@ -75,7 +75,7 @@ class MapperSelect implements SubselectInterface
      * @return string
      *
      */
-    public function __toString()
+    public function __toString() : string
     {
         return $this->tableSelect->__toString();
     }
@@ -93,7 +93,7 @@ class MapperSelect implements SubselectInterface
      * otherwise return the result as-is.
      *
      */
-    public function __call($method, $params)
+    public function __call(string $method, array $params)
     {
         $result = call_user_func_array([$this->tableSelect, $method], $params);
         return ($result === $this->tableSelect) ? $this : $result;
@@ -116,7 +116,7 @@ class MapperSelect implements SubselectInterface
      * @return string
      *
      */
-    public function getStatement()
+    public function getStatement() : string
     {
         return $this->tableSelect->getStatement();
     }
@@ -128,7 +128,7 @@ class MapperSelect implements SubselectInterface
      * @return array
      *
      */
-    public function getBindValues()
+    public function getBindValues() : array
     {
         return $this->tableSelect->getBindValues();
     }
@@ -145,7 +145,7 @@ class MapperSelect implements SubselectInterface
      * @return $this
      *
      */
-    public function joinWith($join, $relatedName)
+    public function joinWith(string $join, string $relatedName) : self
     {
         $this->mapper->getRelationships()->get($relatedName)->joinSelect($join, $this);
         return $this;
@@ -160,7 +160,7 @@ class MapperSelect implements SubselectInterface
      * @return $this
      *
      */
-    public function leftJoinWith($relatedName)
+    public function leftJoinWith(string $relatedName) : self
     {
         return $this->joinWith('LEFT', $relatedName);
     }
@@ -174,7 +174,7 @@ class MapperSelect implements SubselectInterface
      * @return $this
      *
      */
-    public function innerJoinWith($relatedName)
+    public function innerJoinWith(string $relatedName) : self
     {
         return $this->joinWith('INNER', $relatedName);
     }
@@ -188,7 +188,7 @@ class MapperSelect implements SubselectInterface
      * @return $this
      *
      */
-    public function with(array $with)
+    public function with(array $with) : self
     {
         // make sure that all with() are on relateds that actually exist
         $fields = array_keys($this->mapper->getRelationships()->getFields());

@@ -67,7 +67,7 @@ class Record implements RecordInterface
      * @param Related $related The related foreign Record and RecordSet objects.
      *
      */
-    public function __construct($mapperClass, RowInterface $row, Related $related)
+    public function __construct(string $mapperClass, RowInterface $row, Related $related)
     {
         $this->mapperClass = $mapperClass;
         $this->row = $row;
@@ -83,7 +83,7 @@ class Record implements RecordInterface
      * @return mixed
      *
      */
-    public function __get($field)
+    public function __get(string $field)
     {
         $prop = $this->assertHas($field);
         return $this->$prop->$field;
@@ -100,7 +100,7 @@ class Record implements RecordInterface
      * @return mixed
      *
      */
-    public function __set($field, $value)
+    public function __set(string $field, $value) : void
     {
         $prop = $this->assertHas($field);
         $this->$prop->$field = $value;
@@ -115,7 +115,7 @@ class Record implements RecordInterface
      * @return bool
      *
      */
-    public function __isset($field)
+    public function __isset(string $field) : bool
     {
         $prop = $this->assertHas($field);
         return isset($this->$prop->$field);
@@ -130,7 +130,7 @@ class Record implements RecordInterface
      * @return void
      *
      */
-    public function __unset($field)
+    public function __unset($field) : void
     {
         $prop = $this->assertHas($field);
         unset($this->$prop->$field);
@@ -143,7 +143,7 @@ class Record implements RecordInterface
      * @return string
      *
      */
-    public function getMapperClass()
+    public function getMapperClass() : string
     {
         return $this->mapperClass;
     }
@@ -155,7 +155,7 @@ class Record implements RecordInterface
      * @return RowInterface
      *
      */
-    public function getRow()
+    public function getRow() : RowInterface
     {
         return $this->row;
     }
@@ -167,7 +167,7 @@ class Record implements RecordInterface
      * @return Related
      *
      */
-    public function getRelated()
+    public function getRelated() : Related
     {
         return $this->related;
     }
@@ -180,7 +180,7 @@ class Record implements RecordInterface
      * the field name and the value is the value to set.
      *
      */
-    public function set(array $fieldsValues)
+    public function set(array $fieldsValues) : void
     {
         foreach ($fieldsValues as $field => $value) {
             if ($this->row->has($field)) {
@@ -200,7 +200,7 @@ class Record implements RecordInterface
      * @return bool
      *
      */
-    public function has($field)
+    public function has($field) : bool
     {
         return $this->row->has($field)
             || $this->related->has($field);
@@ -213,7 +213,7 @@ class Record implements RecordInterface
      * @return array
      *
      */
-    public function getArrayCopy()
+    public function getArrayCopy() : array
     {
         // use +, not array_merge(), so row takes precedence over related
         return $this->row->getArrayCopy()
@@ -227,7 +227,7 @@ class Record implements RecordInterface
      * @return array
      *
      */
-    public function jsonSerialize()
+    public function jsonSerialize() : array
     {
         return $this->getArrayCopy();
     }
@@ -244,7 +244,7 @@ class Record implements RecordInterface
      * @throws Exception When neither the Row nor the Related has the field.
      *
      */
-    protected function assertHas($field)
+    protected function assertHas($field) : string
     {
         if ($this->row->has($field)) {
             return 'row';
@@ -264,7 +264,7 @@ class Record implements RecordInterface
      * @param bool $delete True to mark for deletion, false to unmark.
      *
      */
-    public function markForDeletion($delete = true)
+    public function markForDeletion($delete = true) : void
     {
         $this->delete = (bool) $delete;
     }
@@ -277,7 +277,7 @@ class Record implements RecordInterface
      * @return string|null
      *
      */
-    public function getPersistMethod()
+    public function getPersistMethod() : ?string
     {
         if ($this->delete) {
             return 'delete';

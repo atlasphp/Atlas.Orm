@@ -94,7 +94,7 @@ class RecordSetTest extends \PHPUnit\Framework\TestCase
         $this->recordSet->appendNew(['id' => 10, 'foo' => 'bar3']);
 
         $actual = $this->recordSet->getOneBy(['foo' => 'no-such-value']);
-        $this->assertFalse($actual);
+        $this->assertNull($actual);
 
         $actual = $this->recordSet->getOneBy(['foo' => 'bar1']);
         $this->assertSame(2, $actual->id);
@@ -108,7 +108,7 @@ class RecordSetTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(10, $this->recordSet);
 
         $actual = $this->recordSet->removeOneBy(['foo' => 'no-such-value']);
-        $this->assertFalse($actual);
+        $this->assertNull($actual);
 
         $actual = $this->recordSet->removeOneBy(['foo' => 'bar1']);
         $this->assertSame(2, $actual->id);
@@ -127,7 +127,7 @@ class RecordSetTest extends \PHPUnit\Framework\TestCase
         $this->recordSet->appendNew(['id' => 2, 'foo' => 'bar1']);
         $this->recordSet->appendNew(['id' => 3, 'foo' => 'bar2']);
         $expect = '['
-            . '{"id":"1","foo":"bar","baz":"dib","zim":null,"irk":null},'
+            . '{"id":"1","foo":"bar","baz":"dib","zim":[],"irk":[]},'
             . '{"id":2,"foo":"bar1","zim":null,"irk":null},'
             . '{"id":3,"foo":"bar2","zim":null,"irk":null}'
             . ']';

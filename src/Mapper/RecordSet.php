@@ -61,7 +61,7 @@ class RecordSet implements RecordSetInterface
      * @return bool
      *
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset) : bool
     {
         return isset($this->records[$offset]);
     }
@@ -75,7 +75,7 @@ class RecordSet implements RecordSetInterface
      * @return RecordInterface
      *
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset) : RecordInterface
     {
         return $this->records[$offset];
     }
@@ -89,7 +89,7 @@ class RecordSet implements RecordSetInterface
      * @param RecordInterface $value The Record to set.
      *
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value) : void
     {
         if (! is_object($value)) {
             throw Exception::invalidType(RecordInterface::CLASS, gettype($value));
@@ -114,7 +114,7 @@ class RecordSet implements RecordSetInterface
      * @param mixed $offset The offset to unset.
      *
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset) : void
     {
         unset($this->records[$offset]);
     }
@@ -126,7 +126,7 @@ class RecordSet implements RecordSetInterface
      * @return int The number of Record objects in the RecordSet.
      *
      */
-    public function count()
+    public function count() : int
     {
         return count($this->records);
     }
@@ -138,7 +138,7 @@ class RecordSet implements RecordSetInterface
      * @return ArrayIterator
      *
      */
-    public function getIterator()
+    public function getIterator() : ArrayIterator
     {
         return new ArrayIterator($this->records);
     }
@@ -150,7 +150,7 @@ class RecordSet implements RecordSetInterface
      * @return bool
      *
      */
-    public function isEmpty()
+    public function isEmpty() : bool
     {
         return ! $this->records;
     }
@@ -162,7 +162,7 @@ class RecordSet implements RecordSetInterface
      * @return array
      *
      */
-    public function getArrayCopy()
+    public function getArrayCopy() : array
     {
         $array = [];
         foreach ($this as $key => $record) {
@@ -180,7 +180,7 @@ class RecordSet implements RecordSetInterface
      * @return RecordInterface The appended Record.
      *
      */
-    public function appendNew(array $fields = [])
+    public function appendNew(array $fields = []) : RecordInterface
     {
         $record = call_user_func($this->newRecord, $fields);
         $this->records[] = $record;
@@ -193,17 +193,17 @@ class RecordSet implements RecordSetInterface
      *
      * @param array $whereEquals The column-value equality pairs.
      *
-     * @return RecordInterface|false A Record on success, or false on failure.
+     * @return ?RecordInterface A Record on success, or null on failure.
      *
      */
-    public function getOneBy(array $whereEquals)
+    public function getOneBy(array $whereEquals) : ?RecordInterface
     {
         foreach ($this->records as $i => $record) {
             if ($this->compareBy($record, $whereEquals)) {
                 return $record;
             }
         }
-        return false;
+        return null;
     }
 
     /**
@@ -216,7 +216,7 @@ class RecordSet implements RecordSetInterface
      * this RecordSet.
      *
      */
-    public function getAllBy(array $whereEquals)
+    public function getAllBy(array $whereEquals) : array
     {
         $records = [];
         foreach ($this->records as $i => $record) {
@@ -233,10 +233,10 @@ class RecordSet implements RecordSetInterface
      *
      * @param array $whereEquals The column-value equality pairs.
      *
-     * @return RecordInterface|false The removed Record, or false if none matched.
+     * @return ?RecordInterface The removed Record, or null if none matched.
      *
      */
-    public function removeOneBy(array $whereEquals)
+    public function removeOneBy(array $whereEquals) : ?RecordInterface
     {
         foreach ($this->records as $i => $record) {
             if ($this->compareBy($record, $whereEquals)) {
@@ -244,7 +244,7 @@ class RecordSet implements RecordSetInterface
                 return $record;
             }
         }
-        return false;
+        return null;
     }
 
     /**
@@ -257,7 +257,7 @@ class RecordSet implements RecordSetInterface
      * keys as in this RecordSet.
      *
      */
-    public function removeAllBy(array $whereEquals)
+    public function removeAllBy(array $whereEquals) : array
     {
         $records = [];
         foreach ($this->records as $i => $record) {
@@ -280,7 +280,7 @@ class RecordSet implements RecordSetInterface
      * @return bool
      *
      */
-    protected function compareBy(RecordInterface $record, array $whereEquals)
+    protected function compareBy(RecordInterface $record, array $whereEquals) : bool
     {
         foreach ($whereEquals as $field => $value) {
             if ($record->$field != $value) {
@@ -295,7 +295,7 @@ class RecordSet implements RecordSetInterface
      * Implements JsonSerializable::jsonSerialize().
      *
      */
-    public function jsonSerialize()
+    public function jsonSerialize() : array
     {
         return $this->getArrayCopy();
     }

@@ -9,10 +9,12 @@
 namespace Atlas\Orm\Mapper;
 
 use Atlas\Orm\Exception;
+use Atlas\Orm\Relationship\RelationshipInterface;
 use Atlas\Orm\Relationship\Relationships;
 use Atlas\Orm\Table\Row;
 use Atlas\Orm\Table\RowInterface;
 use Atlas\Orm\Table\TableInterface;
+use Aura\Sql\ExtendedPdoInterface;
 use SplObjectStorage;
 
 /**
@@ -84,7 +86,7 @@ abstract class AbstractMapper implements MapperInterface
      * @return string
      *
      */
-    static public function getTableClass()
+    static public function getTableClass() : string
     {
         static $tableClass;
         if (! $tableClass) {
@@ -100,33 +102,9 @@ abstract class AbstractMapper implements MapperInterface
      * @return TableInterface
      *
      */
-    public function getTable()
+    public function getTable() : TableInterface
     {
         return $this->table;
-    }
-
-    /**
-     *
-     * Returns the Table read connection.
-     *
-     * @return ExtendedPdoInterface
-     *
-     */
-    public function getReadConnection()
-    {
-        return $this->table->getReadConnection();
-    }
-
-    /**
-     *
-     * Returns the Table write connection.
-     *
-     * @return ExtendedPdoInterface
-     *
-     */
-    public function getWriteConnection()
-    {
-        return $this->table->getWriteConnection();
     }
 
     /**
@@ -136,7 +114,7 @@ abstract class AbstractMapper implements MapperInterface
      * @return Relationships
      *
      */
-    public function getRelationships()
+    public function getRelationships() : Relationships
     {
         return $this->relationships;
     }
@@ -273,7 +251,7 @@ abstract class AbstractMapper implements MapperInterface
      * @return MapperSelect
      *
      */
-    public function select(array $whereEquals = [])
+    public function select(array $whereEquals = []) : MapperSelect
     {
         return new MapperSelect(
             $this,
@@ -287,10 +265,10 @@ abstract class AbstractMapper implements MapperInterface
      *
      * @param RecordInterface $record Insert the Row for this Record.
      *
-     * @return mixed
+     * @return bool
      *
      */
-    public function insert(RecordInterface $record)
+    public function insert(RecordInterface $record) : bool
     {
         $this->events->beforeInsert($this, $record);
         $this->relationships->fixNativeRecordKeys($record);
@@ -308,10 +286,10 @@ abstract class AbstractMapper implements MapperInterface
      *
      * @param RecordInterface $record Update the Row for this Record.
      *
-     * @return mixed
+     * @return bool
      *
      */
-    public function update(RecordInterface $record)
+    public function update(RecordInterface $record) : bool
     {
         $this->events->beforeUpdate($this, $record);
         $this->relationships->fixNativeRecordKeys($record);
@@ -335,7 +313,7 @@ abstract class AbstractMapper implements MapperInterface
      * @return mixed
      *
      */
-    public function delete(RecordInterface $record)
+    public function delete(RecordInterface $record) : bool
     {
         $this->events->beforeDelete($this, $record);
         $delete = $this->table->deleteRowPrepare($record->getRow());
@@ -364,10 +342,10 @@ abstract class AbstractMapper implements MapperInterface
      * @param SplObjectStorage $tracker Tracks which Records have been
      * persisted, to avoid infinite recursion.
      *
-     * @return mixed
+     * @return bool
      *
      */
-    public function persist(RecordInterface $record, SplObjectStorage $tracker = null)
+    public function persist(RecordInterface $record, SplObjectStorage $tracker = null) : bool
     {
         if ($tracker === null) {
             $tracker = new SplObjectStorage();
@@ -403,7 +381,7 @@ abstract class AbstractMapper implements MapperInterface
      * that will be returned instead of a generic Record.
      *
      */
-    public function newRecord(array $fields = [])
+    public function newRecord(array $fields = []) : RecordInterface
     {
         $row = $this->table->newRow($fields);
         $record = $this->newRecordFromRow($row);
@@ -421,7 +399,7 @@ abstract class AbstractMapper implements MapperInterface
      * defined, that will be returned instead of a generic RecordSet.
      *
      */
-    public function newRecordSet(array $records = [])
+    public function newRecordSet(array $records = []) : RecordSetInterface
     {
         $recordSetClass = $this->getRecordSetClass();
         return new $recordSetClass(
@@ -442,7 +420,7 @@ abstract class AbstractMapper implements MapperInterface
      * that will be returned instead of a generic Record.
      *
      */
-    public function turnRowIntoRecord(RowInterface $row, array $with = [])
+    public function turnRowIntoRecord(RowInterface $row, array $with = []) : RecordInterface
     {
         $record = $this->newRecordFromRow($row);
         $this->relationships->stitchIntoRecords([$record], $with);
@@ -464,7 +442,7 @@ abstract class AbstractMapper implements MapperInterface
      * Record objects.
      *
      */
-    public function turnRowsIntoRecords(array $rows, array $with = [])
+    public function turnRowsIntoRecords(array $rows, array $with = []) : array
     {
         $records = [];
         foreach ($rows as $row) {
@@ -481,7 +459,7 @@ abstract class AbstractMapper implements MapperInterface
      * @return void
      *
      */
-    protected function setRelated()
+    protected function setRelated() // typehinting will break extended classes
     {
     }
 
@@ -494,10 +472,10 @@ abstract class AbstractMapper implements MapperInterface
      *
      * @param string $foreignMapperClass The class name of the foreign mapper.
      *
-     * @return AbstractRelationship
+     * @return RelationshipInterface
      *
      */
-    protected function oneToOne($name, $foreignMapperClass)
+    protected function oneToOne(string $name, string $foreignMapperClass) : RelationshipInterface
     {
         $this->assertRelatedName($name);
         return $this->relationships->oneToOne(
@@ -516,10 +494,10 @@ abstract class AbstractMapper implements MapperInterface
      *
      * @param string $foreignMapperClass The class name of the foreign mapper.
      *
-     * @return AbstractRelationship
+     * @return RelationshipInterface
      *
      */
-    protected function oneToMany($name, $foreignMapperClass)
+    protected function oneToMany(string $name, string $foreignMapperClass) : RelationshipInterface
     {
         $this->assertRelatedName($name);
         return $this->relationships->oneToMany(
@@ -538,10 +516,10 @@ abstract class AbstractMapper implements MapperInterface
      *
      * @param string $foreignMapperClass The class name of the foreign mapper.
      *
-     * @return AbstractRelationship
+     * @return RelationshipInterface
      *
      */
-    protected function manyToOne($name, $foreignMapperClass)
+    protected function manyToOne(string $name, string $foreignMapperClass) : RelationshipInterface
     {
         $this->assertRelatedName($name);
         return $this->relationships->manyToOne(
@@ -563,10 +541,10 @@ abstract class AbstractMapper implements MapperInterface
      * @param string $throughName Relate to the foreign mapper through this
      * native Record field name.
      *
-     * @return AbstractRelationship
+     * @return RelationshipInterface
      *
      */
-    protected function manyToMany($name, $foreignMapperClass, $throughName)
+    protected function manyToMany(string $name, string $foreignMapperClass, string $throughName) : RelationshipInterface
     {
         $this->assertRelatedName($name);
         return $this->relationships->manyToMany(
@@ -586,10 +564,8 @@ abstract class AbstractMapper implements MapperInterface
      *
      * @throws Exception if the name conflicts with a column name.
      *
-     * @return null
-     *
      */
-    protected function assertRelatedName($name)
+    protected function assertRelatedName(string $name) : void
     {
         if (in_array($name, $this->getTable()->getColNames())) {
             throw Exception::relatedNameConflict($name);
@@ -611,7 +587,7 @@ abstract class AbstractMapper implements MapperInterface
      * @return string
      *
      */
-    protected function getRecordClass(RowInterface $row)
+    protected function getRecordClass(RowInterface $row) : string
     {
         static $recordClass;
         if (! $recordClass) {
@@ -634,7 +610,7 @@ abstract class AbstractMapper implements MapperInterface
      * @return string
      *
      */
-    protected function getRecordSetClass()
+    protected function getRecordSetClass() : string
     {
         static $recordSetClass;
         if (! $recordSetClass) {
@@ -655,7 +631,7 @@ abstract class AbstractMapper implements MapperInterface
      * @return RecordInterface
      *
      */
-    protected function newRecordFromRow(RowInterface $row)
+    protected function newRecordFromRow(RowInterface $row) : RecordInterface
     {
         $recordClass = $this->getRecordClass($row);
         return new $recordClass(
@@ -672,7 +648,7 @@ abstract class AbstractMapper implements MapperInterface
      * @return Related
      *
      */
-    protected function newRelated()
+    protected function newRelated() : Related
     {
         return new Related($this->relationships->getFields());
     }

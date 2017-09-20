@@ -8,6 +8,7 @@
  */
 namespace Atlas\Orm\Mapper;
 
+use Atlas\Orm\Table\TableInterface;
 use Atlas\Orm\Table\RowInterface;
 use SplObjectStorage;
 
@@ -27,7 +28,7 @@ interface MapperInterface
      * @return string
      *
      */
-    static public function getTableClass();
+    static public function getTableClass() : string;
 
     /**
      *
@@ -36,25 +37,7 @@ interface MapperInterface
      * @return TableInterface
      *
      */
-    public function getTable();
-
-    /**
-     *
-     * Returns the Table read connection.
-     *
-     * @return ExtendedPdoInterface
-     *
-     */
-    public function getReadConnection();
-
-    /**
-     *
-     * Returns the Table write connection.
-     *
-     * @return ExtendedPdoInterface
-     *
-     */
-    public function getWriteConnection();
+    public function getTable() : TableInterface;
 
     /**
      *
@@ -135,7 +118,7 @@ interface MapperInterface
      * @return MapperSelect
      *
      */
-    public function select(array $whereEquals = []);
+    public function select(array $whereEquals = []) : MapperSelect;
 
     /**
      *
@@ -143,10 +126,10 @@ interface MapperInterface
      *
      * @param RecordInterface $record Insert the Row for this Record.
      *
-     * @return mixed
+     * @return bool
      *
      */
-    public function insert(RecordInterface $record);
+    public function insert(RecordInterface $record) : bool;
 
     /**
      *
@@ -154,10 +137,10 @@ interface MapperInterface
      *
      * @param RecordInterface $record Update the Row for this Record.
      *
-     * @return mixed
+     * @return bool
      *
      */
-    public function update(RecordInterface $record);
+    public function update(RecordInterface $record) : bool;
 
     /**
      *
@@ -165,10 +148,10 @@ interface MapperInterface
      *
      * @param RecordInterface $record Delete the Row for this Record.
      *
-     * @return mixed
+     * @return bool
      *
      */
-    public function delete(RecordInterface $record);
+    public function delete(RecordInterface $record) : bool;
 
     /**
      *
@@ -179,10 +162,10 @@ interface MapperInterface
      * @param SplObjectStorage $tracker Tracks which Records have been
      * persisted, to avoid infinite recursion.
      *
-     * @return mixed
+     * @return bool
      *
      */
-    public function persist(RecordInterface $record, SplObjectStorage $tracker = null);
+    public function persist(RecordInterface $record, SplObjectStorage $tracker = null) : bool;
 
     /**
      *
@@ -194,7 +177,7 @@ interface MapperInterface
      * that will be returned instead of a generic Record.
      *
      */
-    public function newRecord(array $cols = []);
+    public function newRecord(array $cols = []) : RecordInterface;
 
     /**
      *
@@ -206,7 +189,7 @@ interface MapperInterface
      * defined, that will be returned instead of a generic RecordSet.
      *
      */
-    public function newRecordSet(array $records = []);
+    public function newRecordSet(array $records = []) : RecordSetInterface;
 
     /**
      *
@@ -220,7 +203,7 @@ interface MapperInterface
      * that will be returned instead of a generic Record.
      *
      */
-    public function turnRowIntoRecord(RowInterface $row, array $with = []);
+    public function turnRowIntoRecord(RowInterface $row, array $with = []) : RecordInterface;
 
     /**
      *
@@ -237,5 +220,5 @@ interface MapperInterface
      * Record objects.
      *
      */
-    public function turnRowsIntoRecords(array $rows, array $with = []);
+    public function turnRowsIntoRecords(array $rows, array $with = []) : array;
 }

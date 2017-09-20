@@ -128,10 +128,10 @@ class RecordTest extends \PHPUnit\Framework\TestCase
     public function testSet()
     {
         $newZim = $this->getMockBuilder(RecordInterface::CLASS)->getMock();
-        $newZim->method('getArrayCopy')->willReturn('gir');
+        $newZim->method('getArrayCopy')->willReturn(['zimkey' => 'zimval']);
 
         $newIrk = $this->getMockBuilder(RecordSetInterface::CLASS)->getMock();
-        $newIrk->method('getArrayCopy')->willReturn('doom');
+        $newIrk->method('getArrayCopy')->willReturn([['doomkey' => 'doomval']]);
 
         $this->record->set([
             'foo' => 'hello',
@@ -144,8 +144,10 @@ class RecordTest extends \PHPUnit\Framework\TestCase
             'id' => '1',
             'foo' => 'hello',
             'baz' => 'dib',
-            'zim' => 'gir',
-            'irk' => 'doom',
+            'zim' => ['zimkey' => 'zimval'],
+            'irk' => [
+                ['doomkey' => 'doomval']
+            ],
         ];
         $this->assertSame($expected, $actual);
     }
@@ -153,7 +155,7 @@ class RecordTest extends \PHPUnit\Framework\TestCase
     public function testJsonSerialize()
     {
         $actual = json_encode($this->record);
-        $expect = '{"id":"1","foo":"bar","baz":"dib","zim":null,"irk":null}';
+        $expect = '{"id":"1","foo":"bar","baz":"dib","zim":[],"irk":[]}';
         $this->assertSame($expect, $actual);
     }
 

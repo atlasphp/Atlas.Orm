@@ -52,7 +52,7 @@ class Related
      * @return mixed
      *
      */
-    public function __get($name)
+    public function __get(string $name)
     {
         $this->assertHas($name);
         return $this->fields[$name];
@@ -67,7 +67,7 @@ class Related
      * @param mixed $value The field value.
      *
      */
-    public function __set($name, $value)
+    public function __set(string $name, $value) : void
     {
         $this->assertHas($name);
         $this->modify($name, $value);
@@ -82,7 +82,7 @@ class Related
      * @return bool
      *
      */
-    public function __isset($name)
+    public function __isset(string $name) : bool
     {
         $this->assertHas($name);
         return isset($this->fields[$name]);
@@ -96,7 +96,7 @@ class Related
      * @param string $name The related field name.
      *
      */
-    public function __unset($name)
+    public function __unset(string $name) : void
     {
         $this->assertHas($name);
         $this->fields[$name] = null;
@@ -110,7 +110,7 @@ class Related
      * the field name and the value is the value to set.
      *
      */
-    public function set(array $namesValues = [])
+    public function set(array $namesValues = []) : void
     {
         foreach ($namesValues as $name => $value) {
             if ($this->has($name)) {
@@ -128,7 +128,7 @@ class Related
      * @return bool
      *
      */
-    public function has($name)
+    public function has($name) : bool
     {
         return array_key_exists($name, $this->fields);
     }
@@ -140,7 +140,7 @@ class Related
      * @return array
      *
      */
-    public function getArrayCopy()
+    public function getArrayCopy() : array
     {
         $array = [];
         foreach ($this->fields as $name => $foreign) {
@@ -164,7 +164,7 @@ class Related
      * @throws Exception when the new value is not of the expected type.
      *
      */
-    protected function modify($name, $value)
+    protected function modify(string $name, $value) : void
     {
         $valid = $value === null
               || $value === false
@@ -189,7 +189,7 @@ class Related
      * @throws Exception when the field name does not exist.
      *
      */
-    protected function assertHas($name)
+    protected function assertHas($name) : void
     {
         if (! $this->has($name)) {
             throw Exception::propertyDoesNotExist($this, $name);

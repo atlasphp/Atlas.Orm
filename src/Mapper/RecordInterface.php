@@ -8,6 +8,7 @@
  */
 namespace Atlas\Orm\Mapper;
 
+use Atlas\Orm\Table\RowInterface;
 use JsonSerializable;
 
 /**
@@ -26,7 +27,7 @@ interface RecordInterface extends JsonSerializable
      * @return string
      *
      */
-    public function getMapperClass();
+    public function getMapperClass() : string;
 
     /**
      *
@@ -35,7 +36,7 @@ interface RecordInterface extends JsonSerializable
      * @return RowInterface
      *
      */
-    public function getRow();
+    public function getRow() : RowInterface;
 
     /**
      *
@@ -44,7 +45,7 @@ interface RecordInterface extends JsonSerializable
      * @return Related
      *
      */
-    public function getRelated();
+    public function getRelated() : Related;
 
     /**
      *
@@ -54,7 +55,7 @@ interface RecordInterface extends JsonSerializable
      * the field name and the value is the value to set.
      *
      */
-    public function set(array $fieldsValues);
+    public function set(array $fieldsValues) : void;
 
     /**
      *
@@ -65,7 +66,7 @@ interface RecordInterface extends JsonSerializable
      * @return bool
      *
      */
-    public function has($field);
+    public function has($field) : bool;
 
     /**
      *
@@ -74,5 +75,5 @@ interface RecordInterface extends JsonSerializable
      * @return array
      *
      */
-    public function getArrayCopy();
+    public function getArrayCopy() : array;
 }

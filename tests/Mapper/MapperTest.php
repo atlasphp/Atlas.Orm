@@ -42,7 +42,7 @@ class MapperTest extends \PHPUnit\Framework\TestCase
             new MapperEvents()
         );
 
-        $fixture = new SqliteFixture($this->mapper->getWriteConnection());
+        $fixture = new SqliteFixture($this->mapper->getTable()->getWriteConnection());
         $fixture->exec();
     }
 
@@ -296,7 +296,7 @@ class MapperTest extends \PHPUnit\Framework\TestCase
             'building' => '10',
             'floor' => '99',
         ];
-        $actual = $this->mapper->getReadConnection()->fetchOne(
+        $actual = $this->mapper->getTable()->getReadConnection()->fetchOne(
             'SELECT * FROM employee WHERE id = 13'
         );
         $this->assertSame($expect, $actual);
@@ -326,7 +326,7 @@ class MapperTest extends \PHPUnit\Framework\TestCase
 
         // was it *actually* updated?
         $expect = $record->getRow()->getArrayCopy();
-        $actual = $this->mapper->getReadConnection()->fetchOne(
+        $actual = $this->mapper->getTable()->getReadConnection()->fetchOne(
             "SELECT * FROM employee WHERE name = 'Annabelle'"
         );
         $this->assertSame($expect, $actual);
@@ -422,7 +422,7 @@ class MapperTest extends \PHPUnit\Framework\TestCase
 
     protected function silenceErrors()
     {
-        $conn = $this->mapper->getWriteConnection();
+        $conn = $this->mapper->getTable()->getWriteConnection();
         $conn->setAttribute($conn::ATTR_ERRMODE, $conn::ERRMODE_SILENT);
     }
 

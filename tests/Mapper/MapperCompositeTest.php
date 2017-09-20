@@ -36,7 +36,7 @@ class MapperCompositeTest extends \PHPUnit\Framework\TestCase
             new MapperEvents()
         );
 
-        $fixture = new SqliteFixture($this->mapper->getWriteConnection());
+        $fixture = new SqliteFixture($this->mapper->getTable()->getWriteConnection());
         $fixture->exec();
     }
 
@@ -281,7 +281,7 @@ class MapperCompositeTest extends \PHPUnit\Framework\TestCase
             'course_number' => '100',
             'title' => 'Greek Philosophy',
         ];
-        $actual = $this->mapper->getReadConnection()->fetchOne(
+        $actual = $this->mapper->getTable()->getReadConnection()->fetchOne(
             "SELECT * FROM courses WHERE course_subject = 'PHIL' AND course_number = '100'"
         );
         $this->assertSame($expect, $actual);
@@ -317,7 +317,7 @@ class MapperCompositeTest extends \PHPUnit\Framework\TestCase
 
         // was it *actually* updated?
         $expect = $record->getRow()->getArrayCopy();
-        $actual = $this->mapper->getReadConnection()->fetchOne(
+        $actual = $this->mapper->getTable()->getReadConnection()->fetchOne(
             "SELECT * FROM courses WHERE course_subject = 'MATH' AND course_number = '100'"
         );
         $this->assertSame($expect, $actual);
@@ -351,7 +351,7 @@ class MapperCompositeTest extends \PHPUnit\Framework\TestCase
 
     protected function silenceErrors()
     {
-        $conn = $this->mapper->getWriteConnection();
+        $conn = $this->mapper->getTable()->getWriteConnection();
         $conn->setAttribute($conn::ATTR_ERRMODE, $conn::ERRMODE_SILENT);
     }
 }
