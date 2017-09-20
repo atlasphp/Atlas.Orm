@@ -9,6 +9,8 @@
 namespace Atlas\Orm;
 
 use Atlas\Orm\Mapper\MapperLocator;
+use Atlas\Orm\Mapper\MapperSelect;
+use Atlas\Orm\Mapper\MapperInterface;
 use Atlas\Orm\Mapper\RecordInterface;
 use Atlas\Orm\Mapper\RecordSetInterface;
 use Exception;
@@ -75,7 +77,7 @@ class Atlas
      * @return MapperInterface
      *
      */
-    public function mapper($mapperClass)
+    public function mapper(string $mapperClass) : MapperInterface
     {
         return $this->mapperLocator->get($mapperClass);
     }
@@ -91,7 +93,7 @@ class Atlas
      * @return RecordInterface
      *
      */
-    public function newRecord($mapperClass, array $cols = [])
+    public function newRecord(string $mapperClass, array $cols = []) : RecordInterface
     {
         return $this->mapper($mapperClass)->newRecord($cols);
     }
@@ -105,7 +107,7 @@ class Atlas
      * @return RecordSetInterface
      *
      */
-    public function newRecordSet($mapperClass)
+    public function newRecordSet(string $mapperClass) : RecordSetInterface
     {
         return $this->mapper($mapperClass)->newRecordSet();
     }
@@ -125,7 +127,7 @@ class Atlas
      * @return ?RecordInterface
      *
      */
-    public function fetchRecord($mapperClass, $primaryVal, array $with = []) : ?RecordInterface
+    public function fetchRecord(string $mapperClass, $primaryVal, array $with = []) : ?RecordInterface
     {
         return $this->mapper($mapperClass)->fetchRecord($primaryVal, $with);
     }
@@ -144,7 +146,7 @@ class Atlas
      * @return ?RecordInterface
      *
      */
-    public function fetchRecordBy($mapperClass, array $whereEquals, array $with = []) : ?RecordInterface
+    public function fetchRecordBy(string $mapperClass, array $whereEquals, array $with = []) : ?RecordInterface
     {
         return $this->mapper($mapperClass)->fetchRecordBy($whereEquals, $with);
     }
@@ -165,7 +167,7 @@ class Atlas
      * @return array An array of Records.
      *
      */
-    public function fetchRecords($mapperClass, array $primaryVals, array $with = []) : array
+    public function fetchRecords(string $mapperClass, array $primaryVals, array $with = []) : array
     {
         return $this->mapper($mapperClass)->fetchRecords($primaryVals, $with);
     }
@@ -184,7 +186,7 @@ class Atlas
      * @return array An array of Records.
      *
      */
-    public function fetchRecordsBy($mapperClass, array $whereEquals, array $with = []) : array
+    public function fetchRecordsBy(string $mapperClass, array $whereEquals, array $with = []) : array
     {
         return $this->mapper($mapperClass)->fetchRecordsBy($whereEquals, $with);
     }
@@ -206,7 +208,7 @@ class Atlas
      * array on failure.
      *
      */
-    public function fetchRecordSet($mapperClass, array $primaryVals, array $with = []) : ?RecordSetInterface
+    public function fetchRecordSet(string $mapperClass, array $primaryVals, array $with = []) : ?RecordSetInterface
     {
         return $this->mapper($mapperClass)->fetchRecordSet($primaryVals, $with);
     }
@@ -226,7 +228,7 @@ class Atlas
      * array on failure.
      *
      */
-    public function fetchRecordSetBy($mapperClass, array $whereEquals, array $with = []) : ?RecordSetInterface
+    public function fetchRecordSetBy(string $mapperClass, array $whereEquals, array $with = []) : ?RecordSetInterface
     {
         return $this->mapper($mapperClass)->fetchRecordSetBy($whereEquals, $with);
     }
@@ -243,7 +245,7 @@ class Atlas
      * @return MapperSelect
      *
      */
-    public function select($mapperClass, array $whereEquals = [])
+    public function select(string $mapperClass, array $whereEquals = []) : MapperSelect
     {
         return $this->mapper($mapperClass)->select($whereEquals);
     }
@@ -255,7 +257,7 @@ class Atlas
      * @return Transaction
      *
      */
-    public function newTransaction()
+    public function newTransaction() : Transaction
     {
         return clone $this->prototypeTransaction;
     }
@@ -269,7 +271,7 @@ class Atlas
      * @return bool
      *
      */
-    public function insert(RecordInterface $record)
+    public function insert(RecordInterface $record) : bool
     {
         return $this->transact('insert', $record);
     }
@@ -283,7 +285,7 @@ class Atlas
      * @return bool
      *
      */
-    public function update(RecordInterface $record)
+    public function update(RecordInterface $record) : bool
     {
         return $this->transact('update', $record);
     }
@@ -297,7 +299,7 @@ class Atlas
      * @return bool
      *
      */
-    public function delete(RecordInterface $record)
+    public function delete(RecordInterface $record) : bool
     {
         return $this->transact('delete', $record);
     }
@@ -314,7 +316,7 @@ class Atlas
      * @return bool
      *
      */
-    public function persist(RecordInterface $record)
+    public function persist(RecordInterface $record) : bool
     {
         return $this->transact('persist', $record);
     }
@@ -326,7 +328,7 @@ class Atlas
      * @return Exception|null
      *
      */
-    public function getException()
+    public function getException() : ?Exception
     {
         return $this->exception;
     }
@@ -342,7 +344,7 @@ class Atlas
      * @return bool
      *
      */
-    protected function transact($method, RecordInterface $record)
+    protected function transact(string $method, RecordInterface $record) : bool
     {
         $this->exception = null;
         $transaction = $this->newTransaction();

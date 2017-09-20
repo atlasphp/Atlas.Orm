@@ -8,6 +8,8 @@
  */
 namespace Atlas\Orm;
 
+use Atlas\Orm\Exception;
+
 /**
  *
  * An abstract ServiceLocator implementation.
@@ -44,7 +46,7 @@ abstract class AbstractLocator
      * @param callable $factory The factory callable.
      *
      */
-    public function set($class, callable $factory)
+    public function set(string $class, callable $factory) : void
     {
         $this->factories[$class] = $factory;
     }
@@ -58,7 +60,7 @@ abstract class AbstractLocator
      * @return bool
      *
      */
-    public function has($class)
+    public function has(string $class) : bool
     {
         return isset($this->factories[$class]);
     }
@@ -75,7 +77,7 @@ abstract class AbstractLocator
      * @throws Exception When the class is not available through this locator.
      *
      */
-    public function get($class)
+    public function get(string $class)
     {
         if (! isset($this->factories[$class])) {
             throw $this->notFoundException($class);
@@ -97,5 +99,5 @@ abstract class AbstractLocator
      * @return Exception
      *
      */
-    abstract protected function notFoundException($class);
+    abstract protected function notFoundException(string $class) : Exception;
 }

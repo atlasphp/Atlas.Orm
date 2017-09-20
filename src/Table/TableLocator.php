@@ -29,7 +29,7 @@ class TableLocator extends AbstractLocator
      * @return Exception
      *
      */
-    protected function notFoundException($class)
+    protected function notFoundException(string $class) : Exception
     {
         return Exception::tableNotFound($class);
     }

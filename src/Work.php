@@ -75,7 +75,7 @@ class Work
      * @param RecordInterface $record The record being worked with.
      *
      */
-    public function __construct($label, callable $callable, RecordInterface $record)
+    public function __construct(string $label, callable $callable, RecordInterface $record)
     {
         $this->label = $label;
         $this->callable = $callable;
@@ -89,7 +89,7 @@ class Work
      * @throws Exception if it has already been performed.
      *
      */
-    public function __invoke()
+    public function __invoke() : void
     {
         if ($this->invoked) {
             throw Exception::priorWork();
@@ -106,7 +106,7 @@ class Work
      * @return string
      *
      */
-    public function getLabel()
+    public function getLabel() : string
     {
         return $this->label;
     }
@@ -118,7 +118,7 @@ class Work
      * @return callable
      *
      */
-    public function getCallable()
+    public function getCallable() : callable
     {
         return $this->callable;
     }
@@ -130,7 +130,7 @@ class Work
      * @return RecordInterface
      *
      */
-    public function getRecord()
+    public function getRecord() : RecordInterface
     {
         return $this->record;
     }
@@ -139,10 +139,10 @@ class Work
      *
      * Returns the result of the work.
      *
-     * @return bool
+     * @return null|bool
      *
      */
-    public function getResult()
+    public function getResult() : ?bool
     {
         return $this->result;
     }
@@ -154,7 +154,7 @@ class Work
      * @return bool
      *
      */
-    public function getInvoked()
+    public function getInvoked() : bool
     {
         return $this->invoked;
     }

@@ -26,7 +26,7 @@ class Exception extends \Exception
      * @return Exception
      *
      */
-    public static function classDoesNotExist($class)
+    public static function classDoesNotExist($class) : Exception
     {
         return new Exception("{$class} does not exist.");
     }
@@ -38,7 +38,7 @@ class Exception extends \Exception
      * @return Exception
      *
      */
-    public static function priorTransaction()
+    public static function priorTransaction() : Exception
     {
         return new Exception("Cannot re-execute a prior transaction.");
     }
@@ -50,7 +50,7 @@ class Exception extends \Exception
      * @return Exception
      *
      */
-    public static function priorWork()
+    public static function priorWork() : Exception
     {
         return new Exception("Cannot re-invoke prior work.");
     }
@@ -66,7 +66,7 @@ class Exception extends \Exception
      * @return Exception
      *
      */
-    public static function propertyDoesNotExist($class, $property)
+    public static function propertyDoesNotExist($class, string $property) : Exception
     {
         if (is_object($class)) {
             $class = get_class($class);
@@ -83,7 +83,7 @@ class Exception extends \Exception
      * @return Exception
      *
      */
-    public static function mapperNotFound($class)
+    public static function mapperNotFound(string $class) : Exception
     {
         return new Exception("{$class} not found in mapper locator.");
     }
@@ -97,7 +97,7 @@ class Exception extends \Exception
      * @return Exception
      *
      */
-    public static function tableNotFound($class)
+    public static function tableNotFound(string $class) : Exception
     {
         return new Exception("{$class} not found in table locator.");
     }
@@ -113,7 +113,7 @@ class Exception extends \Exception
      * @return Exception
      *
      */
-    public static function invalidType($expect, $actual)
+    public static function invalidType(string $expect, $actual) : Exception
     {
         if (is_object($actual)) {
             $actual = get_class($actual);
@@ -131,7 +131,7 @@ class Exception extends \Exception
      * @return Exception
      *
      */
-    public static function rowNotMapped()
+    public static function rowNotMapped() : Exception
     {
         return new Exception("Row does not exist in IdentityMap.");
     }
@@ -143,7 +143,7 @@ class Exception extends \Exception
      * @return Exception
      *
      */
-    public static function rowAlreadyMapped()
+    public static function rowAlreadyMapped() : Exception
     {
         return new Exception("Row already exists in IdentityMap.");
     }
@@ -157,7 +157,7 @@ class Exception extends \Exception
      * @return Exception
      *
      */
-    public static function relationshipDoesNotExist($foreignName)
+    public static function relationshipDoesNotExist(string $foreignName) : Exception
     {
         return new Exception("Relationship '$foreignName' does not exist.");
     }
@@ -173,7 +173,7 @@ class Exception extends \Exception
      * @return Exception
      *
      */
-    public static function throughRelationshipNotFetched($foreignName, $throughName)
+    public static function throughRelationshipNotFetched(string $foreignName, string $throughName) : Exception
     {
         return new Exception("Cannot fetch '{$foreignName}' relationship without '{$throughName}' relationship.");
     }

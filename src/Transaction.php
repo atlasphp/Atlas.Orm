@@ -102,7 +102,7 @@ class Transaction
      * @return array
      *
      */
-    public function getPlan()
+    public function getPlan() : array
     {
         return $this->plan;
     }
@@ -114,7 +114,7 @@ class Transaction
      * @return array
      *
      */
-    public function getCompleted()
+    public function getCompleted() : array
     {
         return $this->completed;
     }
@@ -126,7 +126,7 @@ class Transaction
      * @return Exception
      *
      */
-    public function getException()
+    public function getException() : ?\Exception
     {
         return $this->exception;
     }
@@ -138,7 +138,7 @@ class Transaction
      * @return Work
      *
      */
-    public function getFailure()
+    public function getFailure() : ?Work
     {
         return $this->failure;
     }
@@ -152,7 +152,7 @@ class Transaction
      * @return $this
      *
      */
-    public function insert(RecordInterface $record)
+    public function insert(RecordInterface $record) : self
     {
         return $this->plan('insert', $record);
     }
@@ -166,7 +166,7 @@ class Transaction
      * @return $this
      *
      */
-    public function update(RecordInterface $record)
+    public function update(RecordInterface $record) : self
     {
         return $this->plan('update', $record);
     }
@@ -180,7 +180,7 @@ class Transaction
      * @return $this
      *
      */
-    public function delete(RecordInterface $record)
+    public function delete(RecordInterface $record) : self
     {
         return $this->plan('delete', $record);
     }
@@ -196,7 +196,7 @@ class Transaction
      * @return $this
      *
      */
-    public function persist(RecordInterface $record)
+    public function persist(RecordInterface $record) : self
     {
         return $this->plan('persist', $record);
     }
@@ -213,7 +213,7 @@ class Transaction
      * @return $this
      *
      */
-    protected function plan($method, RecordInterface $record)
+    protected function plan(string $method, RecordInterface $record) : self
     {
         $mapper = $this->mapperLocator->get($record->getMapperClass());
         $label = "$method " . get_class($record) . " via " . get_class($mapper);
@@ -235,7 +235,7 @@ class Transaction
      * @return Work
      *
      */
-    protected function newWork($label, callable $callable, RecordInterface $record)
+    protected function newWork(string $label, callable $callable, RecordInterface $record) : Work
     {
         return new Work($label, $callable, $record);
     }
@@ -248,12 +248,8 @@ class Transaction
      *
      * @throws Exception when attempting to re-execute a transaction.
      *
-     * @todo Blow up if there is no plan.
-     *
-     * @todo Blow up if there are no write connections.
-     *
      */
-    public function exec()
+    public function exec() : bool
     {
         $prior = $this->completed || $this->failure || $this->exception;
         if ($prior) {
@@ -277,7 +273,7 @@ class Transaction
      * Executes all planned work.
      *
      */
-    protected function work()
+    protected function work() : void
     {
         foreach ($this->plan as $work) {
             $this->failure = $work;

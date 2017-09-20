@@ -96,9 +96,9 @@ class AtlasContainer
      *
      * Constructor.
      *
-     * @param ExtendedPdo|PDO|string $dsn The data source name for a default
-     * lazy PDO connection, or an existing database connection. If the latter,
-     * the remaining params are ignored.
+     * @param string|PDO|ExtendedPdo|ConnectionLocator $dsn The data source name
+     * for a default lazy PDO connection, or an existing database connection or
+     * connection locator. If non-string, the remaining params are ignored.
      *
      * @param string $username The default database connection username.
      *
@@ -113,8 +113,8 @@ class AtlasContainer
      */
     public function __construct(
         $dsn,
-        $username = null,
-        $password = null,
+        string $username = null,
+        string $password = null,
         array $options = [],
         array $attributes = []
     ) {
@@ -141,13 +141,12 @@ class AtlasContainer
      * @see ExtendedPdo::__construct()
      *
      */
-    protected function setConnectionLocator(array $args)
+    protected function setConnectionLocator(array $args) : string
     {
         switch (true) {
 
             case $args[0] instanceof ConnectionLocator:
                 $this->connectionLocator = $args[0];
-
                 return $this->connectionLocator->getDefault()->getAttribute(PDO::ATTR_DRIVER_NAME);
 
             case $args[0] instanceof ExtendedPdo:
@@ -186,12 +185,12 @@ class AtlasContainer
      * @return ConnectionLocator
      *
      */
-    public function getConnectionLocator()
+    public function getConnectionLocator() : ConnectionLocator
     {
         return $this->connectionLocator;
     }
 
-    public function getConnectionManager()
+    public function getConnectionManager() : ConnectionManager
     {
         return $this->connectionManager;
     }
@@ -203,7 +202,7 @@ class AtlasContainer
      * @return MapperLocator
      *
      */
-    public function getMapperLocator()
+    public function getMapperLocator() : MapperLocator
     {
         return $this->mapperLocator;
     }
@@ -215,7 +214,7 @@ class AtlasContainer
      * @param string $db The database driver type.
      *
      */
-    protected function setQueryFactory($db)
+    protected function setQueryFactory($db) : void
     {
         $this->queryFactory = new QueryFactory($db);
     }
@@ -227,7 +226,7 @@ class AtlasContainer
      * @return Atlas
      *
      */
-    public function getAtlas()
+    public function getAtlas() : Atlas
     {
         return $this->atlas;
     }
@@ -241,7 +240,7 @@ class AtlasContainer
      * @param callable $callable A callable to create and return the connection.
      *
      */
-    public function setReadConnection($name, callable $callable)
+    public function setReadConnection(string $name, callable $callable) : void
     {
         $this->connectionLocator->setRead($name, $callable);
     }
@@ -255,9 +254,19 @@ class AtlasContainer
      * @param callable $callable A callable to create and return the connection.
      *
      */
-    public function setWriteConnection($name, callable $callable)
+    public function setWriteConnection(string $name, callable $callable) : void
     {
         $this->connectionLocator->setWrite($name, $callable);
+    }
+
+    public function setReadForTable(string $tableClass, string $name) : void
+    {
+        $this->connectionManager->setReadForTable($tableClass, $name);
+    }
+
+    public function setWriteForTable(string $tableClass, string $name) : void
+    {
+        $this->connectionManager->setWriteForTable($tableClass, $name);
     }
 
     /**
@@ -268,7 +277,7 @@ class AtlasContainer
      * locator.
      *
      */
-    public function setMappers(array $mapperClasses)
+    public function setMappers(array $mapperClasses) : void
     {
         foreach ($mapperClasses as $mapperClass) {
             $this->setMapper($mapperClass);
@@ -286,7 +295,7 @@ class AtlasContainer
      * @throws Exception when the table class for a mapper does not exist.
      *
      */
-    public function setMapper($mapperClass)
+    public function setMapper(string $mapperClass) : void
     {
         if (! class_exists($mapperClass)) {
             throw Exception::classDoesNotExist($mapperClass);
@@ -321,7 +330,7 @@ class AtlasContainer
      * @param string $tableClass The table class name.
      *
      */
-    protected function setTable($tableClass)
+    protected function setTable(string $tableClass) : void
     {
         $eventsClass = $tableClass . 'Events';
 
@@ -350,7 +359,7 @@ class AtlasContainer
      * @param callable $callable A callable to create and return a new instance.
      *
      */
-    public function setFactoryFor($class, callable $callable)
+    public function setFactoryFor(string $class, callable $callable) : void
     {
         $this->factories[$class] = $callable;
     }
@@ -364,7 +373,7 @@ class AtlasContainer
      * @return object
      *
      */
-    public function newInstance($class)
+    public function newInstance(string $class)
     {
         if (isset($this->factories[$class])) {
             $factory = $this->factories[$class];
