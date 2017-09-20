@@ -8,13 +8,13 @@
  */
 namespace Atlas\Orm;
 
-use Atlas\Orm\Mapper\MapperLocator;
 use Atlas\Orm\Mapper\MapperEvents;
+use Atlas\Orm\Mapper\MapperLocator;
 use Atlas\Orm\Relationship\Relationships;
 use Atlas\Orm\Table\ConnectionManager;
+use Atlas\Orm\Table\IdentityMap;
 use Atlas\Orm\Table\TableEvents;
 use Atlas\Orm\Table\TableLocator;
-use Atlas\Orm\Table\IdentityMap;
 use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\QueryFactory;

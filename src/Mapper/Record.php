@@ -9,7 +9,6 @@
 namespace Atlas\Orm\Mapper;
 
 use Atlas\Orm\Exception;
-use Atlas\Orm\Table\Row;
 use Atlas\Orm\Table\RowInterface;
 
 /**
@@ -285,11 +284,11 @@ class Record implements RecordInterface
         }
 
         switch ($this->row->getStatus()) {
-            case Row::FOR_INSERT:
+            case $this->row::FOR_INSERT:
                 return 'insert';
-            case Row::MODIFIED:
+            case $this->row::MODIFIED:
                 return 'update';
-            case Row::FOR_DELETE:
+            case $this->row::FOR_DELETE:
                 return 'delete';
         }
 

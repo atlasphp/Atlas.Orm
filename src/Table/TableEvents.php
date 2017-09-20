@@ -8,9 +8,9 @@
  */
 namespace Atlas\Orm\Table;
 
+use Aura\SqlQuery\Common\Delete;
 use Aura\SqlQuery\Common\Insert;
 use Aura\SqlQuery\Common\Update;
-use Aura\SqlQuery\Common\Delete;
 use PDOStatement;
 
 /**
