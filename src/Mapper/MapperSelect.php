@@ -249,11 +249,11 @@ class MapperSelect implements SubselectInterface
      */
     public function fetchRecordSet()
     {
-        $rows = $this->fetchRows();
-        if (! $rows) {
+        $records = $this->fetchRecords();
+        if (! $records) {
             return [];
         }
 
-        return $this->mapper->turnRowsIntoRecordSet($rows, $this->with);
+        return $this->mapper->newRecordSet($records);
     }
 }

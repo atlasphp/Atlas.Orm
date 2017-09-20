@@ -150,6 +150,46 @@ class Atlas
 
     /**
      *
+     * Fetches an array of Records by primary key values from a Mapper, optionally with
+     * relateds.
+     *
+     * @param string $mapperClass Fetch the Records through this Mapper.
+     *
+     * @param array $primaryVals The primary key values. Each element in the
+     * array is a scalar in the case of simple keys, or an array of key-value
+     * pairs for composite keys.
+     *
+     * @param array $with Return each Record with these relateds stitched in.
+     *
+     * @return array An array of Records.
+     *
+     */
+    public function fetchRecords($mapperClass, array $primaryVals, array $with = [])
+    {
+        return $this->mapper($mapperClass)->fetchRecords($primaryVals, $with);
+    }
+
+    /**
+     *
+     * Fetches an array of Records by column-value equality pairs from a Mapper,
+     * optionally with relateds.
+     *
+     * @param string $mapperClass Fetch the Records through this Mapper.
+     *
+     * @param array $whereEquals The column-value equality pairs.
+     *
+     * @param array $with Return each Record with these relateds stitched in.
+     *
+     * @return array An array of Records.
+     *
+     */
+    public function fetchRecordsBy($mapperClass, array $whereEquals, array $with = [])
+    {
+        return $this->mapper($mapperClass)->fetchRecordsBy($whereEquals, $with);
+    }
+
+    /**
+     *
      * Fetches a RecordSet by primary key values from a Mapper, optionally with
      * relateds.
      *

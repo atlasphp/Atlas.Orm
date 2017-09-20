@@ -88,6 +88,10 @@ interface MapperInterface
      */
     public function fetchRecordBy(array $whereEquals, array $with = []);
 
+    public function fetchRecords(array $primaryVals, array $with = []);
+
+    public function fetchRecordsBy(array $whereEquals, array $with = []);
+
     /**
      *
      * Fetches a RecordSet by primary key values, optionally with relateds.
@@ -234,19 +238,4 @@ interface MapperInterface
      *
      */
     public function turnRowsIntoRecords(array $rows, array $with = []);
-
-    /**
-     *
-     * Given an array of Row objects, returns a RecordSet object,
-     * optionally with relateds.
-     *
-     * @param array $rows An array of selected Row objects.
-     *
-     * @param array $with Return each Record with these relateds stitched in.
-     *
-     * @return RecordSet If a Mapper-specific RecordSet class is defined, that
-     * will be returned of a generic RecordSet object.
-     *
-     */
-    public function turnRowsIntoRecordSet(array $rows, array $with = []);
 }

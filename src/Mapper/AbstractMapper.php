@@ -191,6 +191,49 @@ abstract class AbstractMapper implements MapperInterface
 
     /**
      *
+     * Fetches an array of Records by primary key values, optionally with relateds.
+     *
+     * @param array $primaryVals The primary key values. Each element in the
+     * array is a scalar in the case of simple keys, or an array of key-value
+     * pairs for composite keys.
+     *
+     * @param array $with Return each Record with these relateds stitched in.
+     *
+     * @return array An array of Records.
+     *
+     */
+    public function fetchRecords(array $primaryVals, array $with = [])
+    {
+        $rows = $this->table->fetchRows($primaryVals);
+        if (! $rows) {
+            return [];
+        }
+        return $this->turnRowsIntoRecords($rows, $with);
+    }
+
+    /**
+     *
+     * Fetches an array of Records by column-value equality pairs, optionally with
+     * relateds.
+     *
+     * @param array $whereEquals The column-value equality pairs.
+     *
+     * @param array $with Return each Record with these relateds stitched in.
+     *
+     * @return array An array of Records.
+     *
+     */
+    public function fetchRecordsBy(array $whereEquals, array $with = [])
+    {
+        $rows = $this->table->select($whereEquals)->fetchRows();
+        if (! $rows) {
+            return [];
+        }
+        return $this->turnRowsIntoRecords($rows, $with);
+    }
+
+    /**
+     *
      * Fetches a RecordSet by primary key values, optionally with relateds.
      *
      * @param array $primaryVals The primary key values. Each element in the
@@ -206,11 +249,11 @@ abstract class AbstractMapper implements MapperInterface
      */
     public function fetchRecordSet(array $primaryVals, array $with = [])
     {
-        $rows = $this->table->fetchRows($primaryVals);
-        if (! $rows) {
+        $records = $this->fetchRecords($primaryVals, $with);
+        if (! $records) {
             return [];
         }
-        return $this->turnRowsIntoRecordSet($rows, $with);
+        return $this->newRecordSet($records);
     }
 
     /**
@@ -229,11 +272,11 @@ abstract class AbstractMapper implements MapperInterface
      */
     public function fetchRecordSetBy(array $whereEquals, array $with = [])
     {
-        $rows = $this->table->select($whereEquals)->fetchRows();
-        if (! $rows) {
+        $records = $this->fetchRecordsBy($whereEquals, $with);
+        if (! $records) {
             return [];
         }
-        return $this->turnRowsIntoRecordSet($rows, $with);
+        return $this->newRecordSet($records);
     }
 
     /**
@@ -445,25 +488,6 @@ abstract class AbstractMapper implements MapperInterface
         }
         $this->relationships->stitchIntoRecords($records, $with);
         return $records;
-    }
-
-    /**
-     *
-     * Given an array of Row objects, returns a RecordSet object,
-     * optionally with relateds.
-     *
-     * @param array $rows An array of selected Row objects.
-     *
-     * @param array $with Return each Record with these relateds stitched in.
-     *
-     * @return RecordSet If a Mapper-specific RecordSet class is defined, that
-     * will be returned of a generic RecordSet object.
-     *
-     */
-    public function turnRowsIntoRecordSet(array $rows, array $with = [])
-    {
-        $records = $this->turnRowsIntoRecords($rows, $with);
-        return $this->newRecordSet($records);
     }
 
     /**
