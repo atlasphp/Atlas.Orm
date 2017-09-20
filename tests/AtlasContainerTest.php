@@ -23,32 +23,6 @@ class AtlasContainerTest extends \PHPUnit\Framework\TestCase
         $this->atlasContainer = new AtlasContainer('sqlite::memory:');
     }
 
-    public function testConstructWithPdo()
-    {
-        $pdo = new Pdo('sqlite::memory:');
-        $atlasContainer = new AtlasContainer($pdo);
-        $actual = $atlasContainer->getConnectionLocator()->getDefault()->getPdo();
-        $this->assertSame($pdo, $actual);
-    }
-
-    public function testConstructWithExtendedPdo()
-    {
-        $extendedPdo = new ExtendedPdo('sqlite::memory:');
-        $atlasContainer = new AtlasContainer($extendedPdo);
-        $actual = $atlasContainer->getConnectionLocator()->getDefault();
-        $this->assertSame($extendedPdo, $actual);
-    }
-
-    public function testConstructWithConnectionLocator()
-    {
-        $connectionLocator = new ConnectionLocator(function () {
-            return new ExtendedPdo('sqlite::memory:');
-        });
-        $atlasContainer = new AtlasContainer($connectionLocator);
-        $actual = $atlasContainer->getConnectionLocator();
-        $this->assertSame($connectionLocator, $actual);
-    }
-
     public function testMapperWithoutTable()
     {
         $this->expectException(
@@ -99,7 +73,7 @@ class AtlasContainerTest extends \PHPUnit\Framework\TestCase
         $this->atlasContainer->setMapper('FooMapper');
     }
 
-    public function testCustomConnectionLocator()
+    public function testConstructWithConnectionLocator()
     {
         $locator = new ConnectionLocator(function() {
             return new ExtendedPdo('sqlite::memory:');
@@ -107,5 +81,21 @@ class AtlasContainerTest extends \PHPUnit\Framework\TestCase
         $atlasContainer = new AtlasContainer($locator);
 
         $this->assertEquals($locator, $atlasContainer->getConnectionLocator());
+    }
+
+    public function testConstructWithExtendedPdo()
+    {
+        $extendedPdo = new ExtendedPdo('sqlite::memory:');
+        $atlasContainer = new AtlasContainer($extendedPdo);
+        $actual = $atlasContainer->getConnectionLocator()->getDefault();
+        $this->assertSame($extendedPdo, $actual);
+    }
+
+    public function testConstructWithPdo()
+    {
+        $pdo = new Pdo('sqlite::memory:');
+        $atlasContainer = new AtlasContainer($pdo);
+        $actual = $atlasContainer->getConnectionLocator()->getDefault()->getPdo();
+        $this->assertSame($pdo, $actual);
     }
 }
