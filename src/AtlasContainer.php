@@ -40,15 +40,6 @@ class AtlasContainer
 
     /**
      *
-     * A locator for database connections.
-     *
-     * @var ConnectionLocator
-     *
-     */
-    protected $connectionLocator;
-
-    /**
-     *
      * A manager for table-specific database connections.
      *
      * @var ConnectionManager
@@ -118,9 +109,8 @@ class AtlasContainer
         array $options = [],
         array $attributes = []
     ) {
-        $driver = $this->setConnectionLocator(func_get_args());
+        $driver = $this->setConnectionManager(func_get_args());
         $this->setQueryFactory($driver);
-        $this->connectionManager = new ConnectionManager($this->connectionLocator);
         $this->tableLocator = new TableLocator();
         $this->mapperLocator = new MapperLocator();
         $this->atlas = new Atlas(
@@ -141,13 +131,17 @@ class AtlasContainer
      * @see ExtendedPdo::__construct()
      *
      */
-    protected function setConnectionLocator(array $args) : string
+    protected function setConnectionManager(array $args) : string
     {
+        $connectionLocator = new ConnectionLocator();
+
         switch (true) {
 
             case $args[0] instanceof ConnectionLocator:
-                $this->connectionLocator = $args[0];
-                return $this->connectionLocator->getDefault()->getAttribute(PDO::ATTR_DRIVER_NAME);
+                $connectionLocator = $args[0];
+                // note that this actually opens the connection
+                $driver = $connectionLocator->getDefault()->getAttribute(PDO::ATTR_DRIVER_NAME);
+                break;
 
             case $args[0] instanceof ExtendedPdo:
                 $extendedPdo = $args[0];
@@ -155,6 +149,7 @@ class AtlasContainer
                     return $extendedPdo;
                 };
                 $driver = $extendedPdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+                $connectionLocator->setDefault($default);
                 break;
 
             case $args[0] instanceof PDO:
@@ -163,6 +158,7 @@ class AtlasContainer
                     return new ExtendedPdo($pdo);
                 };
                 $driver = $pdo->getAttribute(ExtendedPdo::ATTR_DRIVER_NAME);
+                $connectionLocator->setDefault($default);
                 break;
 
             default:
@@ -171,10 +167,11 @@ class AtlasContainer
                 };
                 $parts = explode(':', $args[0]);
                 $driver = array_shift($parts);
+                $connectionLocator->setDefault($default);
                 break;
         }
 
-        $this->connectionLocator = new ConnectionLocator($default);
+        $this->connectionManager = new ConnectionManager($connectionLocator);
         return $driver;
     }
 
@@ -187,7 +184,7 @@ class AtlasContainer
      */
     public function getConnectionLocator() : ConnectionLocator
     {
-        return $this->connectionLocator;
+        return $this->getConnectionManager()->getConnectionLocator();
     }
 
     public function getConnectionManager() : ConnectionManager
@@ -242,7 +239,7 @@ class AtlasContainer
      */
     public function setReadConnection(string $name, callable $callable) : void
     {
-        $this->connectionLocator->setRead($name, $callable);
+        $this->getConnectionLocator()->setRead($name, $callable);
     }
 
     /**
@@ -256,7 +253,7 @@ class AtlasContainer
      */
     public function setWriteConnection(string $name, callable $callable) : void
     {
-        $this->connectionLocator->setWrite($name, $callable);
+        $this->getConnectionLocator()->setWrite($name, $callable);
     }
 
     public function setReadForTable(string $tableClass, string $name) : void

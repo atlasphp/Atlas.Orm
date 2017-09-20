@@ -12,6 +12,7 @@ use Atlas\Orm\DataSource\Thread\ThreadMapper;
 use Atlas\Orm\DataSource\Tagging\TaggingMapper;
 use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
+use PDO;
 
 class AtlasContainerTest extends \PHPUnit\Framework\TestCase
 {
@@ -20,6 +21,44 @@ class AtlasContainerTest extends \PHPUnit\Framework\TestCase
     protected function setUp()
     {
         $this->atlasContainer = new AtlasContainer('sqlite::memory:');
+    }
+
+    public function testConstructWithPdo()
+    {
+        $pdo = new Pdo('sqlite::memory:');
+        $atlasContainer = new AtlasContainer($pdo);
+        $actual = $atlasContainer->getConnectionLocator()->getDefault()->getPdo();
+        $this->assertSame($pdo, $actual);
+    }
+
+    public function testConstructWithExtendedPdo()
+    {
+        $extendedPdo = new ExtendedPdo('sqlite::memory:');
+        $atlasContainer = new AtlasContainer($extendedPdo);
+        $actual = $atlasContainer->getConnectionLocator()->getDefault();
+        $this->assertSame($extendedPdo, $actual);
+    }
+
+    public function testConstructWithConnectionLocator()
+    {
+        $connectionLocator = new ConnectionLocator(function () {
+            return new ExtendedPdo('sqlite::memory:');
+        });
+        $atlasContainer = new AtlasContainer($connectionLocator);
+        $actual = $atlasContainer->getConnectionLocator();
+        $this->assertSame($connectionLocator, $actual);
+    }
+
+    public function testMapperWithoutTable()
+    {
+        $this->expectException(
+            Exception::CLASS,
+            'Atlas\Orm\Fake\FakeMapperWithouTable does not exist.'
+        );
+
+        $this->atlasContainer->setMappers([
+            'Atlas\Orm\Fake\FakeMapperWithoutTable'
+        ]);
     }
 
     public function test()
