@@ -9,10 +9,12 @@
 namespace Atlas\Orm\Table;
 
 use Atlas\Exception;
+use Aura\Sql\ExtendedPdoInterface;
 use Aura\SqlQuery\Common\DeleteInterface;
 use Aura\SqlQuery\Common\InsertInterface;
 use Aura\SqlQuery\Common\SelectInterface;
 use Aura\SqlQuery\Common\UpdateInterface;
+use PDOStatement;
 
 /**
  *
@@ -30,7 +32,7 @@ interface TableInterface
      * @return ExtendedPdoInterface
      *
      */
-    public function getReadConnection();
+    public function getReadConnection() : ExtendedPdoInterface;
 
     /**
      *
@@ -39,7 +41,7 @@ interface TableInterface
      * @return ExtendedPdoInterface
      *
      */
-    public function getWriteConnection();
+    public function getWriteConnection() : ExtendedPdoInterface;
 
     /**
      *
@@ -49,10 +51,10 @@ interface TableInterface
      * @param mixed $primaryVal A scalar for a simple primary key, or an array
      * of column => value pairs for a composite primary key.
      *
-     * @return Row|false Returns a Row on success, or `false` on failure.
+     * @return RowInterface|null Returns a Row on success, or `null` on failure.
      *
      */
-    public function fetchRow($primaryVal);
+    public function fetchRow($primaryVal) : ?RowInterface;
 
     /**
      *
@@ -66,7 +68,7 @@ interface TableInterface
      * @return array
      *
      */
-    public function fetchRows(array $primaryVals);
+    public function fetchRows(array $primaryVals) : array;
 
     /**
      *
@@ -78,7 +80,7 @@ interface TableInterface
      * @return TableSelect
      *
      */
-    public function select(array $whereEquals = []);
+    public function select(array $whereEquals = []) : TableSelect;
 
     /**
      *
@@ -87,7 +89,7 @@ interface TableInterface
      * @param RowInterface $row The row to insert.
      *
      */
-    public function insertRow(RowInterface $row);
+    public function insertRow(RowInterface $row) : bool;
 
     /**
      *
@@ -98,7 +100,7 @@ interface TableInterface
      * @return InsertInterface
      *
      */
-    public function insertRowPrepare(RowInterface $row);
+    public function insertRowPrepare(RowInterface $row) : InsertInterface;
 
     /**
      *
@@ -111,7 +113,7 @@ interface TableInterface
      * @return PDOStatement The PDOStatement resulting from the insert.
      *
      */
-    public function insertRowPerform(RowInterface $row, InsertInterface $insert);
+    public function insertRowPerform(RowInterface $row, InsertInterface $insert) : PDOStatement;
 
     /**
      *
@@ -120,7 +122,7 @@ interface TableInterface
      * @param RowInterface $row The row to update.
      *
      */
-    public function updateRow(RowInterface $row);
+    public function updateRow(RowInterface $row) : bool;
 
     /**
      *
@@ -131,7 +133,7 @@ interface TableInterface
      * @return UpdateInterface
      *
      */
-    public function updateRowPrepare(RowInterface $row);
+    public function updateRowPrepare(RowInterface $row) : UpdateInterface;
 
     /**
      *
@@ -144,7 +146,7 @@ interface TableInterface
      * @return PDOStatement The PDOStatement resulting from the update.
      *
      */
-    public function updateRowPerform(RowInterface $row, UpdateInterface $update);
+    public function updateRowPerform(RowInterface $row, UpdateInterface $update) : ?PDOStatement;
 
     /**
      *
@@ -153,7 +155,7 @@ interface TableInterface
      * @param RowInterface $row The row to delete.
      *
      */
-    public function deleteRow(RowInterface $row);
+    public function deleteRow(RowInterface $row) : bool;
 
     /**
      *
@@ -164,7 +166,7 @@ interface TableInterface
      * @return DeleteInterface
      *
      */
-    public function deleteRowPrepare(RowInterface $row);
+    public function deleteRowPrepare(RowInterface $row) : DeleteInterface;
 
     /**
      *
@@ -177,7 +179,7 @@ interface TableInterface
      * @return PDOStatement The PDOStatement resulting from the delete.
      *
      */
-    public function deleteRowPerform(RowInterface $row, DeleteInterface $delete);
+    public function deleteRowPerform(RowInterface $row, DeleteInterface $delete) : PDOStatement;
 
     /**
      *
@@ -188,7 +190,7 @@ interface TableInterface
      * @return RowInterface
      *
      */
-    public function newRow(array $cols = []);
+    public function newRow(array $cols = []) : RowInterface;
 
     /**
      *
@@ -200,7 +202,7 @@ interface TableInterface
      * @return RowInterface
      *
      */
-    public function getSelectedRow(array $cols);
+    public function getSelectedRow(array $cols) : RowInterface;
 
     /**
      *
@@ -209,7 +211,7 @@ interface TableInterface
      * @return string
      *
      */
-    public function getName();
+    public function getName(); // typehinting will break 1.x generated classes
 
     /**
      *
@@ -218,7 +220,7 @@ interface TableInterface
      * @return array
      *
      */
-    public function getColNames();
+    public function getColNames(); // typehinting will break 1.x generated classes
 
     /**
      *
@@ -227,7 +229,7 @@ interface TableInterface
      * @return array
      *
      */
-    public function getCols();
+    public function getCols(); // typehinting will break 1.x generated classes
 
     /**
      *
@@ -236,7 +238,7 @@ interface TableInterface
      * @return array The primary key column names.
      *
      */
-    public function getPrimaryKey();
+    public function getPrimaryKey(); // typehinting will break 1.x generated classes
 
     /**
      *
@@ -245,7 +247,7 @@ interface TableInterface
      * @return string
      *
      */
-    public function getAutoinc();
+    public function getAutoinc(); // typehinting will break 1.x generated classes
 
     /**
      *
@@ -254,5 +256,5 @@ interface TableInterface
      * @return array
      *
      */
-    public function getColDefaults();
+    public function getColDefaults(); // typehinting will break 1.x generated classes
 }

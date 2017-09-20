@@ -99,7 +99,7 @@ class Row implements RowInterface
      * @throws Exception when the column does not exist.
      *
      */
-    public function __get($col)
+    public function __get(string $col)
     {
         $this->assertHas($col);
         return $this->cols[$col];
@@ -116,7 +116,7 @@ class Row implements RowInterface
      * @throws Exception when the column does not exist.
      *
      */
-    public function __set($col, $val)
+    public function __set(string $col, $val) : void
     {
         $this->assertHas($col);
         $this->modify($col, $val);
@@ -133,7 +133,7 @@ class Row implements RowInterface
      * @return bool
      *
      */
-    public function __isset($col)
+    public function __isset(string $col) : bool
     {
         $this->assertHas($col);
         return isset($this->cols[$col]);
@@ -148,7 +148,7 @@ class Row implements RowInterface
      * @throws Exception when the column does not exist.
      *
      */
-    public function __unset($col)
+    public function __unset(string $col) : void
     {
         $this->assertHas($col);
         $this->modify($col, null);
@@ -163,7 +163,7 @@ class Row implements RowInterface
      * @throws Exception when a column does not exist.
      *
      */
-    public function set(array $cols = [])
+    public function set(array $cols = []) : void
     {
         foreach ($cols as $col => $val) {
             if ($this->has($col)) {
@@ -181,7 +181,7 @@ class Row implements RowInterface
      * @return bool
      *
      */
-    public function has($col)
+    public function has(string $col) : bool
     {
         return array_key_exists($col, $this->cols);
     }
@@ -193,7 +193,7 @@ class Row implements RowInterface
      * @return array
      *
      */
-    public function getArrayCopy()
+    public function getArrayCopy() : array
     {
         return $this->cols;
     }
@@ -208,7 +208,7 @@ class Row implements RowInterface
      * @return array The different values on this row.
      *
      */
-    public function getArrayDiff(array $init)
+    public function getArrayDiff(array $init) : array
     {
         $diff = $this->getArrayCopy();
         foreach ($diff as $col => $val) {
@@ -231,7 +231,7 @@ class Row implements RowInterface
      * if not.
      *
      */
-    public function hasStatus($status)
+    public function hasStatus($status) : bool
     {
         return in_array($this->status, (array) $status);
     }
@@ -243,7 +243,7 @@ class Row implements RowInterface
      * @return string
      *
      */
-    public function getStatus()
+    public function getStatus() : string
     {
         return $this->status;
     }
@@ -257,7 +257,7 @@ class Row implements RowInterface
      * @throws Exception when the status is invalid.
      *
      */
-    public function setStatus($status)
+    public function setStatus(string $status) : void
     {
         $const = get_class($this) . '::' . $status;
         if (! defined($const)) {
@@ -271,7 +271,7 @@ class Row implements RowInterface
      * Implements JsonSerializable::jsonSerialize().
      *
      */
-    public function jsonSerialize()
+    public function jsonSerialize() : array
     {
         return $this->getArrayCopy();
     }
@@ -288,7 +288,7 @@ class Row implements RowInterface
      * @throws Exception when modification is not allowed.
      *
      */
-    protected function modify($col, $new)
+    protected function modify(string $col, $new) : void
     {
         if ($this->status == static::DELETED) {
             throw Exception::immutableOnceDeleted($this, $col);
@@ -317,7 +317,7 @@ class Row implements RowInterface
      * @throws Exception when non-null and non-scalar.
      *
      */
-    protected function assertValid($value)
+    protected function assertValid($value) : void
     {
         if (! is_null($value) && ! is_scalar($value)) {
             throw Exception::invalidType('scalar or null', $value);
@@ -333,7 +333,7 @@ class Row implements RowInterface
      * @throws Exception when the column does not exist.
      *
      */
-    protected function assertHas($col)
+    protected function assertHas($col) : void
     {
         if (! $this->has($col)) {
             throw Exception::propertyDoesNotExist($this, $col);
@@ -352,7 +352,7 @@ class Row implements RowInterface
      * @return bool
      *
      */
-    protected function isEquivalent($old, $new)
+    protected function isEquivalent($old, $new) : bool
     {
         return (is_numeric($old) && is_numeric($new))
             ? $old == $new // numeric, compare loosely

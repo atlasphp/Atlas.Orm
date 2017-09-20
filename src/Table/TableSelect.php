@@ -10,6 +10,7 @@ namespace Atlas\Orm\Table;
 
 use Aura\SqlQuery\Common\SelectInterface;
 use Aura\SqlQuery\Common\SubselectInterface;
+use Iterator;
 
 /**
  *
@@ -63,7 +64,7 @@ class TableSelect implements SubselectInterface
      * @return string
      *
      */
-    public function __toString()
+    public function __toString() : string
     {
         $this->addColNames();
         return $this->select->__toString();
@@ -82,7 +83,7 @@ class TableSelect implements SubselectInterface
      * otherwise return the result as-is.
      *
      */
-    public function __call($method, $params)
+    public function __call(string $method, array $params)
     {
         $result = call_user_func_array([$this->select, $method], $params);
         return ($result === $this->select) ? $this : $result;
@@ -105,7 +106,7 @@ class TableSelect implements SubselectInterface
      * @return string
      *
      */
-    public function getStatement()
+    public function getStatement() : string
     {
         $this->addColNames();
         return $this->select->getStatement();
@@ -118,7 +119,7 @@ class TableSelect implements SubselectInterface
      * @return array
      *
      */
-    public function getBindValues()
+    public function getBindValues() : array
     {
         return $this->select->getBindValues();
     }
@@ -131,7 +132,7 @@ class TableSelect implements SubselectInterface
      * @return array
      *
      */
-    public function fetchAll()
+    public function fetchAll() : array
     {
         return $this->table->getReadConnection()->fetchAll(
             $this->select->getStatement(),
@@ -151,7 +152,7 @@ class TableSelect implements SubselectInterface
      * @return array
      *
      */
-    public function fetchAssoc()
+    public function fetchAssoc() : array
     {
         return $this->table->getReadConnection()->fetchAssoc(
             $this->select->getStatement(),
@@ -166,7 +167,7 @@ class TableSelect implements SubselectInterface
      * @return array
      *
      */
-    public function fetchCol()
+    public function fetchCol() : array
     {
         return $this->table->getReadConnection()->fetchCol(
             $this->select->getStatement(),
@@ -181,12 +182,18 @@ class TableSelect implements SubselectInterface
      * @return array
      *
      */
-    public function fetchOne()
+    public function fetchOne() : ?array
     {
-        return $this->table->getReadConnection()->fetchOne(
+        $result = $this->table->getReadConnection()->fetchOne(
             $this->select->getStatement(),
             $this->select->getBindValues()
         );
+
+        if (! $result) {
+            return null;
+        }
+
+        return $result;
     }
 
     /**
@@ -199,7 +206,7 @@ class TableSelect implements SubselectInterface
      * @return array
      *
      */
-    public function fetchPairs()
+    public function fetchPairs() : array
     {
         return $this->table->getReadConnection()->fetchPairs(
             $this->select->getStatement(),
@@ -230,7 +237,7 @@ class TableSelect implements SubselectInterface
      * @return Iterator
      *
      */
-    public function yieldAll()
+    public function yieldAll() : Iterator
     {
         return $this->table->getReadConnection()->yieldAll(
             $this->select->getStatement(),
@@ -250,7 +257,7 @@ class TableSelect implements SubselectInterface
      * @return Iterator
      *
      */
-    public function yieldAssoc()
+    public function yieldAssoc() : Iterator
     {
         return $this->table->getReadConnection()->yieldAssoc(
             $this->select->getStatement(),
@@ -265,7 +272,7 @@ class TableSelect implements SubselectInterface
      * @return Iterator
      *
      */
-    public function yieldCol()
+    public function yieldCol() : Iterator
     {
         return $this->table->getReadConnection()->yieldCol(
             $this->select->getStatement(),
@@ -283,7 +290,7 @@ class TableSelect implements SubselectInterface
      * @return Iterator
      *
      */
-    public function yieldPairs()
+    public function yieldPairs() : Iterator
     {
         return $this->table->getReadConnection()->yieldPairs(
             $this->select->getStatement(),
@@ -316,7 +323,7 @@ class TableSelect implements SubselectInterface
      * @return array
      *
      */
-    public function fetchRows()
+    public function fetchRows() : array
     {
         $this->addColNames();
 
@@ -337,7 +344,7 @@ class TableSelect implements SubselectInterface
      * @return int
      *
      */
-    public function fetchCount($col = '*')
+    public function fetchCount($col = '*') : int
     {
         $select = clone $this->select;
         $select->resetCols();
@@ -355,7 +362,7 @@ class TableSelect implements SubselectInterface
      * @return void
      *
      */
-    protected function addColNames()
+    protected function addColNames() : void
     {
         if ($this->select->hasCols()) {
             return;

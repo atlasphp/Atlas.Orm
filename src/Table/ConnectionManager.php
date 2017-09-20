@@ -2,6 +2,7 @@
 namespace Atlas\Orm\Table;
 
 use Aura\Sql\ConnectionLocator;
+use Aura\Sql\ExtendedPdoInterface;
 
 class ConnectionManager
 {
@@ -16,46 +17,46 @@ class ConnectionManager
         $this->connectionLocator = $connectionLocator;
     }
 
-    public function __call($func, $args)
+    public function __call(string $func, array $args)
     {
         return $this->connectionLocator->$func(...$args);
     }
 
-    public function getConnectionLocator()
+    public function getConnectionLocator() : ConnectionLocator
     {
         return $this->connectionLocator;
     }
 
-    public function setReadForTable($tableClass, ...$names)
+    public function setReadForTable(string $tableClass, ...$names) : void
     {
-        $this->tableSpec[$tableClass]['read'] = $names;
+        $this->tableSpec['read'][$tableClass] = $names;
     }
 
-    public function setWriteForTable($tableClass, ...$names)
+    public function setWriteForTable(string $tableClass, ...$names) : void
     {
-        $this->tableSpec[$tableClass]['write'] = $names;
+        $this->tableSpec['write'][$tableClass] = $names;
     }
 
-    public function getReadForTable($tableClass)
+    public function getReadForTable(string $tableClass) : ExtendedPdoInterface
     {
-        return $this->getTableConnection($tableClass, 'read');
+        return $this->getTableConnection('read', $tableClass);
     }
 
-    public function getWriteForTable($tableClass)
+    public function getWriteForTable(string $tableClass) : ExtendedPdoInterface
     {
-        $conn = $this->getTableConnection($tableClass, 'write');
+        $conn = $this->getTableConnection('write', $tableClass);
         if ($this->inTransaction && ! $conn->inTransaction()) {
             $conn->beginTransaction();
         }
         return $conn;
     }
 
-    public function beginTransaction()
+    public function beginTransaction() : void
     {
         $this->inTransaction = true;
     }
 
-    public function commit()
+    public function commit() : void
     {
         foreach ($this->tableConn['write'] as $conn) {
             if ($conn->inTransaction()) {
@@ -65,7 +66,7 @@ class ConnectionManager
         $this->inTransaction = false;
     }
 
-    public function rollBack()
+    public function rollBack() : void
     {
         foreach ($this->tableConn['write'] as $conn) {
             if ($conn->inTransaction()) {
@@ -75,7 +76,7 @@ class ConnectionManager
         $this->inTransaction = false;
     }
 
-    protected function getTableConnection($tableClass, $type)
+    protected function getTableConnection($type, $tableClass) : ExtendedPdoInterface
     {
         if (isset($this->tableConn[$type][$tableClass])) {
             return $this->tableConn[$type][$tableClass];

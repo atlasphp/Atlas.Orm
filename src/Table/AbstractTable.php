@@ -9,11 +9,13 @@
 namespace Atlas\Orm\Table;
 
 use Atlas\Orm\Exception;
+use Aura\Sql\ExtendedPdoInterface;
 use Aura\SqlQuery\Common\DeleteInterface;
 use Aura\SqlQuery\Common\InsertInterface;
 use Aura\SqlQuery\Common\SelectInterface;
 use Aura\SqlQuery\Common\UpdateInterface;
 use Aura\SqlQuery\QueryFactory;
+use PDOStatement;
 
 /**
  *
@@ -108,7 +110,7 @@ abstract class AbstractTable implements TableInterface
      * @return ExtendedPdoInterface
      *
      */
-    public function getReadConnection()
+    public function getReadConnection() : ExtendedPdoInterface
     {
         return $this->connectionManager->getReadForTable(static::CLASS);
     }
@@ -120,7 +122,7 @@ abstract class AbstractTable implements TableInterface
      * @return ExtendedPdoInterface
      *
      */
-    public function getWriteConnection()
+    public function getWriteConnection() : ExtendedPdoInterface
     {
         return $this->connectionManager->getWriteForTable(static::CLASS);
     }
@@ -159,7 +161,7 @@ abstract class AbstractTable implements TableInterface
      * @return array
      *
      */
-    public function fetchRows(array $primaryVals)
+    public function fetchRows(array $primaryVals) : array
     {
         // find identified rows, in the order of the primary values.
         // leave open elements for non-identified rows.
@@ -213,7 +215,7 @@ abstract class AbstractTable implements TableInterface
      * @return TableSelect
      *
      */
-    public function select(array $whereEquals = [])
+    public function select(array $whereEquals = []) : TableSelect
     {
         $select = $this->queryFactory->newSelect();
 
@@ -233,10 +235,10 @@ abstract class AbstractTable implements TableInterface
      *
      * Returns a new Insert object for this table.
      *
-     * @return Insert
+     * @return InsertInterface
      *
      */
-    public function insert()
+    public function insert() : InsertInterface
     {
         $insert = $this->queryFactory->newInsert();
         $insert->into($this->getName());
@@ -247,10 +249,10 @@ abstract class AbstractTable implements TableInterface
      *
      * Returns a new Update object for this table.
      *
-     * @return Update
+     * @return UpdateInterface
      *
      */
-    public function update()
+    public function update() : UpdateInterface
     {
         $update = $this->queryFactory->newUpdate();
         $update->table($this->getName());
@@ -261,10 +263,10 @@ abstract class AbstractTable implements TableInterface
      *
      * Returns a new Delete object for this table.
      *
-     * @return Delete
+     * @return DeleteInterface
      *
      */
-    public function delete()
+    public function delete() : DeleteInterface
     {
         $delete = $this->queryFactory->newDelete();
         $delete->from($this->getName());
@@ -280,7 +282,7 @@ abstract class AbstractTable implements TableInterface
      * @return bool
      *
      */
-    public function insertRow(RowInterface $row)
+    public function insertRow(RowInterface $row) : bool
     {
         $insert = $this->insertRowPrepare($row);
         return (bool) $this->insertRowPerform($row, $insert);
@@ -295,7 +297,7 @@ abstract class AbstractTable implements TableInterface
      * @return InsertInterface
      *
      */
-    public function insertRowPrepare(RowInterface $row)
+    public function insertRowPrepare(RowInterface $row) : InsertInterface
     {
         $this->events->beforeInsert($this, $row);
 
@@ -322,7 +324,7 @@ abstract class AbstractTable implements TableInterface
      * @return PDOStatement The PDOStatement resulting from the insert.
      *
      */
-    public function insertRowPerform(RowInterface $row, InsertInterface $insert)
+    public function insertRowPerform(RowInterface $row, InsertInterface $insert) : PDOStatement
     {
         $connection = $this->getWriteConnection();
         $pdoStatement = $connection->perform(
@@ -358,7 +360,7 @@ abstract class AbstractTable implements TableInterface
      * @return bool
      *
      */
-    public function updateRow(RowInterface $row)
+    public function updateRow(RowInterface $row) : bool
     {
         $update = $this->updateRowPrepare($row);
         return (bool) $this->updateRowPerform($row, $update);
@@ -374,7 +376,7 @@ abstract class AbstractTable implements TableInterface
      * @return UpdateInterface
      *
      */
-    public function updateRowPrepare(RowInterface $row)
+    public function updateRowPrepare(RowInterface $row) : UpdateInterface
     {
         $this->events->beforeUpdate($this, $row);
 
@@ -408,10 +410,10 @@ abstract class AbstractTable implements TableInterface
      * @return PDOStatement The PDOStatement resulting from the update.
      *
      */
-    public function updateRowPerform(RowInterface $row, UpdateInterface $update)
+    public function updateRowPerform(RowInterface $row, UpdateInterface $update) : ?PDOStatement
     {
         if (! $update->hasCols()) {
-            return false;
+            return null;
         }
 
         $connection = $this->getWriteConnection();
@@ -442,7 +444,7 @@ abstract class AbstractTable implements TableInterface
      * @return bool
      *
      */
-    public function deleteRow(RowInterface $row)
+    public function deleteRow(RowInterface $row) : bool
     {
         $delete = $this->deleteRowPrepare($row);
         return (bool) $this->deleteRowPerform($row, $delete);
@@ -457,7 +459,7 @@ abstract class AbstractTable implements TableInterface
      * @return DeleteInterface
      *
      */
-    public function deleteRowPrepare(RowInterface $row)
+    public function deleteRowPrepare(RowInterface $row) : DeleteInterface
     {
         $this->events->beforeDelete($this, $row);
 
@@ -481,7 +483,7 @@ abstract class AbstractTable implements TableInterface
      * @return PDOStatement The PDOStatement resulting from the delete.
      *
      */
-    public function deleteRowPerform(RowInterface $row, DeleteInterface $delete)
+    public function deleteRowPerform(RowInterface $row, DeleteInterface $delete) : PDOStatement
     {
         $connection = $this->getWriteConnection();
         $pdoStatement = $connection->perform(
@@ -509,7 +511,7 @@ abstract class AbstractTable implements TableInterface
      * @return RowInterface
      *
      */
-    public function newRow(array $cols = [])
+    public function newRow(array $cols = []) : RowInterface
     {
         $colNames = $this->getColNames();
         foreach ($cols as $col => $val) {
@@ -531,7 +533,7 @@ abstract class AbstractTable implements TableInterface
      * @return RowInterface
      *
      */
-    public function getSelectedRow(array $cols)
+    public function getSelectedRow(array $cols) : RowInterface
     {
         $primary = $this->calcIdentity($cols);
         $row = $this->identityMap->getRow($primary);
@@ -551,7 +553,7 @@ abstract class AbstractTable implements TableInterface
      * @return string
      *
      */
-    abstract public function getName();
+    abstract public function getName(); // typehinting will break 1.x generated classes
 
     /**
      *
@@ -560,7 +562,7 @@ abstract class AbstractTable implements TableInterface
      * @return array
      *
      */
-    abstract public function getColNames();
+    abstract public function getColNames(); // typehinting will break 1.x generated classes
 
     /**
      *
@@ -569,7 +571,7 @@ abstract class AbstractTable implements TableInterface
      * @return array
      *
      */
-    abstract public function getCols();
+    abstract public function getCols(); // typehinting will break 1.x generated classes
 
     /**
      *
@@ -578,7 +580,7 @@ abstract class AbstractTable implements TableInterface
      * @return array The primary key column names.
      *
      */
-    abstract public function getPrimaryKey();
+    abstract public function getPrimaryKey(); // typehinting will break 1.x generated classes
 
     /**
      *
@@ -587,7 +589,7 @@ abstract class AbstractTable implements TableInterface
      * @return string
      *
      */
-    abstract public function getAutoinc();
+    abstract public function getAutoinc(); // typehinting will break 1.x generated classes
 
     /**
      *
@@ -596,7 +598,7 @@ abstract class AbstractTable implements TableInterface
      * @return array
      *
      */
-    abstract public function getColDefaults();
+    abstract public function getColDefaults(); // typehinting will break 1.x generated classes
 
     /**
      *
@@ -607,7 +609,7 @@ abstract class AbstractTable implements TableInterface
      * @param array $primaryVals Use these primary-key values.
      *
      */
-    protected function selectWherePrimary(TableSelect $select, array $primaryVals)
+    protected function selectWherePrimary(TableSelect $select, array $primaryVals) : void
     {
         $primaryKey = $this->getPrimaryKey();
         if (count($primaryKey) == 1) {
@@ -638,7 +640,7 @@ abstract class AbstractTable implements TableInterface
      * @param mixed $val The column value.
      *
      */
-    protected function selectWhere(SelectInterface $select, $col, $val)
+    protected function selectWhere(SelectInterface $select, string $col, $val) : void
     {
         if (is_array($val)) {
             $select->where("{$col} IN (?)", $val);
@@ -662,7 +664,7 @@ abstract class AbstractTable implements TableInterface
      * @return array
      *
      */
-    protected function calcIdentity($primaryVal)
+    protected function calcIdentity($primaryVal) : array
     {
         if (is_array($this->identityKey)) {
             return $this->calcIdentityComposite($primaryVal);
@@ -688,7 +690,7 @@ abstract class AbstractTable implements TableInterface
      * @return array
      *
      */
-    protected function calcIdentityComposite(array $primaryVal)
+    protected function calcIdentityComposite(array $primaryVal) : array
     {
         $primary = [];
         foreach ($this->identityKey as $col) {

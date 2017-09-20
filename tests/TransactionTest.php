@@ -158,7 +158,7 @@ class TransactionTest extends \PHPUnit\Framework\TestCase
 
         // did the delete actually occur?
         $actual = $mapper->select(['name' => 'Anna'])->cols(['*'])->fetchOne();
-        $this->assertFalse($actual);
+        $this->assertNull($actual);
     }
 
     public function testExec_reExec()

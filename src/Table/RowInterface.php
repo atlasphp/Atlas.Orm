@@ -29,7 +29,7 @@ interface RowInterface extends JsonSerializable
      * @throws Exception when a column does not exist.
      *
      */
-    public function set(array $cols);
+    public function set(array $cols) : void;
 
     /**
      *
@@ -40,7 +40,7 @@ interface RowInterface extends JsonSerializable
      * @return bool
      *
      */
-    public function has($col);
+    public function has(string $col) : bool;
 
     /**
      *
@@ -49,7 +49,7 @@ interface RowInterface extends JsonSerializable
      * @return array
      *
      */
-    public function getArrayCopy();
+    public function getArrayCopy() : array;
 
     /**
      *
@@ -61,7 +61,7 @@ interface RowInterface extends JsonSerializable
      * @return array The different values on this row.
      *
      */
-    public function getArrayDiff(array $init);
+    public function getArrayDiff(array $init) : array;
 
     /**
      *
@@ -73,7 +73,7 @@ interface RowInterface extends JsonSerializable
      * if not.
      *
      */
-    public function hasStatus($status);
+    public function hasStatus($status) : bool;
 
     /**
      *
@@ -82,7 +82,7 @@ interface RowInterface extends JsonSerializable
      * @return string
      *
      */
-    public function getStatus();
+    public function getStatus() : string;
 
     /**
      *
@@ -93,5 +93,5 @@ interface RowInterface extends JsonSerializable
      * @throws Exception when the status is invalid.
      *
      */
-    public function setStatus($status);
+    public function setStatus(string $status) : void;
 }

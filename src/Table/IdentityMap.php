@@ -69,7 +69,7 @@ class IdentityMap
      * @param array $primaryKey The columns in the primary key.
      *
      */
-    public function setRow(RowInterface $row, array $initial, array $primaryKey)
+    public function setRow(RowInterface $row, array $initial, array $primaryKey) : void
     {
         if ($this->hasRow($row)) {
             throw Exception::rowAlreadyMapped();
@@ -95,7 +95,7 @@ class IdentityMap
      * @return boolean
      *
      */
-    public function hasRow(RowInterface $row)
+    public function hasRow(RowInterface $row) : bool
     {
         return isset($this->rowToSerial[$row]);
     }
@@ -106,14 +106,14 @@ class IdentityMap
      *
      * @param array $primary Primary-key column-value pairs.
      *
-     * @return Row|false The mapped Row on success, or false on failure.
+     * @return ?RowInterface The mapped Row on success, or null on failure.
      *
      */
-    public function getRow(array $primary)
+    public function getRow(array $primary) : ?RowInterface
     {
         $serial = $this->getSerial($primary);
         if (! isset($this->serialToRow[$serial])) {
-            return false;
+            return null;
         }
 
         return $this->serialToRow[$serial];
@@ -151,7 +151,7 @@ class IdentityMap
      * @return string The serialized identity value.
      *
      */
-    public function getSerial(array $primary)
+    public function getSerial(array $primary) : string
     {
         $sep = "|\x1F"; // a pipe, and ASCII 31 ("unit separator")
         return $sep . implode($sep, $primary). $sep;
@@ -166,7 +166,7 @@ class IdentityMap
      * @throws Exception when the Row is not mapped.
      *
      */
-    public function resetInitial(RowInterface $row)
+    public function resetInitial(RowInterface $row) : void
     {
         if (! $this->hasRow($row)) {
             throw Exception::rowNotMapped();
@@ -186,7 +186,7 @@ class IdentityMap
      * @throws Exception when the Row is not mapped.
      *
      */
-    public function getInitial(RowInterface $row)
+    public function getInitial(RowInterface $row) : array
     {
         if (! $this->hasRow($row)) {
             throw Exception::rowNotMapped();
