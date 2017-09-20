@@ -3,7 +3,7 @@ namespace Atlas\Orm\Table;
 
 use Atlas\Orm\DataSource\Employee\EmployeeTable;
 
-class IdentityMapTest extends \PHPUnit_Framework_TestCase
+class IdentityMapTest extends \PHPUnit\Framework\TestCase
 {
     protected $identityMap;
 
@@ -16,21 +16,21 @@ class IdentityMapTest extends \PHPUnit_Framework_TestCase
     {
         $row = new Row(['id' => '1']);
         $this->identityMap->setRow($row, ['id' => '1'], ['id']);
-        $this->setExpectedException('Atlas\Orm\Exception');
+        $this->expectException('Atlas\Orm\Exception');
         $this->identityMap->setRow($row, ['id' => '1'], ['id']);
     }
 
     public function testResetInitial_missingRow()
     {
         $row = new Row(['id' => '1']);
-        $this->setExpectedException('Atlas\Orm\Exception');
+        $this->expectException('Atlas\Orm\Exception');
         $this->identityMap->resetInitial($row);
     }
 
     public function testGetInitial_missingRow()
     {
         $row = new Row(['id' => '1']);
-        $this->setExpectedException('Atlas\Orm\Exception');
+        $this->expectException('Atlas\Orm\Exception');
         $this->identityMap->getInitial($row);
     }
 }

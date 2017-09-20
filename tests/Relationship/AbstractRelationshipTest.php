@@ -13,7 +13,7 @@ use Atlas\Orm\Mapper\MapperLocator;
 use Aura\Sql\ExtendedPdo;
 use Atlas\Orm\SqliteFixture;
 
-abstract class AbstractRelationshipTest extends \PHPUnit_Framework_TestCase
+abstract class AbstractRelationshipTest extends \PHPUnit\Framework\TestCase
 {
     protected $mapperLocator;
 

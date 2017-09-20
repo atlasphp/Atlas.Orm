@@ -6,7 +6,7 @@ use Atlas\Orm\Mapper\Record;
 use Aura\Sql\ExtendedPdo;
 use PDOException;
 
-class TransactionTest extends \PHPUnit_Framework_TestCase
+class TransactionTest extends \PHPUnit\Framework\TestCase
 {
     protected $transaction;
     protected $mapperLocator;
@@ -175,7 +175,7 @@ class TransactionTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($result);
 
         // try it again, should fail
-        $this->setExpectedException(
+        $this->expectException(
             'Atlas\Orm\Exception',
             'Cannot re-execute a prior transaction.'
         );

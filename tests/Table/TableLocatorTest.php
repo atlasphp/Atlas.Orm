@@ -3,7 +3,7 @@ namespace Atlas\Orm\Table;
 
 use StdClass;
 
-class TableLocatorTest extends \PHPUnit_Framework_TestCase
+class TableLocatorTest extends \PHPUnit\Framework\TestCase
 {
     protected function setUp()
     {
@@ -27,7 +27,7 @@ class TableLocatorTest extends \PHPUnit_Framework_TestCase
         $again = $this->tableLocator->get('Foo');
         $this->assertSame($actual, $again);
 
-        $this->setExpectedException(
+        $this->expectException(
             'Atlas\Orm\Exception',
             'Bar not found in table locator.'
         );

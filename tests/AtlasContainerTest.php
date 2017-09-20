@@ -13,7 +13,7 @@ use Atlas\Orm\DataSource\Tagging\TaggingMapper;
 use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
 
-class AtlasContainerTest extends \PHPUnit_Framework_TestCase
+class AtlasContainerTest extends \PHPUnit\Framework\TestCase
 {
     protected $atlasContainer;
 
@@ -53,7 +53,7 @@ class AtlasContainerTest extends \PHPUnit_Framework_TestCase
 
     public function testSetMapper_noSuchMapper()
     {
-        $this->setExpectedException(
+        $this->expectException(
             Exception::CLASS,
             'FooMapper does not exist'
         );

@@ -24,7 +24,7 @@
     "require-dev": {
         "atlas/cli": "~1.0",
         "pds/skeleton": "~1.0",
-        "phpunit/phpunit": "~5.3.0"
+        "phpunit/phpunit": "~6.0"
     },
     "autoload-dev": {
         "psr-4": {

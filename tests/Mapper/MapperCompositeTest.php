@@ -12,7 +12,7 @@ use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\QueryFactory;
 
-class MapperCompositeTest extends \PHPUnit_Framework_TestCase
+class MapperCompositeTest extends \PHPUnit\Framework\TestCase
 {
     protected $table;
     protected $mapper;
@@ -288,7 +288,7 @@ class MapperCompositeTest extends \PHPUnit_Framework_TestCase
 
         // try to insert again, should fail on primary key repetition
         $this->silenceErrors();
-        $this->setExpectedException(
+        $this->expectException(
             'Atlas\Orm\Exception',
             "Expected 1 row affected, actual 0"
         );

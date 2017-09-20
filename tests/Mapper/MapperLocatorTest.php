@@ -10,7 +10,7 @@ use Atlas\Orm\Mapper\Related;
 use Atlas\Orm\Table\Row;
 use Atlas\Orm\Table\Primary;
 
-class MapperLocatorTest extends \PHPUnit_Framework_TestCase
+class MapperLocatorTest extends \PHPUnit\Framework\TestCase
 {
     protected $mapperLocator;
 
@@ -33,7 +33,7 @@ class MapperLocatorTest extends \PHPUnit_Framework_TestCase
         $expect = EmployeeMapper::CLASS;
         $this->assertSame($expect, $this->mapperLocator->get(EmployeeMapper::CLASS));
 
-        $this->setExpectedException(Exception::CLASS, "NoSuchMapper not found in mapper locator");
+        $this->expectException(Exception::CLASS, "NoSuchMapper not found in mapper locator");
         $this->mapperLocator->get('NoSuchMapper');
     }
 }

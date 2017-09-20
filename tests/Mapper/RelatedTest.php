@@ -3,7 +3,7 @@ namespace Atlas\Orm\Mapper;
 
 use Atlas\Orm\Exception;
 
-class RelatedTest extends \PHPUnit_Framework_TestCase
+class RelatedTest extends \PHPUnit\Framework\TestCase
 {
     protected $zim;
     protected $irk;
@@ -11,8 +11,8 @@ class RelatedTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->zim = $this->getMock(RecordInterface::CLASS);
-        $this->irk = $this->getMock(RecordSetInterface::CLASS);
+        $this->zim = $this->getMockBuilder(RecordInterface::CLASS)->getMock();
+        $this->irk = $this->getMockBuilder(RecordSetInterface::CLASS)->getMock();
         $this->related = new Related([
             'zim' => $this->zim,
             'irk' => $this->irk,
@@ -25,7 +25,7 @@ class RelatedTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($this->zim, $this->related->zim);
 
         // missing
-        $this->setExpectedException(
+        $this->expectException(
             'Atlas\Orm\Exception',
             'Atlas\Orm\Mapper\Related::$noSuchForeign does not exist'
         );
@@ -34,14 +34,14 @@ class RelatedTest extends \PHPUnit_Framework_TestCase
 
     public function test__set()
     {
-        $newZim = $this->getMock(RecordInterface::CLASS);
+        $newZim = $this->getMockBuilder(RecordInterface::CLASS)->getMock();
 
         // related
         $this->related->zim = $newZim;
         $this->assertSame($newZim, $this->related->zim);
 
         // missing
-        $this->setExpectedException(
+        $this->expectException(
             'Atlas\Orm\Exception',
             'Atlas\Orm\Mapper\Related::$noSuchForeign does not exist'
         );
@@ -54,7 +54,7 @@ class RelatedTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(isset($this->related->zim));
 
         // missing
-        $this->setExpectedException(
+        $this->expectException(
             'Atlas\Orm\Exception',
             'Atlas\Orm\Mapper\Related::$noSuchForeign does not exist'
         );
@@ -68,7 +68,7 @@ class RelatedTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($this->related->zim);
 
         // missing
-        $this->setExpectedException(
+        $this->expectException(
             'Atlas\Orm\Exception',
             'Atlas\Orm\Mapper\Related::$noSuchForeign does not exist'
         );
@@ -86,7 +86,7 @@ class RelatedTest extends \PHPUnit_Framework_TestCase
 
     public function testInvalidModify()
     {
-        $this->setExpectedException(
+        $this->expectException(
             'Atlas\Orm\Exception',
             'Expected type null, false, empty array, RecordInterface, or RecordSetInterface; got stdClass instead.'
         );

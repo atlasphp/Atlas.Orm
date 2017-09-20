@@ -12,7 +12,7 @@ use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\QueryFactory;
 
-class MapperSelectTest extends \PHPUnit_Framework_TestCase
+class MapperSelectTest extends \PHPUnit\Framework\TestCase
 {
     use Assertions;
 
@@ -217,7 +217,7 @@ class MapperSelectTest extends \PHPUnit_Framework_TestCase
 
     public function testWith_noSuchRelationship()
     {
-        $this->setExpectedException(
+        $this->expectException(
             'Atlas\Orm\Exception',
             "Relationship 'no_such_related' does not exist."
         );

@@ -8,7 +8,7 @@ use Atlas\Orm\DataSource\Gpa\GpaMapper;
 use Atlas\Orm\DataSource\Student\StudentMapper;
 use Aura\Sql\ExtendedPdo;
 
-class AtlasCompositeTest extends \PHPUnit_Framework_TestCase
+class AtlasCompositeTest extends \PHPUnit\Framework\TestCase
 {
     protected $atlas;
 
@@ -170,7 +170,7 @@ class AtlasCompositeTest extends \PHPUnit_Framework_TestCase
 
     public function testCalcPrimaryComposite_missingKey()
     {
-        $this->setExpectedException(
+        $this->expectException(
             'Atlas\Orm\Exception',
             "Expected scalar value for primary key 'student_ln', value is missing instead."
         );
@@ -179,7 +179,7 @@ class AtlasCompositeTest extends \PHPUnit_Framework_TestCase
 
     public function testCalcPrimaryComposite_nonScalar()
     {
-        $this->setExpectedException(
+        $this->expectException(
             'Atlas\Orm\Exception',
             "Expected scalar value for primary key 'student_fn', got array instead."
         );

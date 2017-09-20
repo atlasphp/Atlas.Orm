@@ -17,7 +17,7 @@ use Atlas\Orm\Mapper\RecordSet;
 use Aura\Sql\ExtendedPdo;
 use Aura\Sql\Profiler;
 
-class AtlasTest extends \PHPUnit_Framework_TestCase
+class AtlasTest extends \PHPUnit\Framework\TestCase
 {
     use Assertions;
 
@@ -352,7 +352,7 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('2', $actual->author_id);
 
         // not a scalar
-        $this->setExpectedException(
+        $this->expectException(
             'Atlas\Orm\Exception',
             "Expected scalar value for primary key 'author_id', got array instead."
         );
@@ -407,7 +407,7 @@ ORDER BY
 
     public function testMissingWith()
     {
-        $this->setExpectedException(
+        $this->expectException(
             Exception::CLASS,
             "Relationship 'no-such-relationship' does not exist."
         );

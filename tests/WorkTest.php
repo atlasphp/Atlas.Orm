@@ -8,7 +8,7 @@ use Atlas\Orm\Mapper\Related;
 use Atlas\Orm\Table\Primary;
 use Atlas\Orm\Table\Row;
 
-class WorkTest extends \PHPUnit_Framework_TestCase
+class WorkTest extends \PHPUnit\Framework\TestCase
 {
     public function test__invoke_reInvoke()
     {
@@ -19,15 +19,15 @@ class WorkTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $related = new Related([
-            'zim' => $this->getMock(RecordInterface::CLASS),
-            'irk' => $this->getMock(RecordSetInterface::CLASS),
+            'zim' => $this->getMockBuilder(RecordInterface::CLASS)->getMock(),
+            'irk' => $this->getMockBuilder(RecordSetInterface::CLASS)->getMock(),
         ]);
 
         $record = new Record('FakeMapper', $row, $related);
 
         $work = new Work('fake', function () {}, $record);
         $work();
-        $this->setExpectedException(Exception::CLASS, 'Cannot re-invoke prior work.');
+        $this->expectException(Exception::CLASS, 'Cannot re-invoke prior work.');
         $work();
     }
 }

@@ -17,7 +17,7 @@ use Atlas\Orm\Mapper\RecordSet;
 use Aura\Sql\ExtendedPdo;
 use Aura\Sql\Profiler;
 
-class PersistTest extends \PHPUnit_Framework_TestCase
+class PersistTest extends \PHPUnit\Framework\TestCase
 {
     use Assertions;
 

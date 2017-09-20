@@ -51,7 +51,7 @@ class ManyToManyTest extends AbstractRelationshipTest
 
         $thread = $this->mapperLocator->get(ThreadMapper::CLASS)->newRecord([]);
 
-        $this->setExpectedException(
+        $this->expectException(
             Exception::CLASS,
             "Cannot fetch 'tags' relationship without 'taggings' relationship."
         );
@@ -88,7 +88,7 @@ class ManyToManyTest extends AbstractRelationshipTest
         $thread = $threadMapper->newRecord();
         $threads = [$thread];
 
-        $this->setExpectedException(
+        $this->expectException(
             Exception::CLASS,
             "Cannot fetch 'tags' relationship without 'taggings' relationship."
         );

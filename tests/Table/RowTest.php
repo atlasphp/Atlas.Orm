@@ -1,7 +1,7 @@
 <?php
 namespace Atlas\Orm\Table;
 
-class RowTest extends \PHPUnit_Framework_TestCase
+class RowTest extends \PHPUnit\Framework\TestCase
 {
     public function testConstructWithoutPrimary()
     {
@@ -12,14 +12,14 @@ class RowTest extends \PHPUnit_Framework_TestCase
     public function testGetMissingCol()
     {
         $row = new Row(['id' => null]);
-        $this->setExpectedException('Atlas\Orm\Exception');
+        $this->expectException('Atlas\Orm\Exception');
         $row->no_such_col;
     }
 
     public function testSetMissingCol()
     {
         $row = new Row(['id' => null]);
-        $this->setExpectedException('Atlas\Orm\Exception');
+        $this->expectException('Atlas\Orm\Exception');
         $row->no_such_col = 'foo';
     }
 
@@ -50,7 +50,7 @@ class RowTest extends \PHPUnit_Framework_TestCase
     public function testUnsetMissingCol()
     {
         $row = new Row(['id' => null]);
-        $this->setExpectedException('Atlas\Orm\Exception');
+        $this->expectException('Atlas\Orm\Exception');
         unset($row->no_such_col);
     }
 
@@ -67,7 +67,7 @@ class RowTest extends \PHPUnit_Framework_TestCase
             $row::MODIFIED,
         ]));
 
-        $this->setExpectedException(
+        $this->expectException(
             'Atlas\Orm\Exception',
             "Expected valid row status, got 'No Such Status' instead."
         );
@@ -79,7 +79,7 @@ class RowTest extends \PHPUnit_Framework_TestCase
         $row = new Row(['id' => '1', 'foo' => 'bar']);
         $row->setStatus($row::DELETED);
 
-        $this->setExpectedException(
+        $this->expectException(
             'Atlas\Orm\Exception',
             'Row::$foo is immutable once deleted.'
         );
@@ -89,7 +89,7 @@ class RowTest extends \PHPUnit_Framework_TestCase
     public function testValidModification()
     {
         $row = new Row(['id' => '1', 'foo' => 'bar']);
-        $this->setExpectedException(
+        $this->expectException(
             'Atlas\Orm\Exception',
             'Expected type scalar or null; got stdClass instead.'
         );

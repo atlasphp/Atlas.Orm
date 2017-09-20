@@ -8,7 +8,7 @@ use Atlas\Orm\DataSource\Employee\EmployeeRecordSet;
 use Atlas\Orm\DataSource\Employee\EmployeeRow;
 use Atlas\Orm\Mapper\MapperLocator;
 
-class RelationshipsTest extends \PHPUnit_Framework_TestCase
+class RelationshipsTest extends \PHPUnit\Framework\TestCase
 {
     protected $mapperLocator;
     protected $relations;
@@ -25,7 +25,7 @@ class RelationshipsTest extends \PHPUnit_Framework_TestCase
 
     public function testManyToMany_noThroughName()
     {
-        $this->setExpectedException(
+        $this->expectException(
             Exception::CLASS,
             "Relationship 'foo' does not exist."
         );
@@ -40,7 +40,7 @@ class RelationshipsTest extends \PHPUnit_Framework_TestCase
 
     public function test_noForeignMapper()
     {
-        $this->setExpectedException(
+        $this->expectException(
             Exception::CLASS,
             "NoSuchMapper does not exist"
         );

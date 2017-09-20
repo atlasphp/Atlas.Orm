@@ -5,7 +5,7 @@ use Atlas\Orm\Exception;
 use Atlas\Orm\Table\Row;
 use Atlas\Orm\Table\Primary;
 
-class RecordTest extends \PHPUnit_Framework_TestCase
+class RecordTest extends \PHPUnit\Framework\TestCase
 {
     protected $row;
     protected $related;
@@ -15,8 +15,8 @@ class RecordTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->zim = $this->getMock(RecordInterface::CLASS);
-        $this->irk = $this->getMock(RecordSetInterface::CLASS);
+        $this->zim = $this->getMockBuilder(RecordInterface::CLASS)->getMock();
+        $this->irk = $this->getMockBuilder(RecordSetInterface::CLASS)->getMock();
 
         $this->row = new Row([
             'id' => '1',
@@ -51,7 +51,7 @@ class RecordTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($this->zim, $this->record->zim);
 
         // missing
-        $this->setExpectedException(
+        $this->expectException(
             'Atlas\Orm\Exception',
             'Atlas\Orm\Mapper\Record::$noSuchField does not exist'
         );
@@ -66,12 +66,12 @@ class RecordTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('barbar', $this->row->foo);
 
         // related
-        $newZim = $this->getMock(RecordInterface::CLASS);
+        $newZim = $this->getMockBuilder(RecordInterface::CLASS)->getMock();
         $this->record->zim = $newZim;
         $this->assertSame($newZim, $this->record->zim);
 
         // missing
-        $this->setExpectedException(
+        $this->expectException(
             'Atlas\Orm\Exception',
             'Atlas\Orm\Mapper\Record::$noSuchField does not exist'
         );
@@ -87,7 +87,7 @@ class RecordTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(isset($this->record->zim));
 
         // missing
-        $this->setExpectedException(
+        $this->expectException(
             'Atlas\Orm\Exception',
             'Atlas\Orm\Mapper\Record::$noSuchField does not exist'
         );
@@ -106,7 +106,7 @@ class RecordTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($this->record->zim);
 
         // missing
-        $this->setExpectedException(
+        $this->expectException(
             'Atlas\Orm\Exception',
             'Atlas\Orm\Mapper\Record::$noSuchField does not exist'
         );
@@ -127,10 +127,10 @@ class RecordTest extends \PHPUnit_Framework_TestCase
 
     public function testSet()
     {
-        $newZim = $this->getMock(RecordInterface::CLASS);
+        $newZim = $this->getMockBuilder(RecordInterface::CLASS)->getMock();
         $newZim->method('getArrayCopy')->willReturn('gir');
 
-        $newIrk = $this->getMock(RecordSetInterface::CLASS);
+        $newIrk = $this->getMockBuilder(RecordSetInterface::CLASS)->getMock();
         $newIrk->method('getArrayCopy')->willReturn('doom');
 
         $this->record->set([

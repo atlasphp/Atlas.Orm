@@ -5,7 +5,7 @@ use Atlas\Orm\Table\Row;
 use Atlas\Orm\Table\Primary;
 use StdClass;
 
-class RecordSetTest extends \PHPUnit_Framework_TestCase
+class RecordSetTest extends \PHPUnit\Framework\TestCase
 {
     protected $row;
     protected $related;
@@ -21,8 +21,8 @@ class RecordSetTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $this->related = new Related([
-            'zim' => $this->getMock(RecordInterface::CLASS),
-            'irk' => $this->getMock(RecordSetInterface::CLASS),
+            'zim' => $this->getMockBuilder(RecordInterface::CLASS)->getMock(),
+            'irk' => $this->getMockBuilder(RecordSetInterface::CLASS)->getMock(),
         ]);
 
         $this->record = new Record('FakeMapper', $this->row, $this->related);
@@ -51,13 +51,13 @@ class RecordSetTest extends \PHPUnit_Framework_TestCase
 
     public function testOffsetSet_nonObject()
     {
-        $this->setExpectedException('Atlas\Orm\Exception');
+        $this->expectException('Atlas\Orm\Exception');
         $this->recordSet[] = 'Foo';
     }
 
     public function testOffsetSet_nonRecordObject()
     {
-        $this->setExpectedException('Atlas\Orm\Exception');
+        $this->expectException('Atlas\Orm\Exception');
         $this->recordSet[] = new StdClass();
     }
 
