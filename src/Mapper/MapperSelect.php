@@ -209,14 +209,14 @@ class MapperSelect implements SubselectInterface
      *
      * Returns a Record object from the Mapper.
      *
-     * @return RecordInterface|false A Record on success, or false on failure.
+     * @return ?RecordInterface
      *
      */
-    public function fetchRecord()
+    public function fetchRecord() : ?RecordInterface
     {
         $row = $this->fetchRow();
         if (! $row) {
-            return false;
+            return null;
         }
 
         return $this->mapper->turnRowIntoRecord($row, $this->with);
@@ -229,13 +229,9 @@ class MapperSelect implements SubselectInterface
      * @return array
      *
      */
-    public function fetchRecords()
+    public function fetchRecords() : array
     {
         $rows = $this->fetchRows();
-        if (! $rows) {
-            return [];
-        }
-
         return $this->mapper->turnRowsIntoRecords($rows, $this->with);
     }
 
@@ -247,13 +243,9 @@ class MapperSelect implements SubselectInterface
      * array on failure.
      *
      */
-    public function fetchRecordSet()
+    public function fetchRecordSet() : RecordSetInterface
     {
         $records = $this->fetchRecords();
-        if (! $records) {
-            return [];
-        }
-
         return $this->mapper->newRecordSet($records);
     }
 }

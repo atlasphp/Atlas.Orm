@@ -75,7 +75,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
 
         // fetch failure
         $actual = $this->mapper->fetchRecord(-1);
-        $this->assertFalse($actual);
+        $this->assertNull($actual);
     }
 
     public function testFetchRecordBy()
@@ -102,7 +102,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
 
         // fetch failure
         $actual = $this->mapper->fetchRecordBy(['id' => '-1']);
-        $this->assertFalse($actual);
+        $this->assertNull($actual);
     }
 
     public function testSelectFetchRecord()
@@ -131,7 +131,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         // fetch failure
         $select = $this->mapper->select(['id' => '-1']);
         $actual = $select->fetchRecord();
-        $this->assertFalse($actual);
+        $this->assertNull($actual);
     }
 
     public function testFetchRecordSet()
@@ -178,7 +178,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($actual[2]->getRow(), $again[2]->getRow());
 
         $actual = $this->mapper->fetchRecordSet([997, 998, 999]);
-        $this->assertSame([], $actual);
+        $this->assertTrue($actual->isEmpty());
     }
 
     public function testFetchRecordSetBy()
@@ -225,7 +225,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($actual[2]->getRow(), $again[2]->getRow());
 
         $actual = $this->mapper->fetchRecordSetBy(['id' => [997, 998, 999]]);
-        $this->assertSame([], $actual);
+        $this->assertTrue($actual->isEmpty());
     }
 
     public function testSelectFetchRecordSet()
@@ -266,7 +266,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
 
         $select = $this->mapper->select(['id' => [997,998,999]]);
         $actual = $select->fetchRecordSet();
-        $this->assertSame([], $actual);
+        $this->assertTrue($actual->isEmpty());
     }
 
     public function testInsert()
@@ -354,7 +354,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
 
         // did it delete?
         $actual = $this->mapper->fetchRecordBy(['name' => 'Anna']);
-        $this->assertFalse($actual);
+        $this->assertNull($actual);
 
         // do we still have everything else?
         $select = $this->mapper->select()->cols(['id'])->where('id > 0');

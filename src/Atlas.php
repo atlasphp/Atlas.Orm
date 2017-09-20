@@ -10,6 +10,7 @@ namespace Atlas\Orm;
 
 use Atlas\Orm\Mapper\MapperLocator;
 use Atlas\Orm\Mapper\RecordInterface;
+use Atlas\Orm\Mapper\RecordSetInterface;
 use Exception;
 
 /**
@@ -121,10 +122,10 @@ class Atlas
      *
      * @param array $with Return the Record with these relateds stitched in.
      *
-     * @return RecordInterface|false A Record on success, or `false` on failure.
+     * @return ?RecordInterface
      *
      */
-    public function fetchRecord($mapperClass, $primaryVal, array $with = [])
+    public function fetchRecord($mapperClass, $primaryVal, array $with = []) : ?RecordInterface
     {
         return $this->mapper($mapperClass)->fetchRecord($primaryVal, $with);
     }
@@ -140,10 +141,10 @@ class Atlas
      *
      * @param array $with Return the Record with these relateds stitched in.
      *
-     * @return RecordInterface|false A Record on success, or `false` on failure.
+     * @return ?RecordInterface
      *
      */
-    public function fetchRecordBy($mapperClass, array $whereEquals, array $with = [])
+    public function fetchRecordBy($mapperClass, array $whereEquals, array $with = []) : ?RecordInterface
     {
         return $this->mapper($mapperClass)->fetchRecordBy($whereEquals, $with);
     }
@@ -164,7 +165,7 @@ class Atlas
      * @return array An array of Records.
      *
      */
-    public function fetchRecords($mapperClass, array $primaryVals, array $with = [])
+    public function fetchRecords($mapperClass, array $primaryVals, array $with = []) : array
     {
         return $this->mapper($mapperClass)->fetchRecords($primaryVals, $with);
     }
@@ -183,7 +184,7 @@ class Atlas
      * @return array An array of Records.
      *
      */
-    public function fetchRecordsBy($mapperClass, array $whereEquals, array $with = [])
+    public function fetchRecordsBy($mapperClass, array $whereEquals, array $with = []) : array
     {
         return $this->mapper($mapperClass)->fetchRecordsBy($whereEquals, $with);
     }
@@ -205,7 +206,7 @@ class Atlas
      * array on failure.
      *
      */
-    public function fetchRecordSet($mapperClass, array $primaryVals, array $with = [])
+    public function fetchRecordSet($mapperClass, array $primaryVals, array $with = []) : ?RecordSetInterface
     {
         return $this->mapper($mapperClass)->fetchRecordSet($primaryVals, $with);
     }
@@ -225,7 +226,7 @@ class Atlas
      * array on failure.
      *
      */
-    public function fetchRecordSetBy($mapperClass, array $whereEquals, array $with = [])
+    public function fetchRecordSetBy($mapperClass, array $whereEquals, array $with = []) : ?RecordSetInterface
     {
         return $this->mapper($mapperClass)->fetchRecordSetBy($whereEquals, $with);
     }

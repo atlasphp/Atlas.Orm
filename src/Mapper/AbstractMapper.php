@@ -155,11 +155,11 @@ abstract class AbstractMapper implements MapperInterface
      * success instead of a generic Record.)
      *
      */
-    public function fetchRecord($primaryVal, array $with = [])
+    public function fetchRecord($primaryVal, array $with = []) : ?RecordInterface
     {
         $row = $this->table->fetchRow($primaryVal);
         if (! $row) {
-            return false;
+            return null;
         }
 
         return $this->turnRowIntoRecord($row, $with);
@@ -179,11 +179,11 @@ abstract class AbstractMapper implements MapperInterface
      * success instead of a generic Record.)
      *
      */
-    public function fetchRecordBy(array $whereEquals, array $with = [])
+    public function fetchRecordBy(array $whereEquals, array $with = []) : ?RecordInterface
     {
         $row = $this->table->select($whereEquals)->fetchRow();
         if (! $row) {
-            return false;
+            return null;
         }
 
         return $this->turnRowIntoRecord($row, $with);
@@ -202,12 +202,9 @@ abstract class AbstractMapper implements MapperInterface
      * @return array An array of Records.
      *
      */
-    public function fetchRecords(array $primaryVals, array $with = [])
+    public function fetchRecords(array $primaryVals, array $with = []) : array
     {
         $rows = $this->table->fetchRows($primaryVals);
-        if (! $rows) {
-            return [];
-        }
         return $this->turnRowsIntoRecords($rows, $with);
     }
 
@@ -223,12 +220,9 @@ abstract class AbstractMapper implements MapperInterface
      * @return array An array of Records.
      *
      */
-    public function fetchRecordsBy(array $whereEquals, array $with = [])
+    public function fetchRecordsBy(array $whereEquals, array $with = []) : array
     {
         $rows = $this->table->select($whereEquals)->fetchRows();
-        if (! $rows) {
-            return [];
-        }
         return $this->turnRowsIntoRecords($rows, $with);
     }
 
@@ -242,17 +236,12 @@ abstract class AbstractMapper implements MapperInterface
      *
      * @param array $with Return each Record with these relateds stitched in.
      *
-     * @return RecordSetInterface|array A RecordSet on success, or an empty
-     * array on failure. (If a mapper-specific RecordSet class is defined, that
-     * will be returned instead of a generic RecordSet.)
+     * @return RecordSetInterface
      *
      */
-    public function fetchRecordSet(array $primaryVals, array $with = [])
+    public function fetchRecordSet(array $primaryVals, array $with = []) : RecordSetInterface
     {
         $records = $this->fetchRecords($primaryVals, $with);
-        if (! $records) {
-            return [];
-        }
         return $this->newRecordSet($records);
     }
 
@@ -265,17 +254,12 @@ abstract class AbstractMapper implements MapperInterface
      *
      * @param array $with Return each Record with these relateds stitched in.
      *
-     * @return RecordSetInterface|array A RecordSet on success, or an empty
-     * array on failure. (If a mapper-specific RecordSet class is defined, that
-     * will be returned instead of a generic RecordSet.)
+     * @return RecordSetInterface
      *
      */
-    public function fetchRecordSetBy(array $whereEquals, array $with = [])
+    public function fetchRecordSetBy(array $whereEquals, array $with = []) : RecordSetInterface
     {
         $records = $this->fetchRecordsBy($whereEquals, $with);
-        if (! $records) {
-            return [];
-        }
         return $this->newRecordSet($records);
     }
 

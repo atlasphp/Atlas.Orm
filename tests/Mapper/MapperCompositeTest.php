@@ -77,7 +77,7 @@ class MapperCompositeTest extends \PHPUnit_Framework_TestCase
             'course_subject' => 'NONE',
             'course_number' => '999',
         ]);
-        $this->assertFalse($actual);
+        $this->assertNull($actual);
     }
 
     public function testFetchRecordBy()
@@ -103,7 +103,7 @@ class MapperCompositeTest extends \PHPUnit_Framework_TestCase
 
         // fetch failure
         $actual = $this->mapper->fetchRecordBy(['title' => 'No Such Course']);
-        $this->assertFalse($actual);
+        $this->assertNull($actual);
     }
 
     public function testSelectFetchRecord()
@@ -137,7 +137,7 @@ class MapperCompositeTest extends \PHPUnit_Framework_TestCase
             'course_number' => '999',
         ]);
         $actual = $select->fetchRecord();
-        $this->assertFalse($actual);
+        $this->assertNull($actual);
     }
 
     public function testFetchRecordSet()
@@ -181,7 +181,7 @@ class MapperCompositeTest extends \PHPUnit_Framework_TestCase
             ['course_subject' => 'HIST', 'course_number' => '999'],
             ['course_subject' => 'MATH', 'course_number' => '999'],
         ]);
-        $this->assertSame([], $actual);
+        $this->assertTrue($actual->isEmpty());
     }
 
     public function testFetchRecordSetBy()
@@ -217,7 +217,7 @@ class MapperCompositeTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($actual[3]->getRow(), $again[3]->getRow());
 
         $actual = $this->mapper->fetchRecordSetBy(['course_subject' => 'NONE']);
-        $this->assertSame([], $actual);
+        $this->assertTrue($actual->isEmpty());
     }
 
     public function testSelectFetchRecordSet()
@@ -253,7 +253,7 @@ class MapperCompositeTest extends \PHPUnit_Framework_TestCase
 
         $select = $this->mapper->select(['course_subject' => 'NONE']);
         $actual = $select->fetchRecordSet();
-        $this->assertSame([], $actual);
+        $this->assertTrue($actual->isEmpty());
     }
 
     public function testInsert()
@@ -340,7 +340,7 @@ class MapperCompositeTest extends \PHPUnit_Framework_TestCase
             'course_subject' => 'MATH',
             'course_number' => '100',
         ]);
-        $this->assertFalse($actual);
+        $this->assertNull($actual);
 
         // do we still have everything else?
         $select = $this->mapper->select()->cols(['*']);

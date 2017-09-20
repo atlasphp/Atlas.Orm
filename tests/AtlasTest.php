@@ -316,7 +316,7 @@ class AtlasTest extends \PHPUnit_Framework_TestCase
             AuthorMapper::CLASS,
             ['name' => 'Anna']
         );
-        $this->assertFalse($actual);
+        $this->assertNull($actual);
     }
 
     public function testTransactionFailure()

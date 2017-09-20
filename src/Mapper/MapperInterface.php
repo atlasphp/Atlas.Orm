@@ -70,7 +70,7 @@ interface MapperInterface
      * success instead of a generic Record.)
      *
      */
-    public function fetchRecord($primaryVal, array $with = []);
+    public function fetchRecord($primaryVal, array $with = []) : ?RecordInterface;
 
     /**
      *
@@ -86,11 +86,11 @@ interface MapperInterface
      * success instead of a generic Record.)
      *
      */
-    public function fetchRecordBy(array $whereEquals, array $with = []);
+    public function fetchRecordBy(array $whereEquals, array $with = []) : ?RecordInterface;
 
-    public function fetchRecords(array $primaryVals, array $with = []);
+    public function fetchRecords(array $primaryVals, array $with = []) : array;
 
-    public function fetchRecordsBy(array $whereEquals, array $with = []);
+    public function fetchRecordsBy(array $whereEquals, array $with = []) : array;
 
     /**
      *
@@ -107,7 +107,7 @@ interface MapperInterface
      * will be returned instead of a generic RecordSet.)
      *
      */
-    public function fetchRecordSet(array $primaryVals, array $with = []);
+    public function fetchRecordSet(array $primaryVals, array $with = []) : RecordSetInterface;
 
     /**
      *
@@ -123,7 +123,7 @@ interface MapperInterface
      * will be returned instead of a generic RecordSet.)
      *
      */
-    public function fetchRecordSetBy(array $whereEquals, array $with = []);
+    public function fetchRecordSetBy(array $whereEquals, array $with = []) : RecordSetInterface;
 
     /**
      *
