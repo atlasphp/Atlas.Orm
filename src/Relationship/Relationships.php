@@ -93,10 +93,10 @@ class Relationships
      *
      */
     public function oneToOne(
-        $name,
-        $nativeMapperClass,
-        $foreignMapperClass
-    ) {
+        string $name,
+        string $nativeMapperClass,
+        string $foreignMapperClass
+    ) : RelationshipInterface {
         return $this->set(
             $name,
             OneToOne::CLASS,
@@ -120,10 +120,10 @@ class Relationships
      *
      */
     public function oneToMany(
-        $name,
-        $nativeMapperClass,
-        $foreignMapperClass
-    ) {
+        string $name,
+        string $nativeMapperClass,
+        string $foreignMapperClass
+    ) : RelationshipInterface {
         return $this->set(
             $name,
             OneToMany::CLASS,
@@ -147,10 +147,10 @@ class Relationships
      *
      */
     public function manyToOne(
-        $name,
-        $nativeMapperClass,
-        $foreignMapperClass
-    ) {
+        string $name,
+        string $nativeMapperClass,
+        string $foreignMapperClass
+    ) : RelationshipInterface {
         return $this->set(
             $name,
             ManyToOne::CLASS,
@@ -177,11 +177,11 @@ class Relationships
      *
      */
     public function manyToMany(
-        $name,
-        $nativeMapperClass,
-        $foreignMapperClass,
-        $throughName
-    ) {
+        string $name,
+        string $nativeMapperClass,
+        string $foreignMapperClass,
+        string $throughName
+    ) : RelationshipInterface {
         return $this->set(
             $name,
             ManyToMany::CLASS,
@@ -201,7 +201,7 @@ class Relationships
      * @return RelationshipInterface
      *
      */
-    public function get($name)
+    public function get(string $name) : RelationshipInterface
     {
         return $this->relationships[$name];
     }
@@ -214,7 +214,7 @@ class Relationships
      * @return array
      *
      */
-    public function getFields()
+    public function getFields() : array
     {
         return $this->fields;
     }
@@ -233,7 +233,7 @@ class Relationships
     public function stitchIntoRecords(
         array $nativeRecords,
         array $with = []
-    ) {
+    ) : void {
         foreach ($this->fixWith($with) as $name => $custom) {
             if (! isset($this->relationships[$name])) {
                 throw Exception::relationshipDoesNotExist($name);
@@ -267,13 +267,13 @@ class Relationships
      *
      */
     protected function set(
-        $name,
-        $relationshipClass,
-        $nativeMapperClass,
-        $foreignMapperClass,
-        $persistencePriority,
+        string $name,
+        string $relationshipClass,
+        string $nativeMapperClass,
+        string $foreignMapperClass,
+        string $persistencePriority,
         $throughName = null
-    ) {
+    ) : RelationshipInterface {
         if (! class_exists($foreignMapperClass)) {
             throw Exception::classDoesNotExist($foreignMapperClass);
         }
@@ -316,12 +316,12 @@ class Relationships
      *
      */
     protected function newRelationship(
-        $relationshipClass,
-        $name,
-        $nativeMapperClass,
-        $foreignMapperClass,
-        $throughName = null
-    ) {
+        string $relationshipClass,
+        string $name,
+        string $nativeMapperClass,
+        string $foreignMapperClass,
+        string $throughName = null
+    ) : RelationshipInterface {
         return new $relationshipClass(
             $name,
             $this->mapperLocator,
@@ -340,7 +340,7 @@ class Relationships
      * @return array
      *
      */
-    protected function fixWith(array $spec)
+    protected function fixWith(array $spec) : array
     {
         $with = [];
         foreach ($spec as $key => $val) {
@@ -365,7 +365,7 @@ class Relationships
      * @param RecordInterface $nativeRecord The native Record to work with.
      *
      */
-    public function fixNativeRecordKeys(RecordInterface $nativeRecord)
+    public function fixNativeRecordKeys(RecordInterface $nativeRecord) : void
     {
         foreach ($this->relationships as $relationship) {
             $relationship->fixNativeRecordKeys($nativeRecord);
@@ -380,7 +380,7 @@ class Relationships
      * @param RecordInterface $nativeRecord The native Record to work with.
      *
      */
-    public function fixForeignRecordKeys(RecordInterface $nativeRecord)
+    public function fixForeignRecordKeys(RecordInterface $nativeRecord) : void
     {
         foreach ($this->relationships as $relationship) {
             $relationship->fixForeignRecordKeys($nativeRecord);
@@ -397,7 +397,7 @@ class Relationships
      * operated on, to prevent infinite recursion.
      *
      */
-    public function persistBeforeNative(RecordInterface $nativeRecord, SplObjectStorage $tracker)
+    public function persistBeforeNative(RecordInterface $nativeRecord, SplObjectStorage $tracker) : void
     {
         foreach ($this->persistBeforeNative as $relationship) {
             $relationship->persistForeign($nativeRecord, $tracker);
@@ -414,7 +414,7 @@ class Relationships
      * operated on, to prevent infinite recursion.
      *
      */
-    public function persistAfterNative(RecordInterface $nativeRecord, SplObjectStorage $tracker)
+    public function persistAfterNative(RecordInterface $nativeRecord, SplObjectStorage $tracker) : void
     {
         foreach ($this->persistAfterNative as $relationship) {
             $relationship->persistForeign($nativeRecord, $tracker);

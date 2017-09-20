@@ -8,6 +8,7 @@
  */
 namespace Atlas\Orm\Relationship;
 
+use Atlas\Orm\Mapper\MapperInterface;
 use Atlas\Orm\Mapper\RecordInterface;
 use SplObjectStorage;
 
@@ -27,7 +28,7 @@ interface RelationshipInterface
      * @return array
      *
      */
-    public function getSettings();
+    public function getSettings() : array;
 
     /**
      *
@@ -36,7 +37,9 @@ interface RelationshipInterface
      * @param array
      *
      */
-    public function on(array $on);
+    public function on(array $on) : RelationshipInterface;
+
+    public function where(string $cond, ...$bind) : RelationshipInterface;
 
     /**
      *
@@ -45,7 +48,7 @@ interface RelationshipInterface
      * @return array
      *
      */
-    public function getOn();
+    public function getOn() : array;
 
     /**
      *
@@ -54,7 +57,7 @@ interface RelationshipInterface
      * @return MapperInterface
      *
      */
-    public function getForeignMapper();
+    public function getForeignMapper() : MapperInterface;
 
     /**
      *
@@ -70,7 +73,7 @@ interface RelationshipInterface
     public function stitchIntoRecords(
         array $nativeRecords,
         callable $custom = null
-    );
+    ) : void;
 
     /**
      *
@@ -80,7 +83,7 @@ interface RelationshipInterface
      * @param RecordInterface $nativeRecord The native Record to work with.
      *
      */
-    public function fixNativeRecordKeys(RecordInterface $nativeRecord);
+    public function fixNativeRecordKeys(RecordInterface $nativeRecord) : void;
 
     /**
      *
@@ -90,7 +93,7 @@ interface RelationshipInterface
      * @param RecordInterface $nativeRecord The native Record to work with.
      *
      */
-    public function fixForeignRecordKeys(RecordInterface $nativeRecord);
+    public function fixForeignRecordKeys(RecordInterface $nativeRecord) : void;
 
     /**
      *
@@ -102,5 +105,5 @@ interface RelationshipInterface
      * operated on, to prevent infinite recursion.
      *
      */
-    public function persistForeign(RecordInterface $nativeRecord, SplObjectStorage $tracker);
+    public function persistForeign(RecordInterface $nativeRecord, SplObjectStorage $tracker) : void;
 }

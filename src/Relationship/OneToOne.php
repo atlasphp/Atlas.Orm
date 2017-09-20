@@ -33,7 +33,7 @@ class OneToOne extends AbstractRelationship
     protected function stitchIntoRecord(
         RecordInterface $nativeRecord,
         array $foreignRecords
-    ) {
+    ) : void {
         $nativeRecord->{$this->name} = false;
         foreach ($foreignRecords as $foreignRecord) {
             if ($this->recordsMatch($nativeRecord, $foreignRecord)) {
@@ -50,7 +50,7 @@ class OneToOne extends AbstractRelationship
      * @param RecordInterface $nativeRecord The native Record to work with.
      *
      */
-    public function fixForeignRecordKeys(RecordInterface $nativeRecord)
+    public function fixForeignRecordKeys(RecordInterface $nativeRecord) : void
     {
         $foreignRecord = $nativeRecord->{$this->name};
         if (! $foreignRecord instanceof RecordInterface) {
@@ -74,7 +74,7 @@ class OneToOne extends AbstractRelationship
      * operated on, to prevent infinite recursion.
      *
      */
-    public function persistForeign(RecordInterface $nativeRecord, SplObjectStorage $tracker)
+    public function persistForeign(RecordInterface $nativeRecord, SplObjectStorage $tracker) : void
     {
         $this->persistForeignRecord($nativeRecord, $tracker);
     }

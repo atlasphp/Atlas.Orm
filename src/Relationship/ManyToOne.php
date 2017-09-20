@@ -25,7 +25,7 @@ class ManyToOne extends OneToOne
      * Initializes the `$on` property for the relationship.
      *
      */
-    protected function initializeOn()
+    protected function initializeOn() : void
     {
         foreach ($this->foreignMapper->getTable()->getPrimaryKey() as $col) {
             $this->on[$col] = $col;
@@ -40,7 +40,7 @@ class ManyToOne extends OneToOne
      * @param RecordInterface $nativeRecord The native Record to work with.
      *
      */
-    public function fixNativeRecordKeys(RecordInterface $nativeRecord)
+    public function fixNativeRecordKeys(RecordInterface $nativeRecord) : void
     {
         $foreignRecord = $nativeRecord->{$this->name};
         if (! $foreignRecord instanceof RecordInterface) {
@@ -64,7 +64,7 @@ class ManyToOne extends OneToOne
      * operated on, to prevent infinite recursion.
      *
      */
-    public function persistForeign(RecordInterface $nativeRecord, SplObjectStorage $tracker)
+    public function persistForeign(RecordInterface $nativeRecord, SplObjectStorage $tracker) : void
     {
         $this->persistForeignRecord($nativeRecord, $tracker);
     }

@@ -8,6 +8,7 @@
  */
 namespace Atlas\Orm\Relationship;
 
+use Atlas\Orm\Mapper\MapperInterface;
 use Atlas\Orm\Mapper\MapperLocator;
 use Atlas\Orm\Mapper\MapperSelect;
 use Atlas\Orm\Mapper\RecordInterface;
@@ -150,11 +151,11 @@ abstract class AbstractRelationship implements RelationshipInterface
      *
      */
     public function __construct(
-        $name,
+        string $name,
         MapperLocator $mapperLocator,
-        $nativeMapperClass,
-        $foreignMapperClass,
-        $throughName = null
+        string $nativeMapperClass,
+        string $foreignMapperClass,
+        string $throughName = null
     ) {
         $this->name = $name;
         $this->mapperLocator = $mapperLocator;
@@ -170,7 +171,7 @@ abstract class AbstractRelationship implements RelationshipInterface
      * @return array
      *
      */
-    public function getSettings()
+    public function getSettings() : array
     {
         $this->initialize();
         $settings = get_object_vars($this);
@@ -190,7 +191,7 @@ abstract class AbstractRelationship implements RelationshipInterface
      * @return self
      *
      */
-    public function on(array $on)
+    public function on(array $on) : RelationshipInterface
     {
         $this->on = $on;
         return $this;
@@ -211,7 +212,7 @@ abstract class AbstractRelationship implements RelationshipInterface
      * @see Aura\SqlQuery\Common\Select::where()
      *
      */
-    public function where($cond)
+    public function where(string $cond, ...$bind) : RelationshipInterface
     {
         $this->where[] = func_get_args();
         return $this;
@@ -226,7 +227,7 @@ abstract class AbstractRelationship implements RelationshipInterface
      * @return self
      *
      */
-    public function ignoreCase($ignoreCase = true)
+    public function ignoreCase(bool $ignoreCase = true) : self
     {
         $this->ignoreCase = (bool) $ignoreCase;
         return $this;
@@ -239,7 +240,7 @@ abstract class AbstractRelationship implements RelationshipInterface
      * @return array
      *
      */
-    public function getOn()
+    public function getOn() : array
     {
         $this->initialize();
         return $this->on;
@@ -252,7 +253,7 @@ abstract class AbstractRelationship implements RelationshipInterface
      * @return MapperInterface
      *
      */
-    public function getForeignMapper()
+    public function getForeignMapper() : MapperInterface
     {
         $this->initialize();
         return $this->foreignMapper;
@@ -272,7 +273,7 @@ abstract class AbstractRelationship implements RelationshipInterface
     public function stitchIntoRecords(
         array $nativeRecords,
         callable $custom = null
-    ) {
+    ) : void {
         if (! $nativeRecords) {
             return;
         }
@@ -293,10 +294,8 @@ abstract class AbstractRelationship implements RelationshipInterface
      *
      * @param MapperSelect $select Add the JOIN to this object.
      *
-     * @return null
-     *
      */
-    public function joinSelect($join, MapperSelect $select)
+    public function joinSelect($join, MapperSelect $select) : void
     {
         $this->initialize();
 
@@ -319,7 +318,7 @@ abstract class AbstractRelationship implements RelationshipInterface
      * Initializes all the relationship settings.
      *
      */
-    protected function initialize()
+    protected function initialize() : void
     {
         if ($this->initialized) {
             return;
@@ -341,7 +340,7 @@ abstract class AbstractRelationship implements RelationshipInterface
      * Initializes the `$on` property for the relationship.
      *
      */
-    protected function initializeOn()
+    protected function initializeOn() : void
     {
         foreach ($this->nativeMapper->getTable()->getPrimaryKey() as $col) {
             $this->on[$col] = $col;
@@ -361,7 +360,7 @@ abstract class AbstractRelationship implements RelationshipInterface
      * @return array
      *
      */
-    protected function fetchForeignRecords(array $records, $custom)
+    protected function fetchForeignRecords(array $records, $custom) : array
     {
         if (! $records) {
             return [];
@@ -384,7 +383,7 @@ abstract class AbstractRelationship implements RelationshipInterface
      * @return MapperSelect
      *
      */
-    protected function foreignSelect(array $records)
+    protected function foreignSelect(array $records) : MapperSelect
     {
         $select = $this->foreignMapper->select();
 
@@ -409,7 +408,7 @@ abstract class AbstractRelationship implements RelationshipInterface
      * Record objects.
      *
      */
-    protected function foreignSelectSimple(MapperSelect $select, array $records)
+    protected function foreignSelectSimple(MapperSelect $select, array $records) : void
     {
         $vals = [];
         reset($this->on);
@@ -434,7 +433,7 @@ abstract class AbstractRelationship implements RelationshipInterface
      * Record objects.
      *
      */
-    protected function foreignSelectComposite(MapperSelect $select, array $records)
+    protected function foreignSelectComposite(MapperSelect $select, array $records) : void
     {
         $uniques = $this->getUniqueCompositeKeys($records);
         $cond = '(' . implode(' = ? AND ', $this->on) . ' = ?)';
@@ -481,7 +480,7 @@ abstract class AbstractRelationship implements RelationshipInterface
      * @return array
      *
      */
-    protected function getUniqueCompositeKeys(array $records)
+    protected function getUniqueCompositeKeys(array $records) : array
     {
         $uniques = [];
         foreach ($records as $record) {
@@ -506,10 +505,8 @@ abstract class AbstractRelationship implements RelationshipInterface
      *
      * @param string $alias Use this alias for the foreign table.
      *
-     * @return null
-     *
      */
-    protected function foreignSelectWhere(MapperSelect $select, $alias)
+    protected function foreignSelectWhere(MapperSelect $select, $alias) : void
     {
         foreach ($this->where as $spec) {
             $cond = "{$alias}." . array_shift($spec);
@@ -531,7 +528,7 @@ abstract class AbstractRelationship implements RelationshipInterface
     protected function recordsMatch(
         RecordInterface $nativeRecord,
         RecordInterface $foreignRecord
-    ) {
+    ) : bool {
         $nativeRow = $nativeRecord->getRow();
         $foreignRow = $foreignRecord->getRow();
         foreach ($this->on as $nativeCol => $foreignCol) {
@@ -558,7 +555,7 @@ abstract class AbstractRelationship implements RelationshipInterface
      * @see ignoreCase()
      *
      */
-    protected function valuesMatch($nativeVal, $foreignVal)
+    protected function valuesMatch($nativeVal, $foreignVal) : bool
     {
         // cannot match if one is numeric and other is not
         if (is_numeric($nativeVal) && ! is_numeric($foreignVal)) {
@@ -588,7 +585,7 @@ abstract class AbstractRelationship implements RelationshipInterface
     abstract protected function stitchIntoRecord(
         RecordInterface $nativeRecord,
         array $foreignRecords
-    );
+    ) : void;
 
     /**
      *
@@ -598,7 +595,7 @@ abstract class AbstractRelationship implements RelationshipInterface
      * @param RecordInterface $nativeRecord The native Record to work with.
      *
      */
-    public function fixNativeRecordKeys(RecordInterface $nativeRecord)
+    public function fixNativeRecordKeys(RecordInterface $nativeRecord) : void
     {
         // by default do nothing
     }
@@ -611,7 +608,7 @@ abstract class AbstractRelationship implements RelationshipInterface
      * @param RecordInterface $nativeRecord The native Record to work with.
      *
      */
-    public function fixForeignRecordKeys(RecordInterface $nativeRecord)
+    public function fixForeignRecordKeys(RecordInterface $nativeRecord) : void
     {
         // by default do nothing
     }
@@ -629,7 +626,7 @@ abstract class AbstractRelationship implements RelationshipInterface
     abstract public function persistForeign(
         RecordInterface $nativeRecord,
         SplObjectStorage $tracker
-    );
+    ) : void;
 
     /**
      *
@@ -644,7 +641,7 @@ abstract class AbstractRelationship implements RelationshipInterface
     protected function persistForeignRecord(
         RecordInterface $nativeRecord,
         SplObjectStorage $tracker
-    ) {
+    ) : void {
         $foreignRecord = $nativeRecord->{$this->name};
         if (! $foreignRecord instanceof RecordInterface) {
             return;
@@ -665,7 +662,7 @@ abstract class AbstractRelationship implements RelationshipInterface
      * operated on, to prevent infinite recursion.
      *
      */
-    protected function persistForeignRecordSet(RecordInterface $nativeRecord, SplObjectStorage $tracker)
+    protected function persistForeignRecordSet(RecordInterface $nativeRecord, SplObjectStorage $tracker) : void
     {
         $foreignRecordSet = $nativeRecord->{$this->name};
         if (! $foreignRecordSet instanceof RecordSetInterface) {

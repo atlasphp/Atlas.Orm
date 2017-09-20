@@ -27,7 +27,7 @@ class ManyToMany extends AbstractRelationship
      * Initializes the `$on` property for the relationship.
      *
      */
-    protected function initializeOn()
+    protected function initializeOn() : void
     {
         foreach ($this->foreignMapper->getTable()->getPrimaryKey() as $col) {
             $this->on[$col] = $col;
@@ -48,7 +48,7 @@ class ManyToMany extends AbstractRelationship
     public function stitchIntoRecords(
         array $nativeRecords,
         callable $custom = null
-    ) {
+    ) : void {
         if (! $nativeRecords) {
             return;
         }
@@ -75,7 +75,7 @@ class ManyToMany extends AbstractRelationship
     protected function stitchIntoRecord(
         RecordInterface $nativeRecord,
         array $foreignRecords
-    ) {
+    ) : void {
         $nativeRecord->{$this->name} = [];
         $matches = $this->getMatches($nativeRecord, $foreignRecords);
         if ($matches) {
@@ -94,7 +94,7 @@ class ManyToMany extends AbstractRelationship
      * @return array
      *
      */
-    protected function getThroughRecords(array $nativeRecords)
+    protected function getThroughRecords(array $nativeRecords) : array
     {
         // this hackish. the "through" relation should be loaded for everything,
         // so if even one is loaded, all the others ought to have been too.
@@ -127,7 +127,7 @@ class ManyToMany extends AbstractRelationship
      * @return array An array of matching foreign Record objects.
      *
      */
-    protected function getMatches(RecordInterface $nativeRecord, array $foreignRecords)
+    protected function getMatches(RecordInterface $nativeRecord, array $foreignRecords) : array
     {
         $matches = [];
         foreach ($nativeRecord->{$this->throughName} as $throughRecord) {
@@ -150,7 +150,7 @@ class ManyToMany extends AbstractRelationship
      * operated on, to prevent infinite recursion.
      *
      */
-    public function persistForeign(RecordInterface $nativeRecord, SplObjectStorage $tracker)
+    public function persistForeign(RecordInterface $nativeRecord, SplObjectStorage $tracker) : void
     {
         $this->persistForeignRecordSet($nativeRecord, $tracker);
     }
