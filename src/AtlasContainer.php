@@ -256,12 +256,12 @@ class AtlasContainer
         $this->getConnectionLocator()->setWrite($name, $callable);
     }
 
-    public function setReadForTable(string $tableClass, string $name) : void
+    public function setReadConnectionForTable(string $tableClass, string $name) : void
     {
         $this->connectionManager->setReadForTable($tableClass, $name);
     }
 
-    public function setWriteForTable(string $tableClass, string $name) : void
+    public function setWriteConnectionForTable(string $tableClass, string $name) : void
     {
         $this->connectionManager->setWriteForTable($tableClass, $name);
     }

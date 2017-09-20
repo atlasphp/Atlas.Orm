@@ -6,9 +6,15 @@ use Aura\Sql\ExtendedPdoInterface;
 
 class ConnectionManager
 {
-    protected $tableSpec = [];
+    protected $tableSpec = [
+        'read' => [],
+        'write' => [],
+    ];
 
-    protected $tableConn = [];
+    protected $tableConn = [
+        'read' => [],
+        'write' => [],
+    ];
 
     protected $inTransaction = false;
 
@@ -76,19 +82,20 @@ class ConnectionManager
         $this->inTransaction = false;
     }
 
-    protected function getTableConnection($type, $tableClass) : ExtendedPdoInterface
+    protected function getTableConnection(string $type, string $tableClass) : ExtendedPdoInterface
     {
         if (isset($this->tableConn[$type][$tableClass])) {
             return $this->tableConn[$type][$tableClass];
         }
 
-        $func = 'get' . ucfirst($type);
         $name = null;
         if (isset($this->tableSpec[$type][$tableClass])) {
-            $name = array_rand($this->tableSpec[$type][$tableClass]);
+            $key = array_rand($this->tableSpec[$type][$tableClass]);
+            $name = $this->tableSpec[$type][$tableClass][$key];
         }
 
-        $conn = $this->connectionLocator->$func($name);
+        $func = 'get' . ucfirst($type);
+        $conn = $this->$func($name);
         $this->tableConn[$type][$tableClass] = $conn;
         return $conn;
     }

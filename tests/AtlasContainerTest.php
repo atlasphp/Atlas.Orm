@@ -98,4 +98,28 @@ class AtlasContainerTest extends \PHPUnit\Framework\TestCase
         $actual = $atlasContainer->getConnectionLocator()->getDefault()->getPdo();
         $this->assertSame($pdo, $actual);
     }
+
+    public function testCustomConnections()
+    {
+        $conn1 = new ExtendedPdo('sqlite::memory:');
+        $conn2 = new ExtendedPdo('sqlite::memory:');
+        $conn3 = new ExtendedPdo('sqlite::memory:');
+        $conn4 = new ExtendedPdo('sqlite::memory:');
+
+        $this->atlasContainer->setReadConnection('r1', function () use ($conn1) { return $conn1; });
+        $this->atlasContainer->setReadConnection('r2', function () use ($conn2) { return $conn2; });
+        $this->atlasContainer->setWriteConnection('w1', function () use ($conn3) { return $conn3; });
+        $this->atlasContainer->setWriteConnection('w2', function () use ($conn4) { return $conn4; });
+
+        $this->atlasContainer->setReadConnectionForTable('Foo', 'r2');
+        $this->atlasContainer->setWriteConnectionForTable('Foo', 'w2');
+
+        $connectionManager = $this->atlasContainer->getConnectionManager();
+
+        $actual = $connectionManager->getReadForTable('Foo');
+        $this->assertSame($conn2, $actual);
+
+        $actual = $connectionManager->getWriteForTable('Foo');
+        $this->assertSame($conn4, $actual);
+    }
 }
