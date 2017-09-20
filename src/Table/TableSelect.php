@@ -298,13 +298,13 @@ class TableSelect implements SubselectInterface
      * @return RowInterface|false A Row on success, or false on failure.
      *
      */
-    public function fetchRow()
+    public function fetchRow() : ?RowInterface
     {
         $this->addColNames();
 
         $cols = $this->fetchOne();
         if (! $cols) {
-            return false;
+            return null;
         }
         return $this->table->getSelectedRow($cols);
     }

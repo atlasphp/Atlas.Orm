@@ -133,10 +133,10 @@ abstract class AbstractTable implements TableInterface
      * @param mixed $primaryVal A scalar for a simple primary key, or an array
      * of column => value pairs for a composite primary key.
      *
-     * @return Row|false Returns a Row on success, or `false` on failure.
+     * @return ?RowInterface
      *
      */
-    public function fetchRow($primaryVal)
+    public function fetchRow($primaryVal) : ?RowInterface
     {
         $primary = $this->calcIdentity($primaryVal);
         $row = $this->identityMap->getRow($primary);
