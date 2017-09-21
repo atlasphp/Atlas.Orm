@@ -261,22 +261,6 @@ class Exception extends \Exception
 
     /**
      *
-     * Expected an array for a primary key value.
-     *
-     * @param mixed $val The unexpected value received as the primary.
-     *
-     * @return Exception
-     *
-     */
-    public static function primaryKeyNotArray($val)
-    {
-        $message = "Expected array for composite primary key, "
-            . "got " . gettype($val) . " instead.";
-        return new Exception($message);
-    }
-
-    /**
-     *
      * Expected a string column name (not a number or numeric string).
      *
      * @param mixed $col The unexpected column name.
