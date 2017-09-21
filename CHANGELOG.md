@@ -15,7 +15,7 @@ Transaction classes, both their constructors and their internal operations.
 
 As long as BC breaks are on the table, this creates the opportunity to make
 other changes, though with an eye to minimizing those changes to reduce the
-hassle of moving from 1.x to 2.x. Upgrade notes follow.
+hassle of moving from 1.x to 2.x.
 
 UPGRADE NOTES FROM 1.x:
 
@@ -74,7 +74,8 @@ UPGRADE NOTES FROM 1.x:
 OTHER CHANGES FROM 1.x:
 
 - Added Atlas\Orm\Table\ConnectionManager to manage connections, including
-  multiple-connection transactions.
+  multiple-connection transactions, and the ability to set table-specific
+  read and write connections.
 
 - AbstractTable now uses the ConnectionManager instead of Aura\Sql\ConnectionLocator,
   and *does not* retain (memoize) the connection objects. It retrieves them

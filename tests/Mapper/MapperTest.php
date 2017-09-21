@@ -22,18 +22,23 @@ class MapperTest extends \PHPUnit\Framework\TestCase
 
     protected $table;
     protected $mapper;
+    protected $connection;
+    protected $connectionLocator;
 
     protected function setUp()
     {
         parent::setUp();
 
+        $pdo = new ExtendedPdo('sqlite::memory:');
+        $this->connection = $pdo;
+
+        $this->connectionLocator = new ConnectionLocator(function () use ($pdo) {
+            return $pdo;
+        });
+
         $this->mapper = new EmployeeMapper(
             new EmployeeTable(
-                new ConnectionManager(
-                    new ConnectionLocator(function () {
-                        return new ExtendedPdo('sqlite::memory:');
-                    })
-                ),
+                new ConnectionManager($this->connectionLocator),
                 new QueryFactory('sqlite'),
                 new IdentityMap(),
                 new TableEvents()
@@ -44,6 +49,15 @@ class MapperTest extends \PHPUnit\Framework\TestCase
 
         $fixture = new SqliteFixture($this->mapper->getTable()->getWriteConnection());
         $fixture->exec();
+    }
+
+    public function testGetConnections()
+    {
+        $actual = $this->mapper->getReadConnection();
+        $this->assertSame($actual, $this->connection);
+
+        $actual = $this->mapper->getWriteConnection();
+        $this->assertSame($actual, $this->connection);
     }
 
     public function testGetTable()
