@@ -1,89 +1,86 @@
 # CHANGELOG
 
-## 1.3.1
+This is the changelog for the 2.x series.
 
-- AbstractTable::insertRowPerform() now uses the correct sequence name for the last insert ID on Postgres. (#71)
+## (next)
 
-- Substantial documentation updates and additions; thanks, @jelofson!
+MOTIVATION:
 
-## 1.3.0
+In 1.x, executing a Transaction::persist() will not work properly when the
+relationships are mapped across connections that are not the same as the main
+record. This is because the Transaction begins on the main record connection,
+but does not have access to the connections for related records, and so cannot
+track them. The only way to fix this is to introduce a BC break on the Table and
+Transaction classes, both their constructors and their internal operations.
 
-- Changed Mapper::insert() and Mapper::update() to auto-set foreign key values
-  on relateds
+As long as BC breaks are on the table, this creates the opportunity to make
+other changes, though with an eye to minimizing those changes to reduce the
+hassle of moving from 1.x to 2.x. Upgrade notes follow.
 
-- Added Mapper::persist() to insert/update/delete a Record and all its relateds.
-  Also available via added Atlas::persist() and Transaction::persist() methods.
+UPGRADE NOTES FROM 1.x:
 
-- In AbstractRelationship::fetchForeignRecords() no longer issues an empty IN()
-  query if there are no native records to match against. (Fixes #58.)
+- This package now requires PHP 7.1 or later, and PHPUnit 6.x for development.
+  Non-strict typehints have been added throughout, except in cases where they
+  might break classes generated from 1.x.
 
-- AtlasContainer constructor now accepts a ConnectionLocator as an alternative
-  to a PDO object or PDO connection params. (Cf. #63 and #64.)
+- You *should not* need to modify any classes generated from 1.x; however, if
+  you have overridden class methods in custom classes, you *may* need to modify
+  that code to add typehints.
 
-- Updated readne, docs and tests.
+- This package continues to use Aura.Sql and Aura.SqlQuery 2.x; you *should not*
+  need to change any queries.
 
-## 1.2.1
+- You *should not* need to change any calls to AtlasContainer for setup.
 
-- Docs updates and fixes
+- The following methods now return `null` (instead of `false`) when they fail.
+  You may need to change any logic checking for a strict `false` return value;
+  checking for a loosely false-ish value will continue to work.
 
-- Fixed error when using PDO in AtlasContainer constructor (#53)
+    - AbstractMapper::fetchRecord()
+    - AbstractMapper::fetchRecordBy()
+    - AbstractTable::fetchRow()
+    - Atlas::fetchRecord()
+    - Atlas::fetchRecordBy()
+    - IdentityMap::getRow()
+    - MapperInterface::fetchRecord()
+    - MapperInterface::fetchRecordBy()
+    - MapperSelect::fetchRecord()
+    - RecordSet::getOneBy()
+    - RecordSet::removeOneBy()
+    - RecordSetInterface::getOneBy()
+    - RecordSetInterface::removeOneBy()
+    - Table::updateRowPerform()
+    - TableInterface::fetchRow()
+    - TableSelect::fetchOne()
+    - TableSelect::fetchRow()
 
-## 1.2.0
+  (N.b.: Values for a single *related* record are still `false`, not `null`.
+  That is, `null` still indicates "there was no attempt to fetch a related
+  record," while `false` still indicates "there was an attempt to fetch a
+  related record, but it did not exist.")
 
-- Added `where()` funcitonality for relationships.
+- The following methods will now *always* return a RecordSetInterface, even when
+  no records are found. (Previously, they would return an empty array when no
+  records were found.) To check for "no records found", call `isEmpty()` on the
+  returned RecordSetInterface.
 
-## 1.1.0
+    - AbstractMapper::fetchRecordSet()
+    - AbstractMapper::fetchRecordSetBy()
+    - MapperInterface::fetchRecordSet()
+    - MapperInterface::fetchRecordSetBy()
+    - MapperSelect::fetchRecordSet()
+    - MapperSelect::fetchRecordSetBy()
 
-- Added `ignoreCase()` option on relationships.
+OTHER CHANGES FROM 1.x:
 
-## 1.0.0
+- Added Atlas\Orm\Table\ConnectionManager to manage connections, including
+  multiple-connection transactions.
 
-- Add TableSelect::fetchCount() to return a row-count, without limit/offset,
-  on a reused query object.
+- AbstractTable now uses the ConnectionManager instead of Aura\Sql\ConnectionLocator,
+  and *does not* retain (memoize) the connection objects. It retrieves them
+  from the ConnectionManager each time they are needed; this helps maintain
+  transaction state across multiple connections.
 
-- Add RecordSet::appendNew(), getOneBy(), getAllBy(), removeOneBy(), and
-  removeAllBy()
-
-- Rename AbstractTable::insert(), update(), delete() to insertRow(),
-  updateRow(), deleteRow() ...
-
-- ... then rename AbstractTable::newInsert() to insert() , newUpdate() to
-  update(), newDelete() to delete(); this is in line with the pre-existing
-  select() method returning a new select object.
-
-- Row, Record, and RecordSet now implement JsonSerializable
-
-- Expand MapperEventsInterface to allow modifyInsert() etc.
-
-- Relax set() on Row, Record, and Related, to allow for non-fields in the
-  setting array
-
-- Mapper::newRecord() now allows Related values in addition to Row values
-
-- Row::modify() now restricts to scalar or null
-
-- Related::modify() now restricts to null, false, [], Record, and RecordSet
-
-- Added MapperSelect::joinWith(), leftJoinWith(), innerJoinWith() to allow
-  joins to relateds, without fetching
-
-- In AtlasContainer::__construct() et al, allow for pre-existing ExtendedPdo and
-  PDO connections
-
-- Add TableEvents::modifySelectedRow() to allow changes to rows coming from the
-  database
-
-- MapperSelect::with() now throws an exception when you use a non-existent
-  related name
-
-- AbstractMapper::(one|many)To(One|Many)() no longer allows related names that
-  conflict with column names
-
-- MapperSelect::with() now allows for nested arrays (in addition to anonymous
-  functions)
-
-- Documentation and testing updates.
-
-## 1.0.0-alpha1
-
-First 1.x alpha release.
+- Modified Transaction class to use the ConnectionManager, instead of tracking
+  write connections on its own. This makes sure AbstractMapper::persist() will
+  work properly with different related connections inside a transaction.
