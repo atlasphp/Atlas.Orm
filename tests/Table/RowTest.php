@@ -1,6 +1,8 @@
 <?php
 namespace Atlas\Orm\Table;
 
+use Atlas\Orm\Exception;
+
 class RowTest extends \PHPUnit\Framework\TestCase
 {
     public function testConstructWithoutPrimary()
@@ -12,14 +14,14 @@ class RowTest extends \PHPUnit\Framework\TestCase
     public function testGetMissingCol()
     {
         $row = new Row(['id' => null]);
-        $this->expectException('Atlas\Orm\Exception');
+        $this->expectException(Exception::CLASS);
         $row->no_such_col;
     }
 
     public function testSetMissingCol()
     {
         $row = new Row(['id' => null]);
-        $this->expectException('Atlas\Orm\Exception');
+        $this->expectException(Exception::CLASS);
         $row->no_such_col = 'foo';
     }
 
@@ -50,7 +52,7 @@ class RowTest extends \PHPUnit\Framework\TestCase
     public function testUnsetMissingCol()
     {
         $row = new Row(['id' => null]);
-        $this->expectException('Atlas\Orm\Exception');
+        $this->expectException(Exception::CLASS);
         unset($row->no_such_col);
     }
 
@@ -68,7 +70,7 @@ class RowTest extends \PHPUnit\Framework\TestCase
         ]));
 
         $this->expectException(
-            'Atlas\Orm\Exception',
+            Exception::CLASS,
             "Expected valid row status, got 'No Such Status' instead."
         );
         $row->setStatus('No Such Status');
@@ -80,7 +82,7 @@ class RowTest extends \PHPUnit\Framework\TestCase
         $row->setStatus($row::DELETED);
 
         $this->expectException(
-            'Atlas\Orm\Exception',
+            Exception::CLASS,
             'Row::$foo is immutable once deleted.'
         );
         $row->foo = 'zim';
@@ -90,9 +92,25 @@ class RowTest extends \PHPUnit\Framework\TestCase
     {
         $row = new Row(['id' => '1', 'foo' => 'bar']);
         $this->expectException(
-            'Atlas\Orm\Exception',
+            Exception::CLASS,
             'Expected type scalar or null; got stdClass instead.'
         );
         $row->foo = (object) [];
+    }
+
+    public function testSet()
+    {
+        $row = new Row(['id' => '1', 'foo' => 'bar']);
+        $row->set(['foo' => 'baz', 'irk' => 'gir']);
+        $this->assertSame('baz', $row->foo);
+        $this->assertFalse($row->has('irk'));
+    }
+
+    public function testJsonSerialize()
+    {
+        $row = new Row(['id' => '1', 'foo' => 'bar']);
+        $actual = json_encode($row);
+        $expect = '{"id":"1","foo":"bar"}';
+        $this->assertSame($expect, $actual);
     }
 }

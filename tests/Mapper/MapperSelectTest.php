@@ -11,6 +11,7 @@ use Atlas\Orm\Table\TableSelect;
 use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\QueryFactory;
+use Iterator;
 
 class MapperSelectTest extends \PHPUnit\Framework\TestCase
 {
