@@ -156,6 +156,57 @@ class AtlasTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(14, $profiles);
     }
 
+    public function testFetchRecords()
+    {
+        $actual = $this->atlas->fetchRecords(
+            ThreadMapper::CLASS,
+            [1, 2, 3],
+            [
+                'author', // manyToOne
+                'summary', // oneToOne
+                'replies' => function ($select) {
+                    $select->with(['author']);
+                }, // oneToMany
+                'taggings', // oneToMany,
+                'tags', // manyToMany
+            ]
+        );
+
+        foreach ($this->expectRecordSet as $i => $expect) {
+            $array = $actual[$i]->getArrayCopy();
+            $this->assertSame($expect, $array, "record $i not the same");
+        }
+    }
+
+    public function testFetchRecordsBy()
+    {
+        $this->profiler->setActive(true);
+
+        $actual = $this->atlas->fetchRecordsBy(
+            ThreadMapper::CLASS,
+            ['thread_id' => [1, 2, 3]],
+            [
+                'author', // manyToOne
+                'summary', // oneToOne
+                'replies' => function ($select) {
+                    $select->with(['author']); // oneToOne
+                }, // oneToMany
+                'taggings', // oneToMany,
+                'tags', // manyToMany
+            ]
+        );
+
+        foreach ($this->expectRecordSet as $i => $expect) {
+            $array = $actual[$i]->getArrayCopy();
+            $this->assertSame($expect, $array, "record $i not the same");
+        }
+
+        // N+1 avoidance check: for 7 queries there are 7 prepares + 7 performs,
+        // for a total of 14 profile entries
+        $profiles = $this->profiler->getProfiles();
+        $this->assertCount(14, $profiles);
+    }
+
     public function testSelect_fetchRecord()
     {
         $actual = $this->atlas
