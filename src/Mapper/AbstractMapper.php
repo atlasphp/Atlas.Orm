@@ -109,6 +109,30 @@ abstract class AbstractMapper implements MapperInterface
 
     /**
      *
+     * Returns the Table read connection.
+     *
+     * @return ExtendedPdoInterface
+     *
+     */
+    public function getReadConnection() : ExtendedPdoInterface
+    {
+        return $this->table->getReadConnection();
+    }
+
+    /**
+     *
+     * Returns the Table write connection.
+     *
+     * @return ExtendedPdoInterface
+     *
+     */
+    public function getWriteConnection() : ExtendedPdoInterface
+    {
+        return $this->table->getWriteConnection();
+    }
+
+    /**
+     *
      * Returns the relationships to other Mapper objects.
      *
      * @return Relationships
