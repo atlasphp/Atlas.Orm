@@ -6,6 +6,10 @@ use Aura\Sql\ExtendedPdoInterface;
 
 class ConnectionManager
 {
+    const ALWAYS = 'ALWAYS';
+    const WHILE_WRITING = 'WHILE_WRITING';
+    const NEVER = 'NEVER';
+
     protected $tableSpec = [
         'read' => [],
         'write' => [],
@@ -19,6 +23,10 @@ class ConnectionManager
     protected $readTransaction = false;
 
     protected $writeTransaction = true;
+
+    protected $readFromWrite = 'NEVER';
+
+    protected $writing = [];
 
     public function __construct(ConnectionLocator $connectionLocator)
     {
@@ -35,7 +43,7 @@ class ConnectionManager
         return $this->connectionLocator;
     }
 
-    public function setReadTransaction(bool $readTransaction)
+    public function setReadTransaction(bool $readTransaction) : void
     {
         $this->readTransaction = $readTransaction;
     }
@@ -45,7 +53,7 @@ class ConnectionManager
         return $this->readTransaction;
     }
 
-    public function setWriteTransaction(bool $writeTransaction)
+    public function setWriteTransaction(bool $writeTransaction) : void
     {
         $this->writeTransaction = $writeTransaction;
     }
@@ -53,6 +61,34 @@ class ConnectionManager
     public function getWriteTransaction() : bool
     {
         return $this->writeTransaction;
+    }
+
+    public function setReadFromWrite(string $readFromWrite) : void
+    {
+        $guard = [static::ALWAYS, static::WHILE_WRITING, static::NEVER];
+        if (! in_array($readFromWrite, $guard)) {
+            throw new \Exception("Unexpected value");
+        }
+
+        $this->readFromWrite = $readFromWrite;
+    }
+
+    public function getReadFromWrite() : string
+    {
+        return $this->readFromWrite;
+    }
+
+    public function willReadFromWrite($tableClass) : bool
+    {
+        if ($this->readFromWrite == static::NEVER) {
+            return false;
+        }
+
+        if ($this->readFromWrite == static::ALWAYS) {
+            return true;
+        }
+
+        return isset($this->writing[$tableClass]);
     }
 
     public function setReadForTable(string $tableClass, ...$names) : void
@@ -67,6 +103,10 @@ class ConnectionManager
 
     public function getReadForTable(string $tableClass) : ExtendedPdoInterface
     {
+        if ($this->willReadFromWrite($tableClass)) {
+            return $this->getWriteForTable($tableClass);
+        }
+
         $conn = $this->getTableConnection('read', $tableClass);
         if ($this->getReadTransaction() && ! $conn->inTransaction()) {
             $conn->beginTransaction();
@@ -80,22 +120,29 @@ class ConnectionManager
         if ($this->getWriteTransaction() && ! $conn->inTransaction()) {
             $conn->beginTransaction();
         }
-        $this->writing = true;
+        if (! isset($this->writing[$tableClass])) {
+            $this->writing[$tableClass] = true;
+        }
         return $conn;
+    }
+
+    protected function beginTransaction($conn)
+    {
+
     }
 
     public function commit() : void
     {
         $this->endTransaction('write', 'commit');
         $this->endTransaction('read', 'commit');
-        $this->writing = false;
+        $this->writing = [];
     }
 
     public function rollBack() : void
     {
         $this->endTransaction('write', 'rollBack');
         $this->endTransaction('read', 'rollBack');
-        $this->writing = false;
+        $this->writing = [];
     }
 
     protected function endTransaction($type, $method)
