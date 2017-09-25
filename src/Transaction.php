@@ -34,12 +34,12 @@ class Transaction
 
     /**
      *
-     * Write connections extracted from the mappers.
+     * A manager for table-specific database connections.
      *
-     * @var SplObjectStorage
+     * @var ConnectionManager
      *
      */
-    protected $connections;
+    protected $connectionManager;
 
     /**
      *
