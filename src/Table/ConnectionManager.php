@@ -64,22 +64,23 @@ class ConnectionManager
 
     public function commit() : void
     {
-        foreach ($this->tableConn['write'] as $conn) {
-            if ($conn->inTransaction()) {
-                $conn->commit();
-            }
-        }
+        $this->endTransaction('write', 'commit');
         $this->inTransaction = false;
     }
 
     public function rollBack() : void
     {
-        foreach ($this->tableConn['write'] as $conn) {
+        $this->endTransaction('write', 'rollBack');
+        $this->inTransaction = false;
+    }
+
+    protected function endTransaction($type, $method)
+    {
+        foreach ($this->tableConn[$type] as $conn) {
             if ($conn->inTransaction()) {
-                $conn->rollBack();
+                $conn->$method();
             }
         }
-        $this->inTransaction = false;
     }
 
     protected function getTableConnection(string $type, string $tableClass) : ExtendedPdoInterface
