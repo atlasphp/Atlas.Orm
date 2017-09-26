@@ -266,6 +266,21 @@ class AtlasContainer
         $this->connectionManager->setWriteForTable($tableClass, $name);
     }
 
+    public function setTransactionsOnReads(bool $flag) : void
+    {
+        $this->connectionManager->setTransactionsOnReads($flag);
+    }
+
+    public function setTransactionsOnWrites(bool $flag) : void
+    {
+        $this->connectionManager->setTransactionsOnWrites($flag);
+    }
+
+    public function setReadFromWrite(string $mode) : void
+    {
+        $this->connectionManager->setReadFromWrite($mode);
+    }
+
     /**
      *
      * Sets multiple mappers into the mapper locator.
