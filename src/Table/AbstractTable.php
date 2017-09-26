@@ -112,7 +112,7 @@ abstract class AbstractTable implements TableInterface
      */
     public function getReadConnection() : ExtendedPdoInterface
     {
-        return $this->connectionManager->getReadForTable(static::CLASS);
+        return $this->connectionManager->getRead(static::CLASS);
     }
 
     /**
@@ -124,7 +124,7 @@ abstract class AbstractTable implements TableInterface
      */
     public function getWriteConnection() : ExtendedPdoInterface
     {
-        return $this->connectionManager->getWriteForTable(static::CLASS);
+        return $this->connectionManager->getWrite(static::CLASS);
     }
 
     /**

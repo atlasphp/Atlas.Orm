@@ -116,10 +116,10 @@ class AtlasContainerTest extends \PHPUnit\Framework\TestCase
 
         $connectionManager = $this->atlasContainer->getConnectionManager();
 
-        $actual = $connectionManager->getReadForTable('Foo');
+        $actual = $connectionManager->getRead('Foo');
         $this->assertSame($conn2, $actual);
 
-        $actual = $connectionManager->getWriteForTable('Foo');
+        $actual = $connectionManager->getWrite('Foo');
         $this->assertSame($conn4, $actual);
     }
 }

@@ -258,27 +258,12 @@ class AtlasContainer
 
     public function setReadConnectionForTable(string $tableClass, string $name) : void
     {
-        $this->connectionManager->setReadForTable($tableClass, $name);
+        $this->connectionManager->setRead($tableClass, $name);
     }
 
     public function setWriteConnectionForTable(string $tableClass, string $name) : void
     {
-        $this->connectionManager->setWriteForTable($tableClass, $name);
-    }
-
-    public function setTransactionsOnReads(bool $flag) : void
-    {
-        $this->connectionManager->setTransactionsOnReads($flag);
-    }
-
-    public function setTransactionsOnWrites(bool $flag) : void
-    {
-        $this->connectionManager->setTransactionsOnWrites($flag);
-    }
-
-    public function setReadFromWrite(string $mode) : void
-    {
-        $this->connectionManager->setReadFromWrite($mode);
+        $this->connectionManager->setWrite($tableClass, $name);
     }
 
     /**
