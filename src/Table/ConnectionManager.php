@@ -1,28 +1,37 @@
 <?php
 namespace Atlas\Orm\Table;
 
+use Atlas\Orm\Exception;
 use Aura\Sql\ConnectionLocator;
 use Aura\Sql\ExtendedPdoInterface;
 
+/**
+ * DO NOT retain or memoize connections retrieved from the Manager. If you do,
+ * automatic setting and tracking of transactions WILL NOT WORK. Instead, call
+ * getRead() and getWrite() EACH TIME YOU NEED A CONNECTION.
+ *
+ * Note that this is a TABLE-ORIENTED connection manager. It is intended for use
+ * by the Table objects, not general-purpose database interactions.
+ */
 class ConnectionManager
 {
     const ALWAYS = 'ALWAYS';
     const WHILE_WRITING = 'WHILE_WRITING';
     const NEVER = 'NEVER';
 
-    protected $tableSpec = [
+    protected $spec = [
         'read' => [],
         'write' => [],
     ];
 
-    protected $tableConn = [
+    protected $conn = [
         'read' => [],
         'write' => [],
     ];
 
-    protected $transactionsOnReads = false;
+    protected $readTransactions = false;
 
-    protected $transactionsOnWrites = true;
+    protected $writeTransactions = true;
 
     protected $readFromWrite = 'NEVER';
 
@@ -33,41 +42,39 @@ class ConnectionManager
         $this->connectionLocator = $connectionLocator;
     }
 
-    public function __call(string $func, array $args)
-    {
-        return $this->connectionLocator->$func(...$args);
-    }
-
     public function getConnectionLocator() : ConnectionLocator
     {
         return $this->connectionLocator;
     }
 
-    public function setTransactionsOnReads(bool $transactionsOnReads) : void
+    public function setReadTransactions(bool $readTransactions = true) : void
     {
-        $this->transactionsOnReads = $transactionsOnReads;
+        $this->readTransactions = $readTransactions;
+        // should this blow up when TURNING OFF transactions, and transactions already exist?
     }
 
-    public function hasTransactionsOnReads() : bool
+    public function hasReadTransactions() : bool
     {
-        return $this->transactionsOnReads;
+        return $this->readTransactions;
     }
 
-    public function setTransactionsOnWrites(bool $transactionsOnWrites) : void
+    // should this even be available? writes should *always* be transacted?
+    public function setWriteTransactions(bool $writeTransactions = true) : void
     {
-        $this->transactionsOnWrites = $transactionsOnWrites;
+        $this->writeTransactions = $writeTransactions;
+        // should this blow up when TURNING OFF transactions, and transactions already exist?
     }
 
-    public function hasTransactionsOnWrites() : bool
+    public function hasWriteTransactions() : bool
     {
-        return $this->transactionsOnWrites;
+        return $this->writeTransactions;
     }
 
     public function setReadFromWrite(string $readFromWrite) : void
     {
         $guard = [static::ALWAYS, static::WHILE_WRITING, static::NEVER];
         if (! in_array($readFromWrite, $guard)) {
-            throw new \Exception("Unexpected value");
+            throw Exception::unexpectedOption($readFromWrite, $guard);
         }
 
         $this->readFromWrite = $readFromWrite;
@@ -78,32 +85,32 @@ class ConnectionManager
         return $this->readFromWrite;
     }
 
-    public function setReadForTable(string $tableClass, ...$names) : void
+    public function setRead(string $tableClass, ...$names) : void
     {
-        $this->tableSpec['read'][$tableClass] = $names;
+        $this->spec['read'][$tableClass] = $names;
     }
 
-    public function setWriteForTable(string $tableClass, ...$names) : void
+    public function setWrite(string $tableClass, ...$names) : void
     {
-        $this->tableSpec['write'][$tableClass] = $names;
+        $this->spec['write'][$tableClass] = $names;
     }
 
-    public function getReadForTable(string $tableClass) : ExtendedPdoInterface
+    public function getRead(string $tableClass) : ExtendedPdoInterface
     {
-        if ($this->readFromWriteForTable($tableClass)) {
-            return $this->getWriteForTable($tableClass);
+        if ($this->readFromWrite($tableClass)) {
+            return $this->getWrite($tableClass);
         }
 
-        $conn = $this->getTableConnection('read', $tableClass);
+        $conn = $this->getConnection('read', $tableClass);
 
-        if ($this->hasTransactionsOnReads() && ! $conn->inTransaction()) {
+        if ($this->hasReadTransactions() && ! $conn->inTransaction()) {
             $conn->beginTransaction();
         }
 
         return $conn;
     }
 
-    public function readFromWriteForTable($tableClass) : bool
+    protected function readFromWrite($tableClass) : bool
     {
         if ($this->readFromWrite == static::NEVER) {
             return false;
@@ -117,11 +124,11 @@ class ConnectionManager
             && isset($this->writing[$tableClass]);
     }
 
-    public function getWriteForTable(string $tableClass) : ExtendedPdoInterface
+    public function getWrite(string $tableClass) : ExtendedPdoInterface
     {
-        $conn = $this->getTableConnection('write', $tableClass);
+        $conn = $this->getConnection('write', $tableClass);
 
-        if ($this->hasTransactionsOnWrites() && ! $conn->inTransaction()) {
+        if ($this->hasWriteTransactions() && ! $conn->inTransaction()) {
             $conn->beginTransaction();
         }
 
@@ -146,8 +153,8 @@ class ConnectionManager
 
     protected function endTransactions($method)
     {
-        foreach ($this->tableConn as $type => $conns) {
-            foreach ($conns as $conn) {
+        foreach ($this->conn as $type => $table_conn) {
+            foreach ($table_conn as $table => $conn) {
                 if ($conn->inTransaction()) {
                     $conn->$method();
                 }
@@ -155,21 +162,21 @@ class ConnectionManager
         }
     }
 
-    protected function getTableConnection(string $type, string $tableClass) : ExtendedPdoInterface
+    protected function getConnection(string $type, string $tableClass) : ExtendedPdoInterface
     {
-        if (isset($this->tableConn[$type][$tableClass])) {
-            return $this->tableConn[$type][$tableClass];
+        if (isset($this->conn[$type][$tableClass])) {
+            return $this->conn[$type][$tableClass];
         }
 
         $name = null;
-        if (isset($this->tableSpec[$type][$tableClass])) {
-            $key = array_rand($this->tableSpec[$type][$tableClass]);
-            $name = $this->tableSpec[$type][$tableClass][$key];
+        if (isset($this->spec[$type][$tableClass])) {
+            $key = array_rand($this->spec[$type][$tableClass]);
+            $name = $this->spec[$type][$tableClass][$key];
         }
 
         $func = 'get' . ucfirst($type);
-        $conn = $this->$func($name);
-        $this->tableConn[$type][$tableClass] = $conn;
+        $conn = $this->connectionLocator->$func($name);
+        $this->conn[$type][$tableClass] = $conn;
         return $conn;
     }
 }

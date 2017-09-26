@@ -274,7 +274,6 @@ class Exception extends \Exception
         return new Exception($message);
     }
 
-
     /**
      *
      * A "related" name is the same as an existing column name.
@@ -287,6 +286,24 @@ class Exception extends \Exception
     public static function relatedNameConflict($name)
     {
         $message = "Relationship '$name' conflicts with existing column name.";
+        return new Exception($message);
+    }
+
+    /**
+     *
+     * An unexpected option value was used.
+     *
+     * @param string $value The value used.
+     *
+     * @param array $options The available options.
+     *
+     * @return Exception
+     *
+     */
+    public static function unexpectedOption($value, array $options)
+    {
+        $message = "Expected one of '" . implode("','", $options)
+            . "'; got '{$value}' instead.";
         return new Exception($message);
     }
 }
