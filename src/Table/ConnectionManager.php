@@ -20,9 +20,9 @@ class ConnectionManager
         'write' => [],
     ];
 
-    protected $readTransaction = false;
+    protected $transactionsOnReads = false;
 
-    protected $writeTransaction = true;
+    protected $transactionsOnWrites = true;
 
     protected $readFromWrite = 'NEVER';
 
@@ -43,24 +43,24 @@ class ConnectionManager
         return $this->connectionLocator;
     }
 
-    public function setReadTransaction(bool $readTransaction) : void
+    public function setTransactionsOnReads(bool $transactionsOnReads) : void
     {
-        $this->readTransaction = $readTransaction;
+        $this->transactionsOnReads = $transactionsOnReads;
     }
 
-    public function getReadTransaction() : bool
+    public function hasTransactionsOnReads() : bool
     {
-        return $this->readTransaction;
+        return $this->transactionsOnReads;
     }
 
-    public function setWriteTransaction(bool $writeTransaction) : void
+    public function setTransactionsOnWrites(bool $transactionsOnWrites) : void
     {
-        $this->writeTransaction = $writeTransaction;
+        $this->transactionsOnWrites = $transactionsOnWrites;
     }
 
-    public function getWriteTransaction() : bool
+    public function hasTransactionsOnWrites() : bool
     {
-        return $this->writeTransaction;
+        return $this->transactionsOnWrites;
     }
 
     public function setReadFromWrite(string $readFromWrite) : void
@@ -78,19 +78,6 @@ class ConnectionManager
         return $this->readFromWrite;
     }
 
-    public function willReadFromWrite($tableClass) : bool
-    {
-        if ($this->readFromWrite == static::NEVER) {
-            return false;
-        }
-
-        if ($this->readFromWrite == static::ALWAYS) {
-            return true;
-        }
-
-        return isset($this->writing[$tableClass]);
-    }
-
     public function setReadForTable(string $tableClass, ...$names) : void
     {
         $this->tableSpec['read'][$tableClass] = $names;
@@ -103,53 +90,67 @@ class ConnectionManager
 
     public function getReadForTable(string $tableClass) : ExtendedPdoInterface
     {
-        if ($this->willReadFromWrite($tableClass)) {
+        if ($this->readFromWriteForTable($tableClass)) {
             return $this->getWriteForTable($tableClass);
         }
 
         $conn = $this->getTableConnection('read', $tableClass);
-        if ($this->getReadTransaction() && ! $conn->inTransaction()) {
+
+        if ($this->hasTransactionsOnReads() && ! $conn->inTransaction()) {
             $conn->beginTransaction();
         }
+
         return $conn;
+    }
+
+    public function readFromWriteForTable($tableClass) : bool
+    {
+        if ($this->readFromWrite == static::NEVER) {
+            return false;
+        }
+
+        if ($this->readFromWrite == static::ALWAYS) {
+            return true;
+        }
+
+        return $this->readFromWrite == static::WHILE_WRITING
+            && isset($this->writing[$tableClass]);
     }
 
     public function getWriteForTable(string $tableClass) : ExtendedPdoInterface
     {
         $conn = $this->getTableConnection('write', $tableClass);
-        if ($this->getWriteTransaction() && ! $conn->inTransaction()) {
+
+        if ($this->hasTransactionsOnWrites() && ! $conn->inTransaction()) {
             $conn->beginTransaction();
         }
+
         if (! isset($this->writing[$tableClass])) {
             $this->writing[$tableClass] = true;
         }
+
         return $conn;
-    }
-
-    protected function beginTransaction($conn)
-    {
-
     }
 
     public function commit() : void
     {
-        $this->endTransaction('write', 'commit');
-        $this->endTransaction('read', 'commit');
+        $this->endTransactions('commit');
         $this->writing = [];
     }
 
     public function rollBack() : void
     {
-        $this->endTransaction('write', 'rollBack');
-        $this->endTransaction('read', 'rollBack');
+        $this->endTransactions('rollBack');
         $this->writing = [];
     }
 
-    protected function endTransaction($type, $method)
+    protected function endTransactions($method)
     {
-        foreach ($this->tableConn[$type] as $conn) {
-            if ($conn->inTransaction()) {
-                $conn->$method();
+        foreach ($this->tableConn as $type => $conns) {
+            foreach ($conns as $conn) {
+                if ($conn->inTransaction()) {
+                    $conn->$method();
+                }
             }
         }
     }
