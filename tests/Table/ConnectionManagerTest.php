@@ -16,11 +16,11 @@ class ConnectionManagerTest extends \PHPUnit\Framework\TestCase
     protected function setUp()
     {
         $conn = (object) [
-            'default' => new ExtendedPdo('sqlite::memory'),
-            'read1' => new ExtendedPdo('sqlite::memory'),
-            'read2' => new ExtendedPdo('sqlite::memory'),
-            'write1' => new ExtendedPdo('sqlite::memory'),
-            'write2' => new ExtendedPdo('sqlite::memory'),
+            'default' => new ExtendedPdo('sqlite::memory:'),
+            'read1' => new ExtendedPdo('sqlite::memory:'),
+            'read2' => new ExtendedPdo('sqlite::memory:'),
+            'write1' => new ExtendedPdo('sqlite::memory:'),
+            'write2' => new ExtendedPdo('sqlite::memory:'),
         ];
 
         $this->conn = $conn;
