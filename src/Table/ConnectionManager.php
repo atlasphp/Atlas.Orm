@@ -196,21 +196,69 @@ class ConnectionManager
         $this->readFromWrite = $readFromWrite;
     }
 
+    /**
+     *
+     * Do reads occur over write connections?
+     *
+     * @return string 'ALWAYS', 'WHILE_WRITING', or 'NEVER'.
+     *
+     */
     public function getReadFromWrite() : string
     {
         return $this->readFromWrite;
     }
 
+    /**
+     *
+     * Sets one or more specific read connections for a table class.
+     *
+     * @param string $tableClass The table class to set the connection for.
+     *
+     * @param string[] ...$names One or more named read connections in the
+     * ConnectionLocator.
+     *
+     */
     public function setRead(string $tableClass, ...$names) : void
     {
         $this->spec['read'][$tableClass] = $names;
     }
 
+    /**
+     *
+     * Sets one or more specific write connections for a table class.
+     *
+     * @param string $tableClass The table class to set the connection for.
+     *
+     * @param string[] ...$names One or more named write connections in the
+     * ConnectionLocator.
+     *
+     */
     public function setWrite(string $tableClass, ...$names) : void
     {
         $this->spec['write'][$tableClass] = $names;
     }
 
+    /**
+     *
+     * Gets a read connection for a table class.
+     *
+     * If read-from-write is active, this returns a write connection for the
+     * table class instead of a read connection.
+     *
+     * If multiple connections are specified, this will pick one of them at
+     * random.
+     *
+     * If no connection for the table is specified, this will let the
+     * ConnectionLocator choose.
+     *
+     * If transactions are active and the connection is not in a transaction,
+     * this will begin a transaction on that connection.
+     *
+     * @param string $tableClass The table class to get the connection for.
+     *
+     * @return ExtendedPdoInterface
+     *
+     */
     public function getRead(string $tableClass) : ExtendedPdoInterface
     {
         if ($this->readFromWrite($tableClass)) {
@@ -226,6 +274,15 @@ class ConnectionManager
         return $conn;
     }
 
+    /**
+     *
+     * Is read-from-write active for a particular table?
+     *
+     * @param string $tableClass The table class to check on.
+     *
+     * @return bool
+     *
+     */
     protected function readFromWrite($tableClass) : bool
     {
         if ($this->readFromWrite == static::NEVER) {
@@ -240,6 +297,27 @@ class ConnectionManager
             && isset($this->writing[$tableClass]);
     }
 
+    /**
+     *
+     * Gets a write connection for a table class.
+     *
+     * If multiple connections are specified, this will pick one of them at
+     * random.
+     *
+     * If no connection for the table is specified, this will let the
+     * ConnectionLocator choose.
+     *
+     * If transactions are active and the connection is not in a transaction,
+     * this will begin a transaction on that connection.
+     *
+     * Finally, this tracks which table classes have asked for a write
+     * connection since the end of the last transaction.
+     *
+     * @param string $tableClass The table class to get the connection for.
+     *
+     * @return ExtendedPdoInterface
+     *
+     */
     public function getWrite(string $tableClass) : ExtendedPdoInterface
     {
         $conn = $this->getConnection('write', $tableClass);
@@ -255,18 +333,42 @@ class ConnectionManager
         return $conn;
     }
 
+    /**
+     *
+     * Commits all transactions on all connections, and clears all tracking of
+     * which table classes are using write connections.
+     *
+     * @return void
+     *
+     */
     public function commit() : void
     {
         $this->endTransactions('commit');
-        $this->writing = [];
     }
 
+    /**
+     *
+     * Rolls back all transactions on all connections, and clears all tracking
+     * of which table classes are using write connections.
+     *
+     * @return void
+     *
+     */
     public function rollBack() : void
     {
         $this->endTransactions('rollBack');
-        $this->writing = [];
     }
 
+    /**
+     *
+     * Ends all transactions on all connections, and clears all tracking
+     * of which table classes are using write connections.
+     *
+     * @param string $method The method to call on the connection.
+     *
+     * @return void
+     *
+     */
     protected function endTransactions($method)
     {
         foreach ($this->conn as $type => $table_conn) {
@@ -276,8 +378,20 @@ class ConnectionManager
                 }
             }
         }
+        $this->writing = [];
     }
 
+    /**
+     *
+     * Get a read or write connection for a table class.
+     *
+     * @param string $type The connection type (read or write).
+     *
+     * @param string $tableClass The table class to get the connection for.
+     *
+     * @return ExtendedPdoInterface
+     *
+     */
     protected function getConnection(string $type, string $tableClass) : ExtendedPdoInterface
     {
         if (isset($this->conn[$type][$tableClass])) {
