@@ -87,7 +87,6 @@ OTHER CHANGES FROM 1.x:
       while in a transaction) or always (useful for GET-after-POST situations).
 
 - AbstractTable now uses the ConnectionManager instead of Aura.Sql
-
   ConnectionLocator, and *does not* retain (memoize) the connection objects.
   It retrieves them from the ConnectionManager each time they are needed; this
   helps maintain transaction state across multiple connections.
