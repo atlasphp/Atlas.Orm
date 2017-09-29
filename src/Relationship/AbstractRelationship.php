@@ -186,7 +186,7 @@ abstract class AbstractRelationship implements RelationshipInterface
      *
      * Sets the native => foreign relationship column names.
      *
-     * @param array
+     * @param array $on The native => foreign column names.
      *
      * @return self
      *
@@ -207,7 +207,7 @@ abstract class AbstractRelationship implements RelationshipInterface
      *
      * @param mixed ...$bind arguments to bind to placeholders
      *
-     * @return $this
+     * @return self
      *
      * @see Aura\SqlQuery\Common\Select::where()
      *
@@ -354,7 +354,7 @@ abstract class AbstractRelationship implements RelationshipInterface
      * @param array $records The Record objects for which to fetch the foreign
      * Record objects.
      *
-     * @param null|callable When present, a callable to modify the MapperSelect
+     * @param null|callable $custom When present, a callable to modify the MapperSelect
      * for the foreign fetch.
      *
      * @return array
