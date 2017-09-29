@@ -73,14 +73,24 @@ UPGRADE NOTES FROM 1.x:
 
 OTHER CHANGES FROM 1.x:
 
-- Added Atlas\Orm\Table\ConnectionManager to manage connections, including
-  multiple-connection transactions, and the ability to set table-specific
-  read and write connections.
+- Added Atlas\Orm\Table\ConnectionManager to manage connections.
 
-- AbstractTable now uses the ConnectionManager instead of Aura\Sql\ConnectionLocator,
-  and *does not* retain (memoize) the connection objects. It retrieves them
-  from the ConnectionManager each time they are needed; this helps maintain
-  transaction state across multiple connections.
+    - Manages simultaneous transactions over multiple connections.
+
+    - Allows setting of table-specific "read" and "write" connections.
+
+    - Allows setting of "read" and "write" transactions to be always-on or
+      always-off.
+
+    - Allows on-the-fly replacement of "read" connections with "write"
+      connections while writing (useful for synchronizing reads with writes
+      while in a transaction) or always (useful for GET-after-POST situations).
+
+- AbstractTable now uses the ConnectionManager instead of Aura.Sql
+
+  ConnectionLocator, and *does not* retain (memoize) the connection objects.
+  It retrieves them from the ConnectionManager each time they are needed; this
+  helps maintain transaction state across multiple connections.
 
 - Modified Transaction class to use the ConnectionManager, instead of tracking
   write connections on its own. This makes sure AbstractMapper::persist() will
