@@ -71,7 +71,7 @@ class Relationships
      *
      * Constructor.
      *
-     * @param MapperLocator The locator with all Mapper objects.
+     * @param MapperLocator $mapperLocator The locator with all Mapper objects.
      *
      */
     public function __construct(MapperLocator $mapperLocator)

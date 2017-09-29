@@ -34,11 +34,20 @@ interface RelationshipInterface
      *
      * Sets the native => foreign relationship column names.
      *
-     * @param array
+     * @param array $on The native => foreign column names.
      *
      */
     public function on(array $on) : RelationshipInterface;
 
+    /**
+     *
+     * Adds a WHERE condition, with optional bind values, to the relationship.
+     *
+     * @param string $cond The WHERE condition.
+     *
+     * @param array ...$bind Values to bind into the WHERE condition.
+     *
+     */
     public function where(string $cond, ...$bind) : RelationshipInterface;
 
     /**

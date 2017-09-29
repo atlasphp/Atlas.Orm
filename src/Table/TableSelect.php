@@ -45,7 +45,7 @@ class TableSelect implements SubselectInterface
      *
      * @param TableInterface $table The table that created this select.
      *
-     * @param SelectInterface The underlying Select object being decorated.
+     * @param SelectInterface $select The underlying Select object being decorated.
      *
      */
     public function __construct(

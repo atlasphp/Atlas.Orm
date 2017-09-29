@@ -187,6 +187,13 @@ class AtlasContainer
         return $this->getConnectionManager()->getConnectionLocator();
     }
 
+    /**
+     *
+     * Returns the table-level connection manager.
+     *
+     * @return ConnectionManager
+     *
+     */
     public function getConnectionManager() : ConnectionManager
     {
         return $this->connectionManager;
@@ -256,11 +263,29 @@ class AtlasContainer
         $this->getConnectionLocator()->setWrite($name, $callable);
     }
 
+    /**
+     *
+     * Sets a single read connection for a table.
+     *
+     * @param string $tableClass The table class that will use the connection.
+     *
+     * @param string $name The connection name in the ConnectionLocator.
+     *
+     */
     public function setReadConnectionForTable(string $tableClass, string $name) : void
     {
         $this->connectionManager->setRead($tableClass, $name);
     }
 
+    /**
+     *
+     * Sets a single read connection for a table.
+     *
+     * @param string $tableClass The table class that will use the connection.
+     *
+     * @param string $name The connection name in the ConnectionLocator.
+     *
+     */
     public function setWriteConnectionForTable(string $tableClass, string $name) : void
     {
         $this->connectionManager->setWrite($tableClass, $name);

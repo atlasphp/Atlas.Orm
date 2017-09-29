@@ -71,8 +71,33 @@ interface MapperInterface
      */
     public function fetchRecordBy(array $whereEquals, array $with = []) : ?RecordInterface;
 
+    /**
+     *
+     * Fetches an array of Records by primary key values, optionally with relateds.
+     *
+     * @param array $primaryVals The primary key values. Each element in the
+     * array is a scalar in the case of simple keys, or an array of key-value
+     * pairs for composite keys.
+     *
+     * @param array $with Return each Record with these relateds stitched in.
+     *
+     * @return array An array of Records.
+     *
+     */
     public function fetchRecords(array $primaryVals, array $with = []) : array;
 
+    /**
+     *
+     * Fetches an array of Records by column-value equality pairs, optionally with
+     * relateds.
+     *
+     * @param array $whereEquals The column-value equality pairs.
+     *
+     * @param array $with Return each Record with these relateds stitched in.
+     *
+     * @return array An array of Records.
+     *
+     */
     public function fetchRecordsBy(array $whereEquals, array $with = []) : array;
 
     /**
@@ -85,9 +110,7 @@ interface MapperInterface
      *
      * @param array $with Return each Record with these relateds stitched in.
      *
-     * @return RecordSetInterface|array A RecordSet on success, or an empty
-     * array on failure. (If a mapper-specific RecordSet class is defined, that
-     * will be returned instead of a generic RecordSet.)
+     * @return RecordSetInterface
      *
      */
     public function fetchRecordSet(array $primaryVals, array $with = []) : RecordSetInterface;
@@ -101,9 +124,7 @@ interface MapperInterface
      *
      * @param array $with Return each Record with these relateds stitched in.
      *
-     * @return RecordSetInterface|array A RecordSet on success, or an empty
-     * array on failure. (If a mapper-specific RecordSet class is defined, that
-     * will be returned instead of a generic RecordSet.)
+     * @return RecordSetInterface
      *
      */
     public function fetchRecordSetBy(array $whereEquals, array $with = []) : RecordSetInterface;

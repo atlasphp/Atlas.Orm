@@ -273,7 +273,7 @@ class RecordSet implements RecordSetInterface
      *
      * Compares a Record with an array of column-value equality pairs.
      *
-     * @param RecordInterface The Record to examine.
+     * @param RecordInterface $record The Record to examine.
      *
      * @param array $whereEquals Compare with these values.
      *
