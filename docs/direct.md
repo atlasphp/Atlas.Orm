@@ -1,8 +1,8 @@
 # Direct Queries
 
-If you need to perform queries directly, additional fetch* and yield* methods
-are provided which expose the Extended PDO functionality. By using the `$cols` parameter, you can select specific columns or individual
-values. For example:
+If you need to perform queries directly, additional `fetch*` and `yield*` methods
+are provided which expose the Extended PDO functionality. By using the `$cols`
+parameter, you can select specific columns or individual values. For example:
 
 ```php
 <?php
@@ -159,7 +159,7 @@ $threads = $atlas
 
 ## Yielding Data
 
-If you prefer to get the results one at a time, you can use the yield*
+If you prefer to get the results one at a time, you can use the `yield*`
 variations on these methods to iterate through the result set instead of
 returning an array.
 

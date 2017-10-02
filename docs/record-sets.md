@@ -25,11 +25,9 @@ Additionally, you can append foreign Records to a native Record's relateds.
 
 ```php
 <?php
-$thread = $atlas->fetchRecord(ThreadMapper::CLASS, 1,
-    [
-        'comments',
-    ]
-);
+$thread = $atlas->fetchRecord(ThreadMapper::CLASS, 1, [
+    'comments',
+]);
 
 // Ensure we have a RecordSet to append to
 if (! $thread->comments) {
@@ -46,7 +44,6 @@ $transaction->insert($comment);
 
 // Or persist the thread
 $atlas->persist($thread);
-
 ```
 
 ## Array Access
