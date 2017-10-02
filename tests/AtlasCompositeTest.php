@@ -76,8 +76,8 @@ class AtlasCompositeTest extends \PHPUnit_Framework_TestCase
             [
                 'degree',
                 'gpa',
-                'enrollments',
-                'courses',
+                'enrollments' => function ($q) { $q->orderBy(['course_subject', 'course_number']); },
+                'courses' => function ($q) { $q->orderBy(['course_subject', 'course_number']); },
             ]
         )->getArrayCopy();
 
@@ -95,8 +95,8 @@ class AtlasCompositeTest extends \PHPUnit_Framework_TestCase
             [
                 'degree',
                 'gpa',
-                'enrollments',
-                'courses',
+                'enrollments' => function ($q) { $q->orderBy(['course_subject', 'course_number']); },
+                'courses' => function ($q) { $q->orderBy(['course_subject', 'course_number']); },
             ]
         )->getArrayCopy();
 
@@ -129,8 +129,8 @@ class AtlasCompositeTest extends \PHPUnit_Framework_TestCase
             ->with([
                 'degree',
                 'gpa',
-                'enrollments',
-                'courses',
+                'enrollments' => function ($q) { $q->orderBy(['course_subject', 'course_number']); },
+                'courses' => function ($q) { $q->orderBy(['course_subject', 'course_number']); },
             ])
             ->fetchRecordSet()
             ->getArrayCopy();
