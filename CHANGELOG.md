@@ -1,8 +1,15 @@
 # CHANGELOG
 
+## 1.3.2
+
+- ManyToMany relationship now honors the query order of returned rows. (#76)
+
+- Fixes to docs and imports
+
 ## 1.3.1
 
-- AbstractTable::insertRowPerform() now uses the correct sequence name for the last insert ID on Postgres. (#71)
+- AbstractTable::insertRowPerform() now uses the correct sequence name for the
+  last insert ID on Postgres. (#71)
 
 - Substantial documentation updates and additions; thanks, @jelofson!
 
@@ -15,12 +22,12 @@
   Also available via added Atlas::persist() and Transaction::persist() methods.
 
 - In AbstractRelationship::fetchForeignRecords() no longer issues an empty IN()
-  query if there are no native records to match against. (Fixes #58.)
+  query if there are no native records to match against. (#58)
 
 - AtlasContainer constructor now accepts a ConnectionLocator as an alternative
-  to a PDO object or PDO connection params. (Cf. #63 and #64.)
+  to a PDO object or PDO connection params. (#63, #64)
 
-- Updated readne, docs and tests.
+- Updated readme, docs and tests.
 
 ## 1.2.1
 
@@ -30,7 +37,7 @@
 
 ## 1.2.0
 
-- Added `where()` funcitonality for relationships.
+- Added `where()` functionality for relationships.
 
 ## 1.1.0
 
