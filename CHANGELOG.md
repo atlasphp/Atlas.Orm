@@ -79,9 +79,6 @@ OTHER CHANGES FROM 1.x:
 
     - Allows setting of table-specific "read" and "write" connections.
 
-    - Allows setting of "read" and "write" transactions to be always-on or
-      always-off.
-
     - Allows on-the-fly replacement of "read" connections with "write"
       connections while writing (useful for synchronizing reads with writes
       while in a transaction) or always (useful for GET-after-POST situations).

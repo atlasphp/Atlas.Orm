@@ -257,6 +257,7 @@ class Transaction
         }
 
         try {
+            $this->connectionManager->beginTransaction();
             $this->work();
             $this->connectionManager->commit();
             return true;

@@ -68,24 +68,6 @@ class ConnectionManager
 
     /**
      *
-     * Use transactions on all read connections?
-     *
-     * @var bool
-     *
-     */
-    protected $readTransactions = false;
-
-    /**
-     *
-     * Use transactions on all write connections?
-     *
-     * @var bool
-     *
-     */
-    protected $writeTransactions = true;
-
-    /**
-     *
      * When, if ever, should a "read" connection be replaced with a "write"
      * connection?
      *
@@ -96,12 +78,14 @@ class ConnectionManager
 
     /**
      *
-     * What tables are usign write connections?
+     * What tables are using write connections?
      *
      * @var array
      *
      */
     protected $writing = [];
+
+    protected $inTransaction = false;
 
     /**
      *
@@ -130,57 +114,6 @@ class ConnectionManager
 
     /**
      *
-     * Should all read connections use transactions?
-     *
-     * @param bool $readTransactions True to enable; false to disable.
-     *
-     */
-    public function setReadTransactions(bool $readTransactions = true) : void
-    {
-        $this->readTransactions = $readTransactions;
-        // should this blow up when TURNING OFF transactions, and transactions already exist?
-    }
-
-    /**
-     *
-     * Are transactions on read connections enabled?
-     *
-     * @return bool
-     *
-     */
-    public function hasReadTransactions() : bool
-    {
-        return $this->readTransactions;
-    }
-
-    /**
-     *
-     * Should all write connections use transactions?
-     *
-     * @param bool $writeTransactions True to enable; false to disable.
-     *
-     */
-    public function setWriteTransactions(bool $writeTransactions = true) : void
-    {
-        // should this even be available? writes should *always* be transacted?
-        $this->writeTransactions = $writeTransactions;
-        // should this blow up when TURNING OFF transactions, and transactions already exist?
-    }
-
-    /**
-     *
-     * Are transactions on write connections enabled?
-     *
-     * @return bool
-     *
-     */
-    public function hasWriteTransactions() : bool
-    {
-        return $this->writeTransactions;
-    }
-
-    /**
-     *
      * When, if ever, should reads occur over write connections?
      *
      * @param string $readFromWrite 'ALWAYS', 'WHILE_WRITING', or 'NEVER'.
@@ -198,7 +131,7 @@ class ConnectionManager
 
     /**
      *
-     * Do reads occur over write connections?
+     * When do reads occur over write connections?
      *
      * @return string 'ALWAYS', 'WHILE_WRITING', or 'NEVER'.
      *
@@ -267,10 +200,6 @@ class ConnectionManager
 
         $conn = $this->getConnection('read', $tableClass);
 
-        if ($this->hasReadTransactions() && ! $conn->inTransaction()) {
-            $conn->beginTransaction();
-        }
-
         return $conn;
     }
 
@@ -322,15 +251,38 @@ class ConnectionManager
     {
         $conn = $this->getConnection('write', $tableClass);
 
-        if ($this->hasWriteTransactions() && ! $conn->inTransaction()) {
-            $conn->beginTransaction();
-        }
-
         if (! isset($this->writing[$tableClass])) {
             $this->writing[$tableClass] = true;
         }
 
         return $conn;
+    }
+
+    /**
+     *
+     * Is the connection manager "in" a transaction?
+     *
+     * Note that being "in" a transaction does not necessarily mean any
+     * connections actually *have* a running transaction. It means that the
+     * manager will start a transaction on any connection it returns, if that
+     * connection does not already have a running transaction.
+     *
+     * @return bool
+     *
+     */
+    public function inTransaction() : bool
+    {
+        return $this->inTransaction;
+    }
+
+    /**
+     *
+     * As connections are returned, begin a transaction on each one.
+     *
+     */
+    public function beginTransaction() : void
+    {
+        $this->inTransaction = true;
     }
 
     /**
@@ -343,7 +295,7 @@ class ConnectionManager
      */
     public function commit() : void
     {
-        $this->endTransactions('commit');
+        $this->endTransaction('commit');
     }
 
     /**
@@ -356,7 +308,7 @@ class ConnectionManager
      */
     public function rollBack() : void
     {
-        $this->endTransactions('rollBack');
+        $this->endTransaction('rollBack');
     }
 
     /**
@@ -369,7 +321,7 @@ class ConnectionManager
      * @return void
      *
      */
-    protected function endTransactions($method)
+    protected function endTransaction($method)
     {
         foreach ($this->conn as $type => $table_conn) {
             foreach ($table_conn as $table => $conn) {
@@ -378,6 +330,7 @@ class ConnectionManager
                 }
             }
         }
+        $this->inTransaction = false;
         $this->writing = [];
     }
 
@@ -406,6 +359,11 @@ class ConnectionManager
 
         $func = 'get' . ucfirst($type);
         $conn = $this->connectionLocator->$func($name);
+
+        if ($this->inTransaction() && ! $conn->inTransaction()) {
+            $conn->beginTransaction();
+        }
+
         $this->conn[$type][$tableClass] = $conn;
         return $conn;
     }

@@ -45,78 +45,13 @@ class ConnectionManagerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testTransactionsOnDefault()
+    public function testTransactions()
     {
-        $connectionManager = new ConnectionManager(new ConnectionLocator(
-            function () { return new ExtendedPdo('sqlite::memory:'); }
-        ));
-
-        $default = $connectionManager->getRead('FooTable');
-        $this->assertFalse($default->inTransaction());
-
-        $connectionManager->setReadTransactions();
-        $this->assertFalse($default->inTransaction());
-
-        $default = $connectionManager->getRead('FooTable');
-        $this->assertTrue($default->inTransaction());
-    }
-
-    public function testReadTransactions()
-    {
-        $reada = $this->connectionManager->getRead('FooTable');
-        $this->assertSame($this->conn->read2, $reada);
-        $this->assertFalse($reada->inTransaction());
-
-        // memoized connections do not start transactions
-        $this->connectionManager->setReadTransactions();
-        $this->assertFalse($reada->inTransaction());
-
-        // only re-getting will start a transaction
-        $readb = $this->connectionManager->getRead('FooTable');
-        $this->assertSame($reada, $readb);
-        $this->assertTrue($reada->inTransaction());
-        $this->assertTrue($readb->inTransaction());
-
-        // existing transactions do not get stopped
-        $this->connectionManager->setReadTransactions(false);
-        $this->assertTrue($reada->inTransaction());
-        $this->assertTrue($readb->inTransaction());
-
-        // only ending them will
-        $this->connectionManager->rollBack();
-        $this->assertFalse($reada->inTransaction());
-        $this->assertFalse($readb->inTransaction());
-    }
-
-    public function testWriteTransactions()
-    {
-        // by default, for BC to 1.x, connection manager sets write transactions
-        $this->connectionManager->setWriteTransactions(false);
-
-        // now we can get started
-        $writea = $this->connectionManager->getWrite('FooTable');
-        $this->assertSame($this->conn->write2, $writea);
-        $this->assertFalse($writea->inTransaction());
-
-        // memoized connections do not start transactions
-        $this->connectionManager->setWriteTransactions();
-        $this->assertFalse($writea->inTransaction());
-
-        // only re-getting will start a transaction
-        $writeb = $this->connectionManager->getWrite('FooTable');
-        $this->assertSame($writea, $writeb);
-        $this->assertTrue($writea->inTransaction());
-        $this->assertTrue($writeb->inTransaction());
-
-        // existing transactions do not get stopped
-        $this->connectionManager->setWriteTransactions(false);
-        $this->assertTrue($writea->inTransaction());
-        $this->assertTrue($writeb->inTransaction());
-
-        // only ending them will
+        $this->assertFalse($this->connectionManager->inTransaction());
+        $this->connectionManager->beginTransaction();
+        $this->assertTrue($this->connectionManager->getWrite('FooTable')->inTransaction());
         $this->connectionManager->commit();
-        $this->assertFalse($writea->inTransaction());
-        $this->assertFalse($writeb->inTransaction());
+        $this->assertFalse($this->connectionManager->getWrite('FooTable')->inTransaction());
     }
 
     public function testReadFromWrite_NEVER()
