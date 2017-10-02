@@ -130,8 +130,11 @@ class ManyToMany extends AbstractRelationship
     protected function getMatches(RecordInterface $nativeRecord, array $foreignRecords) : array
     {
         $matches = [];
-        foreach ($nativeRecord->{$this->throughName} as $throughRecord) {
-            foreach ($foreignRecords as $foreignRecord) {
+
+        // loop through the foreigns and append to matches in the order they are
+        // already in; this honors the many-to-many "ORDER" clause, if present.
+        foreach ($foreignRecords as $foreignRecord) {
+            foreach ($nativeRecord->{$this->throughName} as $throughRecord) {
                 if ($this->recordsMatch($throughRecord, $foreignRecord)) {
                     $matches[] = $foreignRecord;
                 }
