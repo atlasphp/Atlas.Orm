@@ -274,7 +274,7 @@ class Record implements RecordInterface
      * Returns the persistence method that will be used for this Record (one of
      * insert/update/delete) or null if no method will be used.
      *
-     * @return string|null
+     * @return ?string
      *
      */
     public function getPersistMethod() : ?string

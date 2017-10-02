@@ -51,7 +51,7 @@ interface TableInterface
      * @param mixed $primaryVal A scalar for a simple primary key, or an array
      * of column => value pairs for a composite primary key.
      *
-     * @return RowInterface|null Returns a Row on success, or `null` on failure.
+     * @return ?RowInterface Returns a Row on success, or `null` on failure.
      *
      */
     public function fetchRow($primaryVal) : ?RowInterface;

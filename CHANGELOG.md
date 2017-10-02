@@ -96,3 +96,5 @@ OTHER CHANGES FROM 1.x:
 - Modified Transaction class to use the ConnectionManager, instead of tracking
   write connections on its own. This makes sure AbstractMapper::persist() will
   work properly with different related connections inside a transaction.
+
+- Updated docs and tests.

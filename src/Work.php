@@ -139,7 +139,7 @@ class Work
      *
      * Returns the result of the work.
      *
-     * @return null|bool
+     * @return ?bool
      *
      */
     public function getResult() : ?bool

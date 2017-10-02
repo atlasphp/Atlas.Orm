@@ -325,7 +325,7 @@ class Atlas
      *
      * Returns the most-recent exception from a one-off transaction.
      *
-     * @return Exception|null
+     * @return ?Exception
      *
      */
     public function getException() : ?Exception
