@@ -293,6 +293,18 @@ class AtlasContainer
 
     /**
      *
+     * When, if ever, should reads occur over write connections?
+     *
+     * @param string $readFromWrite 'ALWAYS', 'WHILE_WRITING', or 'NEVER'.
+     *
+     */
+    public function setReadFromWrite(string $readFromWrite) : void
+    {
+        $this->connectionManager->setReadFromWrite($readFromWrite);
+    }
+
+    /**
+     *
      * Sets multiple mappers into the mapper locator.
      *
      * @param array $mapperClasses An array of mapper class names for the

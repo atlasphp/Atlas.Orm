@@ -122,4 +122,13 @@ class AtlasContainerTest extends \PHPUnit\Framework\TestCase
         $actual = $connectionManager->getWrite('Foo');
         $this->assertSame($conn4, $actual);
     }
+
+    public function testSetReadFromWrite()
+    {
+        $connectionManager = $this->atlasContainer->getConnectionManager();
+        $this->assertSame($connectionManager::NEVER, $connectionManager->getReadFromWrite());
+
+        $this->atlasContainer->setReadFromWrite($connectionManager::ALWAYS);
+        $this->assertSame($connectionManager::ALWAYS, $connectionManager->getReadFromWrite());
+    }
 }

@@ -85,6 +85,13 @@ class ConnectionManager
      */
     protected $writing = [];
 
+    /**
+     *
+     * Will the manager begin a transaction on each returned connection?
+     *
+     * @var bool
+     *
+     */
     protected $inTransaction = false;
 
     /**
