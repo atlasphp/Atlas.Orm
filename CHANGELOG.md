@@ -97,4 +97,6 @@ OTHER CHANGES FROM 1.x:
   write connections on its own. This makes sure AbstractMapper::persist() will
   work properly with different related connections inside a transaction.
 
+- The ManyToMany relationship now honors the order of the returned rows.
+
 - Updated docs and tests.
