@@ -2,7 +2,7 @@
 
 This is the changelog for the 2.x series.
 
-## (next)
+## 2.0.0-beta1
 
 MOTIVATION:
 

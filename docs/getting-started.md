@@ -9,7 +9,7 @@ to your `composer.json` file, then call `composer update`.
 ```json
 {
     "require": {
-        "atlas/orm": "~1.0"
+        "atlas/orm": "~2.0"
     },
     "require-dev": {
         "atlas/cli": "~1.0"
@@ -65,7 +65,7 @@ $atlasContainer->setMappers([
 
 Finally, get back the Atlas instance out of the container.
 
-```
+```php
 <?php
 $atlas = $atlasContainer->getAtlas();
 ```

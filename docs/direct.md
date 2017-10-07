@@ -38,7 +38,7 @@ from the Table underlying the Mapper.
 
 ### Fetch Value
 
-Returns a single value, or false.
+Returns a single value, or null.
 
 ```php
 <?php
@@ -90,7 +90,7 @@ $subjectAndBody = $atlas
 
 ### Fetch One
 
-Returns an associative array of one row, or false.
+Returns an associative array of one row, or null.
 
 ```php
 <?php
