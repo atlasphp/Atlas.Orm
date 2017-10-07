@@ -66,10 +66,11 @@ UPGRADE NOTES FROM 1.x:
 
     - AbstractMapper::fetchRecordSet()
     - AbstractMapper::fetchRecordSetBy()
+    - Atlas::fetchRecordSet()
+    - Atlas::fetchRecordSetBy()
     - MapperInterface::fetchRecordSet()
     - MapperInterface::fetchRecordSetBy()
     - MapperSelect::fetchRecordSet()
-    - MapperSelect::fetchRecordSetBy()
 
 OTHER CHANGES FROM 1.x:
 
