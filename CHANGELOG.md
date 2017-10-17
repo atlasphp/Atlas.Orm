@@ -2,6 +2,10 @@
 
 This is the changelog for the 2.x series.
 
+## 2.0.0
+
+Documentation changes and updates.
+
 ## 2.0.0-beta1
 
 MOTIVATION:
