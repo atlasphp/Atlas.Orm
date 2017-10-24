@@ -54,7 +54,7 @@ class MapperSelect implements SubselectInterface
      *
      * Constructor.
      *
-     * @param Mapper $mapper The Mapper that created this Select.
+     * @param MapperInterface $mapper The Mapper that created this Select.
      *
      * @param TableSelect $tableSelect The TableSelect instance being decorated.
      *

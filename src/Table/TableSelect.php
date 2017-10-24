@@ -34,7 +34,7 @@ class TableSelect implements SubselectInterface
      *
      * The table that created this select.
      *
-     * @var ExtendedPdo
+     * @var TableInterface
      *
      */
     protected $table;
@@ -200,8 +200,6 @@ class TableSelect implements SubselectInterface
      *
      * Fetches an associative array of rows as key-value pairs (first
      * column is the key, second column is the value).
-     *
-     * @param array $values Values to bind to the query.
      *
      * @return array
      *
