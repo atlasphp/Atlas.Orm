@@ -30,7 +30,7 @@ abstract class AbstractTable implements TableInterface
      *
      * A locator for database connections.
      *
-     * @var ConnectionLocator
+     * @var ConnectionManager
      *
      */
     protected $connectionManager;

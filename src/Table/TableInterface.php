@@ -88,6 +88,7 @@ interface TableInterface
      *
      * @param RowInterface $row The row to insert.
      *
+     * @return bool
      */
     public function insertRow(RowInterface $row) : bool;
 
@@ -121,6 +122,7 @@ interface TableInterface
      *
      * @param RowInterface $row The row to update.
      *
+     * @return bool
      */
     public function updateRow(RowInterface $row) : bool;
 
@@ -154,6 +156,7 @@ interface TableInterface
      *
      * @param RowInterface $row The row to delete.
      *
+     * @return bool
      */
     public function deleteRow(RowInterface $row) : bool;
 
