@@ -20,6 +20,36 @@ use Aura\SqlQuery\Common\SubselectInterface;
  *
  * @package atlas/orm
  *
+ * @method array fetchAll() Fetches a sequential array of rows from the database; the rows are represented as associative arrays.
+ * @method array fetchAssoc() Fetches an associative array of rows from the database; the rows are represented as associative arrays. The array of rows is keyed on the first column of each row.
+ * @method array fetchCol() Fetches the first column of rows as a sequential array.
+ * @method int fetchCount($col = '*') Given the existing SELECT, fetches a row count without any LIMIT or OFFSET.
+ * @method array|null fetchOne() Fetches one row from the database as an associative array.
+ * @method array fetchPairs() Fetches an associative array of rows as key-value pairs (first column is the key, second column is the value).
+ * @method array RowInterface|null() fetchRow() Fetches a single Row object.
+ * @method array fetchRows() Fetches an array of Row objects.
+ * @method mixed fetchValue() Fetches the very first value (i.e., first column of the first row).
+ * @method \Iterator yieldAll() Yields a sequential array of rows from the database; the rows are represented as associative arrays.
+ * @method \Iterator yieldAssoc() Yields an associative array of rows from the database; the rows are represented as associative arrays. The array of rows is keyed on the first column of each row.
+ * @method \Iterator yieldCol() Yields the first column of rows as a sequential array.
+ * @method \Iterator yieldPairs() Yields an associative array of rows as key-value pairs (first column is the key, second column is the value).
+ *
+ * @method SelectInterface cols(array $cols) Adds columns to the query.
+ * @method SelectInterface distinct($enable = true) Makes the select DISTINCT (or not).
+ * @method SelectInterface forUpdate($enable = true) Makes the select FOR UPDATE (or not).
+ * @method SelectInterface from(string $spec) Adds a FROM element to the query; quotes the table name automatically.
+ * @method SelectInterface fromRaw(string $spec) Adds a raw unquoted FROM element to the query; useful for adding FROM elements that are functions.
+ * @method SelectInterface fromSubSelect(string|\Aura\SqlQuery\Common\Select $spec, string $name) Adds an aliased sub-select to the query.
+ * @method int getPaging() Gets the number of rows per page.
+ * @method SelectInterface groupBy(array $spec) Adds grouping to the query.
+ * @method SelectInterface having(string $cond) Adds a HAVING condition to the query by AND; if a value is passed as the second param, it will be quoted and replaced into the condition wherever a question-mark appears.
+ * @method SelectInterface join(string $join, string $spec, string $cond = null) Adds a JOIN table and columns to the query.
+ * @method SelectInterface joinSubSelect(string|\Aura\SqlQuery\Common\Select $join, string $spec, string $name, string $cond = null) Adds a JOIN to an aliased subselect and columns to the query.
+ * @method SelectInterface orHaving(string $cond) Adds a HAVING condition to the query by AND; otherwise identical to `having()`.
+ * @method SelectInterface page(int $page) Sets the limit and count by page number.
+ * @method SelectInterface setPaging(int $paging) Sets the number of rows per page.
+ * @method SelectInterface union() Takes the current select properties and retains them, then sets UNION for the next set of properties.
+ * @method SelectInterface unionAll() Takes the current select properties and retains them, then sets UNION ALL for the next set of properties.
  */
 class MapperSelect implements SubselectInterface
 {
