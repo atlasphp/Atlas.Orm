@@ -9,7 +9,6 @@
 namespace Atlas\Orm\Relationship;
 
 use Atlas\Orm\Exception;
-use Atlas\Orm\Mapper\MapperLocator;
 use Atlas\Orm\Mapper\RecordInterface;
 use SplObjectStorage;
 
