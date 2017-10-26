@@ -11,7 +11,6 @@ namespace Atlas\Orm\Mapper;
 use Atlas\Orm\Exception;
 use Atlas\Orm\Relationship\RelationshipInterface;
 use Atlas\Orm\Relationship\Relationships;
-use Atlas\Orm\Table\Row;
 use Atlas\Orm\Table\RowInterface;
 use Atlas\Orm\Table\TableInterface;
 use Aura\Sql\ExtendedPdoInterface;

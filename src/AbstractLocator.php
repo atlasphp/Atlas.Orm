@@ -8,8 +8,6 @@
  */
 namespace Atlas\Orm;
 
-use Atlas\Orm\Exception;
-
 /**
  *
  * An abstract ServiceLocator implementation.

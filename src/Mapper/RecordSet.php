@@ -8,11 +8,8 @@
  */
 namespace Atlas\Orm\Mapper;
 
-use ArrayAccess;
 use ArrayIterator;
 use Atlas\Orm\Exception;
-use Countable;
-use IteratorAggregate;
 
 /**
  *

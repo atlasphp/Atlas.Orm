@@ -8,11 +8,9 @@
  */
 namespace Atlas\Orm;
 
-use Atlas\Orm\Exception;
 use Atlas\Orm\Mapper\MapperLocator;
 use Atlas\Orm\Mapper\RecordInterface;
 use Atlas\Orm\Table\ConnectionManager;
-use SplObjectStorage;
 
 /**
  *
