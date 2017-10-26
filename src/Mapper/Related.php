@@ -104,6 +104,18 @@ class Related
 
     /**
      *
+     * Gets the array of related fields.
+     *
+     * @return array
+     *
+     */
+    public function getFields() : array
+    {
+        return $this->fields;
+    }
+
+    /**
+     *
      * Sets multiple field values at once.
      *
      * @param array $namesValues An array of key-value pairs where the key is
