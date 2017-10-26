@@ -95,6 +95,13 @@ class ConnectionManager
     protected $inTransaction = false;
 
     /**
+     * A locator for the underlying ExtendedPdo connections.
+     *
+     * @var ConnectionLocator
+     */
+    protected $connectionLocator;
+
+    /**
      *
      * Constructor.
      *
