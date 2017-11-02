@@ -8,11 +8,8 @@
  */
 namespace Atlas\Orm\Mapper;
 
-use ArrayAccess;
 use ArrayIterator;
 use Atlas\Orm\Exception;
-use Countable;
-use IteratorAggregate;
 
 /**
  *
@@ -31,6 +28,14 @@ class RecordSet implements RecordSetInterface
      *
      */
     private $records = [];
+
+    /**
+     * A callable in the form
+     * `function (RowInterface $row) : RecordInterface` to create a new Record.
+     *
+     * @var callable
+     */
+    private $newRecord;
 
     /**
      *

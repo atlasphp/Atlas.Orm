@@ -10,7 +10,6 @@ namespace Atlas\Orm\Mapper;
 
 use Atlas\Orm\Exception;
 use Atlas\Orm\Table\TableSelect;
-use Aura\Sql\ExtendedPdo;
 use Aura\SqlQuery\Common\SelectInterface;
 use Aura\SqlQuery\Common\SubselectInterface;
 
