@@ -271,6 +271,21 @@ class RecordSet implements RecordSetInterface
 
     /**
      *
+     * Removes all Records from this RecordSet.
+     *
+     * @return array An array of removed Record objects, with the same array
+     * keys as in this RecordSet.
+     *
+     */
+    public function removeAll() : array
+    {
+        $records = $this->records;
+        $this->records = [];
+        return $records;
+    }
+
+    /**
+     *
      * Compares a Record with an array of column-value equality pairs.
      *
      * @param RecordInterface $record The Record to examine.
