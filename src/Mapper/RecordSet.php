@@ -319,7 +319,7 @@ class RecordSet implements RecordSetInterface
      * @return void
      *
      */
-    public function markForDeletion($delete = true) : void
+    public function markForDeletion(bool $delete = true) : void
     {
         foreach ($this->records as $record) {
             $record->markForDeletion($delete);
