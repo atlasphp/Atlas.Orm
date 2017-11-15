@@ -312,6 +312,22 @@ class RecordSet implements RecordSetInterface
 
     /**
      *
+     * Marks (or unmarks) all records currently in the collection for deletion.
+     *
+     * @param bool $delete True to mark for deletion, false to unmark.
+     *
+     * @return void
+     *
+     */
+    public function markForDeletion($delete = true) : void
+    {
+        foreach ($this->records as $record) {
+            $record->markForDeletion($delete);
+        }
+    }
+
+    /**
+     *
      * Implements JsonSerializable::jsonSerialize().
      *
      */
