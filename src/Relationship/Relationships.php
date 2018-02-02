@@ -163,7 +163,7 @@ class Relationships
     public function manyToOneReference(
         string $name,
         string $nativeMapperClass,
-        string $variant_col
+        string $referenceCol
     ) : RelationshipInterface {
 
         $this->fields[$name] = null;
@@ -172,7 +172,7 @@ class Relationships
             $name,
             $this->mapperLocator,
             $nativeMapperClass,
-            $variant_col
+            $referenceCol
         );
 
         $this->persistBeforeNative[] = $relationship;
