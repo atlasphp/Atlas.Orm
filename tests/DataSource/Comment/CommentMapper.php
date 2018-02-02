@@ -16,9 +16,9 @@ class CommentMapper extends AbstractMapper
      */
     protected function setRelated()
     {
-        $this->manyToOneVariant('commentable', 'related_type')
-            ->variant('page', PageMapper::CLASS, ['related_id' => 'page_id'])
-            ->variant('post', PostMapper::CLASS, ['related_id' => 'post_id'])
-            ->variant('video', VideoMapper::CLASS, ['related_id' => 'video_id']);
+        $this->manyToOneReference('commentable', 'related_type')
+            ->relate('page', PageMapper::CLASS, ['related_id' => 'page_id'])
+            ->relate('post', PostMapper::CLASS, ['related_id' => 'post_id'])
+            ->relate('video', VideoMapper::CLASS, ['related_id' => 'video_id']);
     }
 }

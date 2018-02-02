@@ -307,15 +307,15 @@ class Exception extends \Exception
         return new Exception($message);
     }
 
-    public static function invalidVariantMethod(string $method)
+    public static function invalidReferenceMethod(string $method)
     {
-        $message = "Invalid method on variant relationships: {$method}().";
+        $message = "Invalid method on reference relationships: {$method}().";
         return new Exception($message);
     }
 
-    public static function noSuchVariant($nativeMapperClass, $variantVal)
+    public static function noSuchReference($nativeMapperClass, $referenceVal)
     {
-        $message = "Variant relationship for '$variantVal' "
+        $message = "Reference relationship for '$referenceVal' "
             . "not defined in {$nativeMapperClass}.";
         return new Exception($message);
     }

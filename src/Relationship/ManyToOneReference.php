@@ -14,54 +14,61 @@ use SplObjectStorage;
 
 /**
  *
- * Defines a many-to-one variant relationship.
+ * Defines a many-to-one relationship via a reference column value.
+ *
+ * Also known as "polymorphic association" (though that is an OOP term and not
+ * an SQL term).
+ *
+ * The use of the word "reference" is lifted from Postgres; cf.
+ * <https://www.postgresql.org/docs/9.4/static/sql-createtable.html> (search
+ * for "REFERENCES").
  *
  * @package atlas/orm
  *
  */
-class ManyToOneVariant extends AbstractRelationship
+class ManyToOneReference extends AbstractRelationship
 {
-    protected $variantCol;
+    protected $referenceCol;
 
-    protected $variants = [];
+    protected $references = [];
 
     public function __construct(
         string $name,
         MapperLocator $mapperLocator,
         string $nativeMapperClass,
-        string $variantCol
+        string $referenceCol
     ) {
         $this->name = $name;
         $this->mapperLocator = $mapperLocator;
         $this->nativeMapperClass = $nativeMapperClass;
-        $this->variantCol = $variantCol;
+        $this->referenceCol = $referenceCol;
     }
 
     public function on(array $on) : RelationshipInterface
     {
-        throw Exception::invalidVariantMethod(__FUNCTION__);
+        throw Exception::invalidReferenceMethod(__FUNCTION__);
     }
 
     public function where(string $cond, ...$bind) : RelationshipInterface
     {
-        throw Exception::invalidVariantMethod(__FUNCTION__);
+        throw Exception::invalidReferenceMethod(__FUNCTION__);
     }
 
     public function ignoreCase(bool $ignoreCase = true) : AbstractRelationship
     {
-        // later, apply to all variants; meanwhile:
-        throw Exception::invalidVariantMethod(__FUNCTION__);
+        // later, apply to all references; meanwhile:
+        throw Exception::invalidReferenceMethod(__FUNCTION__);
     }
 
     protected function stitchIntoRecord(
         RecordInterface $nativeRecord,
         array $foreignRecords
     ) : void {
-        throw Exception::invalidVariantMethod(__FUNCTION__);
+        throw Exception::invalidReferenceMethod(__FUNCTION__);
     }
 
-    public function variant(
-        string $variantVal,
+    public function relate(
+        string $referenceVal,
         string $foreignMapperClass,
         array $on
     ) : self {
@@ -71,17 +78,17 @@ class ManyToOneVariant extends AbstractRelationship
             $this->nativeMapperClass,
             $foreignMapperClass
         );
-        $this->variants[$variantVal] = $relationship->on($on);
+        $this->references[$referenceVal] = $relationship->on($on);
         return $this;
     }
 
-    protected function getVariant($variantVal)
+    protected function getReference($referenceVal)
     {
-        if (isset($this->variants[$variantVal])) {
-            return $this->variants[$variantVal];
+        if (isset($this->references[$referenceVal])) {
+            return $this->references[$referenceVal];
         }
 
-        throw Exception::noSuchVariant($this->nativeMapperClass, $variantVal);
+        throw Exception::noSuchReference($this->nativeMapperClass, $referenceVal);
     }
 
     public function stitchIntoRecords(
@@ -94,12 +101,12 @@ class ManyToOneVariant extends AbstractRelationship
 
         $nativeSubsets = [];
         foreach ($nativeRecords as $nativeRecord) {
-            $nativeSubsets[$nativeRecord->{$this->variantCol}][] = $nativeRecord;
+            $nativeSubsets[$nativeRecord->{$this->referenceCol}][] = $nativeRecord;
         }
 
-        foreach ($nativeSubsets as $variantVal => $nativeSubset) {
-            $variant = $this->getVariant($variantVal);
-            $variant->stitchIntoRecords($nativeSubset, $custom);
+        foreach ($nativeSubsets as $referenceVal => $nativeSubset) {
+            $reference = $this->getReference($referenceVal);
+            $reference->stitchIntoRecords($nativeSubset, $custom);
         }
     }
 
@@ -113,8 +120,8 @@ class ManyToOneVariant extends AbstractRelationship
      */
     public function fixForeignRecordKeys(RecordInterface $nativeRecord) : void
     {
-        $variant = $this->getVariant($nativeRecord->{$this->variantCol});
-        $variant->fixForeignRecordKeys($nativeRecord);
+        $reference = $this->getReference($nativeRecord->{$this->referenceCol});
+        $reference->fixForeignRecordKeys($nativeRecord);
     }
 
     /**
@@ -129,7 +136,7 @@ class ManyToOneVariant extends AbstractRelationship
      */
     public function persistForeign(RecordInterface $nativeRecord, SplObjectStorage $tracker) : void
     {
-        $variant = $this->getVariant($nativeRecord->{$this->variantCol});
-        $variant->persistForeignRecord($nativeRecord, $tracker);
+        $reference = $this->getReference($nativeRecord->{$this->referenceCol});
+        $reference->persistForeignRecord($nativeRecord, $tracker);
     }
 }

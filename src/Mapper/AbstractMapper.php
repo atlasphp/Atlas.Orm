@@ -552,13 +552,13 @@ abstract class AbstractMapper implements MapperInterface
         );
     }
 
-    protected function manyToOneVariant(string $name, string $variantCol) : RelationshipInterface
+    protected function manyToOneReference(string $name, string $referenceCol) : RelationshipInterface
     {
         $this->assertRelatedName($name);
-        return $this->relationships->manyToOneVariant(
+        return $this->relationships->manyToOneReference(
             $name,
             get_class($this),
-            $variantCol
+            $referenceCol
         );
     }
 
