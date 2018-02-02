@@ -552,6 +552,16 @@ abstract class AbstractMapper implements MapperInterface
         );
     }
 
+    protected function manyToOneVariant(string $name, string $variantCol) : RelationshipInterface
+    {
+        $this->assertRelatedName($name);
+        return $this->relationships->manyToOneVariant(
+            $name,
+            get_class($this),
+            $variantCol
+        );
+    }
+
     /**
      *
      * Sets a many-to-many relationship to another mapper.

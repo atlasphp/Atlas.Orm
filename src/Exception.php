@@ -306,4 +306,17 @@ class Exception extends \Exception
             . "'; got '{$value}' instead.";
         return new Exception($message);
     }
+
+    public static function invalidVariantMethod(string $method)
+    {
+        $message = "Invalid method on variant relationships: {$method}().";
+        return new Exception($message);
+    }
+
+    public static function noSuchVariant($nativeMapperClass, $variantVal)
+    {
+        $message = "Variant relationship for '$variantVal' "
+            . "not defined in {$nativeMapperClass}.";
+        return new Exception($message);
+    }
 }
