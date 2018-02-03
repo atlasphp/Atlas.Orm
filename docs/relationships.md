@@ -150,7 +150,7 @@ relationship by reference (aka "polymorphic association") by selecting only
 related records of a particular type.
 
 In the following example, a `comments` table has a `commentable_id` column as
-the foreign key value, but is restricted to "issue" values on a discriminator
+the foreign key value, but is restricted to "video" values on a discriminator
 column named `commentable`.
 
 ```php
@@ -160,9 +160,9 @@ class IssueMapper extends AbstractMapper
     {
         $this->oneToMany('comments', CommentMapper::CLASS)
             ->on([
-                'issue_id' => 'commentable_id'
+                'video_id' => 'commentable_id'
             ])
-            ->where('commentable_type = ?', 'issue');
+            ->where('commentable_type = ?', 'video');
     }
 }
 ```
