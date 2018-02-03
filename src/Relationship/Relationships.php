@@ -160,7 +160,7 @@ class Relationships
         );
     }
 
-    public function manyToOneReference(
+    public function manyToOneByReference(
         string $name,
         string $nativeMapperClass,
         string $referenceCol
@@ -168,7 +168,7 @@ class Relationships
 
         $this->fields[$name] = null;
 
-        $relationship = new ManyToOneReference(
+        $relationship = new ManyToOneByReference(
             $name,
             $this->mapperLocator,
             $nativeMapperClass,

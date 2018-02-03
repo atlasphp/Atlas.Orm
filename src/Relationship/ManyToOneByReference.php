@@ -26,7 +26,7 @@ use SplObjectStorage;
  * @package atlas/orm
  *
  */
-class ManyToOneReference extends AbstractRelationship
+class ManyToOneByReference extends AbstractRelationship
 {
     protected $referenceCol;
 
@@ -67,7 +67,7 @@ class ManyToOneReference extends AbstractRelationship
         throw Exception::invalidReferenceMethod(__FUNCTION__);
     }
 
-    public function relate(
+    public function to(
         string $referenceVal,
         string $foreignMapperClass,
         array $on
