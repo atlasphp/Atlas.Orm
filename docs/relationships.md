@@ -151,7 +151,7 @@ related records of a particular type.
 
 In the following example, a `comments` table has a `commentable_id` column as
 the foreign key value, but is restricted to "video" values on a discriminator
-column named `commentable`.
+column named `commentable_type`.
 
 ```php
 class IssueMapper extends AbstractMapper
