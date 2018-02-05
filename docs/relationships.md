@@ -173,32 +173,29 @@ class IssueMapper extends AbstractMapper
 
 The many-to-one relationship by reference is somewhat different from the other
 relationship types. It is identical to a many-to-one relationship, except that
-the relationships vary by a reference column. This allows one rows in one table
-to "belong to" rows in more than one foreign table. The typical example is one
-of comments that can be create on many different kinds of content, such as blog
-posts, static pages, and video links.
+the relationships vary by a reference column in the native table. This allows
+rows in the native table to "belong to" rows in more than one foreign table. The
+typical example is one of comments that can be created on many different kinds
+of content, such as static pages, blog posts, and video links.
 
 ```php
 class CommentMapper extends AbstractMapper
 {
     protected function setRelated()
     {
-        // The first argument is the field name;
-        // the second argument is the discriminator column.
+        // The first argument is the field name on the native record;
+        // the second argument is the reference column on the native table.
         $this->manyToOneByReference('commentable', 'commentable_type')
 
             // The first argument is the value of the commentable_type column;
             // the second is the related foreign mapper class;
-            // the third is the native-to-foriegn column mapping;
+            // the third is the native-to-foreign column mapping.
             ->to('page', PageMapper::CLASS, ['commentable_id' => 'page_id'])
             ->to('post', PostMapper::CLASS, ['commentable_id' => 'post_id'])
             ->to('video', VideoMapper::CLASS, ['commentable_id' => 'video_id']);
     }
 }
 ```
-
-With a relationship by reference, calls to `on()` and `where()` methods will not
-be honored.
 
 Note that there will be one query per type of reference in the native record
 set. That is, if a native record set (of an arbitrary number of records) refers
