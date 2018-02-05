@@ -315,7 +315,7 @@ class Exception extends \Exception
 
     public static function noSuchReference($nativeMapperClass, $referenceVal)
     {
-        $message = "Reference relationship for '$referenceVal' "
+        $message = "Reference relationship for '{$referenceVal}' "
             . "not defined in {$nativeMapperClass}.";
         return new Exception($message);
     }

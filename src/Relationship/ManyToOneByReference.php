@@ -8,6 +8,7 @@
  */
 namespace Atlas\Orm\Relationship;
 
+use Atlas\Orm\Exception;
 use Atlas\Orm\Mapper\RecordInterface;
 use Atlas\Orm\Mapper\MapperLocator;
 use SplObjectStorage;
@@ -30,7 +31,7 @@ class ManyToOneByReference extends AbstractRelationship
 {
     protected $referenceCol;
 
-    protected $references = [];
+    protected $relationships = [];
 
     public function __construct(
         string $name,
@@ -56,7 +57,6 @@ class ManyToOneByReference extends AbstractRelationship
 
     public function ignoreCase(bool $ignoreCase = true) : AbstractRelationship
     {
-        // later, apply to all references; meanwhile:
         throw Exception::invalidReferenceMethod(__FUNCTION__);
     }
 
@@ -78,14 +78,14 @@ class ManyToOneByReference extends AbstractRelationship
             $this->nativeMapperClass,
             $foreignMapperClass
         );
-        $this->references[$referenceVal] = $relationship->on($on);
+        $this->relationships[$referenceVal] = $relationship->on($on);
         return $this;
     }
 
     protected function getReference($referenceVal)
     {
-        if (isset($this->references[$referenceVal])) {
-            return $this->references[$referenceVal];
+        if (isset($this->relationships[$referenceVal])) {
+            return $this->relationships[$referenceVal];
         }
 
         throw Exception::noSuchReference($this->nativeMapperClass, $referenceVal);
@@ -136,7 +136,29 @@ class ManyToOneByReference extends AbstractRelationship
      */
     public function persistForeign(RecordInterface $nativeRecord, SplObjectStorage $tracker) : void
     {
-        $reference = $this->getReference($nativeRecord->{$this->referenceCol});
-        $reference->persistForeignRecord($nativeRecord, $tracker);
+        $foreignRecord = $nativeRecord->{$this->name};
+        if (! $foreignRecord instanceof RecordInterface) {
+            return;
+        }
+
+        if (! isset($nativeRecord->{$this->referenceCol})) {
+            $this->setNativeReferenceVal($nativeRecord, $foreignRecord);
+        }
+
+        $relationship = $this->getReference($nativeRecord->{$this->referenceCol});
+        $relationship->persistForeignRecord($nativeRecord, $tracker);
+    }
+
+    protected function setNativeReferenceVal(
+        RecordInterface $nativeRecord,
+        RecordInterface $foreignRecord
+    ) : void {
+        $foreignRecordMapperClass = $foreignRecord->getMapperClass();
+        foreach ($this->relationships as $referenceVal => $relationship) {
+            if ($foreignRecordMapperClass == $relationship->foreignMapperClass) {
+                $nativeRecord->{$this->referenceCol} = $referenceVal;
+                return;
+            }
+        }
     }
 }
