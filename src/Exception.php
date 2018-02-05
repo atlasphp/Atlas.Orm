@@ -306,4 +306,17 @@ class Exception extends \Exception
             . "'; got '{$value}' instead.";
         return new Exception($message);
     }
+
+    public static function invalidReferenceMethod(string $method)
+    {
+        $message = "Invalid method on reference relationships: {$method}().";
+        return new Exception($message);
+    }
+
+    public static function noSuchReference($nativeMapperClass, $referenceVal)
+    {
+        $message = "Reference relationship for '{$referenceVal}' "
+            . "not defined in {$nativeMapperClass}.";
+        return new Exception($message);
+    }
 }

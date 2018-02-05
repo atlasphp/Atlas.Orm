@@ -25,6 +25,86 @@ class SqliteFixture
         $this->courses();
         $this->enrollments();
         $this->gpas();
+
+        // for variant relationships
+        $this->pages();
+        $this->posts();
+        $this->videos();
+        $this->comments();
+    }
+
+    protected function pages()
+    {
+        $this->connection->query("CREATE TABLE pages (
+            page_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title   VARCHAR(255),
+            body    TEXT
+        )");
+
+        $stm = "INSERT INTO pages (page_id, title, body) VALUES (?, ?, ?)";
+        for ($page_id = 1; $page_id <= 10; $page_id ++) {
+            $title = "Page title {$page_id}";
+            $body = "Page body {$page_id}";
+            $this->connection->perform($stm, [$page_id, $title, $body]);
+        }
+    }
+
+    protected function posts()
+    {
+        $this->connection->query("CREATE TABLE posts (
+            post_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            subj    VARCHAR(255),
+            body    TEXT
+        )");
+
+        $stm = "INSERT INTO posts (post_id, subj, body) VALUES (?, ?, ?)";
+        for ($post_id = 1; $post_id <= 10; $post_id ++) {
+            $subj = "Post subj {$post_id}";
+            $body = "Post body {$post_id}";
+            $this->connection->perform($stm, [$post_id, $subj, $body]);
+        }
+    }
+
+    protected function videos()
+    {
+        $this->connection->query("CREATE TABLE videos (
+            video_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title    VARCHAR(255),
+            url      VARCHAR(255)
+        )");
+
+        $stm = "INSERT INTO videos (video_id, title, url) VALUES (?, ?, ?)";
+        for ($video_id = 1; $video_id <= 10; $video_id ++) {
+            $title = "Video title {$video_id}";
+            $url = "http://videos.example.net/{$video_id}";
+            $this->connection->perform($stm, [$video_id, $title, $url]);
+        }
+    }
+
+    protected function comments()
+    {
+        $this->connection->query("CREATE TABLE comments (
+            comment_id   INTEGER PRIMARY KEY AUTOINCREMENT,
+            related_type VARCHAR(255),
+            related_id   INTEGER,
+            body         TEXT
+        )");
+
+        // three comments on each of 10 related pages/posts/videos
+        $stm = "INSERT INTO comments (comment_id, related_type, related_id, body) VALUES (?, ?, ?, ?)";
+        $comment_id = 0;
+        $related_types = ['page', 'post', 'video'];
+        for ($related_id = 1; $related_id <= 10; $related_id ++) {
+            for ($num = 1; $num <= 3; $num ++) {
+                foreach ($related_types as $related_type) {
+                    $comment_id ++;
+                    $body = "Comment {$num} on {$related_type} {$related_id}";
+                    $this->connection->perform($stm, [
+                        $comment_id, $related_type, $related_id, $body
+                    ]);
+                }
+            }
+        }
     }
 
     protected function employee()

@@ -160,6 +160,26 @@ class Relationships
         );
     }
 
+    public function manyToOneByReference(
+        string $name,
+        string $nativeMapperClass,
+        string $referenceCol
+    ) : RelationshipInterface {
+
+        $this->fields[$name] = null;
+
+        $relationship = new ManyToOneByReference(
+            $name,
+            $this->mapperLocator,
+            $nativeMapperClass,
+            $referenceCol
+        );
+
+        $this->persistBeforeNative[] = $relationship;
+        $this->relationships[$name] = $relationship;
+        return $relationship;
+    }
+
     /**
      *
      * Defines a many-to-many relationship between Mapper objects.
