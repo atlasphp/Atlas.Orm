@@ -52,6 +52,21 @@ class ManyToOneByReferenceTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf(VideoRecord::CLASS, $comments[2]->commentable);
     }
 
+    public function testInsertByReference()
+    {
+        $page = $this->atlas->fetchRecord(PageMapper::CLASS, 1, ['comments']);
+        $comment = $page->comments->appendNew([
+            'commentable' => $page,
+            'body' => 'New comment on page',
+        ]);
+
+        $this->assertNull($comment->related_type);
+        $this->assertNull($comment->related_id);
+        $this->atlas->mapper(CommentMapper::CLASS)->insert($comment);
+        $this->assertEquals('page', $comment->related_type);
+        $this->assertEquals($page->page_id, $comment->related_id);
+    }
+
     public function testPersistByReference()
     {
         $page = $this->atlas->fetchRecord(PageMapper::CLASS, 1, ['comments']);
@@ -72,7 +87,6 @@ class ManyToOneByReferenceTest extends \PHPUnit\Framework\TestCase
     {
         $page = $this->atlas->fetchRecord(PageMapper::CLASS, 1, ['comments']);
         $comment = $page->comments->appendNew([
-            'commentable' => $page,
             'related_type' => 'NO_SUCH_TYPE',
             'body' => 'New comment on page',
         ]);

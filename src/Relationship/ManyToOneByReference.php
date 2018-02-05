@@ -110,18 +110,11 @@ class ManyToOneByReference extends AbstractRelationship
         }
     }
 
-    /**
-     *
-     * Given a native Record, sets the appropriate native Record values into all
-     * related foreign Records.
-     *
-     * @param RecordInterface $nativeRecord The native Record to work with.
-     *
-     */
-    public function fixForeignRecordKeys(RecordInterface $nativeRecord) : void
+    public function fixNativeRecordKeys(RecordInterface $nativeRecord) : void
     {
-        $reference = $this->getReference($nativeRecord->{$this->referenceCol});
-        $reference->fixForeignRecordKeys($nativeRecord);
+        $this->fixNativeReferenceVal($nativeRecord);
+        $relationship = $this->getReference($nativeRecord->{$this->referenceCol});
+        $relationship->fixNativeRecordKeys($nativeRecord);
     }
 
     /**
@@ -136,23 +129,18 @@ class ManyToOneByReference extends AbstractRelationship
      */
     public function persistForeign(RecordInterface $nativeRecord, SplObjectStorage $tracker) : void
     {
+        $this->fixNativeReferenceVal($nativeRecord);
+        $relationship = $this->getReference($nativeRecord->{$this->referenceCol});
+        $relationship->persistForeign($nativeRecord, $tracker);
+    }
+
+    protected function fixNativeReferenceVal(RecordInterface $nativeRecord) : void
+    {
         $foreignRecord = $nativeRecord->{$this->name};
         if (! $foreignRecord instanceof RecordInterface) {
             return;
         }
 
-        if (! isset($nativeRecord->{$this->referenceCol})) {
-            $this->setNativeReferenceVal($nativeRecord, $foreignRecord);
-        }
-
-        $relationship = $this->getReference($nativeRecord->{$this->referenceCol});
-        $relationship->persistForeignRecord($nativeRecord, $tracker);
-    }
-
-    protected function setNativeReferenceVal(
-        RecordInterface $nativeRecord,
-        RecordInterface $foreignRecord
-    ) : void {
         $foreignRecordMapperClass = $foreignRecord->getMapperClass();
         foreach ($this->relationships as $referenceVal => $relationship) {
             if ($foreignRecordMapperClass == $relationship->foreignMapperClass) {
