@@ -29,10 +29,40 @@ use SplObjectStorage;
  */
 class ManyToOneByReference extends AbstractRelationship
 {
+    /**
+     *
+     * The name of the reference (discriminator) column on the native table.
+     *
+     * @var string
+     *
+     */
     protected $referenceCol;
 
+    /**
+     *
+     * An array of ManyToOne relationship objects, keyed by reference column
+     * values.
+     *
+     * @var array
+     *
+     */
     protected $relationships = [];
 
+    /**
+     *
+     * Constructor.
+     *
+     * @param string $name The related field name to use for this relationship.
+     *
+     * @param MapperLocator $mapperLocator The MapperLocator with all Mapper
+     * objects.
+     *
+     * @param string $nativeMapperClass The native Mapper class.
+     *
+     * @param string $referenceCol The name of the reference (discriminator)
+     * column on the native table.
+     *
+     */
     public function __construct(
         string $name,
         MapperLocator $mapperLocator,
@@ -45,21 +75,33 @@ class ManyToOneByReference extends AbstractRelationship
         $this->referenceCol = $referenceCol;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function on(array $on) : RelationshipInterface
     {
         throw Exception::invalidReferenceMethod(__FUNCTION__);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function where(string $cond, ...$bind) : RelationshipInterface
     {
         throw Exception::invalidReferenceMethod(__FUNCTION__);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function ignoreCase(bool $ignoreCase = true) : AbstractRelationship
     {
         throw Exception::invalidReferenceMethod(__FUNCTION__);
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function stitchIntoRecord(
         RecordInterface $nativeRecord,
         array $foreignRecords
@@ -67,6 +109,21 @@ class ManyToOneByReference extends AbstractRelationship
         throw Exception::invalidReferenceMethod(__FUNCTION__);
     }
 
+    /**
+     *
+     * Adds a new reference to a relationship.
+     *
+     * @param string $referenceVal The value for the reference column on the
+     * native table.
+     *
+     * @param string $foreignMapperClass The foreign mapper class to use for
+     * the relationship reference.
+     *
+     * @param array $on The native => foreign column names.
+     *
+     * @return self
+     *
+     */
     public function to(
         string $referenceVal,
         string $foreignMapperClass,
@@ -82,6 +139,17 @@ class ManyToOneByReference extends AbstractRelationship
         return $this;
     }
 
+    /**
+     *
+     * Returns the relationship object for a reference value.
+     *
+     * @param string $referenceVal
+     *
+     * @return ManyToOne
+     *
+     * @throws Exception when there is no relationship for the reference value.
+     *
+     */
     protected function getReference($referenceVal)
     {
         if (isset($this->relationships[$referenceVal])) {
@@ -91,6 +159,17 @@ class ManyToOneByReference extends AbstractRelationship
         throw Exception::noSuchReference($this->nativeMapperClass, $referenceVal);
     }
 
+    /**
+     *
+     * Given an array of native Record objects, stitches the foreign relateds
+     * into them as fields under the relationship name.
+     *
+     * @param array $nativeRecords The native Record objects.
+     *
+     * @param callable $custom A callable in the form `function (MapperSelect $select)`
+     * to modify the foreign MapperSelect statement.
+     *
+     */
     public function stitchIntoRecords(
         array $nativeRecords,
         callable $custom = null
@@ -110,6 +189,14 @@ class ManyToOneByReference extends AbstractRelationship
         }
     }
 
+    /**
+     *
+     * Given a native Record, sets the related foreign Record values into the
+     * native Record; also sets the the native Record reference column value.
+     *
+     * @param RecordInterface $nativeRecord The native Record to work with.
+     *
+     */
     public function fixNativeRecordKeys(RecordInterface $nativeRecord) : void
     {
         $this->fixNativeReferenceVal($nativeRecord);
@@ -134,6 +221,15 @@ class ManyToOneByReference extends AbstractRelationship
         $relationship->persistForeign($nativeRecord, $tracker);
     }
 
+    /**
+     *
+     * Given a native record, sets the reference column value from the related
+     * foreign record (when present); leaves the value as-is if the foreign
+     * record has no known relationship reference.
+     *
+     * @param RecordInterface $nativeRecord The native record.
+     *
+     */
     protected function fixNativeReferenceVal(RecordInterface $nativeRecord) : void
     {
         $foreignRecord = $nativeRecord->{$this->name};
