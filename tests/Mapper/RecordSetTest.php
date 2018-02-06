@@ -120,6 +120,10 @@ class RecordSetTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(3, $actual[2]->id);
         $this->assertSame(6, $actual[5]->id);
         $this->assertSame(9, $actual[8]->id);
+
+        $actual = $this->recordSet->removeAll();
+        $this->assertCount(0, $this->recordSet);
+        $this->assertCount(6, $actual);
     }
 
     public function testJsonSerialize()
@@ -133,5 +137,18 @@ class RecordSetTest extends \PHPUnit\Framework\TestCase
             . ']';
         $actual = json_encode($this->recordSet);
         $this->assertSame($expect, $actual);
+    }
+
+    public function testMarkForDeletion()
+    {
+        foreach ($this->recordSet as $record) {
+            $this->assertFalse($record->getPersistMethod() == 'delete');
+        }
+
+        $this->recordSet->markForDeletion();
+
+        foreach ($this->recordSet as $record) {
+            $this->assertTrue($record->getPersistMethod() == 'delete');
+        }
     }
 }
