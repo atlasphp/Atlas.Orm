@@ -5,7 +5,8 @@ This is the changelog for the 2.x series.
 ## 2.1.0
 
 This release adds support for many-to-one relationships by reference (aka
-"polymorphic association") as well as some convenience & informational methods.
+"polymorphic association") in addition to some convenience and informational
+methods.
 
 - Documentation and code hygiene fixes
 
