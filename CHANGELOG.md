@@ -2,6 +2,23 @@
 
 This is the changelog for the 2.x series.
 
+## 2.1.0
+
+This release adds support for many-to-one relationships by reference (aka
+"polymorphic association") as well as some convenience & informational methods.
+
+- Documentation and code hygiene fixes
+
+- Add method `Mapper\Related::getFields()`
+
+- Add method `Mapper\RecordSet::removeAll()`
+
+- Add method `Mapper\RecordSet::markForDeletion()`
+
+- Add method `Relationship\Relationships::manyToOneByReference()`
+
+- Add method `Mapper\AbstractMapper::manyToOneByReference()`
+
 ## 2.0.0
 
 Documentation changes and updates.
