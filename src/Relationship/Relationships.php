@@ -160,6 +160,19 @@ class Relationships
         );
     }
 
+    /**
+     *
+     * Defines a many-to-one relationship by reference between Mapper objects.
+     *
+     * @param string $name The Related field name.
+     *
+     * @param string $nativeMapperClass The native Mapper class name.
+     *
+     * @param string $referenceCol The native table reference column name.
+     *
+     * @return RelationshipInterface
+     *
+     */
     public function manyToOneByReference(
         string $name,
         string $nativeMapperClass,

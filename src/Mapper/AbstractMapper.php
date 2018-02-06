@@ -552,6 +552,18 @@ abstract class AbstractMapper implements MapperInterface
         );
     }
 
+    /**
+     *
+     * Sets a many-to-one relationship to another mapper by reference.
+     *
+     * @param string $name The field name to use in the Record for the related
+     * foreign Record.
+     *
+     * @param string $referenceCol The native table reference column name.
+     *
+     * @return RelationshipInterface
+     *
+     */
     protected function manyToOneByReference(string $name, string $referenceCol) : RelationshipInterface
     {
         $this->assertRelatedName($name);
