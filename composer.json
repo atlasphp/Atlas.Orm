@@ -24,7 +24,8 @@
     "require-dev": {
         "atlas/cli": "~1.0",
         "pds/skeleton": "~1.0",
-        "phpunit/phpunit": "~6.0"
+        "phpunit/phpunit": "~6.0",
+        "producer/githooks": "0.x@dev"
     },
     "autoload-dev": {
         "psr-4": {
