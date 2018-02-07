@@ -202,8 +202,6 @@ set. That is, if a native record set (of an arbitrary number of records) refers
 to a total of three different relationships, then Atlas will issue three
 additional queries to fetch the related records.
 
-The phrase "relationship by reference" is used here instead of "polymorphic
+(The phrase "relationship by reference" is used here instead of "polymorphic
 association" because the latter is an OOP term, not an SQL term. The former is
-more SQL-ish, and is lifted from Postgres; cf.
-<https://www.postgresql.org/docs/9.4/static/sql-createtable.html> and search for
-"REFERENCES".
+more SQL-ish.)
