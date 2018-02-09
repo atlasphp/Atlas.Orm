@@ -29,11 +29,6 @@ $thread = $atlas->fetchRecord(ThreadMapper::CLASS, 1, [
     'comments',
 ]);
 
-// Ensure we have a RecordSet to append to
-if (! $thread->comments) {
-    $thread->comments = $atlas->newRecordSet(CommentMapper::CLASS);
-}
-
 $comment = $thread->comments->appendNew([
     'thread_id' => $thread->thread_id,
     'comment' => 'Lorem ipsum dolor sit amet...'
@@ -84,7 +79,7 @@ $matchingRecords = $threadRecordSet->getAllBy(['author_id' => '5']);
 ## Removing Records from RecordSets
 
 You can remove Records from a RecordSet by their column values. This does NOT
-delete the Record from the database; only from the RecordSet.
+delete Records from the database; it only removes them from the RecordSet.
 
 ```php
 <?php
@@ -92,8 +87,11 @@ delete the Record from the database; only from the RecordSet.
 // or null if there is no match
 $removedRecord = $threadRecordSet->removeOneBy(['subject' => 'Subject One']);
 
-// unsets and returns an array of matching Record objects from the Record Set
+// unsets and returns an array of matching Record objects from the RecordSet
 $removedRecords = $threadRecordSet->removeAllBy(['author_id' => '5']);
+
+// unsets and returns an array of all Record object from the RecordSet
+$removedRecords = $threadRecordSet->removeAll();
 ```
 
 > **Note:**
