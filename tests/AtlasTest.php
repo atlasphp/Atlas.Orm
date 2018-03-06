@@ -10,6 +10,7 @@ use Atlas\Orm\DataSource\Summary\SummaryTable;
 use Atlas\Orm\DataSource\Tag\TagMapper;
 use Atlas\Orm\DataSource\Tagging\TaggingMapper;
 use Atlas\Orm\DataSource\Thread\ThreadMapper;
+use Atlas\Orm\DataSource\Thread\ThreadMapperEvents;
 use Atlas\Orm\DataSource\Thread\ThreadRecord;
 use Atlas\Orm\DataSource\Thread\ThreadRecordSet;
 use Atlas\Orm\Mapper\Record;
@@ -472,6 +473,46 @@ ORDER BY
                 'no-such-relationship', // manyToOne
             ]
         );
+    }
+
+    public function testIssue86()
+    {
+        ThreadMapperEvents::$beforeInsert = function ($mapper, $record) {
+            throw new \Exception('FOO BAR');
+        };
+
+        $countBefore = $this->atlas->mapper(ThreadMapper::CLASS)
+            ->select()
+            ->cols(['COUNT(*)'])
+            ->fetchValue();
+
+        $thread = $this->atlas->newRecord(ThreadMapper::CLASS, [
+            'author_id' => 1,
+            'subject' => 'New subject',
+            'body' => 'New body',
+        ]);
+
+        $thread->replies = $this->atlas->newRecordSet(ReplyMapper::CLASS);
+        for ($author_id = 2; $author_id <= 4; $author_id ++) {
+            $thread->replies[] = $this->atlas->newRecord(ReplyMapper::CLASS, [
+                'author_id' => $author_id,
+                'body' => 'New reply',
+            ]);
+        }
+
+        $transaction = $this->atlas->newTransaction();
+        $transaction->persist($thread);
+        $result = $transaction->exec();
+        $this->assertFalse($result);
+        $e = $transaction->getException();
+        $this->assertSame('FOO BAR', $e->getMessage());
+
+        $countAfter = $this->atlas->mapper(ThreadMapper::CLASS)
+            ->select()
+            ->cols(['COUNT(*)'])
+            ->fetchValue();
+
+        $this->assertSame($countBefore, $countAfter);
     }
 
     protected $expectRecord = [
