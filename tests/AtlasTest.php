@@ -503,6 +503,7 @@ ORDER BY
         $transaction = $this->atlas->newTransaction();
         $transaction->persist($thread);
         $result = $transaction->exec();
+
         $this->assertFalse($result);
         $e = $transaction->getException();
         $this->assertSame('FOO BAR', $e->getMessage());
@@ -513,6 +514,9 @@ ORDER BY
             ->fetchValue();
 
         $this->assertSame($countBefore, $countAfter);
+
+        // clear out for later tests
+        ThreadMapperEvents::$beforeInsert = null;
     }
 
     protected $expectRecord = [
