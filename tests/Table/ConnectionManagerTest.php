@@ -106,4 +106,16 @@ class ConnectionManagerTest extends \PHPUnit\Framework\TestCase
 
         $this->connectionManager->setReadFromWrite('foo');
     }
+
+    public function testInTransactionWhenGetCachedConnection()
+    {
+        $this->assertFalse($this->connectionManager->inTransaction());
+        $this->connectionManager->beginTransaction();
+        $this->assertTrue($this->connectionManager->getWrite('FooTable')->inTransaction());
+        $this->connectionManager->rollBack();
+        $this->assertFalse($this->connectionManager->getWrite('FooTable')->inTransaction());
+
+        $this->connectionManager->beginTransaction();
+        $this->assertTrue($this->connectionManager->getWrite('FooTable')->inTransaction());
+    }
 }
