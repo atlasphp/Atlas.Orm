@@ -361,13 +361,32 @@ class ConnectionManager
      */
     protected function getConnection(string $type, string $tableClass) : ExtendedPdoInterface
     {
-        if (isset($this->conn[$type][$tableClass])) {
-            if ($this->inTransaction() && ! $this->conn[$type][$tableClass]->inTransaction()) {
-                $this->conn[$type][$tableClass]->beginTransaction();
-            }
-            return $this->conn[$type][$tableClass];
+        if (! isset($this->conn[$type][$tableClass])) {
+            $this->setConnection($type, $tableClass);
         }
 
+        $conn = $this->conn[$type][$tableClass];
+
+        if ($this->inTransaction() && ! $conn->inTransaction()) {
+            $conn->beginTransaction();
+        }
+
+        return $conn;
+    }
+
+    /**
+     *
+     * Sets a read or write connection for a table class.
+     *
+     * @param string $type The connection type (read or write).
+     *
+     * @param string $tableClass The table class to get the connection for.
+     *
+     * @return ExtendedPdoInterface
+     *
+     */
+    protected function setConnection(string $type, string $tableClass) : void
+    {
         $name = null;
         if (isset($this->spec[$type][$tableClass])) {
             $key = array_rand($this->spec[$type][$tableClass]);
@@ -375,13 +394,6 @@ class ConnectionManager
         }
 
         $func = 'get' . ucfirst($type);
-        $conn = $this->connectionLocator->$func($name);
-
-        if ($this->inTransaction() && ! $conn->inTransaction()) {
-            $conn->beginTransaction();
-        }
-
-        $this->conn[$type][$tableClass] = $conn;
-        return $conn;
+        $this->conn[$type][$tableClass] = $this->connectionLocator->$func($name);
     }
 }
