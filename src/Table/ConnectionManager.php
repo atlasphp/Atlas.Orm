@@ -362,6 +362,9 @@ class ConnectionManager
     protected function getConnection(string $type, string $tableClass) : ExtendedPdoInterface
     {
         if (isset($this->conn[$type][$tableClass])) {
+            if ($this->inTransaction() && ! $this->conn[$type][$tableClass]->inTransaction()) {
+                $this->conn[$type][$tableClass]->beginTransaction();
+            }
             return $this->conn[$type][$tableClass];
         }
 
