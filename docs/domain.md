@@ -288,8 +288,6 @@ perhaps something like the following:
 <?php
 namespace App\Domain\Thread;
 
-use App\DataSource\Thread\ThreadRecord;
-
 class Thread implements ThreadInterface
 {
     protected $id;
