@@ -24,6 +24,19 @@ class TableEvents implements TableEventsInterface
 {
     /**
      *
+     * Runs after the Select object is created, but before it is executed.
+     *
+     * @param TableInterface $table The table handling the select.
+     *
+     * @param TableSelect $select The select query object to be modified.
+     *
+     */
+    public function modifySelect(TableInterface $table, TableSelect $select)
+    {
+    }
+
+    /**
+     *
      * Runs after a newly-selected row is instantiated, but before it is
      * identity-mapped.
      *

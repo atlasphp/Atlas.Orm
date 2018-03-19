@@ -276,10 +276,12 @@ abstract class AbstractMapper implements MapperInterface
      */
     public function select(array $whereEquals = []) : MapperSelect
     {
-        return new MapperSelect(
+        $select = new MapperSelect(
             $this,
             $this->table->select($whereEquals)
         );
+        $this->events->modifySelect($this, $select);
+        return $select;
     }
 
     /**

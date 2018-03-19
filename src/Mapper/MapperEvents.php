@@ -24,6 +24,19 @@ class MapperEvents implements MapperEventsInterface
 {
     /**
      *
+     * Runs after the Select object is created, but before it is executed.
+     *
+     * @param MapperInterface $mapper The mapper handling the select.
+     *
+     * @param MapperSelect $select The select query object to be modified.
+     *
+     */
+    public function modifySelect(MapperInterface $mapper, MapperSelect $select)
+    {
+    }
+
+    /**
+     *
      * Runs before the Insert object is created.
      *
      * @param MapperInterface $mapper The mapper handling the insert.

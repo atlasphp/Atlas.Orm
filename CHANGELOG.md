@@ -2,6 +2,19 @@
 
 This is the changelog for the 2.x series.
 
+## 2.2.0
+
+This release adds two "off-interface" events, `TableEvents::modifySelect()` and
+`MapperEvents::modifySelect()`, to allow modification of the `TableSelect` and
+`MapperSelect` query objects.
+
+These events are added only to the implementation classes, and not the
+interfaces, to make the functionality available without introducing a BC break.
+A future major revision may incorporate them into the relevant interfaces.
+
+Also added documentation for them, as well as documentation for the
+`TableEvents` functionality.
+
 ## 2.1.0
 
 This release adds support for many-to-one relationships by reference (aka

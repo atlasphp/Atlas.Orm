@@ -228,7 +228,9 @@ abstract class AbstractTable implements TableInterface
             $this->selectWhere($select, "{$table}.{$col}", $val);
         }
 
-        return new TableSelect($this, $select);
+        $select = new TableSelect($this, $select);
+        $this->events->modifySelect($this, $select);
+        return $select;
     }
 
     /**
