@@ -136,3 +136,4 @@ OTHER CHANGES FROM 1.x:
 - The ManyToMany relationship now honors the order of the returned rows.
 
 - Updated docs and tests.
+
