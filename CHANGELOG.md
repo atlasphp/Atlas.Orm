@@ -12,8 +12,8 @@ These events are added only to the implementation classes, and not the
 interfaces, to make the functionality available without introducing a BC break.
 A future major revision may incorporate them into the relevant interfaces.
 
-Also added documentation for them, as well as documentation for the
-`TableEvents` functionality.
+It also fixes the bug noted at <https://github.com/atlasphp/Atlas.Orm/issues/86>
+where existing connections are not updated to the current transaction state.
 
 ## 2.1.0
 
