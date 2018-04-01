@@ -13,8 +13,7 @@
     ],
     "require": {
         "php": ">=7.1.0",
-        "aura/sql": "~2.0",
-        "aura/sqlquery": "~2.0"
+        "atlas/mapper": "1.x@dev"
     },
     "autoload": {
         "psr-4": {
@@ -22,10 +21,9 @@
         }
     },
     "require-dev": {
-        "atlas/cli": "~1.0",
+        "atlas/cli": "~2.0",
         "pds/skeleton": "~1.0",
-        "phpunit/phpunit": "~6.0",
-        "producer/githooks": "0.x@dev"
+        "phpunit/phpunit": "~7.0"
     },
     "autoload-dev": {
         "psr-4": {
@@ -34,5 +32,6 @@
     },
     "suggest": {
         "atlas/cli": "A command-line tool to build skeleton classes."
-    }
+    },
+    "minimum-stability": "dev"
 }
