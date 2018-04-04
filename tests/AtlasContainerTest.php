@@ -1,13 +1,13 @@
 <?php
 namespace Atlas\Orm;
 
-class ContainerTest extends \PHPUnit\Framework\TestCase
+class AtlasContainerTest extends \PHPUnit\Framework\TestCase
 {
     protected $container;
 
     protected function setUp()
     {
-        $this->container = new Container('sqlite::memory:');
+        $this->container = new AtlasContainer('sqlite::memory:');
     }
 
     public function testNewAtlas()
