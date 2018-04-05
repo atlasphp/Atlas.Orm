@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 /**
  *
  * This file is part of Atlas for PHP.
@@ -8,6 +6,8 @@ declare(strict_types=1);
  * @license http://opensource.org/licenses/MIT MIT
  *
  */
+declare(strict_types=1);
+
 namespace Atlas\Orm;
 
 use Atlas\Mapper\Mapper;
@@ -15,12 +15,37 @@ use Atlas\Mapper\MapperLocator;
 use Atlas\Mapper\MapperSelect;
 use Atlas\Mapper\Record;
 use Atlas\Mapper\RecordSet;
+use Atlas\Pdo\ConnectionLocator;
+use Atlas\Query\QueryFactory;
+use Atlas\Table\TableLocator;
 
 class Atlas
 {
     protected $mapperLocator;
 
     protected $transactionStrategy;
+
+    public static function new(...$args) : Atlas
+    {
+        $end = end($args);
+        if (is_string($end) && is_subclass_of($end, TransactionStrategy::CLASS)) {
+            $transactionClass = array_pop($args);
+        } else {
+            $transactionClass = MiniTransaction::CLASS;
+        }
+
+        $connectionLocator = ConnectionLocator::new(...$args);
+
+        $tableLocator = new TableLocator(
+            $connectionLocator,
+            new QueryFactory()
+        );
+
+        return new Atlas(
+            new MapperLocator($tableLocator),
+            new $transactionClass($connectionLocator)
+        );
+    }
 
     public function __construct(
         MapperLocator $mapperLocator,
