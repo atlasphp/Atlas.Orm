@@ -89,3 +89,39 @@ Possible deal-breakers for potential users:
   objects. If this were a domain modeling system, a base class would be
   unacceptable. Because Atlas is a *persistence* modeling system, base classes
   are less objectionable, but for some this may be undesired.
+
+## Getting Started
+
+First, you will need to create the prerequsite data-source classes using
+[Atlas.Cli 2.x][].
+
+Once you have done so, create an _Atlas_ object using the static `new()` method
+and pass your PDO connection parameters:
+
+```php
+use Atlas\Orm\Atlas;
+
+$atlas = Atlas::new('sqlite::memory:'')
+```
+
+In the absence of full documentation, please review these _Atlas_ methods
+instead:
+
+- mapper()
+- newRecord()
+- newRecordSet()
+- fetchRecord()
+- fetchRecordBy()
+- fetchRecords()
+- fetchRecordsBy()
+- fetchRecordSet()
+- fetchRecordSetBy()
+- select()
+- insert()
+- update()
+- delete()
+- persist()
+- commit()
+- rollBack()
+
+[Atlas.Cli 2.x]: https://github.com/atlasphp/Atlas.Cli
