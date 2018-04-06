@@ -11,8 +11,8 @@ declare(strict_types=1);
 namespace Atlas\Orm;
 
 use Atlas\Mapper\MapperLocator;
+use Atlas\Mapper\MapperQueryFactory;
 use Atlas\Pdo\ConnectionLocator;
-use Atlas\Query\QueryFactory;
 use Atlas\Table\TableLocator;
 
 class AtlasContainer
@@ -43,7 +43,7 @@ class AtlasContainer
     {
         $tableLocator = new TableLocator(
             $this->connectionLocator,
-            new QueryFactory(),
+            new MapperQueryFactory(),
             $this->factory
         );
 
