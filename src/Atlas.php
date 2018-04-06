@@ -12,11 +12,11 @@ namespace Atlas\Orm;
 
 use Atlas\Mapper\Mapper;
 use Atlas\Mapper\MapperLocator;
+use Atlas\Mapper\MapperQueryFactory;
 use Atlas\Mapper\MapperSelect;
 use Atlas\Mapper\Record;
 use Atlas\Mapper\RecordSet;
 use Atlas\Pdo\ConnectionLocator;
-use Atlas\Query\QueryFactory;
 use Atlas\Table\TableLocator;
 
 class Atlas
@@ -38,7 +38,7 @@ class Atlas
 
         $tableLocator = new TableLocator(
             $connectionLocator,
-            new QueryFactory()
+            new MapperQueryFactory()
         );
 
         return new Atlas(
