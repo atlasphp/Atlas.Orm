@@ -20,7 +20,7 @@ $threadIdsAndTitles = $atlas
     ->cols(['thread_id', 'tite'])
     ->limit(10)
     ->orderBy('thread_id DESC')
-    ->fetchPairs();
+    ->fetchKeyPair();
 
 // etc.
 ```
@@ -69,7 +69,7 @@ $subjects = $atlas
 // ]
 ```
 
-### Fetch Pairs
+### Fetch Key Pair
 
 Returns an associative array where the key is the first column and the value is
 the second column, or an empty array.
@@ -80,7 +80,7 @@ $subjectAndBody = $atlas
     ->select(ThreadMapper::CLASS)
     ->cols(['subject', 'body'])
     ->limit(2)
-    ->fetchPairs();
+    ->fetchKeyPairs();
 
 // [
 //   'Subject One' => "Body Text One",
