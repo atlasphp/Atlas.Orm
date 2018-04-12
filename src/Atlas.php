@@ -60,11 +60,6 @@ class Atlas
         $this->transaction = $transaction;
     }
 
-    public function getMapperLocator() : MapperLocator
-    {
-        return $this->mapperLocator;
-    }
-
     public function mapper(string $mapperClass) : Mapper
     {
         return $this->mapperLocator->get($mapperClass);
