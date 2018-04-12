@@ -19,6 +19,12 @@ class AtlasTest extends \PHPUnit\Framework\TestCase
         $this->atlas = Atlas::new($this->connection);
     }
 
+    public function testNew()
+    {
+        $atlas = Atlas::new($this->connection, Transaction::CLASS);
+        $this->assertInstanceOf(Atlas::CLASS, $atlas);
+    }
+
     public function testMapper()
     {
         $this->assertInstanceOf(
