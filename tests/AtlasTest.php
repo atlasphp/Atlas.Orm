@@ -16,13 +16,7 @@ class AtlasTest extends \PHPUnit\Framework\TestCase
     public function setUp()
     {
         $this->connection = (new SqliteFixture())->exec();
-        $this->atlas = Atlas::new($this->connection);
-    }
-
-    public function testNew()
-    {
-        $atlas = Atlas::new($this->connection, Transaction::CLASS);
-        $this->assertInstanceOf(Atlas::CLASS, $atlas);
+        $this->atlas = Atlas::new($this->connection, Transaction::CLASS);
     }
 
     public function testMapper()
