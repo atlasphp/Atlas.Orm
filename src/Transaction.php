@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 /**
  *
  * This file is part of Atlas for PHP.
@@ -8,6 +6,8 @@ declare(strict_types=1);
  * @license http://opensource.org/licenses/MIT MIT
  *
  */
+declare(strict_types=1);
+
 namespace Atlas\Orm;
 
 use Atlas\Pdo\ConnectionLocator;
