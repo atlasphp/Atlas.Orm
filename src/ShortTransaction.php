@@ -20,8 +20,8 @@ class ShortTransaction extends Transaction
 {
     public function write(Mapper $mapper, string $method, Record $record)
     {
-        $this->connectionLocator->lockToWrite();
         $this->beginTransaction();
+        $this->connectionLocator->lockToWrite();
         return $mapper->$method($record);
     }
 }
