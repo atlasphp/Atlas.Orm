@@ -23,15 +23,20 @@ class Atlas
 {
     protected $mapperLocator;
 
-    protected $transactionStrategy;
+    protected $transaction;
 
     public static function new(...$args) : Atlas
     {
+        $transactionClass = MiniTransaction::CLASS;
+
         $end = end($args);
-        if (is_string($end) && is_subclass_of($end, TransactionStrategy::CLASS)) {
+        if (is_string($end)
+            && (
+                $end == Transaction::CLASS
+                || is_subclass_of($end, Transaction::CLASS)
+            )
+        ) {
             $transactionClass = array_pop($args);
-        } else {
-            $transactionClass = MiniTransaction::CLASS;
         }
 
         $connectionLocator = ConnectionLocator::new(...$args);
@@ -49,10 +54,10 @@ class Atlas
 
     public function __construct(
         MapperLocator $mapperLocator,
-        TransactionStrategy $transactionStrategy
+        Transaction $transaction
     ) {
         $this->mapperLocator = $mapperLocator;
-        $this->transactionStrategy = $transactionStrategy;
+        $this->transaction = $transaction;
     }
 
     public function mapper(string $mapperClass) : Mapper
@@ -125,25 +130,30 @@ class Atlas
         return $this->write(__FUNCTION__, $record);
     }
 
+    public function beginTransaction() : void
+    {
+        $this->transaction->beginTransaction();
+    }
+
     public function commit() : void
     {
-        $this->transactionStrategy->commit();
+        $this->transaction->commit();
     }
 
     public function rollBack() : void
     {
-        $this->transactionStrategy->rollBack();
+        $this->transaction->rollBack();
     }
 
     protected function read(string $mapperClass, string $method, ...$params)
     {
         $mapper = $this->mapper($mapperClass);
-        return $this->transactionStrategy->read($mapper, $method, $params);
+        return $this->transaction->read($mapper, $method, $params);
     }
 
     protected function write(string $method, Record $record)
     {
         $mapper = $this->mapper($record->getMapperClass());
-        return $this->transactionStrategy->write($mapper, $method, $record);
+        return $this->transaction->write($mapper, $method, $record);
     }
 }

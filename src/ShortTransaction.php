@@ -13,33 +13,15 @@ namespace Atlas\Orm;
 use Atlas\Mapper\Mapper;
 use Atlas\Mapper\Record;
 
-class ShortTransaction extends TransactionStrategy
+/**
+ * Auto-begins a transaction on write, but does not commit or roll back.
+ */
+class ShortTransaction extends Transaction
 {
     public function write(Mapper $mapper, string $method, Record $record)
     {
         $this->connectionLocator->lockToWrite();
-
-        $connection = $this->connectionLocator->getWrite();
-        if (! $connection->inTransaction()) {
-            $connection->beginTransaction();
-        }
-
+        $this->beginTransaction();
         return $mapper->$method($record);
-    }
-
-    public function commit()
-    {
-        $connection = $this->connectionLocator->getWrite();
-        if ($connection->inTransaction()) {
-            $connection->commit();
-        }
-    }
-
-    public function rollBack()
-    {
-        $connection = $this->connectionLocator->getWrite();
-        if ($connection->inTransaction()) {
-            $connection->rollBack();
-        }
     }
 }

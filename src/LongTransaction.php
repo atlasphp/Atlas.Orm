@@ -13,54 +13,21 @@ namespace Atlas\Orm;
 use Atlas\Mapper\Mapper;
 use Atlas\Mapper\Record;
 
-class LongTransaction extends TransactionStrategy
+/**
+ * Auto-begins a transaction on read or write, but does not commit or roll back.
+ */
+class LongTransaction extends Transaction
 {
     public function read(Mapper $mapper, string $method, array $params)
     {
-        foreach ($this->getConnections() as $connection) {
-            if (! $connection->inTransaction()) {
-                $connection->beginTransaction();
-            }
-        }
-
+        $this->beginTransaction();
         return $mapper->$method(...$params);
     }
 
     public function write(Mapper $mapper, string $method, Record $record)
     {
-        foreach ($this->getConnections() as $connection) {
-            if (! $connection->inTransaction()) {
-                $connection->beginTransaction();
-            }
-        }
-
+        $this->beginTransaction();
         $this->connectionLocator->lockToWrite();
         return $mapper->$method($record);
-    }
-
-    public function commit()
-    {
-        foreach ($this->getConnections() as $connection) {
-            if ($connection->inTransaction()) {
-                $connection->commit();
-            }
-        }
-    }
-
-    public function rollBack()
-    {
-        foreach ($this->getConnections() as $connection) {
-            if ($connection->inTransaction()) {
-                $connection->rollBack();
-            }
-        }
-    }
-
-    protected function getConnections()
-    {
-        return [
-            $this->connectionLocator->getRead(),
-            $this->connectionLocator->getWrite(),
-        ];
     }
 }

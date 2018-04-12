@@ -15,11 +15,13 @@ use Atlas\Mapper\MapperQueryFactory;
 use Atlas\Pdo\ConnectionLocator;
 use Atlas\Table\TableLocator;
 
-class AtlasContainer
+class AtlasBuilder
 {
     protected $connectionLocator;
 
     protected $factory;
+
+    protected $transactionClass = Transaction::CLASS;
 
     public function __construct(...$args)
     {
@@ -29,17 +31,22 @@ class AtlasContainer
         };
     }
 
-    public function getConnectionLocator()
+    public function getConnectionLocator() : ConnectionLocator
     {
         return $this->connectionLocator;
     }
 
-    public function setFactory(callable $factory)
+    public function setFactory(callable $factory) : void
     {
         $this->factory = $factory;
     }
 
-    public function newAtlas($transactionClass = MiniTransaction::CLASS)
+    public function setTransactionClass(string $transactionClass) : void
+    {
+        $this->transactionClass = $transactionClass;
+    }
+
+    public function newAtlas()
     {
         $tableLocator = new TableLocator(
             $this->connectionLocator,
@@ -47,6 +54,7 @@ class AtlasContainer
             $this->factory
         );
 
+        $transactionClass = $this->transactionClass;
         return new Atlas(
             new MapperLocator($tableLocator, $this->factory),
             new $transactionClass($this->getConnectionLocator())

@@ -12,23 +12,25 @@ namespace Atlas\Orm;
 
 use Atlas\Mapper\Mapper;
 use Atlas\Mapper\Record;
+use Exception;
 
-class MiniTransaction extends TransactionStrategy
+/**
+ * Auto-begins, and then commits or rolls back, each write operation.
+ */
+class MiniTransaction extends Transaction
 {
     public function write(Mapper $mapper, string $method, Record $record)
     {
         $this->connectionLocator->lockToWrite();
-
-        $connection = $this->connectionLocator->getWrite();
-
         try {
-            $connection->beginTransaction();
+            $this->beginTransaction();
             $result = $mapper->$method($record);
-            $connection->commit();
+            $this->commit();
             return $result;
-        } catch (\Exception $e) {
-            $connection->rollBack();
-            throw Exception::Exception($e->getCode(), $e->getMessage(), $e);
+        } catch (Exception $e) {
+            $this->rollBack();
+            $c = get_class($e);
+            throw new $c($e->getCode(), $e->getMessage(), $e);
         }
     }
 }
