@@ -1,20 +1,20 @@
+- persisting a RecordSet
+
 - removing relateds; cf. https://github.com/atlasphp/Atlas.Orm/issues/62
 
 - convert field to object and back again, e.g. Date object -- could be a
-  be a method on a custom Record, or could be a TableEvents
-  modifySelectedRow() then insert()/update() method.
+  be a method on a custom Record
 
 - soft-deletion by marking a field -- method on a custom Record, then have
   the Mapper add "where('soft_deleted = ', false)";
 
-- multiple mappers using a single table -- NO
+- writing custom Mapper methods
 
-- writing custom mapper methods
+- overriding Row validation (e.g. to allow objects in Rows)
 
-- Single-table inheritance. This is stretching things a bit, since STI maps
-  a *table* to an *inheritance structure*, which is probably more in the realm
-  of domain logic (and a repository system) instead of persistence logic.
-  However, given a `content` table with a `type` column ...
+- extending from your own Record, Row, Table, Mapper, Events classes
+
+- Single-table inheritance. Given a `content` table with a `type` column ...
 
         ```
         <?php
