@@ -154,7 +154,7 @@ where the order of write operations does not need to be closely managed.
 
 The `persist()` method will:
 
-- persist many-to-one and many-to-many relateds loaded on the native Record;
+- persist many-to-one relateds loaded on the native Record;
 - persist the native Record by ...
     - inserting the Row for the Record if it is new; or,
     - updating the Row for the Record if it has been modified; or,

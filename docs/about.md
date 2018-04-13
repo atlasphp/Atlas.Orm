@@ -1,7 +1,5 @@
 # Atlas.Orm
 
-> No annotations. No migrations. No lazy loading. No data-type abstractions.
-
 Atlas is a [data mapper](http://martinfowler.com/eaaCatalog/dataMapper.html)
 implementation for your **persistence model** (*not* your domain model).
 
@@ -12,7 +10,6 @@ disconnected from the database. Use Atlas records as a way to populate your
 domain entities, or use them directly for simple data source interactions.
 
 Atlas is stable for production use. Please send bug reports and pull requests!
-
 
 ## Rationale
 

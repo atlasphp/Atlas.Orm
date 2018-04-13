@@ -6,8 +6,6 @@
 
 ---
 
-No annotations. No migrations. No lazy loading. No data-type abstractions.
-
 Atlas is a [data mapper](http://martinfowler.com/eaaCatalog/dataMapper.html)
 implementation for **persistence models** (*not* domain models).
 

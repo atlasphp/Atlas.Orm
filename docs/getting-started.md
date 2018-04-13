@@ -9,63 +9,80 @@ to your `composer.json` file, then call `composer update`.
 ```json
 {
     "require": {
-        "atlas/orm": "~2.0"
+        "atlas/orm": "~3.0"
     },
     "require-dev": {
-        "atlas/cli": "~1.0"
+        "atlas/cli": "~2.0"
     }
 }
 ```
 
 (The `atlas/cli` package provides the `atlas-skeleton` command-line tool to
-help create skeleton classes for the mapper.)
-
-## Creating Data Source Classes
-
-You can create your data source classes by hand, but it's going to be tedious to
-do so. Instead, use the `atlas-skeleton` command to read the table information
-from the database. You can read more about that in the
-[atlas/cli docs](https://github.com/atlasphp/Atlas.Cli/blob/1.x/docs/getting-started.md).
+help create data-source classes for the mapper system.)
 
 ## Instantiating Atlas
 
-Create an Atlas instance using the AtlasContainer.
+First, you will need to create the prerequsite data-source classes using
+[Atlas.Cli 2.x](https://github.com/atlasphp/Atlas.Cli).
 
-The container accepts a [PDO](http://php.net/manual/en/pdo.construct.php), [ExtendedPdo](https://github.com/auraphp/Aura.Sql/blob/3.x/docs/getting-started.md) or [ConnectionLocator](https://github.com/auraphp/Aura.Sql/blob/3.x/docs/connection-locator.md) instance or you
-can enter connection parameters and the container creates a connection for you.
+Then, you can create an _Atlas_ instance by using its static `new()` method and
+passing your PDO connection parameters:
 
 ```php
 <?php
-$atlasContainer = new AtlasContainer(new PDO(...));
-// or
-$atlasContainer = new AtlasContainer(new ExtendedPdo(...));
-// or
-$atlasContainer = new AtlasContainer(new ConnectionLocator(...));
-// or
-$atlasContainer = new AtlasContainer(
+use Atlas\Orm\Atlas;
+
+$atlas = Atlas::new(
     'mysql:host=localhost;dbname=testdb',
     'username',
     'password'
 );
 ```
 
-Next, set the available mapper classes into the container.
+Optionally, you may pass a _Transaction_ class name as the final parameter.
+(By default, _Atlas_ will use a _MiniTransaction_ instance.)
 
 ```php
 <?php
-$atlasContainer->setMappers([
-    AuthorMapper::CLASS,
-    ReplyMapper::CLASS,
-    SummaryMapper::CLASS,
-    TagMapper::CLASS,
-    ThreadMapper::CLASS,
-    TaggingMapper::CLASS,
-]);
+use Atlas\Orm\Atlas;
+use Atlas\Orm\LongTransaction;
+
+$atlas = Atlas::new(
+    'mysql:host=localhost;dbname=testdb',
+    'username',
+    'password',
+    LongTransaction::CLASS
+);
 ```
 
-Finally, get back the Atlas instance out of the container.
+Alternatively, use the _AtlasBuilder_ if you need to define a custom factory
+callable, such as for _TableEvents_ and _MapperEvents_ classes.
 
 ```php
 <?php
-$atlas = $atlasContainer->getAtlas();
+use Atlas\Orm\AtlasBuilder;
+use Atlas\Orm\LongTransaction;
+
+$builder = new AtlasBuilder(
+    'mysql:host=localhost;dbname=testdb',
+    'username',
+    'password'
+);
+
+// get the ConnectionLocator to set read and write connection factories
+$builder->getConnectionLocator()->...;
+
+// set a Transaction class (the default is MiniTransaction)
+$builder->setTransactionClass(LongTransaction::CLASS);
+
+// set a custom factory callable
+$builder->setFactory(function ($class) {
+    return new $class();
+});
+
+// get a new Atlas instance
+$atlas = $builder->newAtlas();
 ```
+
+Now you can use _Atlas_ to work with your database to fetch and persist _Record_
+objects, as well as perform other interactions.

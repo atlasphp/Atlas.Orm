@@ -12,7 +12,7 @@ $threadIds = $atlas
     ->cols(['thread_id'])
     ->limit(10)
     ->orderBy('thread_id DESC')
-    ->fetchCol();
+    ->fetchColumn();
 
 // key-value pairs of IDs and titles
 $threadIdsAndTitles = $atlas
@@ -59,9 +59,9 @@ Returns a sequential array of one column, or an empty array.
 <?php
 $subjects = $atlas
     ->select(ThreadMapper::CLASS)
-    ->cols(['subject'])
+    ->columns(['subject'])
     ->limit(2)
-    ->fetchCol();
+    ->fetchColumn();
 
 // [
 //   0 => "Subject One",
@@ -80,7 +80,7 @@ $subjectAndBody = $atlas
     ->select(ThreadMapper::CLASS)
     ->cols(['subject', 'body'])
     ->limit(2)
-    ->fetchKeyPairs();
+    ->fetchKeyPair();
 
 // [
 //   'Subject One' => "Body Text One",
@@ -107,7 +107,7 @@ $threadData = $atlas
 // ]
 ```
 
-### Fetch Assoc
+### Fetch Unique
 
 Returns an associative array of rows keyed on the first column specified, or an
 empty array.
@@ -122,11 +122,9 @@ $threads = $atlas
 
 // [
 //   'Subject One' => [
-//     'subject' => "Subject One",
 //     'body' => "Body Text One",
 //   ],
 //   'Subject Two' => [
-//     'subject' => "Subject Two",
 //     'body' => "Body Text Two"
 //   ]
 // ]
@@ -163,7 +161,7 @@ If you prefer to get the results one at a time, you can use the `yield*`
 variations on these methods to iterate through the result set instead of
 returning an array.
 
-### Yield Col
+### Yield Column
 
 Iterate through a sequential array of one column.
 
@@ -172,14 +170,14 @@ Iterate through a sequential array of one column.
 $subjects = $atlas
     ->select(ThreadMapper::CLASS)
     ->cols(['subject'])
-    ->yieldCol();
+    ->yieldColumn();
 
 foreach($subjects as $subject) {
     echo $subject;
 }
 ```
 
-### Yield Pairs
+### Yield Key Pair
 
 Iterate through an associative array by the first column specified.
 
@@ -188,7 +186,7 @@ Iterate through an associative array by the first column specified.
 $subjectAndBody = $atlas
     ->select(ThreadMapper::CLASS)
     ->cols(['subject', 'body'])
-    ->yieldPairs();
+    ->yieldKeyPair();
 
 foreach($subjectAndBody as $subject => $body) {
     echo $subject . ": " . $body;

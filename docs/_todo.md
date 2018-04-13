@@ -1,11 +1,13 @@
 - removing relateds; cf. https://github.com/atlasphp/Atlas.Orm/issues/62
 
-- convert field to object and back again, e.g. Date object -- should be a
-  be a method on a custom Record
+- convert field to object and back again, e.g. Date object -- could be a
+  be a method on a custom Record, or could be a TableEvents
+  modifySelectedRow() then insert()/update() method.
 
-- soft-deletion by marking a field -- method on a custom Record
+- soft-deletion by marking a field -- method on a custom Record, then have
+  the Mapper add "where('soft_deleted = ', false)";
 
-- multiple mappers using a single table
+- multiple mappers using a single table -- NO
 
 - writing custom mapper methods
 
@@ -42,7 +44,3 @@
             // many different types in there.
         }
         ```
-
-- (I wonder if "polymorphic belongs-to" is also more in the realm of domain
-  logic than persistence logic.)
-

@@ -1,18 +1,19 @@
 # Mapper Relationships
 
-You can add relationships to a mapper inside its `setRelated()` method, calling
-one of the five available relationship-definition methods:
+You can add to the _MapperRelationships_ inside the relevant `define()` method,
+calling one of the four available relationship-definition methods:
 
 - `oneToOne($field, $mapperClass)` (aka "has one")
-- `manyToOne($field, $mapperClass)` (aka "belongs to")
 - `oneToMany($field, $mapperClass)` (aka "has many")
-- `manyToMany($field, $mapperClass, $throughField)` (aka "has many through")
-- `manyToOneByReference($field, $referenceCol)` (aka "polymorphic association")
+- `manyToOne($field, $mapperClass)` (aka "belongs to")
+- `manyToOneVariant($field, $typeCol)` (aka "polymorphic association")
+
+> Note that many-to-many is not supported as a direct relationship. All
+> many-to-many retrievals must occur explicitly through the association mapping
+> table, which is what happens at the SQL level anyway.
 
 The `$field` will become a field name on the returned Record object. That field
-will be populated from the specified `$mapperClass` in Atlas. (In the case of
-`manyToMany()`, the association mappings will come from the specified
-`$throughField`.)
+will be populated from the specified `$mapperClass` in Atlas.
 
 Here is an example:
 
@@ -25,17 +26,16 @@ use App\DataSource\Summary\SummaryMapper;
 use App\DataSource\Reply\ReplyMapper;
 use App\DataSource\Tagging\TaggingMapper;
 use App\DataSource\Tag\TagMapper;
-use Atlas\Orm\Mapper\AbstractMapper;
+use Atlas\Mapper\MapperRelationships;
 
-class ThreadMapper extends AbstractMapper
+class ThreadMapperRelationships extends MapperRelationships
 {
-    protected function setRelated()
+    protected function define()
     {
         $this->manyToOne('author', AuthorMapper::CLASS);
         $this->oneToOne('summary', SummaryMapper::CLASS);
         $this->oneToMany('replies', ReplyMapper::CLASS);
         $this->oneToMany('taggings', TaggingMapper::CLASS);
-        $this->manyToMany('tags', TagMapper::CLASS, 'taggings');
     }
 }
 ```
@@ -50,39 +50,37 @@ In the case of many-to-one, it is the reverse; that is, the relationship will
 take the primary key column(s) in the foreign table, and map to those same
 column names in the native table.
 
-If you want to use different columns, call the `on()` method on the
-relationship. For example, if the threads table uses `author_id`, but the
-authors table uses just `id`, you can do this:
+If you want to use different columns, pass an array of native-to-foreign column
+names as the third parameter. For example, if the threads table uses
+`author_id`, but the authors table uses just `id`, you can do this:
 
 ```php
 <?php
-class ThreadMapper extends AbstractMapper
+class ThreadMapperRelationships extends MapperRelationships
 {
-    protected function setRelated()
+    protected function define()
     {
-        $this->manyToOne('author', AuthorMapper::CLASS)
-            ->on([
-                // native (threads) column => foreign (authors) column
-                'author_id' => 'id',
-            ]);
-        // ...
+        $this->manyToOne('author', AuthorMapper::CLASS, [
+            // native (threads) column => foreign (authors) column
+            'author_id' => 'id',
+        ]);
     }
 }
+
 ```
 And on the `oneToMany` side of the relationship, you use the native author table
 `id` column with the foreign threads table `author_id` column.
+
 ```php
 <?php
-class AuthorMapper extends AbstractMapper
+class AuthorMapperRelationships extends MapperRelationships
 {
-    protected function setRelated()
+    protected function define()
     {
-        $this->oneToMany('threads', ThreadMapper::CLASS)
-            ->on([
-                // native (author) column => foreign (threads) column
-                'id' => 'author_id',
-            ]);
-        // ...
+        $this->oneToMany('threads', ThreadMapper::CLASS, [
+            // native (author) column => foreign (threads) column
+            'id' => 'author_id',
+        ]);
     }
 }
 ```
@@ -96,16 +94,15 @@ this:
 
 ```php
 <?php
-class FooMapper
+class FooMapperRelationships extends MapperRelationships
 {
-    protected function setRelated()
+    protected function define()
     {
-        $this->oneToMany('bars', BarMapper::CLASS)
-            ->on([
-                // native (foo) column => foreign (bar) column
-                'acol' => 'foo_acol',
-                'bcol' => 'foo_bcol',
-            ]);
+        $this->oneToMany('bars', BarMapper::CLASS, [
+            // native (foo) column => foreign (bar) column
+            'acol' => 'foo_acol',
+            'bcol' => 'foo_bcol',
+        ]);
     }
 }
 ```
@@ -131,7 +128,7 @@ with the `ignoreCase()` method on the relationship definition.
 <?php
 class FooMapper
 {
-    protected function setRelated()
+    protected function define()
     {
         $this->oneToMany('bars', BarMapper::CLASS)
             ->ignoreCase();
@@ -156,52 +153,46 @@ column named `commentable_type`.
 ```php
 class IssueMapper extends AbstractMapper
 {
-    protected function setRelated()
+    protected function define()
     {
-        $this->oneToMany('comments', CommentMapper::CLASS)
-            ->on([
-                'video_id' => 'commentable_id'
-            ])
-            ->where('commentable_type = ?', 'video');
+        $this->oneToMany('comments', CommentMapper::CLASS, [
+            'video_id' => 'commentable_id'
+        ])->where('commentable_type = ', 'video');
     }
 }
 ```
 
 (These conditions will be honored by `MapperSelect::*joinWith()` as well.)
 
-## Relationships By Reference
+## Variant Relationships
 
-The many-to-one relationship by reference is somewhat different from the other
+The many-to-one-variant relationship is somewhat different from the other
 relationship types. It is identical to a many-to-one relationship, except that
-the relationships vary by a reference column in the native table. This allows
-rows in the native table to "belong to" rows in more than one foreign table. The
-typical example is one of comments that can be created on many different kinds
-of content, such as static pages, blog posts, and video links.
+the relationships vary by a reference-type column in the native table. This
+allows rows in the native table to "belong to" rows in more than one foreign
+table. The typical example is one of comments that can be created on many
+different types of content, such as static pages, blog posts, and video links.
 
 ```php
-class CommentMapper extends AbstractMapper
+class CommentMapperRelationships extends MapperRelationships
 {
-    protected function setRelated()
+    protected function define()
     {
         // The first argument is the field name on the native record;
         // the second argument is the reference column on the native table.
-        $this->manyToOneByReference('commentable', 'commentable_type')
+        $this->manyToOneVariant('commentable', 'commentable_type')
 
             // The first argument is the value of the commentable_type column;
             // the second is the related foreign mapper class;
             // the third is the native-to-foreign column mapping.
-            ->to('page', PageMapper::CLASS, ['commentable_id' => 'page_id'])
-            ->to('post', PostMapper::CLASS, ['commentable_id' => 'post_id'])
-            ->to('video', VideoMapper::CLASS, ['commentable_id' => 'video_id']);
+            ->type('page', PageMapper::CLASS, ['commentable_id' => 'page_id'])
+            ->type('post', PostMapper::CLASS, ['commentable_id' => 'post_id'])
+            ->type('video', VideoMapper::CLASS, ['commentable_id' => 'video_id']);
     }
 }
 ```
 
-Note that there will be one query per type of reference in the native record
-set. That is, if a native record set (of an arbitrary number of records) refers
-to a total of three different relationships, then Atlas will issue three
-additional queries to fetch the related records.
-
-(The phrase "relationship by reference" is used here instead of "polymorphic
-association" because the latter is an OOP term, not an SQL term. The former is
-more SQL-ish.)
+Note that there will be one query per variant type in the native record set.
+That is, if a native record set (of an arbitrary number of records) refers to a
+total of three different relationships, then Atlas will issue three additional
+queries to fetch the related records.
