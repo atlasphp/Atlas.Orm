@@ -30,7 +30,7 @@ class MiniTransaction extends Transaction
         } catch (Exception $e) {
             $this->rollBack();
             $c = get_class($e);
-            throw new $c($e->getCode(), $e->getMessage(), $e);
+            throw new $c($e->getMessage(), $e->getCode(), $e);
         }
     }
 }
