@@ -34,6 +34,26 @@ methods for more.
 You can also call `fetchRow()` or `fetchRows()` to get Row objects directly
 from the Table underlying the Mapper.
 
+Finally, in addition the various `JOIN` methods provided by Aura.SqlQuery,
+the _MapperSelect_ also provides `joinWith()`, so that you can join on a
+defined relationship. (The related table will be aliased as the relationship
+name.) For example, to do an `INNER JOIN` with another table as defined in
+the Mapper relationships:
+
+```php
+<?php
+$threadIdsAndAuthorNames = $atlas
+    ->select(ThreadMapper::CLASS)
+    ->joinWith('INNER', 'author')
+    ->cols([
+        "thread.thread_id",
+        "CONCAT(author.first_name, ' ', author.last_name)"
+    ])
+    ->limit(10)
+    ->orderBy('thread_id DESC')
+    ->fetchPairs();
+```
+
 ## Fetching
 
 ### Fetch Value
