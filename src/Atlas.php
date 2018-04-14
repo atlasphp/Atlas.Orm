@@ -18,12 +18,15 @@ use Atlas\Mapper\Record;
 use Atlas\Mapper\RecordSet;
 use Atlas\Pdo\ConnectionLocator;
 use Atlas\Table\TableLocator;
+use Exception;
 
 class Atlas
 {
     protected $mapperLocator;
 
     protected $transaction;
+
+    protected $exception;
 
     public static function new(...$args) : Atlas
     {
@@ -115,7 +118,7 @@ class Atlas
         return $this->write(__FUNCTION__, $record);
     }
 
-    public function update(Record $record) : bool
+    public function update(Record $record) : ?bool
     {
         return $this->write(__FUNCTION__, $record);
     }
@@ -145,15 +148,28 @@ class Atlas
         $this->transaction->rollBack();
     }
 
+    public function getException() : ?Exception
+    {
+        return $this->exception;
+    }
+
     protected function read(string $mapperClass, string $method, ...$params)
     {
+        $this->exception = null;
         $mapper = $this->mapper($mapperClass);
         return $this->transaction->read($mapper, $method, $params);
     }
 
-    protected function write(string $method, Record $record)
+    protected function write(string $method, Record $record) : ?bool
     {
+        $this->exception = null;
         $mapper = $this->mapper($record->getMapperClass());
-        return $this->transaction->write($mapper, $method, $record);
+
+        try {
+            return $this->transaction->write($mapper, $method, $record);
+        } catch (Exception $e) {
+            $this->exception = $e;
+            return false;
+        }
     }
 }
