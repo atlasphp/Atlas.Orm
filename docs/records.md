@@ -24,7 +24,7 @@ $thread->date_added = $date->format('Y-m-d H:i:s');
 
 You can insert a single Record back to the database by using the `Atlas::insert()`
 method. This will use the appropriate Mapper for the Record to perform the
-write within a transaction, and capture any exceptions that occur along the way.
+write, and capture any exceptions that occur along the way.
 
 ```php
 <?php
@@ -159,7 +159,7 @@ The `persist()` method will:
     - inserting the Row for the Record if it is new; or,
     - updating the Row for the Record if it has been modified; or,
     - deleting the Row for the Record if the Record has been marked for deletion
-      using the Record::markForDeletion() method;
+      using the Record::setDelete() method;
 - persist one-to-one and one-to-many relateds loaded on the native Record.
 
 ```php
@@ -187,14 +187,14 @@ database level; Atlas has no control over this.
 
 ## Marking Records for Deletion
 
-You may also mark records for deletion and they will be removed from the database
-after a transaction is completed via `persist()`.
+You may also mark records for deletion and they will be removed from the
+database as part of `persist()`.
 
 ```php
 <?php
 $thread = $atlas->fetchRecord(ThreadMapper::CLASS, 3);
 // Mark the record for deletion
-$thread->markForDeletion();
+$thread->setDelete();
 $atlas->persist($thread);
 ```
 
@@ -213,10 +213,14 @@ $thread = $atlas->fetchRecord(ThreadMapper::CLASS, 3,
 
 // Mark each related comment for deletion
 foreach ($thread->comments as $comment) {
-    $comment->markForDeletion();
+    $comment->setDelete();
 }
 
 // Persist the thread and the comments are also deleted
 $atlas->persist($thread);
-
 ```
+
+> **Note:**
+>
+> Related Record objects that get deleted as part of `persist()` will be
+> removed from the native Record object and replaced with a boolean `false`.

@@ -24,10 +24,10 @@ class LongTransaction extends Transaction
         return $mapper->$method(...$params);
     }
 
-    public function write(Mapper $mapper, string $method, Record $record)
+    public function write(Mapper $mapper, string $method, Record $record) : void
     {
         $this->beginTransaction();
         $this->connectionLocator->lockToWrite();
-        return $mapper->$method($record);
+        $mapper->$method($record);
     }
 }

@@ -109,15 +109,17 @@ class AtlasTest extends \PHPUnit\Framework\TestCase
             'name' => 'Foo'
         ]);
 
-        $this->assertTrue($this->atlas->insert($employee));
+        $this->atlas->insert($employee);
 
         $employee->name = 'Bar';
-        $this->assertTrue($this->atlas->update($employee));
+        $this->atlas->update($employee);
 
         $employee->name = 'Baz';
-        $this->assertTrue($this->atlas->persist($employee));
+        $this->atlas->persist($employee);
 
-        $this->assertTrue($this->atlas->delete($employee));
+        $this->atlas->delete($employee);
+
+        $this->assertTrue(true); // no exceptions means all is well
     }
 
     public function testTransaction() : void

@@ -19,14 +19,13 @@ use Exception;
  */
 class MiniTransaction extends Transaction
 {
-    public function write(Mapper $mapper, string $method, Record $record)
+    public function write(Mapper $mapper, string $method, Record $record) : void
     {
         $this->connectionLocator->lockToWrite();
         try {
             $this->beginTransaction();
-            $result = $mapper->$method($record);
+            $mapper->$method($record);
             $this->commit();
-            return $result;
         } catch (Exception $e) {
             $this->rollBack();
             $c = get_class($e);

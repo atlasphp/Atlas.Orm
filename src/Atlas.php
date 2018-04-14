@@ -26,8 +26,6 @@ class Atlas
 
     protected $transaction;
 
-    protected $exception;
-
     public static function new(...$args) : Atlas
     {
         $transactionClass = MiniTransaction::CLASS;
@@ -113,24 +111,24 @@ class Atlas
         return $this->read($mapperClass, __FUNCTION__, $whereEquals);
     }
 
-    public function insert(Record $record) : bool
+    public function insert(Record $record) : void
     {
-        return $this->write(__FUNCTION__, $record);
+        $this->write(__FUNCTION__, $record);
     }
 
-    public function update(Record $record) : ?bool
+    public function update(Record $record) : void
     {
-        return $this->write(__FUNCTION__, $record);
+        $this->write(__FUNCTION__, $record);
     }
 
-    public function delete(Record $record) : bool
+    public function delete(Record $record) : void
     {
-        return $this->write(__FUNCTION__, $record);
+        $this->write(__FUNCTION__, $record);
     }
 
-    public function persist(Record $record) : bool
+    public function persist(Record $record) : void
     {
-        return $this->write(__FUNCTION__, $record);
+        $this->write(__FUNCTION__, $record);
     }
 
     public function beginTransaction() : void
@@ -148,11 +146,6 @@ class Atlas
         $this->transaction->rollBack();
     }
 
-    public function getException() : ?Exception
-    {
-        return $this->exception;
-    }
-
     protected function read(string $mapperClass, string $method, ...$params)
     {
         $this->exception = null;
@@ -160,16 +153,9 @@ class Atlas
         return $this->transaction->read($mapper, $method, $params);
     }
 
-    protected function write(string $method, Record $record) : ?bool
+    protected function write(string $method, Record $record) : void
     {
-        $this->exception = null;
         $mapper = $this->mapper($record->getMapperClass());
-
-        try {
-            return $this->transaction->write($mapper, $method, $record);
-        } catch (Exception $e) {
-            $this->exception = $e;
-            return false;
-        }
+        $this->transaction->write($mapper, $method, $record);
     }
 }

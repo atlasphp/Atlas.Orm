@@ -31,10 +31,10 @@ class Transaction
         return $mapper->$method(...$params);
     }
 
-    public function write(Mapper $mapper, string $method, Record $record)
+    public function write(Mapper $mapper, string $method, Record $record) : void
     {
         $this->connectionLocator->lockToWrite();
-        return $mapper->$method($record);
+        $mapper->$method($record);
     }
 
     public function beginTransaction() : void
@@ -64,7 +64,7 @@ class Transaction
         }
     }
 
-    protected function getConnections()
+    protected function getConnections() : array
     {
         return [
             $this->connectionLocator->getRead(),
