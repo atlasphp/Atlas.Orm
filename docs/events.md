@@ -87,7 +87,7 @@ $success = $atlas->update($post);
 if ($sucess) {
     echo "Post updated";
 } else {
-    foreach ($post->getErrors as $error) {
+    foreach ($post->getErrors() as $error) {
         echo $error . '<br/>';
     }
 }
@@ -148,46 +148,4 @@ afterDelete(Table $table,
             Row $row,
             Delete $delete,
             PDOStatement $pdoStatement)
-```
-
-Here is a simple example with the assumption that the Record object has a
-`validate()` method and a `getErrors()` method. See the section on [Adding Logic
-to Records and RecordSets](behavior.html).
-
-```php
-<?php
-namespace Blog\DataSource\Posts;
-
-use Atlas\Orm\Table\TableEvents;
-use Atlas\Orm\Table\Table;
-use Atlas\Orm\Table\Row;
-use Atlas\Orm\Exception;
-
-/**
- * @inheritdoc
- */
-class PostsTableEvents extends TableEvents
-{
-    public function beforeUpdate(Table $table, Row $row)
-    {
-        if (! $record->validate())
-            throw new Exception('Update Error');
-        }
-
-    }
-}
-```
-
-And you might have something like this in your code:
-
-```php
-<?php
-$success = $atlas->update($post);
-if ($sucess) {
-    echo "Post updated";
-} else {
-    foreach ($post->getErrors() as $error) {
-        echo $error . '<br/>';
-    }
-}
 ```
