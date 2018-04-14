@@ -11,8 +11,8 @@ $threadRecordSet = $atlas->newRecordSet(ThreadMapper::CLASS);
 
 ## Appending Records to a RecordSet
 
-You can append a new Record to an existing RecordSet using `appendNew()`, optionally passing any
-data you want to initially populate into the Record:
+You can append a new Record to an existing RecordSet using `appendNew()`,
+optionally passing any data you want to initially populate into the Record:
 
 ```php
 <?php
@@ -72,29 +72,48 @@ $threadRecordSet = $atlas->select(ThreadMapper::CLASS)
 // or null if there is no match
 $matchingRecord = $threadRecordSet->getOneBy(['subject' => 'Subject One']);
 
-// returns an array of matching Record objects from the RecordSet
+// returns a new RecordSet of matching Record objects from the RecordSet
 $matchingRecords = $threadRecordSet->getAllBy(['author_id' => '5']);
 ```
 
-## Removing Records from RecordSets
+## Detaching Records from RecordSets
 
-You can remove Records from a RecordSet by their column values. This does NOT
-delete Records from the database; it only removes them from the RecordSet.
+You can detach Records from a RecordSet by their column values. This does NOT
+delete Records from the database; it only detaches them from the RecordSet.
 
 ```php
 <?php
 // unsets and returns one matching Record from the Record Set,
 // or null if there is no match
-$removedRecord = $threadRecordSet->removeOneBy(['subject' => 'Subject One']);
+$removedRecord = $threadRecordSet->detachOneBy(['subject' => 'Subject One']);
 
-// unsets and returns an array of matching Record objects from the RecordSet
-$removedRecords = $threadRecordSet->removeAllBy(['author_id' => '5']);
+// unsets and returns a new RecordSet of matching Record objects
+$removedRecords = $threadRecordSet->detachAllBy(['author_id' => '5']);
 
-// unsets and returns an array of all Record object from the RecordSet
-$removedRecords = $threadRecordSet->removeAll();
+// unsets and returns a new RecordSet of all Record objects
+$removedRecords = $threadRecordSet->detachAll();
 ```
 
 > **Note:**
-  This only removes them from the RecordSet; it does not delete them
-  from the database. If you need to delete a record from the database, see the
+  This only detaches them from the RecordSet; it does not delete them
+  from the database. If you need to delete a Record from the database, see the
   sections on Marking Records for Deletion and deleting Records.
+
+## Marking RecordSets For Deletion
+
+You can mark each Record currently in a RecordSet for deletion by using the
+`setDelete()` method:
+
+```php
+<?php
+// mark all current records for deletion
+$threadRecordSet->setDelete();
+
+// detach all current records, and mark only the detached
+// ones for deletion:
+```
+
+> **Note**:
+>
+> If you add another Record to the collection at this point, it will not have
+> been marked for deletion.

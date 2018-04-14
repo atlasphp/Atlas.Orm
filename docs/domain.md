@@ -19,7 +19,7 @@ use App\DataSource\Summary\SummaryMapper;
 use App\DataSource\Reply\ReplyMapper;
 use App\DataSource\Tagging\TaggingMapper;
 use App\DataSource\Tag\TagMapper;
-use Atlas\Orm\Mapper\AbstractMapper;
+use Atlas\Mapper\AbstractMapper;
 
 class ThreadMapper extends AbstractMapper
 {
@@ -120,7 +120,7 @@ persistence ThreadRecord, like so:
 <?php
 namespace App\DataSource\Thread;
 
-use Atlas\Orm\Mapper\Record;
+use Atlas\Mapper\Record;
 use App\Domain\Thread\ThreadInterface;
 
 class ThreadRecord extends Record implements ThreadInterface

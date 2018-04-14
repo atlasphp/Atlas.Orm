@@ -20,7 +20,7 @@
         <?php
         namespace DataSource\Content;
 
-        use Atlas\Orm\Mapper\Record;
+        use Atlas\Mapper\Record;
 
         class ContentRecord extends Record {}
 
@@ -34,7 +34,7 @@
 
         class ContentMapper extends AbstractMapper
         {
-            protected function getRecordClass(RowInterface $row)
+            protected function getRecordClass(Row $row)
             {
                 // 'wiki' => 'DataSource\Content\WikiRecord'
                 return 'DataSource\Content\' . ucfirst($row->type) . 'Record';

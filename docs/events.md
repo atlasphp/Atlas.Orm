@@ -1,11 +1,9 @@
 # Events
 
-## Mapper Events
-
 There are several events that will automatically be called when interacting with a
-Mapper object. If you used the Atlas CLI tool with the `--full` option, a
-MapperEvents class will be created for you. For example, `ThreadMapperEvents.php`.
-With this class, you can override any of the available mapper events.
+Atlas objects.
+
+## Mapper Events
 
 The `insert()`, `update()`, and `delete()` methods all have 3 events associated
 with them: a `before*()`, a `modify*()`, and an `after*()`. In addition, there
@@ -14,41 +12,41 @@ is a `modifySelect()` event.
 ```php
 <?php
 // Runs after the Select object is created, but before it is executed
-modifySelect(MapperInterface $mapper, MapperSelect $select)
+modifySelect(Mapper $mapper, MapperSelect $select)
 
 // Runs before the Insert object is created
-beforeInsert(MapperInterface $mapper, RecordInterface $record)
+beforeInsert(Mapper $mapper, Record $record)
 
 // Runs after the Insert object is created, but before it is executed
-modifyInsert(MapperInterface $mapper, RecordInterface $record, Insert $insert)
+modifyInsert(Mapper $mapper, Record $record, Insert $insert)
 
 // Runs after the Insert object is executed
-afterInsert(MapperInterface $mapper,
-            RecordInterface $record,
+afterInsert(Mapper $mapper,
+            Record $record,
             Insert $insert,
             PDOStatement $pdoStatement)
 
 // Runs before the Update object is created
-beforeUpdate(MapperInterface $mapper, RecordInterface $record)
+beforeUpdate(Mapper $mapper, Record $record)
 
 // Runs after the Update object is created, but before it is executed
-modifyUpdate(MapperInterface $mapper, RecordInterface $record, Update $update)
+modifyUpdate(Mapper $mapper, Record $record, Update $update)
 
 // Runs after the Update object is executed
-afterUpdate(MapperInterface $mapper,
-            RecordInterface $record,
+afterUpdate(Mapper $mapper,
+            Record $record,
             Update $update,
             PDOStatement $pdoStatement)
 
 // Runs before the Delete object is created
-beforeDelete(MapperInterface $mapper, RecordInterface $record)
+beforeDelete(Mapper $mapper, Record $record)
 
 // Runs after the Delete object is created, but before it is executed
-modifyDelete(MapperInterface $mapper, RecordInterface $record, Delete $delete)
+modifyDelete(Mapper $mapper, Record $record, Delete $delete)
 
 // Runs after the Delete object is executed
-afterDelete(MapperInterface $mapper,
-            RecordInterface $record,
+afterDelete(Mapper $mapper,
+            Record $record,
             Delete $delete,
             PDOStatement $pdoStatement)
 ```
@@ -61,9 +59,9 @@ to Records and RecordSets](behavior.html).
 <?php
 namespace Blog\DataSource\Posts;
 
-use Atlas\Orm\Mapper\MapperEvents;
-use Atlas\Orm\Mapper\MapperInterface;
-use Atlas\Orm\Mapper\RecordInterface;
+use Atlas\Mapper\MapperEvents;
+use Atlas\Mapper\Mapper;
+use Atlas\Mapper\Record;
 use Atlas\Orm\Exception;
 
 /**
@@ -71,7 +69,7 @@ use Atlas\Orm\Exception;
  */
 class PostsMapperEvents extends MapperEvents
 {
-    public function beforeUpdate(MapperInterface $mapper, RecordInterface $record)
+    public function beforeUpdate(Mapper $mapper, Record $record)
     {
         if (! $record->validate())
             throw new Exception('Update Error');
@@ -109,44 +107,44 @@ is a `modifySelect()` event, and a `modifySelectedRow()` event.
 ```php
 <?php
 // Runs after the Select object is created, but before it is executed
-modifySelect(TableInterface $table, TableSelect $select)
+modifySelect(Table $table, TableSelect $select)
 
 // Runs after a newly-selected row is instantiated, but before it is
 // identity-mapped.
-modifySelectedRow(TableInterface $table, Row $row)
+modifySelectedRow(Table $table, Row $row)
 
 // Runs before the Insert object is created
-beforeInsert(TableInterface $table, Row $row)
+beforeInsert(Table $table, Row $row)
 
 // Runs after the Insert object is created, but before it is executed
-modifyInsert(TableInterface $table, Row $row, Insert $insert)
+modifyInsert(Table $table, Row $row, Insert $insert)
 
 // Runs after the Insert object is executed
-afterInsert(TableInterface $table,
+afterInsert(Table $table,
             Row $row,
             Insert $insert,
             PDOStatement $pdoStatement)
 
 // Runs before the Update object is created
-beforeUpdate(TableInterface $table, Row $row)
+beforeUpdate(Table $table, Row $row)
 
 // Runs after the Update object is created, but before it is executed
-modifyUpdate(TableInterface $table, Row $row, Update $update)
+modifyUpdate(Table $table, Row $row, Update $update)
 
 // Runs after the Update object is executed
-afterUpdate(TableInterface $table,
+afterUpdate(Table $table,
             Row $row,
             Update $update,
             PDOStatement $pdoStatement)
 
 // Runs before the Delete object is created
-beforeDelete(TableInterface $table, Row $row)
+beforeDelete(Table $table, Row $row)
 
 // Runs after the Delete object is created, but before it is executed
-modifyDelete(TableInterface $table, Row $row, Delete $delete)
+modifyDelete(Table $table, Row $row, Delete $delete)
 
 // Runs after the Delete object is executed
-afterDelete(TableInterface $table,
+afterDelete(Table $table,
             Row $row,
             Delete $delete,
             PDOStatement $pdoStatement)
@@ -161,7 +159,7 @@ to Records and RecordSets](behavior.html).
 namespace Blog\DataSource\Posts;
 
 use Atlas\Orm\Table\TableEvents;
-use Atlas\Orm\Table\TableInterface;
+use Atlas\Orm\Table\Table;
 use Atlas\Orm\Table\Row;
 use Atlas\Orm\Exception;
 
@@ -170,7 +168,7 @@ use Atlas\Orm\Exception;
  */
 class PostsTableEvents extends TableEvents
 {
-    public function beforeUpdate(TableInterface $table, Row $row)
+    public function beforeUpdate(Table $table, Row $row)
     {
         if (! $record->validate())
             throw new Exception('Update Error');
@@ -188,7 +186,7 @@ $success = $atlas->update($post);
 if ($sucess) {
     echo "Post updated";
 } else {
-    foreach ($post->getErrors as $error) {
+    foreach ($post->getErrors() as $error) {
         echo $error . '<br/>';
     }
 }
