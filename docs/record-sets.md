@@ -30,14 +30,14 @@ $thread = $atlas->fetchRecord(ThreadMapper::CLASS, 1, [
 ]);
 
 $comment = $thread->comments->appendNew([
-    'thread_id' => $thread->thread_id,
+    'thread' => $thread,
     'comment' => 'Lorem ipsum dolor sit amet...'
 ]);
 
-// plan to insert the new comment
-$transaction->insert($comment);
+// insert the new comment directly
+$atlas->insert($comment);
 
-// Or persist the thread
+// or persist the whole thread
 $atlas->persist($thread);
 ```
 
@@ -65,7 +65,7 @@ You can search for Records within an existing RecordSet by their column values:
 ```php
 <?php
 $threadRecordSet = $atlas->select(ThreadMapper::CLASS)
-    ->where('published=?', 1)
+    ->where('published = ', 1)
     ->fetchRecordSet();
 
 // returns one matching Record object from the RecordSet,
@@ -73,7 +73,7 @@ $threadRecordSet = $atlas->select(ThreadMapper::CLASS)
 $matchingRecord = $threadRecordSet->getOneBy(['subject' => 'Subject One']);
 
 // returns a new RecordSet of matching Record objects from the RecordSet
-$matchingRecords = $threadRecordSet->getAllBy(['author_id' => '5']);
+$matchingRecordSet = $threadRecordSet->getAllBy(['author_id' => '5']);
 ```
 
 ## Detaching Records from RecordSets
@@ -85,13 +85,13 @@ delete Records from the database; it only detaches them from the RecordSet.
 <?php
 // unsets and returns one matching Record from the Record Set,
 // or null if there is no match
-$removedRecord = $threadRecordSet->detachOneBy(['subject' => 'Subject One']);
+$detachedRecord = $threadRecordSet->detachOneBy(['subject' => 'Subject One']);
 
 // unsets and returns a new RecordSet of matching Record objects
-$removedRecords = $threadRecordSet->detachAllBy(['author_id' => '5']);
+$detachedRecordSet = $threadRecordSet->detachAllBy(['author_id' => '5']);
 
 // unsets and returns a new RecordSet of all Record objects
-$removedRecords = $threadRecordSet->detachAll();
+$detachedRecordSet = $threadRecordSet->detachAll();
 ```
 
 > **Note:**
@@ -108,12 +108,19 @@ You can mark each Record currently in a RecordSet for deletion by using the
 <?php
 // mark all current records for deletion
 $threadRecordSet->setDelete();
-
-// detach all current records, and mark only the detached
-// ones for deletion:
 ```
 
 > **Note**:
 >
 > If you add another Record to the collection at this point, it will not have
 > been marked for deletion.
+
+You might only want to mark some of the Records for deletion:
+
+```php
+<?php
+$threadRecordSet->getAllBy(['author_id' => 1])->setDelete();
+```
+
+When you persist a RecordSet relationship, all of its Records marked for
+deletion will automatically detached.
