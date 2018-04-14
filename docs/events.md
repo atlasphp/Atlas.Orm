@@ -83,10 +83,9 @@ And you might have something like this in your code:
 
 ```php
 <?php
-$success = $atlas->update($post);
-if ($sucess) {
-    echo "Post updated";
-} else {
+try {
+    $atlas->update($post);
+} catch (\Exception $e) {
     foreach ($post->getErrors() as $error) {
         echo $error . '<br/>';
     }

@@ -23,18 +23,18 @@ $thread->date_added = $date->format('Y-m-d H:i:s');
 ```
 
 You can insert a single Record back to the database by using the `Atlas::insert()`
-method. This will use the appropriate Mapper for the Record to perform the
-write, and capture any exceptions that occur along the way.
+method, which will pick the appropriate Mapper for the Record to perform the
+write.
 
 ```php
 <?php
-$success = $atlas->insert($thread);
-if ($success) {
-    echo "Wrote the Record back to the database.";
-} else {
-    echo "Did not write the Record: " . $atlas->getException();
-}
+$atlas->insert($thread);
 ```
+
+> **Warning:**
+>
+> The insert() method will not capture exceptions; you may with to wrap the
+> method call in a try/catch block.
 
 Inserting a Record with an auto-incrementing primary key will automatically
 modify the Record to set the last-inserted ID.
@@ -57,7 +57,7 @@ $thread = $atlas->newRecord(ThreadMapper::CLASS,
 );
 // If the insert is successful, the `author_id` column will automatically be
 // set to the Author Record's primary key value. In this case, 4.
-$success = $atlas->insert($thread);
+$atlas->insert($thread);
 
 echo $thread->author_id; // 4
 ```
@@ -85,7 +85,7 @@ $thread = $atlas->newRecord(ThreadMapper::CLASS,
     ]
 );
 // Insert will not create the related Author Record. Use persist() instead.
-$success = $atlas->insert($thread);
+$atlas->insert($thread);
 ```
 
 ## Updating an Existing Record
@@ -101,13 +101,13 @@ $thread = $atlas->fetchRecord(ThreadMapper::CLASS, 3);
 $thread->title = 'This title is better than the last one';
 
 // Save the record back to the database.
-$success = $atlas->update($thread);
-if ($success) {
-    echo "Wrote the Record back to the database.";
-} else {
-    echo "Did not write the Record: " . $atlas->getException();
-}
+$atlas->update($thread);
 ```
+
+> **Warning:**
+>
+> The update() method will not capture exceptions; you may with to wrap the
+> method call in a try/catch block.
 
 As with `insert()`, foreign keys are also updated, but only for existing related
 records.
@@ -121,12 +121,7 @@ $author = $atlas->fetchRecord(AuthorMapper::CLASS, 4);
 $thread->author = $author;
 
 // Save the record back to the database.
-$success = $atlas->update($thread);
-if ($success) {
-    echo "Wrote the Record back to the database.";
-} else {
-    echo "Did not write the Record: " . $atlas->getException();
-}
+$atlas->update($thread);
 ```
 
 ## Deleting a Record
@@ -136,14 +131,13 @@ Deleting a record works the same as inserting or updating.
 ```php
 <?php
 $thread = $atlas->fetchRecord(ThreadMapper::CLASS, 3);
-
-$success = $atlas->delete($thread);
-if ($success) {
-    echo "Removed record from the database.";
-} else {
-    echo "Did not remove the Record: " . $atlas->getException();
-}
+$atlas->delete($thread);
 ```
+
+> **Warning:**
+>
+> The update() method will not capture exceptions; you may with to wrap the
+> method call in a try/catch block.
 
 ## Persisting a Record
 
@@ -164,13 +158,13 @@ The `persist()` method will:
 
 ```php
 <?php
-$success = $atlas->persist($record);
-if ($success) {
-    echo "Wrote the Record and all of its relateds back to the database.";
-} else {
-    echo "Did not write the Record: " . $atlas->getException();
-}
+$atlas->persist($record);
 ```
+
+> **Warning:**
+>
+> The persist() method will not capture exceptions; you may with to wrap the
+> method call in a try/catch block.
 
 As with insert and update, this will automatically set the foreign key fields on
 the native Record, and on all the loaded relationships for that Record.
