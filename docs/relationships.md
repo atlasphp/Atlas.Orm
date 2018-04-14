@@ -142,9 +142,9 @@ when Atlas is stitching together related records.
 ## Simple WHERE Conditions
 
 You may find it useful to define simple WHERE conditions on the foreign side of
-the relationship. For example, you can handle one side of a many-to-one
-relationship by reference (aka "polymorphic association") by selecting only
-related records of a particular type.
+the relationship. For example, you can handle one side of a many-to-one-variant
+(aka "polymorphic association") by selecting only related records of a
+particular type.
 
 In the following example, a `comments` table has a `commentable_id` column as
 the foreign key value, but is restricted to "video" values on a discriminator
