@@ -194,5 +194,5 @@ class CommentMapperRelationships extends MapperRelationships
 
 Note that there will be one query per variant type in the native record set.
 That is, if a native record set (of an arbitrary number of records) refers to a
-total of three different relationships, then Atlas will issue three additional
+total of three different variant types, then Atlas will issue three additional
 queries to fetch the related records.
