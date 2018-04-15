@@ -168,10 +168,11 @@ class IssueMapper extends AbstractMapper
 
 The many-to-one-variant relationship is somewhat different from the other
 relationship types. It is identical to a many-to-one relationship, except that
-the relationships vary by a reference-type column in the native table. This
-allows rows in the native table to "belong to" rows in more than one foreign
-table. The typical example is one of comments that can be created on many
-different types of content, such as static pages, blog posts, and video links.
+the relationships vary by a type (or "discriminator") column in the native
+table. This allows rows in the native table to "belong to" rows in more than one
+foreign table. The typical example is one of comments that can be created on
+many different types of content, such as static pages, blog posts, and video
+links.
 
 ```php
 class CommentMapperRelationships extends MapperRelationships
@@ -179,7 +180,7 @@ class CommentMapperRelationships extends MapperRelationships
     protected function define()
     {
         // The first argument is the field name on the native record;
-        // the second argument is the reference column on the native table.
+        // the second argument is the type column on the native table.
         $this->manyToOneVariant('commentable', 'commentable_type')
 
             // The first argument is the value of the commentable_type column;
