@@ -28,7 +28,7 @@ class Atlas
 
     public static function new(...$args) : Atlas
     {
-        $transactionClass = MiniTransaction::CLASS;
+        $transactionClass = Transaction::CLASS;
 
         $end = end($args);
         if (is_string($end)
