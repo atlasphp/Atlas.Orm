@@ -45,7 +45,7 @@ Optionally, you may pass a _Transaction_ class name as the final parameter.
 ```php
 <?php
 use Atlas\Orm\Atlas;
-use Atlas\Orm\LongTransaction;
+use Atlas\Orm\MiniTransaction;
 
 $atlas = Atlas::new(
     'mysql:host=localhost;dbname=testdb',
