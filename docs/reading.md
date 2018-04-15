@@ -3,7 +3,7 @@
 Use Atlas to retrieve a single Record, an array of Records, or a collection of
 Records in a RecordSet, from the database.
 
-## Fetching a Record
+## Fetching and Reading a Record
 
 Use the `fetchRecord()` method to retrieve a single Record. It can be called
 either by primary key, or with a `select()` query.
@@ -32,8 +32,6 @@ $threadRecord = $atlas
 > **Note:**
 >
 > If `fetchRecord()` does not find a match, it will return `null`.
-
-### Accessing/Reading Record Data
 
 Once you have a Record, you can access the columns via properties on the Record.
 Assume a database column called `title`.
@@ -83,7 +81,7 @@ $threadRecordSet = $atlas
 > SQL query methods. See [Atlas\Query](https://github.com/atlasphp/Atlas.Query/)
 > for more information.
 
-## Fetching A RecordSet Collection
+## Fetching and Reading A RecordSet
 
 The `fetchRecordSet()` method works just the same as `fetchRecords()`, but
 instead of returning an array of Records, it returns a RecordSet collection.
@@ -93,8 +91,6 @@ instead of returning an array of Records, it returns a RecordSet collection.
 > If `fetchRecordSet()` does not find any matches, it will return an empty
 > RecordSet collection object. To check if the RecordSet contains
 > any Records, call the `isEmpty()` method on the RecordSet.
-
-### Accessing/Reading RecordSet Data
 
 RecordSets act as arrays of Records. As such, you can iterate over the RecordSet
 and access the Records individually.
@@ -115,7 +111,7 @@ foreach ($threadRecordSet as $threadRecord) {
 
 See also the page on [working with RecordSets](./record-sets.html).
 
-## Fetching Related Records
+## Fetching Related Records and RecordSetss
 
 Any relationships that are set in the Mapper will appear as `null` in the Record
 object. Related data will only be populated if it is explicitly requested as
@@ -213,7 +209,7 @@ $threadRecord = $atlas->fetchRecord(ThreadMapper::CLASS, '1', [
 ]);
 ```
 
-### Accessing/Reading Related Data
+### Reading Related Records and RecordSets
 
 Accessing related data works just like accessing Record properties except
 instead of using a column name, you use the relationship name defined in the

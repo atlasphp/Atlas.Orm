@@ -40,7 +40,7 @@ $atlas = Atlas::new(
 ```
 
 Optionally, you may pass a _Transaction_ class name as the final parameter.
-(By default, _Atlas_ will use a _MiniTransaction_ instance.)
+(By default, _Atlas_ will use a manual _Transaction_ strategy.)
 
 ```php
 <?php
@@ -51,7 +51,7 @@ $atlas = Atlas::new(
     'mysql:host=localhost;dbname=testdb',
     'username',
     'password',
-    LongTransaction::CLASS
+    MiniTransaction::CLASS
 );
 ```
 
@@ -72,8 +72,8 @@ $builder = new AtlasBuilder(
 // get the ConnectionLocator to set read and write connection factories
 $builder->getConnectionLocator()->...;
 
-// set a Transaction class (the default is MiniTransaction)
-$builder->setTransactionClass(LongTransaction::CLASS);
+// set a Transaction class (the default is a manual Transaction)
+$builder->setTransactionClass(MiniTransaction::CLASS);
 
 // set a custom factory callable
 $builder->setFactory(function ($class) {
