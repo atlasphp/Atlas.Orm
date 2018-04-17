@@ -1,10 +1,10 @@
 <?php
-namespace Atlas\Orm;
+namespace Atlas\Orm\Transaction;
 
 use Atlas\Table\Exception;
 use Atlas\Testing\DataSource\Employee\EmployeeMapper;
 
-class MiniTransactionTest extends TransactionTest
+class AutoTransactTest extends TransactionTest
 {
     public function testRead()
     {

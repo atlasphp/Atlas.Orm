@@ -2,6 +2,8 @@
 namespace Atlas\Orm;
 
 use Atlas\Pdo\ConnectionLocator;
+use Atlas\Orm\Transaction\BeginOnRead;
+use ReflectionClass;
 
 class AtlasBuilderTest extends \PHPUnit\Framework\TestCase
 {
@@ -22,10 +24,10 @@ class AtlasBuilderTest extends \PHPUnit\Framework\TestCase
 
     public function testSetTransactionClass()
     {
-        $this->builder->setTransactionClass(LongTransaction::CLASS);
+        $this->builder->setTransactionClass(BeginOnRead::CLASS);
         $atlas = $this->builder->newAtlas();
         $actual = $this->getProperty($atlas, 'transaction');
-        $this->assertInstanceOf(LongTransaction::CLASS, $actual);
+        $this->assertInstanceOf(BeginOnRead::CLASS, $actual);
     }
 
     public function testSetFactory()
@@ -38,7 +40,7 @@ class AtlasBuilderTest extends \PHPUnit\Framework\TestCase
 
     protected function getProperty($object, $name)
     {
-        $rclass = new \ReflectionClass(get_class($object));
+        $rclass = new ReflectionClass(get_class($object));
         $rprop = $rclass->getProperty($name);
         $rprop->setAccessible(true);
         return $rprop->getValue($object);

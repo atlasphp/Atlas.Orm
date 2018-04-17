@@ -1,15 +1,15 @@
 <?php
-namespace Atlas\Orm;
+namespace Atlas\Orm\Transaction;
 
 use Atlas\Testing\DataSource\Employee\EmployeeMapper;
 
-class ShortTransactionTest extends TransactionTest
+class BeginOnReadTest extends TransactionTest
 {
     public function testRead()
     {
         $this->assertFalse($this->connection->inTransaction());
         $this->atlas->fetchRecord(EmployeeMapper::CLASS, 1);
-        $this->assertFalse($this->connection->inTransaction());
+        $this->assertTrue($this->connection->inTransaction());
     }
 
     public function testWrite()

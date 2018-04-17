@@ -8,25 +8,23 @@
  */
 declare(strict_types=1);
 
-namespace Atlas\Orm;
+namespace Atlas\Orm\Transaction;
 
 use Atlas\Mapper\Mapper;
 use Atlas\Mapper\Record;
 
 /**
- * Auto-begins a transaction on read or write, but does not commit or roll back.
+ * Support for manual transaction control.
  */
-class LongTransaction extends Transaction
+class AutoCommit extends Transaction
 {
     public function read(Mapper $mapper, string $method, array $params)
     {
-        $this->beginTransaction();
         return $mapper->$method(...$params);
     }
 
     public function write(Mapper $mapper, string $method, Record $record) : void
     {
-        $this->beginTransaction();
         $this->connectionLocator->lockToWrite();
         $mapper->$method($record);
     }

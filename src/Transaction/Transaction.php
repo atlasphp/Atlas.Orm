@@ -8,16 +8,13 @@
  */
 declare(strict_types=1);
 
-namespace Atlas\Orm;
+namespace Atlas\Orm\Transaction;
 
 use Atlas\Pdo\ConnectionLocator;
 use Atlas\Mapper\Mapper;
 use Atlas\Mapper\Record;
 
-/**
- * Support for manual transaction control.
- */
-class Transaction
+abstract class Transaction
 {
     protected $connectionLocator;
 
@@ -26,16 +23,9 @@ class Transaction
         $this->connectionLocator = $connectionLocator;
     }
 
-    public function read(Mapper $mapper, string $method, array $params)
-    {
-        return $mapper->$method(...$params);
-    }
+    abstract public function read(Mapper $mapper, string $method, array $params);
 
-    public function write(Mapper $mapper, string $method, Record $record) : void
-    {
-        $this->connectionLocator->lockToWrite();
-        $mapper->$method($record);
-    }
+    abstract public function write(Mapper $mapper, string $method, Record $record) : void;
 
     public function beginTransaction() : void
     {

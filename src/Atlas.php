@@ -18,6 +18,8 @@ use Atlas\Mapper\Record;
 use Atlas\Mapper\RecordSet;
 use Atlas\Pdo\ConnectionLocator;
 use Atlas\Table\TableLocator;
+use Atlas\Orm\Transaction\AutoCommit;
+use Atlas\Orm\Transaction\Transaction;
 use Exception;
 
 class Atlas
@@ -28,7 +30,7 @@ class Atlas
 
     public static function new(...$args) : Atlas
     {
-        $transactionClass = Transaction::CLASS;
+        $transactionClass = AutoCommit::CLASS;
 
         $end = end($args);
         if (is_string($end)

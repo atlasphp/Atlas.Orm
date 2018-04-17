@@ -1,11 +1,12 @@
 <?php
-namespace Atlas\Orm;
+namespace Atlas\Orm\Transaction;
 
 use Atlas\Testing\DataSource\SqliteFixture;
 use Atlas\Testing\DataSource\Employee\EmployeeMapper;
 use Atlas\Testing\DataSource\Employee\EmployeeRecord;
 use Atlas\Testing\DataSource\Employee\EmployeeRecordSet;
 use Atlas\Mapper\MapperSelect;
+use Atlas\Orm\Atlas;
 
 abstract class TransactionTest extends \PHPUnit\Framework\TestCase
 {

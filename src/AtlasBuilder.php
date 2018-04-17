@@ -14,6 +14,7 @@ use Atlas\Mapper\MapperLocator;
 use Atlas\Mapper\MapperQueryFactory;
 use Atlas\Pdo\ConnectionLocator;
 use Atlas\Table\TableLocator;
+use Atlas\Orm\Transaction\AutoCommit;
 
 class AtlasBuilder
 {
@@ -21,7 +22,7 @@ class AtlasBuilder
 
     protected $factory;
 
-    protected $transactionClass = Transaction::CLASS;
+    protected $transactionClass = AutoCommit::CLASS;
 
     public function __construct(...$args)
     {

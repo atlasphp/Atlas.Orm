@@ -8,7 +8,7 @@
  */
 declare(strict_types=1);
 
-namespace Atlas\Orm;
+namespace Atlas\Orm\Transaction;
 
 use Atlas\Mapper\Mapper;
 use Atlas\Mapper\Record;
@@ -17,8 +17,13 @@ use Exception;
 /**
  * Auto-begins, and then commits or rolls back, each write operation.
  */
-class MiniTransaction extends Transaction
+class AutoTransact extends Transaction
 {
+    public function read(Mapper $mapper, string $method, array $params)
+    {
+        return $mapper->$method(...$params);
+    }
+
     public function write(Mapper $mapper, string $method, Record $record) : void
     {
         $this->connectionLocator->lockToWrite();
