@@ -29,16 +29,16 @@ write connection for the rest of the Atlas object's lifetime.
 If you find that manually managing transactions proves tedious, Atlas comes with
 three alternative transaction strategy classes:
 
-- _MiniTransaction_ will automatically begin a transaction when you perform a
+- _AutoTransact_ will automatically begin a transaction when you perform a
   write operation, then automatically commit that operation, or roll it back on
   exception.
 
-- _ShortTransaction_ will automatically begin a transaction when you perform a
+- _BeginOnWrite_ will automatically begin a transaction when you perform a
   write operation. It will not commit or roll back; you will need to do so
   yourself. Once you do, the next time you perform a write operation, Atlas will
   begin another transaction.
 
-- _LongTransaction_ will automatically begin a transaction when you perform a
+- _BeginOnRead_ will automatically begin a transaction when you perform a
   write operation **or** a read operation. It will not commit or roll back; you
   will need to do so yourself. Once you do, the next time you perform a write or
   read operation, Atlas will begin another transaction.
@@ -53,14 +53,14 @@ the _Atlas_ static `new()` call ...
 ```php
 <?php
 use Atlas\Orm\Atlas;
-use Atlas\Orm\MiniTransaction;
+use Atlas\Orm\Tranaction\AutoTransact;
 
 // use a MiniTransaction strategy
 $atlas = Atlas::new(
     'mysql:host=localhost;dbname=testdb',
     'username',
     'password',
-    MiniTransaction::CLASS
+    AutoTransact::CLASS
 );
 ```
 
@@ -69,7 +69,7 @@ $atlas = Atlas::new(
 ```php
 <?php
 use Atlas\Orm\AtlasBuilder;
-use Atlas\Orm\LongTransaction;
+use Atlas\Orm\Transaction\BeginOnRead;
 
 $builder = new AtlasBuilder(
     'mysql:host=localhost;dbname=testdb',
@@ -77,8 +77,8 @@ $builder = new AtlasBuilder(
     'password'
 );
 
-// use a MiniTransaction strategy
-$builder->setTransactionClass(MiniTransaction::CLASS);
+// use a BeginOnRead strategy
+$builder->setTransactionClass(BeginOnRead::CLASS);
 
 // get a new Atlas instance
 $atlas = $builder->newAtlas();
