@@ -26,6 +26,34 @@ class ContentMapper extends Mapper
 }
 ```
 
+Another example would be custom write behaviors, such as incrementing a value
+directly in the database (without going through any events) and modifying the
+appropriate _Record_ in memory:
+
+```php
+<?php
+namespace App\DataSource\Content;
+
+use Atlas\Mapper\Mapper;
+
+class ContentMapper extends Mapper
+{
+    public function increment(ContentRecord $record, string $field)
+    {
+        $this->table
+            ->update()
+            ->set($field, "{$field} + 1")
+            ->where("content_id = ", $record->content_id)
+            ->perform();
+
+        $record->$field = $this->table
+            ->select($field)
+            ->where("content_id = ", $record->content_id)
+            ->fetchValue();
+    }
+}
+```
+
 ## Single Table Inheritance
 
 Sometimes you will want to use one _Mapper_ (and its underlying _Table_) to
