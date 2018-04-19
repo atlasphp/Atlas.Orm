@@ -27,9 +27,6 @@ class AtlasBuilder
     public function __construct(...$args)
     {
         $this->connectionLocator = ConnectionLocator::new(...$args);
-        $this->factory = function ($class) {
-            return new $class();
-        };
     }
 
     public function getConnectionLocator() : ConnectionLocator

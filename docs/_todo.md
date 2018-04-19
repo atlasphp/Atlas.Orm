@@ -1,46 +1,35 @@
 - persisting a RecordSet
 
-- removing relateds; cf. https://github.com/atlasphp/Atlas.Orm/issues/62
-
 - convert field to object and back again, e.g. Date object -- could be a
   be a method on a custom Record
 
 - soft-deletion by marking a field -- method on a custom Record, then have
   the Mapper add "where('soft_deleted = ', false)";
 
-- writing custom Mapper methods
-
 - overriding Row validation (e.g. to allow objects in Rows)
 
-- extending from your own Record, Row, Table, Mapper, Events classes
+- Table Events and Mapper Events.
 
-- Single-table inheritance. Given a `content` table with a `type` column ...
+    - transform data on selection, before going into Row
 
-        ```
-        <?php
-        namespace DataSource\Content;
+    - auto-set field on insert/update, e.g. created_on, updated_on
 
-        use Atlas\Mapper\Record;
+    - increment/decrement a Record field -- via events, and select back the new
+      count. alternatively, make these mapper/transaction methods:
 
-        class ContentRecord extends Record {}
+        // $record->$field += $increment;
+        // if $record already inserted ...
+        // `UPDATE table SET field = field $incr WHERE primarykey`
+        // if not inserted yet, just increment in memory
+        $mapper->increment($record, 'field' [, $incr]);
 
-        class WikiRecord extends ContentRecord {}
+        // *plans* an increment method call
+        $transaction->increment($record, 'field' [, $incr]);
 
-        class BlogRecord extends ContentRecord {}
+    - update *other* records on insert/update/delete; e.g. trees/lists/etc
 
-        class ThreadRecord extends ContentRecord {}
+- Automatic validation approaches
 
-        class ReplyRecord extends ContentRecord {}
+    - check the database for presence/nonpresence of values (uniqueness) -- part
+      of validation
 
-        class ContentMapper extends AbstractMapper
-        {
-            protected function getRecordClass(Row $row)
-            {
-                // 'wiki' => 'DataSource\Content\WikiRecord'
-                return 'DataSource\Content\' . ucfirst($row->type) . 'Record';
-            }
-
-            // getRecordSetClass() doesn't work the same, since there might be
-            // many different types in there.
-        }
-        ```

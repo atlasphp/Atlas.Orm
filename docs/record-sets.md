@@ -123,4 +123,4 @@ $threadRecordSet->getAllBy(['author_id' => 1])->setDelete();
 ```
 
 When you persist a RecordSet relationship, all of its Records marked for
-deletion will automatically detached.
+deletion will automatically be detached.
