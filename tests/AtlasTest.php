@@ -122,6 +122,23 @@ class AtlasTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(true); // no exceptions means all is well
     }
 
+    public function testPersistRecordSet()
+    {
+        $employees = $this->atlas->fetchRecordSet(EmployeeMapper::CLASS, [1, 2, 3, 4, 5]);
+        foreach ($employees as $employee) {
+            $employee->name .= 'changed';
+        }
+        $employees[3]->setDelete();
+        $employees[4]->setDelete();
+        $expect = [
+            $employees[3],
+            $employees[4],
+        ];
+        $actual = $this->atlas->persistRecordSet($employees);
+        $this->assertSame($expect[0], $actual[3]);
+        $this->assertSame($expect[1], $actual[4]);
+    }
+
     public function testTransaction() : void
     {
         $this->assertFalse($this->connection->inTransaction());

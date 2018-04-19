@@ -136,7 +136,7 @@ class Atlas
     public function persistRecordSet(RecordSet $recordSet) : RecordSet
     {
         foreach ($recordSet as $record) {
-            $this->write(__FUNCTION__, $record);
+            $this->write('persist', $record);
         }
         return $recordSet->detachDeleted();
     }
