@@ -1,3 +1,5 @@
 # CHANGELOG
 
-This is the changelog for the 3.x series.
+## 3.0.0-alpha1
+
+Initial release of the 3.x series.
