@@ -45,13 +45,13 @@ Optionally, you may pass a _Transaction_ class name as the final parameter.
 ```php
 <?php
 use Atlas\Orm\Atlas;
-use Atlas\Orm\MiniTransaction;
+use Atlas\Orm\Transaction\AutoTransact;
 
 $atlas = Atlas::new(
     'mysql:host=localhost;dbname=testdb',
     'username',
     'password',
-    MiniTransaction::CLASS
+    AutoTransact::CLASS
 );
 ```
 
@@ -61,7 +61,7 @@ callable, such as for _TableEvents_ and _MapperEvents_ classes.
 ```php
 <?php
 use Atlas\Orm\AtlasBuilder;
-use Atlas\Orm\LongTransaction;
+use Atlas\Orm\Transaction\BeginOnRead;
 
 $builder = new AtlasBuilder(
     'mysql:host=localhost;dbname=testdb',
@@ -73,7 +73,7 @@ $builder = new AtlasBuilder(
 $builder->getConnectionLocator()->...;
 
 // set a Transaction class (the default is a manual Transaction)
-$builder->setTransactionClass(MiniTransaction::CLASS);
+$builder->setTransactionClass(BeginOnRead::CLASS);
 
 // set a custom factory callable
 $builder->setFactory(function ($class) {
