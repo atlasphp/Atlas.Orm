@@ -128,7 +128,7 @@ deletion will automatically be detached.
 ## Persisting A RecordSet
 
 You can persist each Record in a RecordSet by calling the _Atlas_ method
-`persistRecordSet()`
+`persistRecordSet()`:
 
 ```php
 <?php

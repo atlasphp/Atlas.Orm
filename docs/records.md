@@ -33,7 +33,7 @@ $atlas->insert($thread);
 
 > **Warning:**
 >
-> The insert() method will not capture exceptions; you may wish to wrap the
+> The insert() method will not catch exceptions; you may wish to wrap the
 > method call in a try/catch block.
 
 Inserting a Record with an auto-incrementing primary key will automatically
@@ -106,7 +106,7 @@ $atlas->update($thread);
 
 > **Warning:**
 >
-> The update() method will not capture exceptions; you may wish to wrap the
+> The update() method will not catch exceptions; you may wish to wrap the
 > method call in a try/catch block.
 
 As with `insert()`, foreign keys are also updated, but only for existing related
@@ -136,7 +136,7 @@ $atlas->delete($thread);
 
 > **Warning:**
 >
-> The update() method will not capture exceptions; you may wish to wrap the
+> The delete() method will not catch exceptions; you may wish to wrap the
 > method call in a try/catch block.
 
 ## Persisting a Record
@@ -163,7 +163,7 @@ $atlas->persist($record);
 
 > **Warning:**
 >
-> The persist() method will not capture exceptions; you may wish to wrap the
+> The persist() method will not catch exceptions; you may wish to wrap the
 > method call in a try/catch block.
 
 As with insert and update, this will automatically set the foreign key fields on
