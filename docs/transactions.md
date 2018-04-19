@@ -54,7 +54,7 @@ the _Atlas_ static `new()` call ...
 ```php
 <?php
 use Atlas\Orm\Atlas;
-use Atlas\Orm\Tranaction\AutoTransact;
+use Atlas\Orm\Transaction\AutoTransact;
 
 // use a MiniTransaction strategy
 $atlas = Atlas::new(
