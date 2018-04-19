@@ -1,12 +1,8 @@
-- persisting a RecordSet
-
-- convert field to object and back again, e.g. Date object -- could be a
-  be a method on a custom Record
-
 - soft-deletion by marking a field -- method on a custom Record, then have
   the Mapper add "where('soft_deleted = ', false)";
 
-- overriding Row validation (e.g. to allow objects in Rows)
+- overriding Row::assertValidValue() (e.g. to allow objects in Rows) -- might
+  also be a be a method on a custom Record
 
 - Table Events and Mapper Events.
 

@@ -124,3 +124,16 @@ $threadRecordSet->getAllBy(['author_id' => 1])->setDelete();
 
 When you persist a RecordSet relationship, all of its Records marked for
 deletion will automatically be detached.
+
+## Persisting A RecordSet
+
+You can persist each Record in a RecordSet by calling the _Atlas_ method
+`persistRecordSet()`
+
+```php
+<?php
+$deletedRecords = $atlas->persistRecordSet($threadRecordSet);
+```
+
+This will insert, update, or delete each Record in the RecordSet as appropriate,
+then detach all deleted Records and return them as their own RecordSet.

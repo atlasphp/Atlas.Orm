@@ -133,6 +133,14 @@ class Atlas
         $this->write(__FUNCTION__, $record);
     }
 
+    public function persistRecordSet(RecordSet $recordSet) : RecordSet
+    {
+        foreach ($recordSet as $record) {
+            $this->write(__FUNCTION__, $record);
+        }
+        return $recordSet->detachDeleted();
+    }
+
     public function beginTransaction() : void
     {
         $this->transaction->beginTransaction();

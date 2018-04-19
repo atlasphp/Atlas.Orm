@@ -31,7 +31,8 @@ three alternative transaction strategy classes:
 
 - _AutoTransact_ will automatically begin a transaction when you perform a
   write operation, then automatically commit that operation, or roll it back on
-  exception.
+  exception. (Note that in the case of `persistRecordSet()`, each Record in the
+  RecordSet will be persisted within its own transaction.)
 
 - _BeginOnWrite_ will automatically begin a transaction when you perform a
   write operation. It will not commit or roll back; you will need to do so
