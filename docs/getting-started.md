@@ -40,7 +40,8 @@ $atlas = Atlas::new(
 ```
 
 Optionally, you may pass a _Transaction_ class name as the final parameter.
-(By default, _Atlas_ will use a manual _Transaction_ strategy.)
+(By default, _Atlas_ will use an _AutoCommit_ strategy, where transactions have
+to be managed manually.)
 
 ```php
 <?php
@@ -72,7 +73,7 @@ $builder = new AtlasBuilder(
 // get the ConnectionLocator to set read and write connection factories
 $builder->getConnectionLocator()->...;
 
-// set a Transaction class (the default is a manual Transaction)
+// set a Transaction class (the default is AutoCommit)
 $builder->setTransactionClass(BeginOnRead::CLASS);
 
 // set a custom factory callable
