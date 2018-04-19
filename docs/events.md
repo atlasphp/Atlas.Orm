@@ -1,15 +1,9 @@
 # Events
 
-There are several events that will automatically be called when interacting with a
+There are several events that will automatically be called when interacting with
 Atlas objects.
 
-
 ## Table Events
-
-There are several events that will automatically be called when interacting with a
-Table object. If you used the Atlas CLI tool with the `--full` option, a
-TableEvents class will be created for you. For example, `ThreadTableEvents.php`.
-With this class, you can override any of the available mapper events.
 
 The `insert()`, `update()`, and `delete()` methods all have 3 events associated
 with them: a `before*()`, a `modify*()`, and an `after*()`. In addition, there
@@ -61,7 +55,7 @@ afterDelete(Table $table,
             PDOStatement $pdoStatement)
 ```
 
-These would be the place to put behaviors such as setting `inserted_at` or
+TableEvents would be the place to put behaviors such as setting `inserted_at` or
 `updated_at` values, etc:
 
 ```php
