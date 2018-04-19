@@ -1,8 +1,9 @@
 # Direct Queries
 
-If you need to perform queries directly, additional `fetch*` and `yield*` methods
-are provided which expose the Extended PDO functionality. By using the `columns()`
-method, you can select specific columns or individual values. For example:
+If you need to perform queries directly, additional `fetch*` and `yield*`
+methods are provided which expose the underlying _Atlas\Pdo\Connection_
+functionality. By using the `columns()` method, you can select specific columns
+or individual values. For example:
 
 ```php
 <?php
@@ -25,7 +26,7 @@ $threadIdsAndTitles = $atlas
 // etc.
 ```
 
-See [the list of `Connection::fetch*()`][fetch] and [`yield*()`][yield]
+See the list of _Connection_ [fetch*()][fetch] and [yield*()][yield]
 methods for more.
 
 [fetch]: https://github.com/atlasphp/Atlas.Pdo/blob/1.x/docs/connection.md#fetching-results
@@ -46,7 +47,7 @@ $threadData = $atlas
     ->select(ThreadMapper::CLASS)
     ->columns('threads.subject', 'authors.name', 's.*')
     ->join('INNER', 'authors', 'authors.author_id = threads.author_id')
-    ->join('INNER', 'summary s', 's.thread_id = threads.thread_id')
+    ->join('INNER', 'summary AS s', 's.thread_id = threads.thread_id')
     ->where('authors.name = ', $name)
     ->orderBy('threads.thread_id DESC')
     ->offset(2)

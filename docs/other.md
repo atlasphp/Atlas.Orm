@@ -175,7 +175,8 @@ $atlas->persist($tagging);
 
 Similarly, here is how you would remove a tag:
 
-```
+```php
+<?php
 // mark the Tagging association for deletion
 $blog->taggings
     ->getOneBy(['name' => $tag_name)
@@ -197,13 +198,14 @@ as exceptions to be caught by your surrounding application or domain logic.
 
 For example, to check that a value is a valid email address:
 
+```php
 <?php
 namespace App\DataSource\Author;
 
 use Atlas\Table\Row;
 use Atlas\Table\Table;
 use Atlas\Table\TableEvents;
-use U
+
 class AuthorTableEvents extends TableEvents
 {
     public function beforeInsert(Table $table, Row $row) : void
@@ -223,17 +225,8 @@ class AuthorTableEvents extends TableEvents
         }
     }
 }
+```
 
 For extended reporting of validation failures, consider writing your own
 extended exception class to retain a list of the fields and error messages,
 perhaps with the object being validated.
-
-## Dependency Injection
-
-_Atlas_ makes an allowance for dependency injection in only two places: the
-_MapperEvents_ class and the _TableEvents_ class. All other classes in _Atlas_
-claim the constructor for themselves.
-
-To inject dependencies into one of the events classes, create a general-purpose
-callable factory to create and return the requested class:
-

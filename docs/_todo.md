@@ -13,3 +13,4 @@
     - check the database for presence/nonpresence of values (uniqueness) -- part
       of validation
 
+- Dependency injection using the callable factory

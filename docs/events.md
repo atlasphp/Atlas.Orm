@@ -14,8 +14,7 @@ is a `modifySelect()` event, and a `modifySelectedRow()` event.
 // Runs after the Select object is created, but before it is executed
 modifySelect(Table $table, TableSelect $select)
 
-// Runs after a newly-selected row is instantiated, but before it is
-// identity-mapped.
+// Runs after a newly-selected row is populated but before it is returned
 modifySelectedRow(Table $table, Row $row)
 
 // Runs before the Insert object is created
