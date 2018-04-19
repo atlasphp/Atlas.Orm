@@ -124,7 +124,6 @@ case of related string key columns when matching related records. You can do so
 with the `ignoreCase()` method on the relationship definition.
 
 ```php
-
 <?php
 class FooMapper
 {
