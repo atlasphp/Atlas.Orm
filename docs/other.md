@@ -191,7 +191,7 @@ $atlas->persist($thread);
 
 You will probably want to apply some sort of filtering (validation and
 sanitizing) to _Row_ (and to a lesser extent _Record_) objects before they get
-written back to the database. To do so, implment or override the appropriate
+written back to the database. To do so, implement or override the appropriate
 _TableEvents_ (or _MapperEvents_) class methods for `before` or `modify` the
 `insert` or `update` event.  Irrecoverable filtering failures should be thrown
 as exceptions to be caught by your surrounding application or domain logic.
@@ -205,6 +205,7 @@ namespace App\DataSource\Author;
 use Atlas\Table\Row;
 use Atlas\Table\Table;
 use Atlas\Table\TableEvents;
+use UnexpectedValueException;
 
 class AuthorTableEvents extends TableEvents
 {
@@ -227,6 +228,6 @@ class AuthorTableEvents extends TableEvents
 }
 ```
 
-For extended reporting of validation failures, consider writing your own
+For detailed reporting of validation failures, consider writing your own
 extended exception class to retain a list of the fields and error messages,
 perhaps with the object being validated.
