@@ -16,8 +16,6 @@ populate domain objects. (Note that an Atlas record is a "passive" record, not a
 [active record](http://martinfowler.com/eaaCatalog/activeRecord.html).
 It is disconnected from the database.)
 
-Atlas is stable for production use. Please send bug reports and pull requests!
-
 Documentation is at <http://atlasphp.io>.
 
 ## Rationale
