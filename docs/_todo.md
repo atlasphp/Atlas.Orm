@@ -1,3 +1,5 @@
+- OnDelete cascades in relationships
+
 - soft-deletion by marking a field -- method on a custom Record, then have
   the Mapper add "where('soft_deleted = ', false)";
 
