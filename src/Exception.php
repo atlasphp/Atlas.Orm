@@ -164,6 +164,21 @@ class Exception extends \Exception
 
     /**
      *
+     * The relationship name already exists.
+     *
+     * @param string $foreignName The foreign relationship name.
+     *
+     * @return Exception
+     *
+     */
+    public static function relationshipAlreadyExists(string $name)
+    {
+        $message = "Relationship '$name' already exists.";
+        return new Exception($message);
+    }
+
+    /**
+     *
      * The "through" relationshp for a many-to-many has not been fetched.
      *
      * @param string $foreignName The "foreign" relationship name.

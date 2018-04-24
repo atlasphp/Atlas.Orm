@@ -307,6 +307,11 @@ class Relationships
         string $persistencePriority,
         $throughName = null
     ) : RelationshipInterface {
+
+        if (isset($this->relationships[$name])) {
+            throw Exception::relationshipAlreadyExists($name);
+        }
+
         if (! class_exists($foreignMapperClass)) {
             throw Exception::classDoesNotExist($foreignMapperClass);
         }
