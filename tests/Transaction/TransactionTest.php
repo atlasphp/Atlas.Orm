@@ -1,12 +1,11 @@
 <?php
 namespace Atlas\Orm\Transaction;
 
-use Atlas\Testing\DataSource\SqliteFixture;
-use Atlas\Testing\DataSource\Employee\EmployeeMapper;
+use Atlas\Orm\Atlas;
+use Atlas\Testing\DataSource\Employee\Employee;
 use Atlas\Testing\DataSource\Employee\EmployeeRecord;
 use Atlas\Testing\DataSource\Employee\EmployeeRecordSet;
-use Atlas\Mapper\MapperSelect;
-use Atlas\Orm\Atlas;
+use Atlas\Testing\DataSourceFixture;
 
 abstract class TransactionTest extends \PHPUnit\Framework\TestCase
 {
@@ -16,7 +15,7 @@ abstract class TransactionTest extends \PHPUnit\Framework\TestCase
 
     public function setUp()
     {
-        $this->connection = (new SqliteFixture())->exec();
+        $this->connection = (new DataSourceFixture())->exec();
         $transactionClass = substr(static::class, 0, -4);
         $this->atlas = Atlas::new($this->connection, $transactionClass);
     }

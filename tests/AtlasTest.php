@@ -1,11 +1,11 @@
 <?php
 namespace Atlas\Orm;
 
-use Atlas\Testing\DataSource\SqliteFixture;
-use Atlas\Testing\DataSource\Employee\EmployeeMapper;
+use Atlas\Testing\DataSource\Employee\Employee;
 use Atlas\Testing\DataSource\Employee\EmployeeRecord;
 use Atlas\Testing\DataSource\Employee\EmployeeRecordSet;
-use Atlas\Mapper\MapperSelect;
+use Atlas\Testing\DataSource\Employee\EmployeeSelect;
+use Atlas\Testing\DataSourceFixture;
 
 class AtlasTest extends \PHPUnit\Framework\TestCase
 {
@@ -15,15 +15,15 @@ class AtlasTest extends \PHPUnit\Framework\TestCase
 
     public function setUp()
     {
-        $this->connection = (new SqliteFixture())->exec();
+        $this->connection = (new DataSourceFixture())->exec();
         $this->atlas = Atlas::new($this->connection, Transaction::CLASS);
     }
 
     public function testMapper()
     {
         $this->assertInstanceOf(
-            EmployeeMapper::CLASS,
-            $this->atlas->mapper(EmployeeMapper::CLASS)
+            Employee::CLASS,
+            $this->atlas->mapper(Employee::CLASS)
         );
     }
 
@@ -31,7 +31,7 @@ class AtlasTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertInstanceOf(
             EmployeeRecord::CLASS,
-            $this->atlas->newRecord(EmployeeMapper::CLASS)
+            $this->atlas->newRecord(Employee::CLASS)
         );
     }
 
@@ -39,7 +39,7 @@ class AtlasTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertInstanceOf(
             EmployeeRecordSet::CLASS,
-            $this->atlas->newRecordSet(EmployeeMapper::CLASS)
+            $this->atlas->newRecordSet(Employee::CLASS)
         );
     }
 
@@ -47,7 +47,7 @@ class AtlasTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertInstanceOf(
             EmployeeRecord::CLASS,
-            $this->atlas->fetchRecord(EmployeeMapper::CLASS, 1)
+            $this->atlas->fetchRecord(Employee::CLASS, 1)
         );
     }
 
@@ -55,13 +55,13 @@ class AtlasTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertInstanceOf(
             EmployeeRecord::CLASS,
-            $this->atlas->fetchRecordBy(EmployeeMapper::CLASS, ['id' => 1])
+            $this->atlas->fetchRecordBy(Employee::CLASS, ['id' => 1])
         );
     }
 
     public function testFetchRecords()
     {
-        $actual = $this->atlas->fetchRecords(EmployeeMapper::CLASS, [1, 2, 3]);
+        $actual = $this->atlas->fetchRecords(Employee::CLASS, [1, 2, 3]);
         $this->assertTrue(is_array($actual));
         $this->assertInstanceOf(EmployeeRecord::CLASS, $actual[0]);
         $this->assertInstanceOf(EmployeeRecord::CLASS, $actual[1]);
@@ -70,7 +70,7 @@ class AtlasTest extends \PHPUnit\Framework\TestCase
 
     public function testFetchRecordsBy()
     {
-        $actual = $this->atlas->fetchRecordsBy(EmployeeMapper::CLASS, ['id' => [1, 2, 3]]);
+        $actual = $this->atlas->fetchRecordsBy(Employee::CLASS, ['id' => [1, 2, 3]]);
         $this->assertTrue(is_array($actual));
         $this->assertInstanceOf(EmployeeRecord::CLASS, $actual[0]);
         $this->assertInstanceOf(EmployeeRecord::CLASS, $actual[1]);
@@ -79,7 +79,7 @@ class AtlasTest extends \PHPUnit\Framework\TestCase
 
     public function testFetchRecordSet()
     {
-        $actual = $this->atlas->fetchRecordSet(EmployeeMapper::CLASS, [1, 2, 3]);
+        $actual = $this->atlas->fetchRecordSet(Employee::CLASS, [1, 2, 3]);
         $this->assertInstanceOf(EmployeeRecordSet::CLASS, $actual);
         $this->assertInstanceOf(EmployeeRecord::CLASS, $actual[0]);
         $this->assertInstanceOf(EmployeeRecord::CLASS, $actual[1]);
@@ -88,7 +88,7 @@ class AtlasTest extends \PHPUnit\Framework\TestCase
 
     public function testFetchRecordSetBy()
     {
-        $actual = $this->atlas->fetchRecordSetBy(EmployeeMapper::CLASS, ['id' => [1, 2, 3]]);
+        $actual = $this->atlas->fetchRecordSetBy(Employee::CLASS, ['id' => [1, 2, 3]]);
         $this->assertInstanceOf(EmployeeRecordSet::CLASS, $actual);
         $this->assertInstanceOf(EmployeeRecord::CLASS, $actual[0]);
         $this->assertInstanceOf(EmployeeRecord::CLASS, $actual[1]);
@@ -98,14 +98,14 @@ class AtlasTest extends \PHPUnit\Framework\TestCase
     public function testSelect()
     {
         $this->assertInstanceOf(
-            MapperSelect::CLASS,
-            $this->atlas->select(EmployeeMapper::CLASS)
+            EmployeeSelect::CLASS,
+            $this->atlas->select(Employee::CLASS)
         );
     }
 
     public function testInsertUpdatePersistDelete()
     {
-        $employee = $this->atlas->newRecord(EmployeeMapper::CLASS, [
+        $employee = $this->atlas->newRecord(Employee::CLASS, [
             'name' => 'Foo'
         ]);
 
@@ -124,7 +124,7 @@ class AtlasTest extends \PHPUnit\Framework\TestCase
 
     public function testPersistRecordSet()
     {
-        $employees = $this->atlas->fetchRecordSet(EmployeeMapper::CLASS, [1, 2, 3, 4, 5]);
+        $employees = $this->atlas->fetchRecordSet(Employee::CLASS, [1, 2, 3, 4, 5]);
         foreach ($employees as $employee) {
             $employee->name .= 'changed';
         }

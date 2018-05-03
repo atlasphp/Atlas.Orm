@@ -2,14 +2,14 @@
 namespace Atlas\Orm\Transaction;
 
 use Atlas\Table\Exception;
-use Atlas\Testing\DataSource\Employee\EmployeeMapper;
+use Atlas\Testing\DataSource\Employee\Employee;
 
 class AutoTransactTest extends TransactionTest
 {
     public function testRead()
     {
         $this->assertFalse($this->connection->inTransaction());
-        $this->atlas->fetchRecord(EmployeeMapper::CLASS, 1);
+        $this->atlas->fetchRecord(Employee::CLASS, 1);
         $this->assertFalse($this->connection->inTransaction());
     }
 
@@ -17,7 +17,7 @@ class AutoTransactTest extends TransactionTest
     {
         $this->assertFalse($this->connection->inTransaction());
 
-        $employee = $this->atlas->fetchRecord(EmployeeMapper::CLASS, 1);
+        $employee = $this->atlas->fetchRecord(Employee::CLASS, 1);
         $employee->name = 'changed';
         $this->atlas->persist($employee);
 
