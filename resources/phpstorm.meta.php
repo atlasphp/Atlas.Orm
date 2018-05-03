@@ -11,3 +11,5 @@ override(\Atlas\Orm\Atlas::fetchRecordsBy(0), map(['' => '@Record[]']));
 override(\Atlas\Orm\Atlas::fetchRecordSet(0), map(['' => '@RecordSet']));
 override(\Atlas\Orm\Atlas::fetchRecordSetBy(0), map(['' => '@RecordSet']));
 override(\Atlas\Orm\Atlas::select(0), map(['' => '@Select']));
+override(\Atlas\Mapper\MapperLocator::get(0), map(['' => '@']));
+override(\Atlas\Table\TableLocator::get(0), map(['' => '@']));

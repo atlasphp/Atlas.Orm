@@ -21,7 +21,6 @@
         }
     },
     "require-dev": {
-        "atlas/cli": "~2.0",
         "atlas/testing": "1.x@dev",
         "pds/skeleton": "~1.0",
         "phpunit/phpunit": "~7.0"
