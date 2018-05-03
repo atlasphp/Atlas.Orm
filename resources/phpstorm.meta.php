@@ -1,5 +1,6 @@
 <?php
 namespace PHPSTORM_META;
+
 override(\Atlas\Orm\Atlas::mapper(0), map(['' => '@']));
 override(\Atlas\Orm\Atlas::newRecord(0), map(['' => '@Record']));
 override(\Atlas\Orm\Atlas::newRecordSet(0), map(['' => '@RecordSet']));
