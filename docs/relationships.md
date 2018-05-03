@@ -29,7 +29,7 @@ use App\DataSource\Tagging\Tagging;
 use App\DataSource\Tag\Tag;
 use Atlas\Mapper\MapperRelationships;
 
-class ThreadMapperRelationships extends MapperRelationships
+class ThreadRelationships extends MapperRelationships
 {
     protected function define()
     {
@@ -57,7 +57,7 @@ names as the third parameter. For example, if the threads table uses
 
 ```php
 <?php
-class ThreadMapperRelationships extends MapperRelationships
+class ThreadRelationships extends MapperRelationships
 {
     protected function define()
     {
@@ -74,7 +74,7 @@ And on the `oneToMany` side of the relationship, you use the native author table
 
 ```php
 <?php
-class AuthorMapperRelationships extends MapperRelationships
+class AuthorRelationships extends MapperRelationships
 {
     protected function define()
     {
@@ -95,7 +95,7 @@ this:
 
 ```php
 <?php
-class FooMapperRelationships extends MapperRelationships
+class FooRelationships extends MapperRelationships
 {
     protected function define()
     {
@@ -175,7 +175,7 @@ many different types of content, such as static pages, blog posts, and video
 links.
 
 ```php
-class CommentMapperRelationships extends MapperRelationships
+class CommentRelationships extends MapperRelationships
 {
     protected function define()
     {
