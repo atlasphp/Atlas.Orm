@@ -7,9 +7,9 @@ properties, or pass an array of initial data to populate into the Record.
 
 ```php
 <?php
-$thread = $atlas->newRecord(ThreadMapper::CLASS,
+$thread = $atlas->newRecord(Thread::CLASS,
     [
-        'title'=>'New Thread Title',
+        'title' => 'New Thread Title',
     ]
 );
 ```
@@ -48,11 +48,11 @@ with an Author Record using the `author_id` column. The relationship is named
 
 ```php
 <?php
-$author = $atlas->fetchRecord(AuthorMapper::CLASS, 4);
-$thread = $atlas->newRecord(ThreadMapper::CLASS,
+$author = $atlas->fetchRecord(Author::CLASS, 4);
+$thread = $atlas->newRecord(Thread::CLASS,
     [
-        'title'=>'New Thread Title',
-        'author'=>$author
+        'title' => 'New Thread Title',
+        'author' => $author
     ]
 );
 // If the insert is successful, the `author_id` column will automatically be
@@ -72,16 +72,16 @@ The following will fail.
 
 ```php
 <?php
-$author = $atlas->newRecord(AuthorMapper::CLASS,
+$author = $atlas->newRecord(Author::CLASS,
     [
-        'first_name'=>'Sterling',
-        'last_name'=>'Archer'
+        'first_name' => 'Sterling',
+        'last_name' => 'Archer'
     ]
 );
-$thread = $atlas->newRecord(ThreadMapper::CLASS,
+$thread = $atlas->newRecord(Thread::CLASS,
     [
-        'title'=>'New Thread Title',
-        'author'=>$author
+        'title' => 'New Thread Title',
+        'author' => $author
     ]
 );
 // Insert will not create the related Author Record. Use persist() instead.
@@ -95,7 +95,7 @@ Updating an existing record works the same as `insert()`.
 ```php
 <?php
 // fetch an existing record by primary key
-$thread = $atlas->fetchRecord(ThreadMapper::CLASS, 3);
+$thread = $atlas->fetchRecord(Thread::CLASS, 3);
 
 // Modify the title
 $thread->title = 'This title is better than the last one';
@@ -114,8 +114,8 @@ records.
 
 ```php
 <?php
-$thread = $atlas->fetchRecord(ThreadMapper::CLASS, 3);
-$author = $atlas->fetchRecord(AuthorMapper::CLASS, 4);
+$thread = $atlas->fetchRecord(Thread::CLASS, 3);
+$author = $atlas->fetchRecord(Author::CLASS, 4);
 
 // Modify the author
 $thread->author = $author;
@@ -130,7 +130,7 @@ Deleting a record works the same as inserting or updating.
 
 ```php
 <?php
-$thread = $atlas->fetchRecord(ThreadMapper::CLASS, 3);
+$thread = $atlas->fetchRecord(Thread::CLASS, 3);
 $atlas->delete($thread);
 ```
 
@@ -186,7 +186,7 @@ database as part of `persist()`.
 
 ```php
 <?php
-$thread = $atlas->fetchRecord(ThreadMapper::CLASS, 3);
+$thread = $atlas->fetchRecord(Thread::CLASS, 3);
 // Mark the record for deletion
 $thread->setDelete();
 $atlas->persist($thread);
@@ -199,7 +199,7 @@ Record is persisted, they will be deleted from the database.
 <?php
 // Assume a oneToMany relationship between a thread and its comments
 // Select the thread and related comments
-$thread = $atlas->fetchRecord(ThreadMapper::CLASS, 3,
+$thread = $atlas->fetchRecord(Thread::CLASS, 3,
     [
         'comments'
     ]

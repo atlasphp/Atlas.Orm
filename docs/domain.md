@@ -8,28 +8,26 @@ on how to do that.
 ## Persistence Model
 
 For the examples below, we will work with an imaginary forum application that
-has conversation threads. The ThreadMapper might something like this:
+has conversation threads. The Thread mapper might something like this:
 
 ```php
 <?php
 namespace App\DataSource\Thread;
 
-use App\DataSource\Author\AuthorMapper;
-use App\DataSource\Summary\SummaryMapper;
-use App\DataSource\Reply\ReplyMapper;
-use App\DataSource\Tagging\TaggingMapper;
-use App\DataSource\Tag\TagMapper;
-use Atlas\Mapper\AbstractMapper;
+use App\DataSource\Author\Author;
+use App\DataSource\Reply\Reply;
+use App\DataSource\Summary\Summary;
+use App\DataSource\Tagging\Tagging;
+use Atlas\Mapper\Mapper;
 
-class ThreadMapper extends AbstractMapper
+class Thread extends Mapper
 {
     protected function setRelated()
     {
-        $this->manyToOne('author', AuthorMapper::CLASS);
-        $this->oneToOne('summary', SummaryMapper::CLASS);
-        $this->oneToMany('replies', ReplyMapper::CLASS);
-        $this->oneToMany('taggings', TaggingMapper::CLASS);
-        $this->manyToMany('tags', TagMapper::CLASS, 'taggings');
+        $this->manyToOne('author', Author::CLASS);
+        $this->oneToOne('summary', Summary::CLASS);
+        $this->oneToMany('replies', Reply::CLASS);
+        $this->oneToMany('taggings', Tagging::CLASS);
     }
 }
 ```
@@ -71,13 +69,13 @@ Thread Entities. It might look something like this:
 <?php
 namespace App\Domain\Thread;
 
-use App\DataSource\Thread\ThreadMapper;
+use App\DataSource\Thread\Thread;
 
 class ThreadRepository
 {
     protected $mapper;
 
-    public function __construct(ThreadMapper $mapper)
+    public function __construct(Thread $mapper)
     {
         $this->mapper = $mapper;
     }
@@ -87,7 +85,6 @@ class ThreadRepository
         $record = $this->mapper->fetchRecord($thread_id, [
             'author',
             'taggings',
-            'tags',
             'replies',
         ]);
 
@@ -157,7 +154,11 @@ class ThreadRecord extends Record implements ThreadInterface
 
     public function getTags()
     {
-        return $this->tags->getArrayCopy();
+        $tags = [];
+        foreach ($this->taggings as $tagging) {
+            $tags[] = $tagging->tag->getArrayCopy();
+        }
+        return $tags;
     }
 
     public function getReplies()
@@ -243,7 +244,11 @@ class Thread implements ThreadInterface
 
     public function getTags()
     {
-        return $this->record->tags->getArrayCopy();
+        $tags = [];
+        foreach ($this->record->taggings as $tagging) {
+            $tags[] = $tagging->tag->getArrayCopy();
+        }
+        return $tags;
     }
 
     public function getReplies()
@@ -371,6 +376,11 @@ class ThreadRepository ...
 
     protected function newThread(ThreadRecord $record)
     {
+        $tags = [];
+        foreach ($record->taggings as $tagging) {
+            $tags[] = $tagging->tag->getArrayCopy();
+        }
+
         return new Thread(
             $record->thread_id,
             $record->title,
@@ -378,7 +388,7 @@ class ThreadRepository ...
             $record->date_published,
             $record->author->author_id,
             $record->author->name,
-            $record->tags->getArrayCopy(),
+            $tags,
             $record->replies->getArrayCopy()
         );
     }

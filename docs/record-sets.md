@@ -6,7 +6,7 @@ Create a new RecordSet using the `newRecordSet()` method.
 
 ```php
 <?php
-$threadRecordSet = $atlas->newRecordSet(ThreadMapper::CLASS);
+$threadRecordSet = $atlas->newRecordSet(Thread::CLASS);
 ```
 
 ## Appending Records to a RecordSet
@@ -25,7 +25,7 @@ Additionally, you can append foreign Records to a native Record's relateds.
 
 ```php
 <?php
-$thread = $atlas->fetchRecord(ThreadMapper::CLASS, 1, [
+$thread = $atlas->fetchRecord(Thread::CLASS, 1, [
     'comments',
 ]);
 
@@ -55,7 +55,7 @@ $threadRecordSet[1]->title = 'Changed Title';
 unset($threadRecordSet[0]);
 
 // push a new record onto the set
-$threadRecordSet[] = $atlas->newRecord(ThreadMapper::CLASS);
+$threadRecordSet[] = $atlas->newRecord(Thread::CLASS);
 ```
 
 ## Searching within RecordSets
@@ -64,7 +64,7 @@ You can search for Records within an existing RecordSet by their column values:
 
 ```php
 <?php
-$threadRecordSet = $atlas->select(ThreadMapper::CLASS)
+$threadRecordSet = $atlas->select(Thread::CLASS)
     ->where('published = ', 1)
     ->fetchRecordSet();
 

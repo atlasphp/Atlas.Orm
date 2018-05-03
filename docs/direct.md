@@ -9,7 +9,7 @@ or individual values. For example:
 <?php
 // an array of IDs
 $threadIds = $atlas
-    ->select(ThreadMapper::CLASS)
+    ->select(Thread::CLASS)
     ->columns(['thread_id'])
     ->limit(10)
     ->orderBy('thread_id DESC')
@@ -17,7 +17,7 @@ $threadIds = $atlas
 
 // key-value pairs of IDs and titles
 $threadIdsAndTitles = $atlas
-    ->select(ThreadMapper::CLASS)
+    ->select(Thread::CLASS)
     ->columns(['thread_id', 'tite'])
     ->limit(10)
     ->orderBy('thread_id DESC')
@@ -26,7 +26,7 @@ $threadIdsAndTitles = $atlas
 // etc.
 ```
 
-See the list of _Connection_ [fetch*()][fetch] and [yield*()][yield]
+See the list of _Connection_ [fetch()][fetch] and [yield()][yield]
 methods for more.
 
 [fetch]: https://github.com/atlasphp/Atlas.Pdo/blob/1.x/docs/connection.md#fetching-results
@@ -44,7 +44,7 @@ joins as provided by [Atlas.Query][]:
 ```php
 <?php
 $threadData = $atlas
-    ->select(ThreadMapper::CLASS)
+    ->select(Thread::CLASS)
     ->columns('threads.subject', 'authors.name', 's.*')
     ->join('INNER', 'authors', 'authors.author_id = threads.author_id')
     ->join('INNER', 'summary AS s', 's.thread_id = threads.thread_id')
@@ -66,7 +66,7 @@ the Mapper relationships:
 ```php
 <?php
 $threadIdsAndAuthorNames = $atlas
-    ->select(ThreadMapper::CLASS)
+    ->select(Thread::CLASS)
     ->joinWith('INNER', 'author')
     ->columns(
         "thread.thread_id",
@@ -86,7 +86,7 @@ purposes.
 ```php
 <?php
 $select = $atlas
-    ->select(ThreadMapper::CLASS)
+    ->select(Thread::CLASS)
     ->columns('*')
     ->offset(10)
     ->limit(5);

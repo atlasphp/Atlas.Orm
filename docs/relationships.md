@@ -3,10 +3,11 @@
 You can add to the _MapperRelationships_ inside the relevant `define()` method,
 calling one of the four available relationship-definition methods:
 
-- `oneToOne($field, $mapperClass)` (aka "has one")
-- `oneToMany($field, $mapperClass)` (aka "has many")
 - `manyToOne($field, $mapperClass)` (aka "belongs to")
 - `manyToOneVariant($field, $typeCol)` (aka "polymorphic association")
+- `oneToMany($field, $mapperClass)` (aka "has many")
+- `oneToOne($field, $mapperClass)` (aka "has one")
+- `oneToOneBidi($field, $mapperClass)` for a bidirectional relationship
 
 > Note that many-to-many is not supported as a direct relationship. All
 > many-to-many retrievals must occur explicitly through the association mapping
@@ -21,21 +22,21 @@ Here is an example:
 <?php
 namespace App\DataSource\Thread;
 
-use App\DataSource\Author\AuthorMapper;
-use App\DataSource\Summary\SummaryMapper;
-use App\DataSource\Reply\ReplyMapper;
-use App\DataSource\Tagging\TaggingMapper;
-use App\DataSource\Tag\TagMapper;
+use App\DataSource\Author\Author;
+use App\DataSource\Summary\Summary;
+use App\DataSource\Reply\Reply;
+use App\DataSource\Tagging\Tagging;
+use App\DataSource\Tag\Tag;
 use Atlas\Mapper\MapperRelationships;
 
 class ThreadMapperRelationships extends MapperRelationships
 {
     protected function define()
     {
-        $this->manyToOne('author', AuthorMapper::CLASS);
-        $this->oneToOne('summary', SummaryMapper::CLASS);
-        $this->oneToMany('replies', ReplyMapper::CLASS);
-        $this->oneToMany('taggings', TaggingMapper::CLASS);
+        $this->manyToOne('author', Author::CLASS);
+        $this->oneToOne('summary', Summary::CLASS);
+        $this->oneToMany('replies', Reply::CLASS);
+        $this->oneToMany('taggings', Tagging::CLASS);
     }
 }
 ```
@@ -60,7 +61,7 @@ class ThreadMapperRelationships extends MapperRelationships
 {
     protected function define()
     {
-        $this->manyToOne('author', AuthorMapper::CLASS, [
+        $this->manyToOne('author', Author::CLASS, [
             // native (threads) column => foreign (authors) column
             'author_id' => 'id',
         ]);
@@ -77,7 +78,7 @@ class AuthorMapperRelationships extends MapperRelationships
 {
     protected function define()
     {
-        $this->oneToMany('threads', ThreadMapper::CLASS, [
+        $this->oneToMany('threads', Thread::CLASS, [
             // native (author) column => foreign (threads) column
             'id' => 'author_id',
         ]);
@@ -98,7 +99,7 @@ class FooMapperRelationships extends MapperRelationships
 {
     protected function define()
     {
-        $this->oneToMany('bars', BarMapper::CLASS, [
+        $this->oneToMany('bars', Bar::CLASS, [
             // native (foo) column => foreign (bar) column
             'acol' => 'foo_acol',
             'bcol' => 'foo_bcol',
@@ -129,7 +130,7 @@ class FooMapper
 {
     protected function define()
     {
-        $this->oneToMany('bars', BarMapper::CLASS)
+        $this->oneToMany('bars', Bar::CLASS)
             ->ignoreCase();
     }
 }
@@ -154,7 +155,7 @@ class IssueMapper extends AbstractMapper
 {
     protected function define()
     {
-        $this->oneToMany('comments', CommentMapper::CLASS, [
+        $this->oneToMany('comments', Comment::CLASS, [
             'video_id' => 'commentable_id'
         ])->where('commentable_type = ', 'video');
     }
@@ -185,9 +186,9 @@ class CommentMapperRelationships extends MapperRelationships
             // The first argument is the value of the commentable_type column;
             // the second is the related foreign mapper class;
             // the third is the native-to-foreign column mapping.
-            ->type('page', PageMapper::CLASS, ['commentable_id' => 'page_id'])
-            ->type('post', PostMapper::CLASS, ['commentable_id' => 'post_id'])
-            ->type('video', VideoMapper::CLASS, ['commentable_id' => 'video_id']);
+            ->type('page', Page::CLASS, ['commentable_id' => 'page_id'])
+            ->type('post', Post::CLASS, ['commentable_id' => 'post_id'])
+            ->type('video', Video::CLASS, ['commentable_id' => 'video_id']);
     }
 }
 ```

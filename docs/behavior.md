@@ -26,7 +26,7 @@ class ThreadRecord extends Record
     }
 }
 
-$thread = $atlas->fetchRecord(ThreadMapper::CLASS, $id);
+$thread = $atlas->fetchRecord(Thread::CLASS, $id);
 echo $thread->formatDate(); // outputs something like `Aug 21st, 2017`
 ```
 
@@ -50,7 +50,7 @@ class ThreadRecordSet extends RecordSet
         return $titles;
     }
 }
-$threads = $atlas->fetchRecordSet(ThreadMapper::CLASS, [1, 2, 3]);
+$threads = $atlas->fetchRecordSet(Thread::CLASS, [1, 2, 3]);
 
 print_r($threads->getAllTitles());
 ```

@@ -13,9 +13,9 @@ namespace App\DataSource\Content;
 
 use Atlas\Mapper\Mapper;
 
-class ContentMapper extends Mapper
+class Content extends Mapper
 {
-    public function fetchLatestContent(int $count)
+    public function fetchLatestContent(int $count) : ContentRecordSet
     {
         return $this
             ->select()
@@ -36,7 +36,7 @@ namespace App\DataSource\Content;
 
 use Atlas\Mapper\Mapper;
 
-class ContentMapper extends Mapper
+class Content extends Mapper
 {
     public function increment(ContentRecord $record, string $field)
     {
@@ -69,14 +69,16 @@ For example, given a _ContentMapper_ and _ContentRecord_ ...
 App\
     DataSource\
         Content\
-            ContentMapper.php
-            ContentMapperEvents.php
-            ContentMapperRelationships.php
+            Content.php
+            ContentEvents.php
+            ContentRelationships.php
             ContentRecord.php
             ContentRecordSet.php
             ContentRow.php
+            ContentSelect.php
             ContentTable.php
             ContentTableEvents.php
+            ContentTableSelect.php
 ```
 
 ... , you might have the content types of "post", "page", "video", "wiki", and so on.
@@ -85,14 +87,16 @@ App\
 App\
     DataSource\
         Content\
-            ContentMapper.php
-            ContentMapperEvents.php
-            ContentMapperRelationships.php
+            Content.php
+            ContentEvents.php
+            ContentRelationships.php
             ContentRecord.php
             ContentRecordSet.php
             ContentRow.php
+            ContentSelect.php
             ContentTable.php
             ContentTableEvents.php
+            ContentTableSelect.php
             PageContentRecord.php
             PostContentRecord.php
             VideoContentRecord.php
@@ -110,7 +114,7 @@ class WikiContentRecord extends ContentRecord
 }
 ```
 
-... and the _ContentMapper_ `getRecordClass()` method would look like this:
+... and the _Content_ `getRecordClass()` method would look like this:
 
 ```php
 <?php
@@ -119,7 +123,7 @@ namespace App\DataSource\Content;
 use Atlas\Mapper\Mapper;
 use Atlas\Table\Row;
 
-class ContentMapper extends Mapper
+class Content extends Mapper
 {
     protected function getRecordClass(Row $row) : Record
     {
@@ -154,14 +158,14 @@ Given the typical example of a `blog` table, associated to `tags`, through a
 ```php
 <?php
 // get a blog post, with taggings and tags
-$blog = $atlas->fetchRecord(BlogMapper::CLASS, $blog_id, [
+$blog = $atlas->fetchRecord(Blog::CLASS, $blog_id, [
     'taggings' => [
         'tags'
     ]
 ]);
 
 // get all tags in the system
-$tags = $atlas->fetchRecordSet(TagsMapper::CLASS);
+$tags = $atlas->fetchRecordSet(Tags::CLASS);
 
 // create the new tagging association, with the related blog and tag objects
 $tagging = $thread->taggings->appendNew([

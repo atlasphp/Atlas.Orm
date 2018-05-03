@@ -13,12 +13,12 @@ either by primary key, or with a `select()` query.
 // fetch by primary key thread_id = 1
 
 $threadRecord = $atlas->fetchRecord(
-    ThreadMapper::class,
+    Thread::CLASS,
     '1'
 );
 
 $threadRecord = $atlas
-    ->select(ThreadMapper::class)
+    ->select(Thread::CLASS)
     ->where('thread_id = ', '1')
     ->fetchRecord();
 ```
@@ -53,13 +53,13 @@ array of Records.  It can be called either with primary keys, or with a
 <?php
 // fetch thread_id 1, 2, and 3
 $threadRecordSet = $atlas->fetchRecords(
-    ThreadMapper::CLASS,
+    Thread::CLASS,
     [1, 2, 3]
 );
 
 // This is identical to the example above, but uses the `select()` variation.
 $threadRecordSet = $atlas
-    ->select(ThreadMapper::CLASS)
+    ->select(Thread::CLASS)
     ->where('thread_id IN ', [1, 2, 3])
     ->fetchRecords();
 ```
@@ -72,7 +72,7 @@ To return all rows, use the `select()` variation as shown below.
 // returned results
 
 $threadRecordSet = $atlas
-    ->select(ThreadMapper::CLASS)
+    ->select(Thread::CLASS)
     ->orderBy('date_added DESC')
     ->fetchRecords();
 ```
@@ -99,7 +99,7 @@ and access the Records individually.
 <?php
 // fetch the top 100 threads
 $threadRecordSet = $atlas
-    ->select(ThreadMapper::CLASS)
+    ->select(Thread::CLASS)
     ->orderBy('thread_id DESC')
     ->limit(100)
     ->fetchRecordSet();
@@ -123,7 +123,7 @@ which related fields to retrieve.
 ```php
 <?php
 $threadRecord = $atlas->fetchRecord(
-    ThreadMapper::CLASS,
+    Thread::CLASS,
     '1',
     [
         'author',
@@ -133,7 +133,7 @@ $threadRecord = $atlas->fetchRecord(
 );
 
 $threadRecordSet = $atlas->fetchRecordSet(
-    ThreadMapper::CLASS,
+    Thread::CLASS,
     [1, 2, 3],
     [
         'author',
@@ -148,7 +148,7 @@ When using the `select()` variation, load relateds using the `with()` method:
 ```php
 <?php
 $threadRecord = $atlas
-    ->select(ThreadMapper::class)
+    ->select(Thread::CLASS)
     ->where('thread_id = ', '1')
     ->with([
         'author',
@@ -158,7 +158,7 @@ $threadRecord = $atlas
     ->fetchRecord();
 
 $threadRecordSet = $atlas
-    ->select(ThreadMapper::CLASS)
+    ->select(Thread::CLASS)
     ->where('thread_id IN ', [1, 2, 3])
     ->with([
         'author',
@@ -176,7 +176,7 @@ author of each reply on each thread:
 ```php
 <?php
 $threadRecord = $this->atlas
-    ->select(ThreadMapper::class)
+    ->select(Thread::CLASS)
     ->where('thread_id = ', $threadId)
     ->with([
         'author',
@@ -195,7 +195,7 @@ that fetches the relateds:
 <?php
 // fetch thread_id 1; with only the last 10 related replies in descending order;
 // including each reply author
-$threadRecord = $atlas->fetchRecord(ThreadMapper::CLASS, '1', [
+$threadRecord = $atlas->fetchRecord(Thread::CLASS, '1', [
     'author',
     'summary',
     'replies' => function ($selectReplies) {
@@ -218,7 +218,7 @@ _MapperRelationships_.
 ```php
 <?php
 $threadRecord = $this->atlas
-    ->select(ThreadMapper::class)
+    ->select(Thread::CLASS)
     ->where('thread_id = ', $threadId)
     ->with([
         'author',
@@ -251,7 +251,7 @@ taggings relationship:
 
 ```php
 <?php
-$threadRecord = $atlas->fetchRecord(ThreadMapper::CLASS, '1', [
+$threadRecord = $atlas->fetchRecord(Thread::CLASS, '1', [
     'taggings' => [
         'tag'
     ]
@@ -269,11 +269,11 @@ RecordSet object using the `getArrayCopy()` method.
 
 ```php
 <?php
-$threadRecord = $atlas->fetchRecord('ThreadMapper::CLASS', '1');
+$threadRecord = $atlas->fetchRecord('Thread::CLASS', '1');
 $threadArray = $threadRecord->getArrayCopy();
 
 $threadRecordSet = $atlas
-    ->select(ThreadMapper::CLASS)
+    ->select(Thread::CLASS)
     ->orderBy(['date_added DESC'])
     ->fetchRecordSet();
 
@@ -297,7 +297,7 @@ returned. This can be useful for paging displays.
 ```php
 <?php
 $select = $atlas
-    ->select(ThreadMapper::CLASS)
+    ->select(Thread::CLASS)
     ->with([
         'author',
         'summary',

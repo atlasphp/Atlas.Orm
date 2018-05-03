@@ -61,9 +61,9 @@ TableEvents would be the place to put behaviors such as setting `inserted_at` or
 <?php
 namespace Blog\DataSource\Posts;
 
-use Atlas\Table\MapperEvents;
-use Atlas\Table\Table;
 use Atlas\Table\Row;
+use Atlas\Table\Table;
+use Atlas\Table\TableEvents;
 
 /**
  * @inheritdoc
@@ -138,14 +138,14 @@ to Records and RecordSets](behavior.html).
 <?php
 namespace Blog\DataSource\Posts;
 
-use Atlas\Mapper\MapperEvents;
 use Atlas\Mapper\Mapper;
+use Atlas\Mapper\MapperEvents;
 use Atlas\Mapper\Record;
 
 /**
  * @inheritdoc
  */
-class PostsMapperEvents extends MapperEvents
+class PostsEvents extends MapperEvents
 {
     public function beforeUpdate(Mapper $mapper, Record $record)
     {
