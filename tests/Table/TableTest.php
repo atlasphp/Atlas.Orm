@@ -12,19 +12,28 @@ class TableTest extends \PHPUnit\Framework\TestCase
 {
     protected $table;
 
+    protected $identityMap;
+
     protected function setUp()
     {
+        $this->identityMap = new IdentityMap();
+
         $this->table = new EmployeeTable(
             new ConnectionManager(new ConnectionLocator(function () {
                 return new ExtendedPdo('sqlite::memory:');
             })),
             new QueryFactory('sqlite'),
-            new IdentityMap(),
+            $this->identityMap,
             new TableEvents()
         );
 
         $fixture = new SqliteFixture($this->table->getWriteConnection());
         $fixture->exec();
+    }
+
+    public function getIdentityMap()
+    {
+        $this->assertSame($this->identityMap, $this->table->getIdentityMap());
     }
 
     public function testTnsertUpdateDeleteRow()

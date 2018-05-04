@@ -129,6 +129,18 @@ abstract class AbstractTable implements TableInterface
 
     /**
      *
+     * Returns the IdentityMap for this table.
+     *
+     * @return IdentityMap
+     *
+     */
+    public function getIdentityMap() : IdentityMap
+    {
+        return $this->identityMap;
+    }
+
+    /**
+     *
      * Fetches one Row based on a primary-key value, from the identity map if
      * present, or from the database if not.
      *
