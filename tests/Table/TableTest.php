@@ -31,7 +31,7 @@ class TableTest extends \PHPUnit\Framework\TestCase
         $fixture->exec();
     }
 
-    public function getIdentityMap()
+    public function testGetIdentityMap()
     {
         $this->assertSame($this->identityMap, $this->table->getIdentityMap());
     }
