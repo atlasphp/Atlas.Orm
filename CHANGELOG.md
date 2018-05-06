@@ -10,7 +10,7 @@ to support retrieval of initial values on rows.
 It also fixes a bug where a relationship definition could use the same name more
 than once, silently overwriting the previous definition.
 
-Finally, it includes some documentation updates.
+Finally, it includes updated documentation and tests.
 
 ## 2.2.0
 
