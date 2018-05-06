@@ -2,6 +2,16 @@
 
 This is the changelog for the 2.x series.
 
+## 2.3.0
+
+This release adds one "off-interface" method, `AbstractTable::getIdentityMap()`,
+to support retrieval of initial values on rows.
+
+It also fixes a bug where a relationship definition could use the same name more
+than once, silently overwriting the previous definition.
+
+Finally, it includes some documentation updates.
+
 ## 2.2.0
 
 This release adds two "off-interface" events, `TableEvents::modifySelect()` and
