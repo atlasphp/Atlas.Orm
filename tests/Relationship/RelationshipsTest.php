@@ -51,4 +51,24 @@ class RelationshipsTest extends \PHPUnit\Framework\TestCase
             NoSuchMapper::CLASS
         );
     }
+
+    public function test_nameAlreadyUsed()
+    {
+        $this->relationships->oneToOne(
+            'foo',
+            EmployeeMapper::CLASS,
+            EmployeeMapper::CLASS
+        );
+
+        $this->expectException(
+            Exception::CLASS,
+            "Relationship 'foo' already exists."
+        );
+
+        $this->relationships->oneToMany(
+            'foo',
+            EmployeeMapper::CLASS,
+            EmployeeMapper::CLASS
+        );
+    }
 }
