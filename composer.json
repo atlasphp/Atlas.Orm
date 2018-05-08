@@ -1,7 +1,7 @@
 {
     "name": "atlas/orm",
     "type": "library",
-    "description": "A data mapper ORM for your persistence model (not your domain model).",
+    "description": "An ORM for your persistence model (not your domain model).",
     "keywords": [ "sql", "data", "mapper", "mapping", "orm" ],
     "homepage": "http://github.com/atlasphp/Atlas.Orm",
     "license": "MIT",
@@ -13,7 +13,7 @@
     ],
     "require": {
         "php": ">=7.1.0",
-        "atlas/mapper": "1.x@dev"
+        "atlas/mapper": "1.x@beta"
     },
     "autoload": {
         "psr-4": {
@@ -21,7 +21,7 @@
         }
     },
     "require-dev": {
-        "atlas/testing": "1.x@dev",
+        "atlas/testing": "1.x@beta",
         "pds/skeleton": "~1.0",
         "phpunit/phpunit": "~7.0"
     },
@@ -33,5 +33,5 @@
     "suggest": {
         "atlas/cli": "A command-line tool to build skeleton classes."
     },
-    "minimum-stability": "dev"
+    "minimum-stability": "beta"
 }
