@@ -126,7 +126,7 @@ with the `ignoreCase()` method on the relationship definition.
 
 ```php
 <?php
-class FooMapper
+class FooRelationships
 {
     protected function define()
     {
@@ -151,7 +151,7 @@ the foreign key value, but is restricted to "video" values on a discriminator
 column named `commentable_type`.
 
 ```php
-class IssueMapper extends AbstractMapper
+class Issue extends Mapper
 {
     protected function define()
     {

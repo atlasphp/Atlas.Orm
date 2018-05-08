@@ -7,11 +7,9 @@ properties, or pass an array of initial data to populate into the Record.
 
 ```php
 <?php
-$thread = $atlas->newRecord(Thread::CLASS,
-    [
+$thread = $atlas->newRecord(Thread::CLASS, [
         'title' => 'New Thread Title',
-    ]
-);
+]);
 ```
 
 You can assign a value via a property, which maps to a column name.

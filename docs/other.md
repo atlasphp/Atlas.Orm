@@ -63,7 +63,7 @@ that extend the _Record_ for that _Mapper_ in the same namespace as the
 _Mapper_, then override the _Mapper_ `getRecordClass()` method to return the
 appropriate class name.
 
-For example, given a _ContentMapper_ and _ContentRecord_ ...
+For example, given a _Content_ mapper and _ContentRecord_ ...
 
 ```
 App\
@@ -71,9 +71,9 @@ App\
         Content\
             Content.php
             ContentEvents.php
-            ContentRelationships.php
             ContentRecord.php
             ContentRecordSet.php
+            ContentRelationships.php
             ContentRow.php
             ContentSelect.php
             ContentTable.php
@@ -89,9 +89,9 @@ App\
         Content\
             Content.php
             ContentEvents.php
-            ContentRelationships.php
             ContentRecord.php
             ContentRecordSet.php
+            ContentRelationships.php
             ContentRow.php
             ContentSelect.php
             ContentTable.php
