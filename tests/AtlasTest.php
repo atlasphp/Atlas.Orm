@@ -35,6 +35,21 @@ class AtlasTest extends \PHPUnit\Framework\TestCase
         );
     }
 
+    public function testNewRecords()
+    {
+        $actual = $this->atlas->newRecords(Employee::CLASS, [
+            [
+                'name' => 'foo'
+            ],
+            [
+                'name' => 'bar'
+            ],
+        ]);
+
+        $this->assertInstanceOf(EmployeeRecord::CLASS, $actual[0]);
+        $this->assertInstanceOf(EmployeeRecord::CLASS, $actual[1]);
+    }
+
     public function testNewRecordSet()
     {
         $this->assertInstanceOf(
@@ -120,6 +135,19 @@ class AtlasTest extends \PHPUnit\Framework\TestCase
         $this->atlas->delete($employee);
 
         $this->assertTrue(true); // no exceptions means all is well
+    }
+
+    public function testPersistRecords()
+    {
+        $employees = $this->atlas->fetchRecords(Employee::CLASS, [1, 2, 3, 4, 5]);
+        foreach ($employees as $employee) {
+            $employee->name .= 'changed';
+        }
+        $employees[3]->setDelete();
+        $employees[4]->setDelete();
+        $this->atlas->persistRecords($employees);
+        $this->assertSame('DELETED', $employees[3]->getRow()->getStatus());
+        $this->assertSame('DELETED', $employees[4]->getRow()->getStatus());
     }
 
     public function testPersistRecordSet()

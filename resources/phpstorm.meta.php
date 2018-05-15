@@ -3,6 +3,7 @@ namespace PHPSTORM_META;
 
 override(\Atlas\Orm\Atlas::mapper(0), map(['' => '@']));
 override(\Atlas\Orm\Atlas::newRecord(0), map(['' => '@Record']));
+override(\Atlas\Orm\Atlas::newRecords(0), map(['' => '@Record[]']));
 override(\Atlas\Orm\Atlas::newRecordSet(0), map(['' => '@RecordSet']));
 override(\Atlas\Orm\Atlas::fetchRecord(0), map(['' => '@Record|null']));
 override(\Atlas\Orm\Atlas::fetchRecordBy(0), map(['' => '@Record|null']));

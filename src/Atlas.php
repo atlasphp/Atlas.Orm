@@ -68,9 +68,14 @@ class Atlas
         return $this->mapperLocator->get($mapperClass);
     }
 
-    public function newRecord(string $mapperClass, array $cols = []) : Record
+    public function newRecord(string $mapperClass, array $fields = []) : Record
     {
-        return $this->mapper($mapperClass)->newRecord($cols);
+        return $this->mapper($mapperClass)->newRecord($fields);
+    }
+
+    public function newRecords(string $mapperClass, array $fieldSets) : array
+    {
+        return $this->mapper($mapperClass)->newRecords($fieldSets);
     }
 
     public function newRecordSet(string $mapperClass) : RecordSet
@@ -131,6 +136,13 @@ class Atlas
     public function persist(Record $record) : void
     {
         $this->write(__FUNCTION__, $record);
+    }
+
+    public function persistRecords(array $records) : void
+    {
+        foreach ($records as $record) {
+            $this->write('persist', $record);
+        }
     }
 
     public function persistRecordSet(RecordSet $recordSet) : RecordSet
