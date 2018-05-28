@@ -8,7 +8,6 @@ the database is its own micro-transaction (cf. <https://secure.php.net/manual/en
 You can manage transactions manually by calling these methods on the Atlas object:
 
 ```php
-<?php
 // begins a transaction on BOTH the read connection
 // AND the write connection
 $atlas->beginTransaction();
@@ -52,7 +51,6 @@ To specify which transaction strategy to use, pass it as the last argument to
 the _Atlas_ static `new()` call ...
 
 ```php
-<?php
 use Atlas\Orm\Atlas;
 use Atlas\Orm\Transaction\AutoTransact;
 
@@ -68,7 +66,6 @@ $atlas = Atlas::new(
 ... or call `setTransactionClass()` on an _AtlasBuilder_ instance:
 
 ```php
-<?php
 use Atlas\Orm\AtlasBuilder;
 use Atlas\Orm\Transaction\BeginOnRead;
 

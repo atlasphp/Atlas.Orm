@@ -9,7 +9,6 @@ Use the `fetchRecord()` method to retrieve a single Record. It can be called
 either by primary key, or with a `select()` query.
 
 ```php
-<?php
 // fetch by primary key thread_id = 1
 
 $threadRecord = $atlas->fetchRecord(
@@ -37,7 +36,6 @@ Once you have a Record, you can access the columns via properties on the Record.
 Assume a database column called `title`.
 
 ```php
-<?php
 echo $thread->title;
 ```
 
@@ -50,7 +48,6 @@ array of Records.  It can be called either with primary keys, or with a
 `select()` query.
 
 ```php
-<?php
 // fetch thread_id 1, 2, and 3
 $threadRecordSet = $atlas->fetchRecords(
     Thread::CLASS,
@@ -67,7 +64,6 @@ $threadRecordSet = $atlas
 To return all rows, use the `select()` variation as shown below.
 
 ```php
-<?php
 // Use the `select()` variation to fetch all records, optionally ordering the
 // returned results
 
@@ -96,7 +92,6 @@ RecordSets act as arrays of Records. As such, you can iterate over the RecordSet
 and access the Records individually.
 
 ```php
-<?php
 // fetch the top 100 threads
 $threadRecordSet = $atlas
     ->select(Thread::CLASS)
@@ -121,7 +116,6 @@ On a `fetch*()`, load relateds using a third argument: an array specifying
 which related fields to retrieve.
 
 ```php
-<?php
 $threadRecord = $atlas->fetchRecord(
     Thread::CLASS,
     '1',
@@ -146,7 +140,6 @@ $threadRecordSet = $atlas->fetchRecordSet(
 When using the `select()` variation, load relateds using the `with()` method:
 
 ```php
-<?php
 $threadRecord = $atlas
     ->select(Thread::CLASS)
     ->where('thread_id = ', '1')
@@ -168,13 +161,22 @@ $threadRecordSet = $atlas
     ->fetchRecordSet();
 ```
 
+The related field will be populated like so:
+
+- If the related field was not specified as part of the `with` specification,
+  it will be `null`. This indicates there was no attempt to load any related
+  data.
+
+- If the related field was part of the `with` specification, but there was no
+  related data to be found at the database, the field will be `false` (for
+  to-one relationships) or an empty RecordSet (for to-many relationships).
+
 ### Nested Relationships
 
 Relationship-fetching can be nested as deeply as needed. For example, to fetch the
 author of each reply on each thread:
 
 ```php
-<?php
 $threadRecord = $this->atlas
     ->select(Thread::CLASS)
     ->where('thread_id = ', $threadId)
@@ -192,7 +194,6 @@ Alternatively, you can pass a closure to exercise fine control over the query
 that fetches the relateds:
 
 ```php
-<?php
 // fetch thread_id 1; with only the last 10 related replies in descending order;
 // including each reply author
 $threadRecord = $atlas->fetchRecord(Thread::CLASS, '1', [
@@ -216,7 +217,6 @@ instead of using a column name, you use the relationship name defined in the
 _MapperRelationships_.
 
 ```php
-<?php
 $threadRecord = $this->atlas
     ->select(Thread::CLASS)
     ->where('thread_id = ', $threadId)
@@ -250,7 +250,6 @@ For example, to access each tag associated with a thread, go through the
 taggings relationship:
 
 ```php
-<?php
 $threadRecord = $atlas->fetchRecord(Thread::CLASS, '1', [
     'taggings' => [
         'tag'
@@ -268,7 +267,6 @@ You can return a Record or a RecordSet as an `array` rather than a Record or
 RecordSet object using the `getArrayCopy()` method.
 
 ```php
-<?php
 $threadRecord = $atlas->fetchRecord('Thread::CLASS', '1');
 $threadArray = $threadRecord->getArrayCopy();
 
@@ -283,7 +281,6 @@ $threadsArray = $threadRecordSet->getArrayCopy();
 JSON-encoding Records and RecordSets is trival.
 
 ```php
-<?php
 $threadJson = json_encode($threadRecord);
 $threadsJson = json_encode($threadRecordSet);
 ```
@@ -295,7 +292,6 @@ can re-use the select to get a count of how many Records would have been
 returned. This can be useful for paging displays.
 
 ```php
-<?php
 $select = $atlas
     ->select(Thread::CLASS)
     ->with([

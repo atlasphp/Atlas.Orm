@@ -11,7 +11,6 @@ For the examples below, we will work with an imaginary forum application that
 has conversation threads. The Thread mapper might something like this:
 
 ```php
-<?php
 namespace App\DataSource\Thread;
 
 use App\DataSource\Author\Author;
@@ -43,7 +42,6 @@ For example, the interface we want to use for a Thread Entity in domain might
 look like this:
 
 ```php
-<?php
 namespace App\Domain\Thread;
 
 interface ThreadInterface
@@ -66,7 +64,6 @@ Further, we will presume a naive domain repository implementation that returns
 Thread Entities. It might look something like this:
 
 ```php
-<?php
 namespace App\Domain\Thread;
 
 use App\DataSource\Thread\Thread;
@@ -114,7 +111,6 @@ The easiest thing to do is to implement the domain ThreadInterface in the
 persistence ThreadRecord, like so:
 
 ```php
-<?php
 namespace App\DataSource\Thread;
 
 use Atlas\Mapper\Record;
@@ -173,7 +169,6 @@ need to factory anything at all. It just returns the persistence record, since
 the record now has the domain interface.
 
 ```php
-<?php
 class ThreadRepository ...
 
     protected function newThread(ThreadRecord $record)
@@ -198,7 +193,6 @@ that implements the domain interface, but encapsulates the persistence record
 as the data source. The domain object might look something like this:
 
 ```php
-<?php
 namespace App\Domain\Thread;
 
 use App\DataSource\Thread\ThreadRecord;
@@ -263,7 +257,6 @@ but not much. All it needs is to create the Thread domain object with the
 ThreadRecord as a constructor dependency.
 
 ```php
-<?php
 class ThreadRepository ...
 
     protected function newThread(ThreadRecord $record)
@@ -290,7 +283,6 @@ the persistence record over to a "plain old PHP object" (POPO) in the domain,
 perhaps something like the following:
 
 ```php
-<?php
 namespace App\Domain\Thread;
 
 class Thread implements ThreadInterface
@@ -371,7 +363,6 @@ It needs to map the individual fields in the persistence record to the domain
 object properties.
 
 ```php
-<?php
 class ThreadRepository ...
 
     protected function newThread(ThreadRecord $record)

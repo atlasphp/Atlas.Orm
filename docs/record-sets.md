@@ -5,7 +5,6 @@
 Create a new RecordSet using the `newRecordSet()` method.
 
 ```php
-<?php
 $threadRecordSet = $atlas->newRecordSet(Thread::CLASS);
 ```
 
@@ -15,7 +14,6 @@ You can append a new Record to an existing RecordSet using `appendNew()`,
 optionally passing any data you want to initially populate into the Record:
 
 ```php
-<?php
 $newThread = $threadRecordSet->appendNew([
     'title' => 'New Title',
 ]);
@@ -24,7 +22,6 @@ $newThread = $threadRecordSet->appendNew([
 Additionally, you can append foreign Records to a native Record's relateds.
 
 ```php
-<?php
 $thread = $atlas->fetchRecord(Thread::CLASS, 1, [
     'comments',
 ]);
@@ -47,7 +44,6 @@ The RecordSet also acts as an array, so you can get/set/unset Records by their
 sequential keys in the RecordSet.
 
 ```php
-<?php
 // address the second record in the set
 $threadRecordSet[1]->title = 'Changed Title';
 
@@ -63,7 +59,6 @@ $threadRecordSet[] = $atlas->newRecord(Thread::CLASS);
 You can search for Records within an existing RecordSet by their column values:
 
 ```php
-<?php
 $threadRecordSet = $atlas->select(Thread::CLASS)
     ->where('published = ', 1)
     ->fetchRecordSet();
@@ -82,7 +77,6 @@ You can detach Records from a RecordSet by their column values. This does NOT
 delete Records from the database; it only detaches them from the RecordSet.
 
 ```php
-<?php
 // unsets and returns one matching Record from the Record Set,
 // or null if there is no match
 $detachedRecord = $threadRecordSet->detachOneBy(['subject' => 'Subject One']);
@@ -105,7 +99,6 @@ You can mark each Record currently in a RecordSet for deletion by using the
 `setDelete()` method:
 
 ```php
-<?php
 // mark all current records for deletion
 $threadRecordSet->setDelete();
 ```
@@ -118,7 +111,6 @@ $threadRecordSet->setDelete();
 You might only want to mark some of the Records for deletion:
 
 ```php
-<?php
 $threadRecordSet->getAllBy(['author_id' => 1])->setDelete();
 ```
 
@@ -131,7 +123,6 @@ You can persist each Record in a RecordSet by calling the _Atlas_ method
 `persistRecordSet()`:
 
 ```php
-<?php
 $deletedRecords = $atlas->persistRecordSet($threadRecordSet);
 ```
 

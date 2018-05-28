@@ -1,95 +1,13 @@
 # Events
 
 There are several events that will automatically be called when interacting with
-Atlas objects.
-
-## Table Events
-
-The `insert()`, `update()`, and `delete()` methods all have 3 events associated
-with them: a `before*()`, a `modify*()`, and an `after*()`. In addition, there
-is a `modifySelect()` event, and a `modifySelectedRow()` event.
-
-```php
-<?php
-// Runs after the Select object is created, but before it is executed
-modifySelect(Table $table, TableSelect $select)
-
-// Runs after a newly-selected row is populated but before it is returned
-modifySelectedRow(Table $table, Row $row)
-
-// Runs before the Insert object is created
-beforeInsert(Table $table, Row $row)
-
-// Runs after the Insert object is created, but before it is executed
-modifyInsert(Table $table, Row $row, Insert $insert)
-
-// Runs after the Insert object is executed
-afterInsert(Table $table,
-            Row $row,
-            Insert $insert,
-            PDOStatement $pdoStatement)
-
-// Runs before the Update object is created
-beforeUpdate(Table $table, Row $row)
-
-// Runs after the Update object is created, but before it is executed
-modifyUpdate(Table $table, Row $row, Update $update)
-
-// Runs after the Update object is executed
-afterUpdate(Table $table,
-            Row $row,
-            Update $update,
-            PDOStatement $pdoStatement)
-
-// Runs before the Delete object is created
-beforeDelete(Table $table, Row $row)
-
-// Runs after the Delete object is created, but before it is executed
-modifyDelete(Table $table, Row $row, Delete $delete)
-
-// Runs after the Delete object is executed
-afterDelete(Table $table,
-            Row $row,
-            Delete $delete,
-            PDOStatement $pdoStatement)
-```
-
-TableEvents would be the place to put behaviors such as setting `inserted_at` or
-`updated_at` values, etc:
-
-```php
-<?php
-namespace Blog\DataSource\Posts;
-
-use Atlas\Table\Row;
-use Atlas\Table\Table;
-use Atlas\Table\TableEvents;
-
-/**
- * @inheritdoc
- */
-class PostsTableEvents extends TableEvents
-{
-    public function beforeUpdate(Table $table, Row $row)
-    {
-        $row->inserted_at = date('Y-m-d H:i:s');
-    }
-
-    public function beforeUpdate(Table $table, Row $row)
-    {
-        $row->updated_at = date('Y-m-d H:i:s');
-    }
-}
-```
-
-## Mapper Events
+Atlas mappers.
 
 The `insert()`, `update()`, and `delete()` methods all have 3 events associated
 with them: a `before*()`, a `modify*()`, and an `after*()`. In addition, there
 is a `modifySelect()` event.
 
 ```php
-<?php
 // Runs after the Select object is created, but before it is executed
 modifySelect(Mapper $mapper, MapperSelect $select)
 
@@ -135,7 +53,6 @@ Here is a simple example with the assumption that the Record object has a
 to Records and RecordSets](behavior.html).
 
 ```php
-<?php
 namespace Blog\DataSource\Posts;
 
 use Atlas\Mapper\Mapper;
@@ -160,7 +77,6 @@ class PostsEvents extends MapperEvents
 And you might have something like this in your code:
 
 ```php
-<?php
 try {
     $atlas->update($post);
 } catch (\Exception $e) {

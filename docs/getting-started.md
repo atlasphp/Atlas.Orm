@@ -35,7 +35,6 @@ Then, you can create an _Atlas_ instance by using its static `new()` method and
 passing your PDO connection parameters:
 
 ```php
-<?php
 use Atlas\Orm\Atlas;
 
 $atlas = Atlas::new(
@@ -50,7 +49,6 @@ Optionally, you may pass a _Transaction_ class name as the final parameter.
 to be managed manually.)
 
 ```php
-<?php
 use Atlas\Orm\Atlas;
 use Atlas\Orm\Transaction\AutoTransact;
 
@@ -66,7 +64,6 @@ Alternatively, use the _AtlasBuilder_ if you need to define a custom factory
 callable, such as for _TableEvents_ and _MapperEvents_ classes.
 
 ```php
-<?php
 use Atlas\Orm\AtlasBuilder;
 use Atlas\Orm\Transaction\BeginOnRead;
 

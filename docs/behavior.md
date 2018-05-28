@@ -11,7 +11,6 @@ domain layer.
 For example:
 
 ```php
-<?php
 namespace App\DataSource\Thread;
 
 use Atlas\Mapper\Record;
@@ -34,7 +33,6 @@ The same concept is available for RecordSets using the RecordSet class. In our
 example `ThreadRecordSet.php`.
 
 ```php
-<?php
 namespace App\DataSource\Thread;
 
 use Atlas\Mapper\RecordSet;

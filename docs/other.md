@@ -8,7 +8,6 @@ are perfectly reasonable, so that you don't have to write the same queries
 over and over:
 
 ```php
-<?php
 namespace App\DataSource\Content;
 
 use Atlas\Mapper\Mapper;
@@ -31,7 +30,6 @@ directly in the database (without going through any events) and modifying the
 appropriate _Record_ in memory:
 
 ```php
-<?php
 namespace App\DataSource\Content;
 
 use Atlas\Mapper\Mapper;
@@ -106,7 +104,6 @@ App\
 A _WikiContentRecord_ might look like this ...
 
 ```php
-<?php
 namespace App\DataSource\Content;
 
 class WikiContentRecord extends ContentRecord
@@ -117,7 +114,6 @@ class WikiContentRecord extends ContentRecord
 ... and the _Content_ `getRecordClass()` method would look like this:
 
 ```php
-<?php
 namespace App\DataSource\Content;
 
 use Atlas\Mapper\Mapper;
@@ -156,7 +152,6 @@ Given the typical example of a `blog` table, associated to `tags`, through a
 `taggings` table, here is how you would add a tag to a blog post:
 
 ```php
-<?php
 // get a blog post, with taggings and tags
 $blog = $atlas->fetchRecord(Blog::CLASS, $blog_id, [
     'taggings' => [
@@ -180,7 +175,6 @@ $atlas->persist($tagging);
 Similarly, here is how you would remove a tag:
 
 ```php
-<?php
 // mark the Tagging association for deletion
 $blog->taggings
     ->getOneBy(['name' => $tag_name)
@@ -203,7 +197,6 @@ as exceptions to be caught by your surrounding application or domain logic.
 For example, to check that a value is a valid email address:
 
 ```php
-<?php
 namespace App\DataSource\Author;
 
 use Atlas\Table\Row;
