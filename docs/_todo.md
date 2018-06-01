@@ -1,6 +1,4 @@
-- OnDelete cascades in relationships
-
-- soft-deletion by marking a field -- method on a custom Record, then have
+- soft-deletion by marking a field using method on a custom Record, then have
   the Mapper add "where('soft_deleted = ', false)";
 
 - overriding Row::assertValidValue() (e.g. to allow objects in Rows) -- might
