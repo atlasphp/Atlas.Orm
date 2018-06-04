@@ -152,13 +152,35 @@ abstract class AbstractTable implements TableInterface
      */
     public function fetchRow($primaryVal) : ?RowInterface
     {
+        return $this->selectRow($this->select(), $primaryVal);
+    }
+
+    /**
+     *
+     * Uses a given Select query object to fetch a row by primary key.
+     *
+     * This is separate from fetchRow() so that alternative query objects
+     * (e.g. a MapperSelect) can be built externally and then passed in.
+     *
+     * @param mixed $select The Select query object.
+     *
+     * @param mixed $primaryVal A scalar for a simple primary key, or an array
+     * of column => value pairs for a composite primary key.
+     *
+     * @return ?RowInterface
+     *
+     */
+    public function selectRow($select, $primaryVal) : ?RowInterface
+    {
         $primary = $this->calcIdentity($primaryVal);
+
         $row = $this->identityMap->getRow($primary);
         if ($row) {
             return $row;
         }
 
-        return $this->select($primary)->fetchRow();
+        $this->selectWhereEquals($select, $primary);
+        return $select->fetchRow();
     }
 
     /**
@@ -174,6 +196,28 @@ abstract class AbstractTable implements TableInterface
      *
      */
     public function fetchRows(array $primaryVals) : array
+    {
+        return $this->selectRows($this->select(), $primaryVals);
+    }
+
+    /**
+     *
+     * Uses a given Select query object to fetches an array of Rows based on
+     * primary-key values.
+     *
+     * This is separate from fetchRows() so that alternative query objects
+     * (e.g. a MapperSelect) can be built externally and then passed in.
+     *
+     * @param mixed $select The Select query object.
+     *
+     * @param mixed $primaryVals An array of primary-key values; each value is
+     * scalar for a simple primary key, or an array of column => value pairs for
+     * a composite primary key.
+     *
+     * @return array
+     *
+     */
+    public function selectRows($select, $primaryVals) : array
     {
         // find identified rows, in the order of the primary values.
         // leave open elements for non-identified rows.
@@ -196,7 +240,7 @@ abstract class AbstractTable implements TableInterface
         }
 
         // fetch and retain remaining rows
-        $select = $this->select()->cols($this->getColNames());
+        $select->cols($this->getColNames());
         $this->selectWherePrimary($select, $primaryVals);
         $data = $select->fetchAll();
         foreach ($data as $cols) {
@@ -616,14 +660,14 @@ abstract class AbstractTable implements TableInterface
 
     /**
      *
-     * Adds the primary-key WHERE conditions to a TableSelect.
+     * Adds the primary-key WHERE conditions to a Select.
      *
-     * @param TableSelect $select Add the conditions to this TableSelect.
+     * @param $select Add the conditions to this Select.
      *
      * @param array $primaryVals Use these primary-key values.
      *
      */
-    protected function selectWherePrimary(TableSelect $select, array $primaryVals) : void
+    protected function selectWherePrimary($select, array $primaryVals) : void
     {
         $primaryKey = $this->getPrimaryKey();
         if (count($primaryKey) == 1) {
@@ -643,18 +687,29 @@ abstract class AbstractTable implements TableInterface
         }
     }
 
+    protected function selectWhereEquals($select, array $whereEquals)
+    {
+        $table = $this->getName();
+        foreach ($whereEquals as $col => $val) {
+            if (is_numeric($col)) {
+                throw Exception::numericCol($col);
+            }
+            $this->selectWhere($select, "{$table}.{$col}", $val);
+        }
+    }
+
     /**
      *
      * Adds a WHERE condition to a select.
      *
-     * @param SelectInterface $select The query object.
+     * @param $select The query object.
      *
      * @param string $col The column name.
      *
      * @param mixed $val The column value.
      *
      */
-    protected function selectWhere(SelectInterface $select, string $col, $val) : void
+    protected function selectWhere($select, string $col, $val) : void
     {
         if (is_array($val)) {
             $select->where("{$col} IN (?)", $val);

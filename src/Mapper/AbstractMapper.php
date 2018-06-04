@@ -158,7 +158,8 @@ abstract class AbstractMapper implements MapperInterface
      */
     public function fetchRecord($primaryVal, array $with = []) : ?RecordInterface
     {
-        $row = $this->table->fetchRow($primaryVal);
+        $select = $this->select();
+        $row = $this->table->selectRow($select, $primaryVal);
         if (! $row) {
             return null;
         }
@@ -182,7 +183,7 @@ abstract class AbstractMapper implements MapperInterface
      */
     public function fetchRecordBy(array $whereEquals, array $with = []) : ?RecordInterface
     {
-        $row = $this->table->select($whereEquals)->fetchRow();
+        $row = $this->select($whereEquals)->fetchRow();
         if (! $row) {
             return null;
         }
@@ -205,7 +206,8 @@ abstract class AbstractMapper implements MapperInterface
      */
     public function fetchRecords(array $primaryVals, array $with = []) : array
     {
-        $rows = $this->table->fetchRows($primaryVals);
+        $select = $this->select();
+        $rows = $this->table->selectRows($select, $primaryVals);
         return $this->turnRowsIntoRecords($rows, $with);
     }
 
@@ -223,7 +225,7 @@ abstract class AbstractMapper implements MapperInterface
      */
     public function fetchRecordsBy(array $whereEquals, array $with = []) : array
     {
-        $rows = $this->table->select($whereEquals)->fetchRows();
+        $rows = $this->select($whereEquals)->fetchRows();
         return $this->turnRowsIntoRecords($rows, $with);
     }
 
