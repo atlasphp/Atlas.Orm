@@ -2,6 +2,13 @@
 
 This is the changelog for the 2.x series.
 
+## 2.4.0
+
+This release fixes a bug where MapperEvents::modifySelect() was not being
+honored by various AbstractMapper::fetch() methods. Two new off-interface
+methods, AbstractTable::selectRow() and selectRows(), are introduced as a
+result.
+
 ## 2.3.0
 
 This release adds one "off-interface" method, `AbstractTable::getIdentityMap()`,
