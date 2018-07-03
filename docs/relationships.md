@@ -145,7 +145,7 @@ the foreign key value, but is restricted to "video" values on a discriminator
 column named `commentable_type`.
 
 ```php
-class Issue extends Mapper
+class Video extends Mapper
 {
     protected function define()
     {
