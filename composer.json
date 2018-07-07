@@ -13,7 +13,7 @@
     ],
     "require": {
         "php": ">=7.1.0",
-        "atlas/mapper": "1.x@beta"
+        "atlas/mapper": "~1.0"
     },
     "autoload": {
         "psr-4": {
@@ -21,7 +21,7 @@
         }
     },
     "require-dev": {
-        "atlas/testing": "1.x@beta",
+        "atlas/testing": "~1.0",
         "pds/skeleton": "~1.0",
         "phpunit/phpunit": "~7.0"
     },
@@ -32,6 +32,5 @@
     },
     "suggest": {
         "atlas/cli": "A command-line tool to build skeleton classes."
-    },
-    "minimum-stability": "beta"
+    }
 }
