@@ -20,7 +20,6 @@ use Atlas\Pdo\ConnectionLocator;
 use Atlas\Table\TableLocator;
 use Atlas\Orm\Transaction\AutoCommit;
 use Atlas\Orm\Transaction\Transaction;
-use Exception;
 
 class Atlas
 {
@@ -33,12 +32,7 @@ class Atlas
         $transactionClass = AutoCommit::CLASS;
 
         $end = end($args);
-        if (is_string($end)
-            && (
-                $end == Transaction::CLASS
-                || is_subclass_of($end, Transaction::CLASS)
-            )
-        ) {
+        if (is_string($end) && is_subclass_of($end, Transaction::CLASS)) {
             $transactionClass = array_pop($args);
         }
 
