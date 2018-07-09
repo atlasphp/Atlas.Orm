@@ -141,16 +141,15 @@ class Atlas
     public function persistRecords(array $records) : void
     {
         foreach ($records as $record) {
-            $this->write('persist', $record);
+            $this->persist($record);
         }
     }
 
-    public function persistRecordSet(RecordSet $recordSet) : RecordSet
+    public function persistRecordSet(RecordSet $recordSet) : void
     {
         foreach ($recordSet as $record) {
-            $this->write('persist', $record);
+            $this->persist($record);
         }
-        return $recordSet->detachDeleted();
     }
 
     public function beginTransaction() : void
@@ -170,7 +169,6 @@ class Atlas
 
     protected function read(string $mapperClass, string $method, ...$params)
     {
-        $this->exception = null;
         $mapper = $this->mapper($mapperClass);
         return $this->transaction->read($mapper, $method, $params);
     }

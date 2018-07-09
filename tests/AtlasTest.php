@@ -158,13 +158,9 @@ class AtlasTest extends \PHPUnit\Framework\TestCase
         }
         $employees[3]->setDelete();
         $employees[4]->setDelete();
-        $expect = [
-            $employees[3],
-            $employees[4],
-        ];
         $actual = $this->atlas->persistRecordSet($employees);
-        $this->assertSame($expect[0], $actual[3]);
-        $this->assertSame($expect[1], $actual[4]);
+        $this->assertSame('DELETED', $employees[3]->getRow()->getStatus());
+        $this->assertSame('DELETED', $employees[4]->getRow()->getStatus());
     }
 
     public function testTransaction() : void
