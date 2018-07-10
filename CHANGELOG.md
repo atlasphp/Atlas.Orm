@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## 3.0.0
+
+- Added methods Atlas::newRecords() and Atlas::persistRecords()
+
+- For consistency with other methods, Atlas::persistRecordSet() now returns
+  void, and no longer detaches deleted records
+
+- Updated docs
+
 ## 3.0.0-beta1
 
 This release provides a PHPStorm metadata resource to aid in IDE autocompletion
