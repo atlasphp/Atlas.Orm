@@ -54,6 +54,15 @@ abstract class AbstractMapper implements MapperInterface
 
     /**
      *
+     * Prototype object for Related fields.
+     *
+     * @var Related
+     *
+     */
+    protected $prototypeRelated;
+
+    /**
+     *
      * Constructor.
      *
      * @param TableInterface $table The underlying table object for this mapper.
@@ -699,6 +708,10 @@ abstract class AbstractMapper implements MapperInterface
      */
     protected function newRelated() : Related
     {
-        return new Related($this->relationships->getFields());
+        if ($this->prototypeRelated === null) {
+            $this->prototypeRelated = new Related($this->relationships->getFields());
+        }
+
+        return clone $this->prototypeRelated;
     }
 }
