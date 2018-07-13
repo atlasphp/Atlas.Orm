@@ -16,7 +16,7 @@ class AtlasTest extends \PHPUnit\Framework\TestCase
     public function setUp()
     {
         $this->connection = (new DataSourceFixture())->exec();
-        $this->atlas = Atlas::new($this->connection, Transaction::CLASS);
+        $this->atlas = Atlas::new($this->connection);
     }
 
     public function testMapper()
