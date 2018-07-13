@@ -1,11 +1,5 @@
 # Getting Started
 
-> **Warning**:
->
-> Atlas 3 ("Cassini") is still in alpha so it should be considered unstable,
-> though it is ready for experimental and exploratory use. If you need a stable
-> release, please try Atlas 2 ("Boggs").
-
 ## Installation
 
 This package is installable and autoloadable via [Composer](https://getcomposer.org/)
