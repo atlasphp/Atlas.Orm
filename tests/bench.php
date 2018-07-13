@@ -31,6 +31,7 @@ use Atlas\Orm\DataSource\Thread\ThreadRecord;
 use Atlas\Orm\DataSource\Thread\ThreadRecordSet;
 use Atlas\Orm\Mapper\Record;
 use Atlas\Orm\Mapper\RecordSet;
+use Atlas\Orm\Table\Row;
 use Aura\Sql\ExtendedPdo;
 
 function bench($label, $callable)
@@ -62,14 +63,38 @@ $atlas = $atlasContainer->getAtlas();
 $threadMapper = $atlas->mapper(ThreadMapper::CLASS);
 $threadTable = $threadMapper->getTable();
 
+bench('new Row()', function () {
+    return new Row([
+        'thread_id' => null,
+        'author_id' => null,
+        'subject' => null,
+        'body' => null,
+    ]);
+});
+
 bench('ThreadTable::newRow()', function () use ($threadTable) {
-    $threadTable->newRow();
+    $threadTable->newRow([
+        'thread_id' => null,
+        'author_id' => null,
+        'subject' => null,
+        'body' => null,
+    ]);
 });
 
 bench('ThreadMapper::newRecord()', function () use ($threadMapper) {
-    $threadMapper->newRecord();
+    $threadMapper->newRecord([
+        'thread_id' => null,
+        'author_id' => null,
+        'subject' => null,
+        'body' => null,
+    ]);
 });
 
 bench('Atlas::newRecord()', function () use ($atlas) {
-    $atlas->newRecord(ThreadMapper::CLASS);
+    $atlas->newRecord(ThreadMapper::CLASS, [
+        'thread_id' => null,
+        'author_id' => null,
+        'subject' => null,
+        'body' => null,
+    ]);
 });
