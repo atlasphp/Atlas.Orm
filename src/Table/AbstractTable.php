@@ -571,14 +571,12 @@ abstract class AbstractTable implements TableInterface
      */
     public function newRow(array $cols = []) : RowInterface
     {
-        $colNames = $this->getColNames();
+        $vals = $this->getColDefaults();
+        $cols = array_intersect_key($cols, $vals);
         foreach ($cols as $col => $val) {
-            if (! in_array($col, $colNames)) {
-                unset($cols[$col]);
-            }
+            $vals[$col] = $val;
         }
-        $cols = array_merge($this->getColDefaults(), $cols);
-        return new Row($cols);
+        return new Row($vals);
     }
 
     /**
