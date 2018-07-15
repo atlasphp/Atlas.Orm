@@ -25,8 +25,7 @@ $threadRecord = $atlas
 > **Tip:**
 >
 > The `select()` method gives you access to all the underlying SQL query
-> methods. See [Atlas\Query](https://github.com/atlasphp/Atlas.Query/)
-> for more information.
+> methods. See [Atlas\Query](/cassini/query/select.html) for more information.
 
 > **Note:**
 >
@@ -74,7 +73,7 @@ $threadRecordSet = $atlas
 ```
 
 > **Tip:** The `select()` method gives you access to all the underlying
-> SQL query methods. See [Atlas\Query](https://github.com/atlasphp/Atlas.Query/)
+> SQL query methods. See [Atlas\Query](/cassini/query/select.html)
 > for more information.
 
 ## Fetching and Reading A RecordSet
@@ -106,7 +105,7 @@ foreach ($threadRecordSet as $threadRecord) {
 
 See also the page on [working with RecordSets](./record-sets.html).
 
-## Fetching Related Records and RecordSetss
+## Fetching Related Records and RecordSets
 
 Any relationships that are set in the Mapper will appear as `null` in the Record
 object. Related data will only be populated if it is explicitly requested as
