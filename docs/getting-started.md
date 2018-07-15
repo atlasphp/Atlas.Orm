@@ -20,12 +20,14 @@ to your `composer.json` file, then call `composer update`.
 (The `atlas/cli` package provides the `atlas-skeleton` command-line tool to
 help create data-source classes for the mapper system.)
 
+## Skeleton Generation
+
+Next, you will need to create the prerequsite data-source classes using
+[Atlas.Cli 2.x](/cassini/skeleton/usage.html).
+
 ## Instantiating Atlas
 
-First, you will need to create the prerequsite data-source classes using
-[Atlas.Cli 2.x](https://github.com/atlasphp/Atlas.Cli).
-
-Then, you can create an _Atlas_ instance by using its static `new()` method and
+Now you can create an _Atlas_ instance by using its static `new()` method and
 passing your PDO connection parameters:
 
 ```php
