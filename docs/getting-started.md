@@ -9,7 +9,7 @@ to your `composer.json` file, then call `composer update`.
 ```json
 {
     "require": {
-        "atlas/orm": "~3.0"
+        "atlas/orm": "~3.0",
     },
     "require-dev": {
         "atlas/cli": "~2.0"
@@ -19,6 +19,15 @@ to your `composer.json` file, then call `composer update`.
 
 (The `atlas/cli` package provides the `atlas-skeleton` command-line tool to
 help create data-source classes for the mapper system.)
+
+> **Note:**
+>
+> If you are using PHPStorm, you may wish to copy the IDE meta file to your
+> project to get full autocompletion on Atlas classes:
+>
+> ```
+> cp ./vendor/atlas/orm/resources/phpstorm.meta.php ./.phpstorm.meta.php
+> ```
 
 ## Skeleton Generation
 
