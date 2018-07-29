@@ -3,6 +3,11 @@
 There are several events that will automatically be called when interacting with
 Atlas mappers.
 
+> **Note**:
+>
+> These mapper-level events are called in addition to the various
+> [table-level events](/cassini/table/events.html).
+
 The `insert()`, `update()`, and `delete()` methods all have 3 events associated
 with them: a `before*()`, a `modify*()`, and an `after*()`. In addition, there
 is a `modifySelect()` event.
