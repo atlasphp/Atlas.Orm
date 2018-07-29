@@ -1,7 +1,7 @@
 # Mapper Relationships
 
 You can add to the _MapperRelationships_ inside the relevant `define()` method,
-calling one of the four available relationship-definition methods:
+calling one of these relationship-definition methods:
 
 - `manyToOne($field, $mapperClass)` (aka "belongs to")
 - `manyToOneVariant($field, $typeCol)` (aka "polymorphic association")
