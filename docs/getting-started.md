@@ -99,10 +99,10 @@ $builder->setFactory(function ($class) {
 $atlas = $builder->newAtlas();
 ```
 
+## Next Steps
+
 Now you can use _Atlas_ to work with your database to fetch and persist _Record_
 objects, as well as perform other interactions.
-
-## Next Steps
 
 - [Define relationships between mappers](./relationships.md)
 
