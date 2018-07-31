@@ -9,7 +9,7 @@ or individual values. For example:
 // an array of IDs
 $threadIds = $atlas
     ->select(Thread::CLASS)
-    ->columns(['thread_id'])
+    ->columns('thread_id')
     ->limit(10)
     ->orderBy('thread_id DESC')
     ->fetchColumn();
@@ -17,7 +17,7 @@ $threadIds = $atlas
 // key-value pairs of IDs and titles
 $threadIdsAndTitles = $atlas
     ->select(Thread::CLASS)
-    ->columns(['thread_id', 'tite'])
+    ->columns('thread_id', 'title')
     ->limit(10)
     ->orderBy('thread_id DESC')
     ->fetchKeyPair();
