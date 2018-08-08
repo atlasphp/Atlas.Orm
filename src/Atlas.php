@@ -179,6 +179,15 @@ class Atlas
             ->getQueries();
     }
 
+    public function setQueryLogger(callable $queryLogger) : void
+    {
+        return $this
+            ->mapperLocator
+            ->getTableLocator()
+            ->getConnectionLocator()
+            ->setQueryLogger($queryLogger);
+    }
+
     protected function read(string $mapperClass, string $method, ...$params)
     {
         $mapper = $this->mapper($mapperClass);

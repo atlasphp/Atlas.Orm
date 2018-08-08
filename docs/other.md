@@ -228,3 +228,55 @@ class AuthorTableEvents extends TableEvents
 For detailed reporting of validation failures, consider writing your own
 extended exception class to retain a list of the fields and error messages,
 perhaps with the object being validated.
+
+## Query Logging
+
+To enable query logging, call the Atlas `logQueries()` method. Issue your
+queries, and then call `getQueries()` to get back the log entries.
+
+```php
+// start logging
+$atlas->logQueries();
+
+// retrieve connections and issue queries, then:
+$queries = $connectionLocator->getQueries();
+
+// stop logging
+$connectionLocator->logQueries(false);
+```
+
+Each query log entry will be an array with these keys:
+
+- `connection`: the name of the connection used for the query
+- `start`: when the query started
+- `finish`: when the query finished
+- `duration`: how long the query took
+- `statement`: the query statement string
+- `values`: the array of bound values
+- `trace`: an exception trace showing where the query was issued
+
+You may wish to set a custom query logger for Atlas. To do so, call
+`setQueryLogger()` and pass a callable with the signature
+`function (array $entry) : void`.
+
+```php
+class CustomDebugger
+{
+    public function __invoke(array $entry) : void
+    {
+        // call an injected logger to record the entry
+    }
+}
+
+$customDebugger = new CustomDebugger();
+$atlas->setQueryLogger($customDebugger);
+$atlas->logQueries(true);
+
+// now Atlas will send query log entries to the CustomDebugger
+```
+
+> **Note:**
+>
+> If you set a custom logger, the _Atlas_ instance will no longer retain its own
+> query log entries; they will all go to the custom logger. This means that
+> `getQueries()` on the _Atlas_ instance will not show any new entries.
