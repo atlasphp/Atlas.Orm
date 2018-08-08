@@ -123,8 +123,7 @@ You can persist each Record in a RecordSet by calling the _Atlas_ method
 `persistRecordSet()`:
 
 ```php
-$deletedRecords = $atlas->persistRecordSet($threadRecordSet);
+$atlas->persistRecordSet($threadRecordSet);
 ```
 
-This will insert, update, or delete each Record in the RecordSet as appropriate,
-then detach all deleted Records and return them as their own RecordSet.
+This will insert, update, or delete each Record in the RecordSet as appropriate.
