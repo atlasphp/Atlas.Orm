@@ -163,7 +163,7 @@ class AtlasTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('DELETED', $employees[4]->getRow()->getStatus());
     }
 
-    public function testTransaction() : void
+    public function testTransaction()
     {
         $this->assertFalse($this->connection->inTransaction());
 
@@ -176,5 +176,23 @@ class AtlasTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($this->connection->inTransaction());
         $this->atlas->rollBack();
         $this->assertFalse($this->connection->inTransaction());
+    }
+
+    public function testQueryLogging()
+    {
+        $this->assertEmpty($this->atlas->getQueries());
+        $this->atlas->logQueries();
+        $this->atlas->fetchRecords(Employee::CLASS, [1, 2, 3]);
+
+        $queries = $this->atlas->getQueries();
+        $this->assertCount(1, $queries);
+
+        $actual = $queries[0];
+        $this->assertSame('DEFAULT', $actual['connection']);
+        $this->assertTrue($actual['start'] > 0);
+        $this->assertTrue($actual['finish'] > $actual['start']);
+        $this->assertTrue($actual['duration'] > 0);
+        $this->assertTrue($actual['statement'] !== '');
+        $this->assertTrue($actual['trace'] !== '');
     }
 }
