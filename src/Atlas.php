@@ -163,8 +163,7 @@ class Atlas
 
     public function logQueries($logQueries = true) : void
     {
-        $this
-            ->mapperLocator
+        $this->mapperLocator
             ->getTableLocator()
             ->getConnectionLocator()
             ->logQueries($logQueries);
@@ -172,8 +171,7 @@ class Atlas
 
     public function getQueries() : array
     {
-        return $this
-            ->mapperLocator
+        return $this->mapperLocator
             ->getTableLocator()
             ->getConnectionLocator()
             ->getQueries();
@@ -181,8 +179,7 @@ class Atlas
 
     public function setQueryLogger(callable $queryLogger) : void
     {
-        return $this
-            ->mapperLocator
+        $this->mapperLocator
             ->getTableLocator()
             ->getConnectionLocator()
             ->setQueryLogger($queryLogger);
