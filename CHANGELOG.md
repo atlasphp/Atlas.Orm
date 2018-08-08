@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 3.1.0
+
+- Added methods Atlas::logQueries() and Atlas::getQueries(), to expose
+the query logging functionality of the ConnectionLocator.
+
+- Updated docs and tests
+
 ## 3.0.0
 
 - Added methods Atlas::newRecords() and Atlas::persistRecords()
