@@ -1,5 +1,7 @@
 # Getting Started
 
+## Integrations
+
 If you are using Symfony 4, you can get started by installing the [Atlas.Symfony](https://github.com/atlasphp/Atlas.Symfony) bundle.
 
 If you are using Slim 3, please see the [cookbook recipe for Atlas](https://www.slimframework.com/docs/v3/cookbook/database-atlas.html).
