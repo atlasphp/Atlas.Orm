@@ -335,6 +335,42 @@ class Atlas
 
     /**
      *
+     * Turns profiling on and off.
+     *
+     * @param bool $profiling True to turn on; false to turn off.
+     *
+     * @return void
+     *
+     */
+    public function setProfiling($profiling = true) : void
+    {
+        $this->mapperLocator
+            ->getTableLocator()
+            ->getConnectionManager()
+            ->getConnectionLocator()
+            ->setProfiling($profiling);
+    }
+
+    /**
+     *
+     * Gets the query profiles.
+     *
+     * @param bool $profiling True to turn on; false to turn off.
+     *
+     * @return array
+     *
+     */
+    public function getProfiles() : array
+    {
+        return $this->mapperLocator
+            ->getTableLocator()
+            ->getConnectionManager()
+            ->getConnectionLocator()
+            ->getProfiles();
+    }
+
+    /**
+     *
      * Performs a one-off transaction.
      *
      * @param string $method The transaction work to perform.

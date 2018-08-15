@@ -22,6 +22,40 @@ class TableLocator extends AbstractLocator
 {
     /**
      *
+     * The same connection manager used by the Table objects.
+     *
+     * @var TableLocator
+     *
+     */
+    protected $connectionManager;
+
+    /**
+     *
+     * Constructor.
+     *
+     * @param ConnectionManager $connectionManager The same connection manager
+     * used by the Table objects.
+     *
+     */
+    public function __construct(ConnectionManager $connectionManager = null)
+    {
+        $this->connectionManager = $connectionManager;
+    }
+
+    /**
+     *
+     * Gets the connection manager.
+     *
+     * @return ConnectionManager
+     *
+     */
+    public function getConnectionManager()
+    {
+        return $this->connectionManager;
+    }
+
+    /**
+     *
      * Returns the Exception for when a class is not available.
      *
      * @param string $class The class that was not found.
