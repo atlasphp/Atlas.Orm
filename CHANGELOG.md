@@ -2,6 +2,16 @@
 
 This is the changelog for the 2.x series.
 
+## 2.5.0
+
+This release exposes underlying profiler functionality in Aura.Sql
+ConnectionLocator via two new methods: Atlas::setProfiling() and
+Atlas::getProfiles().
+
+It also incorporates two performance enhancements: one to
+AbstractMapper::newRelated() via a prototype object for relateds, and one to
+AbstractTable::newRow() via array_intersect_key() comparison.
+
 ## 2.4.0
 
 This release fixes a bug where MapperEvents::modifySelect() was not being
