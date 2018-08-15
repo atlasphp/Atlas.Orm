@@ -111,8 +111,8 @@ class AtlasContainer
     ) {
         $driver = $this->setConnectionManager(func_get_args());
         $this->setQueryFactory($driver);
-        $this->tableLocator = new TableLocator();
-        $this->mapperLocator = new MapperLocator();
+        $this->tableLocator = new TableLocator($this->connectionManager);
+        $this->mapperLocator = new MapperLocator($this->tableLocator);
         $this->atlas = new Atlas(
             $this->mapperLocator,
             new Transaction(

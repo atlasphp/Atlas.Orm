@@ -13,7 +13,7 @@
     ],
     "require": {
         "php": ">=7.1.0",
-        "aura/sql": "~2.0",
+        "aura/sql": "dev-2.x-locator-profiling",
         "aura/sqlquery": "~2.0"
     },
     "autoload": {

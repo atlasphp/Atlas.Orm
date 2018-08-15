@@ -23,7 +23,6 @@ class AtlasTest extends \PHPUnit\Framework\TestCase
     use Assertions;
 
     protected $atlas;
-    protected $profiler;
 
     // The $expect* properties are at the end, because they are so long
 
@@ -42,9 +41,6 @@ class AtlasTest extends \PHPUnit\Framework\TestCase
         $connection = $atlasContainer->getConnectionLocator()->getDefault();
         $fixture = new SqliteFixture($connection);
         $fixture->exec();
-
-        $this->profiler = new Profiler();
-        $connection->setProfiler($this->profiler);
 
         $this->atlas = $atlasContainer->getAtlas();
     }
@@ -131,7 +127,7 @@ class AtlasTest extends \PHPUnit\Framework\TestCase
 
     public function testFetchRecordSetBy()
     {
-        $this->profiler->setActive(true);
+        $this->atlas->setProfiling(true);
 
         $actual = $this->atlas->fetchRecordSetBy(
             ThreadMapper::CLASS,
@@ -153,7 +149,7 @@ class AtlasTest extends \PHPUnit\Framework\TestCase
 
         // N+1 avoidance check: for 7 queries there are 7 prepares + 7 performs,
         // for a total of 14 profile entries
-        $profiles = $this->profiler->getProfiles();
+        $profiles = $this->atlas->getProfiles();
         $this->assertCount(14, $profiles);
     }
 
@@ -181,7 +177,7 @@ class AtlasTest extends \PHPUnit\Framework\TestCase
 
     public function testFetchRecordsBy()
     {
-        $this->profiler->setActive(true);
+        $this->atlas->setProfiling(true);
 
         $actual = $this->atlas->fetchRecordsBy(
             ThreadMapper::CLASS,
@@ -204,7 +200,7 @@ class AtlasTest extends \PHPUnit\Framework\TestCase
 
         // N+1 avoidance check: for 7 queries there are 7 prepares + 7 performs,
         // for a total of 14 profile entries
-        $profiles = $this->profiler->getProfiles();
+        $profiles = $this->atlas->getProfiles();
         $this->assertCount(14, $profiles);
     }
 
