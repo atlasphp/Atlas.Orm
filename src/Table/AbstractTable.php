@@ -185,6 +185,26 @@ abstract class AbstractTable implements TableInterface
 
     /**
      *
+     * Refetches a row, and updates it in the identity map.
+     *
+     * Note: This will revert any unpersisted changes to the row instance.
+     *
+     * @param RowInterface $row The row to refetch
+     *
+     */
+    public function refreshRow(RowInterface $row): void
+    {
+        $select = $this->select()->cols($this->getColNames());
+        foreach ($this->getPrimaryKey() as $primaryCol) {
+            $select->where("{$primaryCol} = ?", $row->$primaryCol);
+        }
+        $cols = $select->fetchOne();
+        $row->set($cols);
+        $this->identityMap->resetInitial($row);
+    }
+
+    /**
+     *
      * Fetches an array of Row objects based on primary-key values, from the
      * identity map as available, and from the database when not.
      *

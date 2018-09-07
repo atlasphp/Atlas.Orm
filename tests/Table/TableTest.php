@@ -36,7 +36,7 @@ class TableTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($this->identityMap, $this->table->getIdentityMap());
     }
 
-    public function testTnsertUpdateDeleteRow()
+    public function testInsertUpdateDeleteRow()
     {
         $row = $this->table->newRow([
             'name' => 'Foobar',
@@ -66,5 +66,21 @@ class TableTest extends \PHPUnit\Framework\TestCase
             "Primary key value for 'id' changed from '1' to '2'"
         );
         $this->table->updateRow($row);
+    }
+
+    public function testRefreshRow()
+    {
+        $row = $this->table->newRow([
+            'name' => 'Foobar',
+            'building' => 99,
+            'floor' => 1
+        ]);
+        $this->table->insertRow($row);
+        $row->name = 'Bazbing';
+        $this->identityMap->resetInitial($row);
+        $this->table->refreshRow($row);
+        
+        $this->assertSame('Foobar', $row->name);
+        $this->assertEquals($this->identityMap->getInitial($row), $row->getArrayCopy());
     }
 }
