@@ -192,15 +192,54 @@ abstract class AbstractTable implements TableInterface
      * @param RowInterface $row The row to refetch
      *
      */
-    public function refreshRow(RowInterface $row): void
+    public function reloadRow(RowInterface $row): void
+    {
+        $this->reloadRows([$row]);
+    }
+
+    /**
+     *
+     * Refetches a list of rows, and updates them in the identity map.
+     *
+     * Note: This will revert any unpersisted changes to the row instance.
+     *
+     * @param array $rows A list of rows to refetch
+     *
+     */
+    public function reloadRows(array $rows): void
     {
         $select = $this->select()->cols($this->getColNames());
-        foreach ($this->getPrimaryKey() as $primaryCol) {
-            $select->where("{$primaryCol} = ?", $row->$primaryCol);
+        $primaryCols = $this->getPrimaryKey();
+
+        foreach ($rows as $row) {
+            $vals = [];
+            foreach ($primaryCols as $primaryCol) {
+                $vals[] = $row->$primaryCol;
+            }
+            $where = implode(" = ? AND ", $primaryCols) . " = ?";
+            $select->orWhere($where, ...$vals);
         }
-        $cols = $select->fetchOne();
-        $row->set($cols);
-        $this->identityMap->resetInitial($row);
+
+        $reloaded = $select->fetchAll();
+
+        foreach ($reloaded as $cols) {
+            $primary = $this->calcIdentity($cols);
+            $row = $this->identityMap->getRow($primary);
+            $row->setStatus($row::SELECTED);
+            $row->set($cols);
+            $this->events->modifySelectedRow($this, $row);
+            $this->identityMap->resetInitial($row);
+        }
+    }
+
+    /**
+     *
+     * Refetches all rows in the identity map.
+     *
+     */
+    public function reload(): void
+    {
+        $this->reloadRows($this->identityMap->getAll());
     }
 
     /**

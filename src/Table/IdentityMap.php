@@ -121,6 +121,18 @@ class IdentityMap
 
     /**
      *
+     * Returns a list of mapped rows.
+     *
+     * @return array The mapped Rows.
+     *
+     */
+    public function getAll() : array
+    {
+        return array_vals($this->serialToRow);
+    }
+
+    /**
+     *
      * This is a ghetto hack to serialize a composite primary key to a string,
      * so it can be used for array key lookups. It works just as well for
      * single-value keys as well.

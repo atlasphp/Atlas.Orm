@@ -68,7 +68,7 @@ class TableTest extends \PHPUnit\Framework\TestCase
         $this->table->updateRow($row);
     }
 
-    public function testRefreshRow()
+    public function testReloadRow()
     {
         $row = $this->table->newRow([
             'name' => 'Foobar',
@@ -78,8 +78,8 @@ class TableTest extends \PHPUnit\Framework\TestCase
         $this->table->insertRow($row);
         $row->name = 'Bazbing';
         $this->identityMap->resetInitial($row);
-        $this->table->refreshRow($row);
-        
+        $this->table->reloadRow($row);
+
         $this->assertSame('Foobar', $row->name);
         $this->assertEquals($this->identityMap->getInitial($row), $row->getArrayCopy());
     }
