@@ -2,6 +2,14 @@
 
 This is the changelog for the 2.x series.
 
+## 2.6.0
+
+This release introduces an AtlasBuilder similar to the one in the 3.x series,
+thereby allowing you to lazy-load mappers instead of having to register them
+in advance. Using AtlasBuilder is now preferred over AtlasContainer, though
+of course the latter continues to work as before. Documentation and tests have
+been updated accordingly.
+
 ## 2.5.0
 
 This release exposes underlying profiler functionality in Aura.Sql
