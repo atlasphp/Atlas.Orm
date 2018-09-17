@@ -28,21 +28,13 @@ class AtlasTest extends \PHPUnit\Framework\TestCase
 
     protected function setUp()
     {
-        $atlasContainer = new AtlasContainer('sqlite::memory:');
-        $atlasContainer->setMappers([
-            AuthorMapper::CLASS,
-            ReplyMapper::CLASS,
-            SummaryMapper::CLASS,
-            TagMapper::CLASS,
-            ThreadMapper::CLASS,
-            TaggingMapper::CLASS,
-        ]);
+        $atlasBuilder = new AtlasBuilder('sqlite::memory:');
 
-        $connection = $atlasContainer->getConnectionLocator()->getDefault();
+        $connection = $atlasBuilder->getConnectionLocator()->getDefault();
         $fixture = new SqliteFixture($connection);
         $fixture->exec();
 
-        $this->atlas = $atlasContainer->getAtlas();
+        $this->atlas = $atlasBuilder->newAtlas();
     }
 
     public function testNewRecord()

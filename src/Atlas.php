@@ -371,6 +371,18 @@ class Atlas
 
     /**
      *
+     * Gets the MapperLocator.
+     *
+     * @return MapperLocator
+     *
+     */
+    public function getMapperLocator() : MapperLocator
+    {
+        return $this->mapperLocator;
+    }
+
+    /**
+     *
      * Performs a one-off transaction.
      *
      * @param string $method The transaction work to perform.

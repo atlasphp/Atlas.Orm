@@ -24,7 +24,7 @@ class TableLocator extends AbstractLocator
      *
      * The same connection manager used by the Table objects.
      *
-     * @var TableLocator
+     * @var ConnectionManager
      *
      */
     protected $connectionManager;
@@ -49,7 +49,7 @@ class TableLocator extends AbstractLocator
      * @return ConnectionManager
      *
      */
-    public function getConnectionManager()
+    public function getConnectionManager() : ConnectionManager
     {
         return $this->connectionManager;
     }

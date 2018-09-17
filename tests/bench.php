@@ -15,7 +15,7 @@ if (! file_exists($file)) {
     exit(1);
 }
 
-use Atlas\Orm\AtlasContainer;
+use Atlas\Orm\AtlasBuilder;
 use Atlas\Orm\SqliteFixture;
 use Atlas\Orm\DataSource\Author\AuthorMapper;
 use Atlas\Orm\DataSource\Reply\ReplyMapper;
@@ -45,21 +45,14 @@ function bench($label, $callable)
     echo ($after - $before) . " : {$label}" . PHP_EOL;
 }
 
-$atlasContainer = new AtlasContainer('sqlite::memory:');
-$atlasContainer->setMappers([
-    AuthorMapper::CLASS,
-    ReplyMapper::CLASS,
-    SummaryMapper::CLASS,
-    TagMapper::CLASS,
-    ThreadMapper::CLASS,
-    TaggingMapper::CLASS,
-]);
+$atlasBuilder = new AtlasBuilder('sqlite::memory:');
 
-$connection = $atlasContainer->getConnectionLocator()->getDefault();
+$connection = $atlasBuilder->getConnectionLocator()->getDefault();
 $fixture = new SqliteFixture($connection);
 $fixture->exec();
 
-$atlas = $atlasContainer->getAtlas();
+$atlas = $atlasBuilder->newAtlas();
+
 $threadMapper = $atlas->mapper(ThreadMapper::CLASS);
 $threadTable = $threadMapper->getTable();
 

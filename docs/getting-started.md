@@ -29,43 +29,39 @@ from the database. You can read more about that in the
 
 ## Instantiating Atlas
 
-Create an Atlas instance using the AtlasContainer.
+Create an Atlas instance using the AtlasBuilder.
 
-The container accepts a [PDO](http://php.net/manual/en/pdo.construct.php), [ExtendedPdo](https://github.com/auraphp/Aura.Sql/blob/3.x/docs/getting-started.md) or [ConnectionLocator](https://github.com/auraphp/Aura.Sql/blob/3.x/docs/connection-locator.md) instance or you
-can enter connection parameters and the container creates a connection for you.
+The builder accepts a [PDO](http://php.net/manual/en/pdo.construct.php),
+[ExtendedPdo](https://github.com/auraphp/Aura.Sql/blob/3.x/docs/getting-started.md),
+or [ConnectionLocator](https://github.com/auraphp/Aura.Sql/blob/3.x/docs/connection-locator.md)
+instance, or you can enter connection parameters and the builder will create a
+connection for you.
 
 ```php
 <?php
-$atlasContainer = new AtlasContainer(new PDO(...));
+$atlasBuilder = new AtlasBuilder(new PDO(...));
 // or
-$atlasContainer = new AtlasContainer(new ExtendedPdo(...));
+$atlasBuilder = new AtlasBuilder(new ExtendedPdo(...));
 // or
-$atlasContainer = new AtlasContainer(new ConnectionLocator(...));
+$atlasBuilder = new AtlasBuilder(new ConnectionLocator(...));
 // or
-$atlasContainer = new AtlasContainer(
+$atlasBuilder = new AtlasBuilder(
     'mysql:host=localhost;dbname=testdb',
     'username',
     'password'
 );
 ```
 
-Next, set the available mapper classes into the container.
+Then get a new Atlas instance out of the builder:
 
 ```php
 <?php
-$atlasContainer->setMappers([
-    AuthorMapper::CLASS,
-    ReplyMapper::CLASS,
-    SummaryMapper::CLASS,
-    TagMapper::CLASS,
-    ThreadMapper::CLASS,
-    TaggingMapper::CLASS,
-]);
+$atlas = $atlasBuilder->newAtlas();
 ```
 
-Finally, get back the Atlas instance out of the container.
-
-```php
-<?php
-$atlas = $atlasContainer->getAtlas();
-```
+> **Note:**
+>
+> Atlas 2.5.x and earlier use the older AtlasContainer to build an Atlas
+> object. The older approach requires you to register all mappers with the
+> container using its setMappers() method, whereas the newer AtlasBuilder
+> in 2.6.x lazy-loads them on demand.

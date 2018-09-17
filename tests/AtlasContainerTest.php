@@ -20,18 +20,23 @@ class AtlasContainerTest extends \PHPUnit\Framework\TestCase
 
     protected function setUp()
     {
-        $this->atlasContainer = new AtlasContainer('sqlite::memory:');
+        $this->atlasContainer = $this->newAtlasContainer('sqlite::memory:');
+    }
+
+    protected function newAtlasContainer(...$args)
+    {
+        return new AtlasContainer(...$args);
     }
 
     public function testMapperWithoutTable()
     {
         $this->expectException(
             Exception::CLASS,
-            'Atlas\Orm\Fake\FakeMapperWithouTable does not exist.'
+            'Atlas\Orm\Fake\FakeTablelessMapper does not exist.'
         );
 
         $this->atlasContainer->setMappers([
-            'Atlas\Orm\Fake\FakeMapperWithoutTable'
+            'Atlas\Orm\Fake\FakeTablelessMapper'
         ]);
     }
 
@@ -78,7 +83,7 @@ class AtlasContainerTest extends \PHPUnit\Framework\TestCase
         $locator = new ConnectionLocator(function() {
             return new ExtendedPdo('sqlite::memory:');
         });
-        $atlasContainer = new AtlasContainer($locator);
+        $atlasContainer = $this->newAtlasContainer($locator);
 
         $this->assertEquals($locator, $atlasContainer->getConnectionLocator());
     }
@@ -86,7 +91,7 @@ class AtlasContainerTest extends \PHPUnit\Framework\TestCase
     public function testConstructWithExtendedPdo()
     {
         $extendedPdo = new ExtendedPdo('sqlite::memory:');
-        $atlasContainer = new AtlasContainer($extendedPdo);
+        $atlasContainer = $this->newAtlasContainer($extendedPdo);
         $actual = $atlasContainer->getConnectionLocator()->getDefault();
         $this->assertSame($extendedPdo, $actual);
     }
@@ -94,7 +99,7 @@ class AtlasContainerTest extends \PHPUnit\Framework\TestCase
     public function testConstructWithPdo()
     {
         $pdo = new Pdo('sqlite::memory:');
-        $atlasContainer = new AtlasContainer($pdo);
+        $atlasContainer = $this->newAtlasContainer($pdo);
         $actual = $atlasContainer->getConnectionLocator()->getDefault()->getPdo();
         $this->assertSame($pdo, $actual);
     }

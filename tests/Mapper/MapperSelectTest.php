@@ -2,7 +2,7 @@
 namespace Atlas\Orm\Mapper;
 
 use Atlas\Orm\Assertions;
-use Atlas\Orm\AtlasContainer;
+use Atlas\Orm\AtlasBuilder;
 use Atlas\Orm\DataSource\Employee\EmployeeMapper;
 use Atlas\Orm\SqliteFixture;
 use Atlas\Orm\Table\IdentityMap;
@@ -21,18 +21,15 @@ class MapperSelectTest extends \PHPUnit\Framework\TestCase
 
     protected function setUp()
     {
-        $atlasContainer = new AtlasContainer('sqlite::memory:');
-        $atlasContainer->setMappers([
-            EmployeeMapper::CLASS,
-        ]);
+        $atlasBuilder = new AtlasBuilder('sqlite::memory:');
 
-        $connection = $atlasContainer->getConnectionLocator()->getDefault();
+        $connection = $atlasBuilder->getConnectionLocator()->getDefault();
         $fixture = new SqliteFixture($connection);
         $fixture->exec();
 
-        $this->select = $atlasContainer
-            ->getMapperLocator()
-            ->get(EmployeeMapper::CLASS)
+        $this->select = $atlasBuilder
+            ->newAtlas()
+            ->mapper(EmployeeMapper::CLASS)
             ->select();
     }
 
