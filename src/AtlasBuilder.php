@@ -81,9 +81,9 @@ class AtlasBuilder
     ) {
         $driver = $this->setConnectionManager(func_get_args());
         $this->queryFactory = new QueryFactory($driver);
-        $this->factory = function (string $class) {
+        $this->setFactory(function (string $class) {
             return new $class();
-        };
+        });
     }
 
     /**
