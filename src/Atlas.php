@@ -383,6 +383,66 @@ class Atlas
 
     /**
      *
+     * Manually begins a transaction through the ConnectionManager.
+     *
+     * @return void
+     *
+     */
+    public function beginTransaction() : void
+    {
+        $this->mapperLocator
+            ->getTableLocator()
+            ->getConnectionManager()
+            ->beginTransaction();
+    }
+
+    /**
+     *
+     * Manually commits a transaction through the ConnectionManager.
+     *
+     * @return void
+     *
+     */
+    public function commit() : void
+    {
+        $this->mapperLocator
+            ->getTableLocator()
+            ->getConnectionManager()
+            ->commit();
+    }
+
+    /**
+     *
+     * Manually rolls back a transaction through the ConnectionManager.
+     *
+     * @return void
+     *
+     */
+    public function rollBack() : void
+    {
+        $this->mapperLocator
+            ->getTableLocator()
+            ->getConnectionManager()
+            ->rollBack();
+    }
+
+    /**
+     *
+     * Is the ConnectionManager in a transaction?
+     *
+     * @return bool
+     *
+     */
+    public function inTransaction() : bool
+    {
+        return $this->mapperLocator
+            ->getTableLocator()
+            ->getConnectionManager()
+            ->inTransaction();
+    }
+
+    /**
+     *
      * Performs a one-off transaction.
      *
      * @param string $method The transaction work to perform.
