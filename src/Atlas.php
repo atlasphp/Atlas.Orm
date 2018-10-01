@@ -264,7 +264,7 @@ class Atlas
 
     /**
      *
-     * Insert a Record through its Mapper as a one-off transaction.
+     * Insert a Record through its Mapper as a unit-of-work transaction.
      *
      * @param RecordInterface $record Insert the Row for this Record.
      *
@@ -278,7 +278,7 @@ class Atlas
 
     /**
      *
-     * Update a Record through its Mapper as a one-off transaction.
+     * Update a Record through its Mapper as a unit-of-work transaction.
      *
      * @param RecordInterface $record Update the Row for this Record.
      *
@@ -292,7 +292,7 @@ class Atlas
 
     /**
      *
-     * Delete a Record through its Mapper as a one-off transaction.
+     * Delete a Record through its Mapper as a unit-of-work transaction.
      *
      * @param RecordInterface $record Delete the Row for this Record.
      *
@@ -306,7 +306,7 @@ class Atlas
 
     /**
      *
-     * Persists a Record through its Mapper as a one-off transaction. This will
+     * Persists a Record through its Mapper as a unit-of-work transaction. This will
      * insert/update/delete the Record as appropriate; further, it will
      * recursively persist all of its loaded relationships.
      *
@@ -323,7 +323,7 @@ class Atlas
 
     /**
      *
-     * Returns the most-recent exception from a one-off transaction.
+     * Returns the most-recent exception from the unit-of-work transaction.
      *
      * @return ?Exception
      *
@@ -443,7 +443,7 @@ class Atlas
 
     /**
      *
-     * Performs a one-off transaction.
+     * Performs a unit-of-work transaction.
      *
      * @param string $method The transaction work to perform.
      *
