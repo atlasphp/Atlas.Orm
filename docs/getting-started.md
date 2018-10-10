@@ -17,7 +17,7 @@ to your `composer.json` file, then call `composer update`.
 ```json
 {
     "require": {
-        "atlas/orm": "~3.0",
+        "atlas/orm": "~3.0"
     },
     "require-dev": {
         "atlas/cli": "~2.0"
