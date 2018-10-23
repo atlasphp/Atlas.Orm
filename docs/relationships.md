@@ -3,15 +3,12 @@
 You can add to the _MapperRelationships_ inside the relevant `define()` method,
 calling one of these relationship-definition methods:
 
-- `manyToOne($field, $mapperClass)` (aka "belongs to")
-- `manyToOneVariant($field, $typeCol)` (aka "polymorphic association")
-- `oneToMany($field, $mapperClass)` (aka "has many")
 - `oneToOne($field, $mapperClass)` (aka "has one")
 - `oneToOneBidi($field, $mapperClass)` for a bidirectional relationship
-
-> Note that many-to-many is not supported as a direct relationship. All
-> many-to-many retrievals must occur explicitly through the association mapping
-> table, which is what happens at the SQL level anyway.
+- `oneToMany($field, $mapperClass)` (aka "has many")
+- `manyToOne($field, $mapperClass)` (aka "belongs to")
+- `manyToOneVariant($field, $typeCol)` (aka "polymorphic association")
+- `manyToMany($field, $mapperClass, $throughField)` (aka "has many through")
 
 The `$field` will become a field name on the returned Record object.
 
@@ -35,6 +32,7 @@ class ThreadRelationships extends MapperRelationships
         $this->oneToOne('summary', Summary::CLASS);
         $this->oneToMany('replies', Reply::CLASS);
         $this->oneToMany('taggings', Tagging::CLASS);
+        $this->manyToMany('tags', Tag::CLASS, 'taggings');
     }
 }
 ```
@@ -160,13 +158,12 @@ class Video extends Mapper
 
 ## Variant Relationships
 
-The many-to-one-variant relationship is somewhat different from the other
-relationship types. It is identical to a many-to-one relationship, except that
-the relationships vary by a type (or "discriminator") column in the native
-table. This allows rows in the native table to "belong to" rows in more than one
-foreign table. The typical example is one of comments that can be created on
-many different types of content, such as static pages, blog posts, and video
-links.
+The many-to-one-variant relationship is identical to a many-to-one relationship,
+except that the relationships vary by a type (or "discriminator") column in the
+native table. This allows rows in the native table to "belong to" rows in more
+than one foreign table. The typical example is one of comments that can be
+created on many different types of content, such as static pages, blog posts,
+and video links.
 
 ```php
 class CommentRelationships extends MapperRelationships
@@ -192,6 +189,111 @@ That is, if a native record set (of an arbitrary number of records) refers to a
 total of three different variant types, then Atlas will issue three additional
 queries to fetch the related records.
 
+## Many-To-Many Relationships
+
+The many-to-many relationship retrieves foreign records via an association
+table (a.k.a. a "through" relationship). This is typically modeled as a
+one-to-many from the native mapper to the related "through" mapper, where the
+"through" mapper itself has a many-to-one relationship to the foreign mapper.
+
+### Definition
+
+When setting up a many-to-many relationship, make sure the "through" mapper has
+a many-to-one relationship to both sides of the relationship. For example,
+given a `threads` table, related to `tags`, through a `taggings` table:
+
+```php
+class ThreadRelationships extends MapperRelationships
+{
+    protected function define()
+    {
+        // the "through" relationship that joins threads and tags
+        $this->oneToMany('taggings', Tagging::CLASS);
+
+        // the "foreign" relationship "through" taggings
+        $this->manyToMany('tags', Tag::CLASS, 'taggings');
+    }
+}
+
+class TaggingRelationships extends MapperRelationships
+{
+    protected function define()
+    {
+        // the threads side of the association mapping
+        $this->manyToOne('threads', Thread::CLASS);
+
+        // the tags side of the association mapping
+        $this->manyToOne('tags', Tag::CLASS);
+    }
+}
+
+class TagRelationships extends MapperRelationships
+{
+    protected function define()
+    {
+        // the "through" relationship that joins threads and tags
+        $this->oneToMany('taggings', Tagging::CLASS);
+
+        // the "foreign" relationship "through" taggings
+        $this->manyToMany('threads', Thread::CLASS, 'taggings');
+    }
+}
+```
+
+### Adding Many-To-Many Relateds
+
+Given the above example, here is how you would add a tag to a thread:
+
+```php
+// get a thread with its tags
+$thread = $atlas->fetchRecord(Thread::CLASS, $thread_id, [
+    'taggings',
+    'tags',
+]);
+
+// get all tags in the system
+$tags = $atlas->select(Tag::CLASS)->fetchRecordSet();
+
+// create the new tagging association, with the related thread and tag objects
+$thread->tags[] = $tags->getOneBy(['name' => $tag_name]);
+
+// persist the whole thread record
+$atlas->persist($thread);
+```
+
+> **Note:**
+>
+> 1. If you do not fetch with the related 'taggings' (the "through" relationship)
+> for tags), fetching with 'tags' will automatically and implicitly fetch with
+> 'taggings' for you.
+>
+> 2. You do not need to manage the 'taggings' yourself. At persist() time, Atlas
+> will setDelete() on any 'taggings' that no longer have an associated tag, and
+> will add new 'taggings' for tags that are not already associated (and add the
+> thread and tag objects to the new tagging object automatically).
+
+### Removing Many-To-Many Relateds
+
+Similarly, here is how you would remove a tag:
+
+```php
+// detach (not delete!) a tag from the thread
+$thread->tags->detachOneBy(['name' => $tag_name);
+
+// persist the whole thread record
+$atlas->persist($thread);
+```
+
+> **Warning:**
+>
+> If you delete a many-to-many related record, it will delete that record from
+> the database, not merely disassociate it from the native record.
+>
+> Instead, **detach** the many-to-many related record. This will remove the
+> "through" association automatically at persist() time, leaving the foreign
+> record in the database.
+
+
 ## Cascading Deletes
 
 Atlas relationships support various form of cascading deletion. That is, when
@@ -205,8 +307,11 @@ as desired, either in memory or at the database.
 > of foreign Record is on the parent/owner side. They only operate on one-to-one
 > and one-to-many foreign records (i.e., the child/owned side).
 >
-> Note also that cascading deleted operate only on loaded relationships; they
-> cannot operate on Records not already in memory.
+> Likewise, cascading deletes are not available directly on many-to-many
+> relationships; instead, cascade deletes on the "through" relationship.
+>
+> Finally, note that cascading deletes operate only on loaded relationships;
+> they cannot operate on Records not already in memory.
 
 Call one of the following methods on the relationship definition to set up
 cascading deletes:
