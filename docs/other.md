@@ -146,45 +146,6 @@ types.
 Note also that there can only be one _RecordSet_ class per _Mapper_, though it
 can contain any kind of _Record_.
 
-## Managing Many-To-Many Relateds
-
-Given the typical example of a `blog` table, associated to `tags`, through a
-`taggings` table, here is how you would add a tag to a blog post:
-
-```php
-// get a blog post, with taggings and tags
-$blog = $atlas->fetchRecord(Blog::CLASS, $blog_id, [
-    'taggings' => [
-        'tags'
-    ]
-]);
-
-// get all tags in the system
-$tags = $atlas->fetchRecordSet(Tags::CLASS);
-
-// create the new tagging association, with the related blog and tag objects
-$tagging = $thread->taggings->appendNew([
-    'blog' => $blog,
-    'tag' => $tags->getOneBy(['name' => $tag_name])
-]);
-
-// persist the whole blog record, which will insert the tagging
-$atlas->persist($tagging);
-```
-
-Similarly, here is how you would remove a tag:
-
-```php
-// mark the Tagging association for deletion
-$blog->taggings
-    ->getOneBy(['name' => $tag_name)
-    ->setDelete();
-
-// persist the whole record with the tagging relateds,
-// which will delete the tagging and detach the related record
-$atlas->persist($thread);
-```
-
 ## Automated Validation
 
 You will probably want to apply some sort of filtering (validation and
