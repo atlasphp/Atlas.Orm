@@ -3,15 +3,12 @@
 You can add to the _MapperRelationships_ inside the relevant `define()` method,
 calling one of these relationship-definition methods:
 
-- `manyToOne($field, $mapperClass)` (aka "belongs to")
-- `manyToOneVariant($field, $typeCol)` (aka "polymorphic association")
-- `oneToMany($field, $mapperClass)` (aka "has many")
 - `oneToOne($field, $mapperClass)` (aka "has one")
 - `oneToOneBidi($field, $mapperClass)` for a bidirectional relationship
-
-> Note that many-to-many is not supported as a direct relationship. All
-> many-to-many retrievals must occur explicitly through the association mapping
-> table, which is what happens at the SQL level anyway.
+- `oneToMany($field, $mapperClass)` (aka "has many")
+- `manyToOne($field, $mapperClass)` (aka "belongs to")
+- `manyToOneVariant($field, $typeCol)` (aka "polymorphic association")
+- `manyToMany($field, $mapperClass, $throughField)` (aka "has many through")
 
 The `$field` will become a field name on the returned Record object.
 
@@ -191,6 +188,55 @@ Note that there will be one query per variant type in the native record set.
 That is, if a native record set (of an arbitrary number of records) refers to a
 total of three different variant types, then Atlas will issue three additional
 queries to fetch the related records.
+
+## Many-To-Many Relationships
+
+The many-to-many relationship retrieves foreign records via an association
+table (a.k.a. a "through" relationship). This is typically modeled as a
+one-to-many from the native mapper to the related "through" mapper, where the
+"through" mapper itself has a many-to-one relationship to the foreign mapper.
+
+When setting up a many-to-many relationship, make sure the "through" mapper has
+a many-to-one relationship to both sides of the relationship. For example,
+given a `threads` table, related to `tags`, through a `taggings` table:
+
+```php
+class ThreadRelationships extends MapperRelationships
+{
+    protected function define()
+    {
+        // the "through" relationship that joins threads and tags
+        $this->oneToMany('taggings', Tagging::CLASS);
+
+        // the "foreign" relationship "through" taggings
+        $this->manyToMany('tags', Tag::CLASS, 'taggings');
+    }
+}
+
+class TaggingRelationships extends MapperRelationships
+{
+    protected function define()
+    {
+        // the threads side of the association mapping
+        $this->manyToOne('threads', Thread::CLASS);
+
+        // the tags side of the association mapping
+        $this->manyToOne('tags', Tag::CLASS);
+    }
+}
+
+class TagRelationships extends MapperRelationships
+{
+    protected function define()
+    {
+        // the "through" relationship that joins threads and tags
+        $this->oneToMany('taggings', Tagging::CLASS);
+
+        // the "foreign" relationship "through" taggings
+        $this->manyToMany('threads', Thread::CLASS, 'taggings');
+    }
+}
+```
 
 ## Cascading Deletes
 
