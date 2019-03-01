@@ -354,6 +354,9 @@ class Row implements RowInterface
      */
     protected function isEquivalent($old, $new) : bool
     {
+        $old = is_bool($old) ? (int) $old : $old;
+        $new = is_bool($new) ? (int) $new : $new;
+
         return (is_numeric($old) && is_numeric($new))
             ? $old == $new // numeric, compare loosely
             : $old === $new; // not numeric, compare strictly
