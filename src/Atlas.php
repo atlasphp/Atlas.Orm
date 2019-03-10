@@ -443,7 +443,9 @@ class Atlas
 
     /**
      *
-     * Performs a unit-of-work transaction.
+     * Performs a unit-of-work transaction, *unless* there is already a
+     * transaction in place, in which case the work becomes part of that
+     * pre-existing transaction.
      *
      * @param string $method The transaction work to perform.
      *
@@ -454,6 +456,10 @@ class Atlas
      */
     protected function transact(string $method, RecordInterface $record) : bool
     {
+        if ($this->inTransaction()) {
+            return $this->mapper($record->getMapperClass())->$method($record);
+        }
+
         $this->exception = null;
         $transaction = $this->newTransaction();
         $transaction->$method($record);

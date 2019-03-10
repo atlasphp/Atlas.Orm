@@ -515,15 +515,15 @@ ORDER BY
         $this->assertTrue($this->atlas->inTransaction());
 
         // create a new record
-        $mapper = $this->atlas->mapper(AuthorMapper::CLASS);
-        $author = $mapper->newRecord();
+        $author = $this->atlas->mapper(AuthorMapper::CLASS)->newRecord();
         $author->name = 'Mona';
 
         // does the insert *look* successful?
-        $success = $mapper->insert($author);
+        $success = $this->atlas->insert($author);
         $this->assertTrue($success);
 
         // commit
+        $this->assertTrue($this->atlas->inTransaction());
         $this->atlas->commit();
         $this->assertFalse($this->atlas->inTransaction());
 
@@ -552,15 +552,15 @@ ORDER BY
         $this->assertTrue($this->atlas->inTransaction());
 
         // create a new record
-        $mapper = $this->atlas->mapper(AuthorMapper::CLASS);
-        $author = $mapper->newRecord();
+        $author = $this->atlas->mapper(AuthorMapper::CLASS)->newRecord();
         $author->name = 'Mona';
 
         // does the insert *look* successful?
-        $success = $mapper->insert($author);
+        $success = $this->atlas->insert($author);
         $this->assertTrue($success);
 
         // roll back
+        $this->assertTrue($this->atlas->inTransaction());
         $this->atlas->rollBack();
         $this->assertFalse($this->atlas->inTransaction());
 
