@@ -113,4 +113,32 @@ class RowTest extends \PHPUnit\Framework\TestCase
         $expect = '{"id":"1","foo":"bar"}';
         $this->assertSame($expect, $actual);
     }
+
+    public function testIsEquivalent_numericToBool()
+    {
+        $init = ['id' => '1', 'foo' => 1];
+        $row = new Row($init);
+
+        $row->foo = true;
+        $diff = $row->getArrayDiff($init);
+        $this->assertEmpty($diff);
+
+        $row->foo = false;
+        $diff = $row->getArrayDiff($init);
+        $this->assertSame(['foo' => false], $diff);
+    }
+
+    public function testIsEquivalent_boolToNumeric()
+    {
+        $init = ['id' => '1', 'foo' => true];
+        $row = new Row($init);
+
+        $row->foo = 1;
+        $diff = $row->getArrayDiff($init);
+        $this->assertEmpty($diff);
+
+        $row->foo = 0;
+        $diff = $row->getArrayDiff($init);
+        $this->assertSame(['foo' => 0], $diff);
+    }
 }
