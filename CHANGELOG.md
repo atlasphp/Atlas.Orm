@@ -2,6 +2,16 @@
 
 This is the changelog for the 2.x series.
 
+## 2.7.0
+
+This release adds support for 'manual' transactions outside a unit of work,
+via Atlas::beginTransaction(), commit(), and rollBack() methods.
+
+Also, Row::isEquivalent() now compares booleans as integers, so that a change
+from 1 => true or 0 => false (and vice versa) is no longer considered a
+difference. This should help reduce "Expected 1 row affected, actual 0" errors
+with some databases (notably MySQL).
+
 ## 2.6.0
 
 This release introduces an AtlasBuilder similar to the one in the 3.x series,
