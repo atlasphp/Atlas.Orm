@@ -507,6 +507,74 @@ ORDER BY
         ThreadMapperEvents::$beforeInsert = null;
     }
 
+    public function testManualCommit()
+    {
+        $this->assertFalse($this->atlas->inTransaction());
+
+        $this->atlas->beginTransaction();
+        $this->assertTrue($this->atlas->inTransaction());
+
+        // create a new record
+        $mapper = $this->atlas->mapper(AuthorMapper::CLASS);
+        $author = $mapper->newRecord();
+        $author->name = 'Mona';
+
+        // does the insert *look* successful?
+        $success = $mapper->insert($author);
+        $this->assertTrue($success);
+
+        // commit
+        $this->atlas->commit();
+        $this->assertFalse($this->atlas->inTransaction());
+
+        // was it *actually* inserted?
+        $expect = [
+            'author_id' => '13',
+            'name' => 'Mona',
+        ];
+
+        $actual = $this->atlas
+            ->mapper(AuthorMapper::CLASS)
+            ->getTable()
+            ->getReadConnection()
+            ->fetchOne(
+                'SELECT * FROM authors WHERE author_id = 13'
+            );
+        $this->assertSame($expect, $actual);
+    }
+
+
+    public function testManualRollBack()
+    {
+        $this->assertFalse($this->atlas->inTransaction());
+
+        $this->atlas->beginTransaction();
+        $this->assertTrue($this->atlas->inTransaction());
+
+        // create a new record
+        $mapper = $this->atlas->mapper(AuthorMapper::CLASS);
+        $author = $mapper->newRecord();
+        $author->name = 'Mona';
+
+        // does the insert *look* successful?
+        $success = $mapper->insert($author);
+        $this->assertTrue($success);
+
+        // roll back
+        $this->atlas->rollBack();
+        $this->assertFalse($this->atlas->inTransaction());
+
+        // should not be there now
+        $actual = $this->atlas
+            ->mapper(AuthorMapper::CLASS)
+            ->getTable()
+            ->getReadConnection()
+            ->fetchOne(
+                'SELECT * FROM authors WHERE author_id = 13'
+            );
+        $this->assertFalse($actual);
+    }
+
     protected $expectRecord = [
         'thread_id' => '1',
         'author_id' => '1',
