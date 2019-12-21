@@ -241,3 +241,48 @@ $atlas->logQueries(true);
 > If you set a custom logger, the _Atlas_ instance will no longer retain its own
 > query log entries; they will all go to the custom logger. This means that
 > `getQueries()` on the _Atlas_ instance will not show any new entries.
+
+## Custom Factory Callable
+
+The _AtlasBuilder_ let you specify a custom factory callable to create the
+dependencies for each _Table_ and _Mapper_ instance. The default factory
+callable looks like this:
+
+```php
+/**
+ * @var string $class A fully-qualified class name.
+ * @return object
+ */
+function (string $class) {
+    return new $class();
+}
+```
+
+Although this callable may in future be used for any kind of _Table_ or _Mapper_
+dependency, in practice it is currently limited to _Events_ classes.
+
+If your _Events_ instances need dependency injection, you can replace the
+default factory with your own callable; the _AtlasBuilder_ will use it to create
+any new _Events_ instances.  This gives you full control over how the _Events_
+objects are instantiated.
+
+> **Note:**
+>
+> The base _TableEvents_ and _MapperEvents_ classes have no constructors, so you
+> are free to write your own in your generated _Events_ classes.
+
+For example, to use a PSR-11 container to create _Events_ objects:
+
+```php
+$atlasBuilder = new \Atlas\Orm\AtlasBuilder(...);
+
+/** @var \Psr\Container\ContainerInterface $container */
+$atlasBuilder->setFactory(function (string $class) use ($container) {
+    return $container->get($class);
+});
+
+$atlas = $atlasBuilder->newAtlas();
+
+// Atlas will now use $container to create
+// TableEvents and MapperEvents instances.
+```
