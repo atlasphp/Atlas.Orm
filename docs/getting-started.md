@@ -120,4 +120,5 @@ objects, as well as perform other interactions.
 
 - [Perform direct lower-level queries](./direct.md)
 
-- [Other topics](./other.md) such as custom mapper methods, single table inheritance, many-to-many relationships, and automated validation
+- [Other topics](./other.md) such as custom mapper methods, single table
+  inheritance, automated validation, and custom factory callables
