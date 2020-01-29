@@ -357,10 +357,12 @@ abstract class AbstractTable implements TableInterface
      */
     public function insertRowPrepare(RowInterface $row) : InsertInterface
     {
-        $this->events->beforeInsert($this, $row);
+        $cols = $this->events->beforeInsert($this, $row);
+        if (! is_array($cols)) {
+            $cols = $row->getArrayCopy();
+        }
 
         $insert = $this->insert();
-        $cols = $row->getArrayCopy();
         $autoinc = $this->getAutoinc();
         if ($autoinc) {
             unset($cols[$autoinc]);
@@ -436,11 +438,14 @@ abstract class AbstractTable implements TableInterface
      */
     public function updateRowPrepare(RowInterface $row) : UpdateInterface
     {
-        $this->events->beforeUpdate($this, $row);
+        $diff = $this->events->beforeUpdate($this, $row);
+        if (! is_array($diff)) {
+            $init = $this->identityMap->getInitial($row);
+            $diff = $row->getArrayDiff($init);
+        }
 
         $update = $this->update();
-        $init = $this->identityMap->getInitial($row);
-        $diff = $row->getArrayDiff($init);
+
         foreach ($this->getPrimaryKey() as $primaryCol) {
             if (array_key_exists($primaryCol, $diff)) {
                 $message = "Primary key value for '$primaryCol' "
