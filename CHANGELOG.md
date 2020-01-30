@@ -2,6 +2,14 @@
 
 This is the changelog for the 2.x series.
 
+## 2.8.0
+
+This release backports a feature from the 3.x series, such that when the
+TableEvents::beforeInsert() or TableEvents::beforeUpdate() methods return an
+array, that array is used for the insert or update. This allows finer control
+over, among other things, the logic that determines differences from the initial
+Row data.
+
 ## 2.7.0
 
 This release adds support for 'manual' transactions outside a unit of work,
