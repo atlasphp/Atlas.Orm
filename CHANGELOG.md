@@ -10,6 +10,8 @@ array, that array is used for the insert or update. This allows finer control
 over, among other things, the logic that determines differences from the initial
 Row data.
 
+Expanded testing to include PHP 7.2 and 7.3.
+
 ## 2.7.0
 
 This release adds support for 'manual' transactions outside a unit of work,
