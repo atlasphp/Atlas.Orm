@@ -33,8 +33,7 @@ class AutoTransact extends Transaction
             $this->commit();
         } catch (Exception $e) {
             $this->rollBack();
-            $c = get_class($e);
-            throw new $c($e->getMessage(), $e->getCode(), $e);
+            throw $e;
         }
     }
 }

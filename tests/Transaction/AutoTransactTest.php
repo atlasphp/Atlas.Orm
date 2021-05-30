@@ -27,9 +27,8 @@ class AutoTransactTest extends TransactionTest
             $employee->id = '999';
             $this->atlas->persist($employee);
         } catch (Exception $e) {
-            $previous = $e->getPrevious();
             $this->assertSame(
-                $previous->getMessage(),
+                $e->getMessage(),
                 "Primary key value for 'id' changed"
             );
         }
