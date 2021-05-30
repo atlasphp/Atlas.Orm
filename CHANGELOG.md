@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 3.1.1
+
+Hygiene release.
+
 ## 3.1.0
 
 - Added methods Atlas::logQueries() and Atlas::getQueries(), to expose
